@@ -200,7 +200,6 @@ let parseCsv = function(content, onParsed) {
         let localI = i;
         let localGroup = group.slice(0);
         setTimeout(function() {
-            console.log("Processing group of "+localGroup.length);
             for(let splitLine of localGroup) {
                 let columns = splitLine.columns;
                 let format = splitLine.format;
@@ -266,7 +265,6 @@ let parseCsv = function(content, onParsed) {
     setTimeout(function() {
         $('.progress').css({"width": "100%"});
         $('.percent').html("100%");
-        console.log("Parsing Done");
 
         for (let methodName in profileData) {
             methods.push(profileData[methodName]);
@@ -297,8 +295,9 @@ let createPage = function(methods) {
     html += "</table>";
   
     $(".analyze").append(html);
-    $("tr").on('auxclick', function(e) { 
-        if(e.which === 2) {
+    $("tr").on('click auxclick contextmenu', function(e) { 
+        // On right click or middle click, hide the element.
+        if(e.type === "contextmenu" || e.which === 2 || e.which === 3) {
             e.preventDefault();
             e.target.parentElement.parentElement.style.display = "none";
         } 
