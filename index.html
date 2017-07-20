@@ -211,12 +211,16 @@ let parseCsv = function(content, onParsed) {
 
                 if(!(methodName in profileData)) {
                     profileData[methodName] = {
-                    name: methodName,
-                    samples: 0,
-                    stacks: {}
+                        name: methodName,
+                        samples: 0,
+                        totalDepth: 0, // The cumulated depth at which the method was found, for all samples
+                        count: 0, // The number of times a method was found
+                        stacks: {}
                     };
                 } 
                 profileData[methodName].samples += samples;
+                profileData[methodName].totalDepth += depth;
+                profileData[methodName].count += 1;
                 for(let j = 0; j < prevDepth - depth ; ++j) {
                     currentCallers.pop();
                 }
@@ -277,18 +281,37 @@ let parseCsv = function(content, onParsed) {
     }, 0);
 }
 
+/**
+ * Retrieve the maximum average depth at which a method was found. 
+ * This average can then be used to color the methods.
+ */
+let getMaxAverageDepth = function(methods) {
+    let max = 0;
+    methods.forEach(function(method) {
+        let averageDepth = ((1.0 * method.totalDepth) / method.count);
+        if(averageDepth > max) {
+            max = averageDepth;
+        }
+    });
+    return max;
+}
+
 let createPage = function(methods) {
     let html = `
         <table class="methods">
         <tr>
-            <th>Method</th>
+            <th>Method <font size="-1">(Colored by depth: the redder, the deeper)</font></th>
             <th>Sample Count</th>
         </tr>`;
+    let maxAverageDepth = getMaxAverageDepth(methods);
     methods.forEach(function(method) {
         if(filterOut(method.name)) {
             return;
         }
-        html += "<tr><td><div>"+method.name+"</div>"
+        let averageDepth = ((1.0 * method.totalDepth) / method.count);
+        // We color the deepest methods in red, as they are probably more interesting
+        let red = Math.round(255.0 * averageDepth / (maxAverageDepth));
+        html += "<tr><td><div style=\"color:rgb("+red+",0,0)\">"+method.name+"</div>"
             + stacksTable(method.stacks.root)
             + "</td><td>"+method.samples+"</td></tr>";
     });
