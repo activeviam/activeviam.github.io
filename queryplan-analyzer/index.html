@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Online Query Plan Analyzer</title>
+</head>
+<script src="https://unpkg.com/react@16.0.0/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.production.min.js"></script>
+<script src="https://d3js.org/d3-collection.v1.min.js"></script>
+<script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
+<script src="https://d3js.org/d3-quadtree.v1.min.js"></script>
+<script src="https://d3js.org/d3-timer.v1.min.js"></script>
+<script src="https://d3js.org/d3-force.v1.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css">
+<style>
+  body { color : #333; }
+
+  form {
+    margin: auto;
+  }
+  .uploadcsv {
+    margin: 10px auto;
+    width: 90%;
+  }
+  .uploadcsv textarea {
+    margin: auto;
+    width: 100%;
+    min-height: 100px;
+    height: calc(100vh - 230px);
+  }
+
+  ul {
+    list-style-type: none;
+  }
+</style>
+<body>
+  <div id="root"></div>
+</body>
+<script type="text/javascript">
+const el = React.createElement;
+const elp = (type, ...content) => el(type, {}, ...content);
+
+const inputs = [
+`Retrieval #0: BitmapPrimitiveAggregatesRetrieval
+    Location= dimension 0@dimension 0:currency\\desk\\type=[*]\\[*]\\[*],dimension 1@dimension 1:year=[*]
+    Measures= [value.SUM]
+    Filter= Global query filter
+    Partitioning= Constant partitioning
+    Measures provider= SimpleMeasuresProvider
+
+Retrieval #1: PostProcessedAggregatesRetrieval
+    Location= dimension 0@dimension 0:currency\\desk\\type=[*]\\[*]\\[*],dimension 1@dimension 1:year=[*]
+    Measures= [PP2.BasicPP2]
+    Filter= Global query filter
+    Partitioning= Constant partitioning
+    Measures provider= SimpleMeasuresProvider
+ which depends on {
+    Retrieval #2: PostProcessedAggregatesRetrieval
+        Location= dimension 0@dimension 0:currency\\desk\\type=[*]\\[*]\\[*],dimension 1@dimension 1:year=[*]
+        Measures= [PP1.BasicPP1]
+        Filter= Global query filter
+        Partitioning= Constant partitioning
+        Measures provider= SimpleMeasuresProvider
+     which depends on {
+        Retrieval #0: BitmapPrimitiveAggregatesRetrieval (see above for dependencies)
+    }
+    Retrieval #0: BitmapPrimitiveAggregatesRetrieval (see above for dependencies)
+}
+Retrieval #3: PostProcessedAggregatesRetrieval
+    Location= dimension 0@dimension 0:currency\\desk=[*]\[*],dimension 1@dimension 1:year=[*]
+    Measures= [PP2.BasicPP2]
+    Filter= Global query filter
+    Partitioning= Constant partitioning
+    Measures provider= SimpleMeasuresProvider
+ which depends on {
+    Retrieval #4: RangeSharingLinearPostProcessorAggregatesRetrieval
+        Location= dimension 0@dimension 0:currency\\desk=[*]\[*],dimension 1@dimension 1:year=[*]
+        Measures= [PP1.BasicPP1]
+        Filter= Global query filter
+        Partitioning= Constant partitioning
+        Measures provider= SimpleMeasuresProvider
+     which depends on {
+        Retrieval #2: PostProcessedAggregatesRetrieval (see above for dependencies)
+        Retrieval #5: NoOpPrimitiveAggregatesRetrieval
+            Simple placeholder (no work done in this retrieval)
+            Partitioning= Constant partitioning
+
+    }
+    Retrieval #5: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+}
+Retrieval #6: PostProcessedAggregatesRetrieval
+    Location= dimension 1@dimension 1:year=[*]
+    Measures= [PP2.BasicPP2]
+    Filter= Global query filter
+    Partitioning= Constant partitioning
+    Measures provider= SimpleMeasuresProvider
+ which depends on {
+    Retrieval #7: RangeSharingLinearPostProcessorAggregatesRetrieval
+        Location= dimension 1@dimension 1:year=[*]
+        Measures= [PP1.BasicPP1]
+        Filter= Global query filter
+        Partitioning= Constant partitioning
+        Measures provider= SimpleMeasuresProvider
+     which depends on {
+        Retrieval #8: RangeSharingLinearPostProcessorAggregatesRetrieval
+            Location= dimension 0@dimension 0:currency=[*],dimension 1@dimension 1:year=[*]
+            Measures= [PP1.BasicPP1]
+            Filter= Global query filter
+            Partitioning= Constant partitioning
+            Measures provider= SimpleMeasuresProvider
+         which depends on {
+            Retrieval #4: RangeSharingLinearPostProcessorAggregatesRetrieval (see above for dependencies)
+            Retrieval #9: NoOpPrimitiveAggregatesRetrieval
+                Simple placeholder (no work done in this retrieval)
+                Partitioning= Constant partitioning
+
+        }
+        Retrieval #10: NoOpPrimitiveAggregatesRetrieval
+            Simple placeholder (no work done in this retrieval)
+            Partitioning= Constant partitioning
+
+    }
+    Retrieval #10: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+}
+Retrieval #11: PostProcessedAggregatesRetrieval
+    Location= dimension 0@dimension 0:currency=[*],dimension 1@dimension 1:year=[*]
+    Measures= [PP2.BasicPP2]
+    Filter= Global query filter
+    Partitioning= Constant partitioning
+    Measures provider= SimpleMeasuresProvider
+ which depends on {
+    Retrieval #8: RangeSharingLinearPostProcessorAggregatesRetrieval (see above for dependencies)
+    Retrieval #9: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+}
+Retrieval #2: PostProcessedAggregatesRetrieval (see above for dependencies)
+Retrieval #4: RangeSharingLinearPostProcessorAggregatesRetrieval (see above for dependencies)
+Retrieval #7: RangeSharingLinearPostProcessorAggregatesRetrieval (see above for dependencies)
+Retrieval #8: RangeSharingLinearPostProcessorAggregatesRetrieval (see above for dependencies)`,
+
+`Retrieval #0: BitmapPrimitiveAggregatesRetrieval
+    Location= dimension 0@dimension 0:currency\\desk\\type=[*]\\[*]\\[*],dimension 1@dimension 1:year=[*]
+    Measures= [value.SUM]
+    Filter= Global query filter
+    Partitioning= Constant partitioning
+    Measures provider= SimpleMeasuresProvider
+which depends on {
+  Retrieval #1: PostProcessedAggregatesRetrieval
+      Location= dimension 0@dimension 0:currency\\desk\\type=[*]\\[*]\\[*],dimension 1@dimension 1:year=[*]
+      Measures= [PP2.BasicPP2]
+      Filter= Global query filter
+      Partitioning= Constant partitioning
+      Measures provider= SimpleMeasuresProvider
+  which depends on {
+      Retrieval #2: PostProcessedAggregatesRetrieval
+          Location= dimension 0@dimension 0:currency\\desk\\type=[*]\\[*]\\[*],dimension 1@dimension 1:year=[*]
+          Measures= [PP1.BasicPP1]
+          Filter= Global query filter
+          Partitioning= Constant partitioning
+          Measures provider= SimpleMeasuresProvider
+      which depends on {
+        Retrieval #3: PostProcessedAggregatesRetrieval
+            Location= dimension 0@dimension 0:currency\\desk=[*]\[*],dimension 1@dimension 1:year=[*]
+            Measures= [PP2.BasicPP2]
+            Filter= Global query filter
+            Partitioning= Constant partitioning
+            Measures provider= SimpleMeasuresProvider
+        which depends on {
+            Retrieval #4: RangeSharingLinearPostProcessorAggregatesRetrieval
+                Location= dimension 0@dimension 0:currency\\desk=[*]\[*],dimension 1@dimension 1:year=[*]
+                Measures= [PP1.BasicPP1]
+                Filter= Global query filter
+                Partitioning= Constant partitioning
+                Measures provider= SimpleMeasuresProvider
+        }
+        Retrieval #4: RangeSharingLinearPostProcessorAggregatesRetrieval (see above for dependencies)
+      }
+    Retrieval #4: RangeSharingLinearPostProcessorAggregatesRetrieval (see above for dependencies)
+    }
+    Retrieval #4: RangeSharingLinearPostProcessorAggregatesRetrieval (see above for dependencies)
+  }
+}`
+];
+
+const RETRIEVAL = /Retrieval #(\d+): ([\w_]+)( \(see)?/;
+const PROPERTY_EXPR = /\s*([\w\-_ \(\)]+)= (.+)\s*/;
+const PARTITION_RESULT = /(?:^|\s+)Result for (\d+)\s*: (EMPTY|.*)/;
+const DEPENDENCY_START = /which depends on \{/;
+const DEPENDENCY_END = /^\s*}\s*$/;
+const PARTITION_PROPERTY = 'Contributed partitions';
+const last = (array) => array.length > 0 ? array[array.length - 1] : undefined;
+const parseNewRetrieval = (line, match) => ({
+  id: match[1],
+  type: match[2],
+  ref: match[3] !== undefined,
+  dependencies: [],
+  parents: [],
+  properties: {}
+});
+const parseProperty = (line, match) => ({
+  key: match[1],
+  value: match[2]
+});
+const parseLines = (state, lines, from, to) => {
+  for (let i = from; i < to; i += 1) {
+    line = lines[i].trim();
+    let match;
+    if (!/^\s*$/.test(line)) {
+      if ((match = RETRIEVAL.exec(line)) !== null) {
+        const retrieval = parseNewRetrieval(line, match);
+        if (retrieval.ref) {
+          state.current = state.retrievals[retrieval.id];
+        } else {
+          state.current = retrieval;
+          state.retrievals[retrieval.id] = retrieval;
+        }
+
+        const parent = last(state.parents);
+        if (parent) {
+          parent.dependencies.push(retrieval.id);
+        }
+      } else if ((match = PARTITION_RESULT.exec(line)) !== null) {
+        // Before properties as results contain '=' and more
+        const partitionId = match[1];
+        const result = match[2];
+        if (result !== 'EMPTY') {
+          const partitions = state.current.properties[PARTITION_PROPERTY] || [];
+          partitions.push(partitionId);
+          state.current.properties[PARTITION_PROPERTY] = partitions;
+        }
+      } else if ((match = PROPERTY_EXPR.exec(line)) !== null) {
+        const property = parseProperty(line, match);
+        state.current.properties[property.key] = property.value;
+      } else if (DEPENDENCY_START.test(line)) {
+        state.parents.push(state.current);
+      } else if (DEPENDENCY_END.test(line)) {
+        state.parents.pop();
+      }
+    }
+  }
+};
+const parseInput = (input, tickCallback) => {
+  return new Promise((resolve) => {
+      const accumulator = {
+        root: {
+          dependencies: []
+        },
+        retrievals: {},
+        current: null,
+        parents: []
+      };
+      accumulator.parents.push(accumulator.root);
+
+      const lines = input.split(/\n/);
+      let currentLine = 0;
+      (function loop() {
+        if (currentLine < lines.length) {
+          const to = Math.min(currentLine + 100, lines.length);
+          parseLines(accumulator, lines, currentLine, to);
+          currentLine = to;
+          tickCallback(currentLine, lines.length);
+
+          setTimeout(loop, 5);
+        } else {
+          resolve(accumulator);
+        }
+      })();
+    })
+    .then((result) => {
+      // if (accumulator.parents.length > 0) {
+      //   console.error('Error in parsing, remaining parents', accumulator);
+      // }
+
+      // Iterate through nodes to record parents
+      Object.keys(result.retrievals).forEach(rId => {
+        const retrieval = result.retrievals[rId];
+        retrieval.dependencies.forEach(dId => {
+          const dependency = result.retrievals[dId];
+          dependency.parents.push(rId);
+        });
+      });
+
+      return result;
+    });
+};
+
+const isRoot = (node) => node.parents.length === 0;
+const isLeaf = (node) => node.dependencies.length === 0;
+
+const exploreNodes = (nodeId, nodes, action) => {
+  const queue = [nodeId];
+  let it;
+  while ((it = queue.shift()) !== undefined) {
+    const n = nodes[it];
+    const next = action(n);
+    if (next === false) {
+      return;
+    } else if (next.length > 0) {
+      queue.push(...next);
+    }
+  }
+};
+
+const exploreBy = (selection, nodes, seen, action, getNext) => {
+  selection.reduce(
+      (acc, node) => {
+        acc.push(...getNext(node));
+        return acc;
+      },
+      [])
+    .forEach(nId => {
+      exploreNodes(nId, nodes, (node) => {
+        if (node.id in seen) {
+          return [];
+        } else {
+          action(node);
+          return getNext(node);
+        }
+      });
+  });
+}
+
+const exploreParents = (selection, nodes, seen, action) => {
+  exploreBy(selection, nodes, seen, action, (node) => node.parents)
+};
+
+const exploreDependencies = (selection, nodes, seen, action) => {
+  exploreBy(selection, nodes, seen, action, (node) => node.dependencies)
+};
+
+const unquote = (value) => value[0] === '"' || value[0] === "'"
+  ? value.slice(1, value.length - 1)
+  : value;
+
+const getPredicateFunction = (operator, arg) => {
+  switch (operator) {
+  case 'from': return (node) => isRoot(node) && arg === node.id;
+  case 'to': return (node) => isLeaf(node) && arg === node.id;
+  case 'by': return (node) => arg === node.id;
+  case 'type':
+    let typeExpr = new RegExp(arg, 'i');
+    return (node) => typeExpr.test(node.type);
+  case 'measures':
+    const measures = arg.split(/\s*,\s*/);
+    return (node) => measures.every(m => {
+      const ms = node.properties.Measures;
+      return ms && ms.includes(m)
+    });
+  case 'location':
+    const points = arg.split(/\s*,\s*/);
+    return (node) => points.every(m => {
+      const loc = node.properties.Location;
+      return loc && loc.includes(m);
+    });
+  }
+};
+
+const parseAndConditions = (input) => {
+  const expr = /(from|to|by|type|measures|location)\s*:\s*([^ ]+|'.*?'|".*?")/g;
+  let match;
+  const predicates = [];
+  while ((match  = expr.exec(input)) !== null) {
+    const operator = match[1];
+    const arg = unquote(match[2]);
+    const predicate = getPredicateFunction(operator, arg);
+    if (predicate !== undefined) {
+      predicates.push(predicate);
+    }
+  }
+
+  if (predicates.length <= 1) {
+    return predicates[0];
+  } else {
+    return (node) => predicates.every(p => p(node));
+  }
+};
+
+const parseFilters = (input) => {
+  const ors = input.split(/\s*,\s*/);
+  const predicates = ors.map(orInput => parseAndConditions(orInput))
+    .filter(p => p !== undefined);
+  if (predicates <= 1) {
+    return predicates[0];
+  } else {
+    return (node) => predicates.some(p => p(node));
+  }
+};
+
+const barycenter = (values, f) => values.reduce((acc, b) => acc + f(b), 0) / values.length;
+
+const FULL_WIDTH = 1000;
+const Y_FACTOR = 75
+const spreadValues = (positions, min, max, gap) => {
+  if (positions.length === 1) {
+    return positions;
+  }
+
+  const sorted = positions
+    .map((value, i) => ({i, value}))
+    .sort((a, b) => a.value - b.value);
+  // First approach, spread uniformly on the axis
+  const step = Math.floor(FULL_WIDTH / (positions.length + 1));
+  sorted.forEach((position, i) => position.value = (1 + i) * step);
+
+  sorted.forEach(o => positions[o.i] = o.value);
+};
+
+const drawNodes = ({retrievals, root}) => {
+  // First assign a `y` to nodes from roots
+  const queue = [...root.dependencies];
+  let id;
+  while ((id = queue.pop()) !== undefined) {
+    const retrieval = retrievals[id];
+    if (retrieval.parents.every(pId => retrievals[pId].y !== undefined)) {
+      const y = retrieval.parents
+          .map(pId => retrievals[pId].y)
+          .reduce((acc, value) => Math.max(acc, value), -1);
+      retrieval.y = y + 1;
+      queue.push(...retrieval.dependencies);
+    }
+  }
+
+  // Then, apply the x from top to down
+  const initWidth = FULL_WIDTH / (root.dependencies.length + 1);
+  root.dependencies.forEach((rId, i) => {
+    retrievals[rId].x = (i + 1) * initWidth;
+  });
+  const rs = Object.keys(retrievals).map(rId => retrievals[rId]);
+  for (
+    let depth = 1, nodes = rs.filter(r => r.y === depth);
+    nodes.length > 0;
+    depth += 1, nodes = rs.filter(r => r.y === depth)) {
+    const positions = nodes.map(node => {
+      return node.x !== undefined
+        ? node.x
+        : barycenter(
+            node.parents,
+            pId => retrievals[pId].x);
+    });
+    // spreadValues(positions);
+    positions.forEach((x, i) => {
+      nodes[i].x = x;
+    });
+  }
+};
+
+const lineStyle = {
+  stroke: 'rgb(121,121,121)',
+  strokeWidth: 2
+};
+const margin = 10;
+const nodeColor = (node) => {
+  if (node.type.includes('NoOp')) {
+    return '#cbcbcb';
+  } else if (isRoot(node)) {
+    return 'blue';
+  } else if (isLeaf(node)) {
+    return 'orange';
+  } else if (node.type.includes('Merger')) {
+    return 'green';
+  } else {
+    return '#00c5cc';
+  }
+}
+const Graph = ({nodes, onClick}) => {
+  const ns = Object.keys(nodes).map(key => nodes[key]);
+  const {min: minX, max: maxX} = ns.reduce(
+    ({min, max}, node) => ({
+      min: Math.min(min, node.x),
+      max: Math.max(max, node.x)
+    }),
+    {min: Number.MAX_VALUE, max: 0});
+  const toX = x => x - minX + margin;
+  const toY = y => Y_FACTOR * y + margin;
+  const links = ns.map(node => {
+      return node.dependencies
+        .map(dId => nodes[dId])
+        .filter(n => n !== undefined)
+        .map(dep => el(
+          'line',
+          {
+            x1: toX(node.x), y1: toY(node.y),
+            x2: toX(dep.x), y2: toY(dep.y),
+            style: lineStyle
+          }));
+    })
+    .reduce((acc, lls) => [...acc, ...lls], []);
+  const points = ns.map(node => el(
+    'circle',
+    {
+      cx: toX(node.x), cy: toY(node.y),
+      r: 5,
+      stroke: 'black',
+      strokeWidth: 2,
+      fill: nodeColor(node),
+      onClick: () => onClick(node.id)
+    }));
+  return el(
+    'svg',
+    {
+      width: toX(maxX) + margin,
+      height: points.reduce((m, point) => Math.max(m, point.props.cy), 0) + margin
+    },
+    ...links,
+    ...points);
+};
+
+const Mode = {
+  INPUT: 'input',
+  TREE: 'tree',
+  GRAPH: 'graph'
+}
+
+class Analysis extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      needle: '',
+      highlight: null
+    };
+
+    this.cbks = {
+      updateNeedle: event => {
+        const needle = event.target.value;
+        this.setState({needle});
+        this.needleFunction = parseFilters(needle);
+      },
+      highlightNode: nodeId => this.setState({highlight: nodeId})
+    };
+  }
+
+  getFilteredData() {
+    const {retrievals, roots} = this.filterData({
+      retrievals: this.props.retrievals,
+      root: this.props.root
+    });
+
+    return {retrievals, roots, filter: {needle: ''}};
+  }
+
+  filterData({retrievals, root}) {
+    if (this.needleFunction) {
+      const filteredNodes = Object.keys(retrievals)
+        .map(rId => retrievals[rId])
+        .filter(r => this.needleFunction(r));
+      const filteredRetrievals = filteredNodes.reduce(
+        (acc, r) => {
+          acc[r.id] = r;
+          return acc;
+        },
+        {});
+      const filteredRoots = filteredNodes.filter(isRoot);
+      exploreParents(filteredNodes, retrievals, filteredRetrievals, (node) => {
+        filteredRetrievals[node.id] = node;
+        if (isRoot(node)) {
+          filteredRoots.push(node);
+        }
+      });
+      exploreDependencies(filteredNodes, retrievals, filteredRetrievals, (node) => {
+        filteredRetrievals[node.id] = node;
+      });
+
+      return {retrievals: filteredRetrievals, roots: filteredRoots};
+    } else {
+      let roots = root.dependencies.map(id => retrievals[id]);
+      return {retrievals, roots};
+    }
+  }
+
+  renderModes() {
+    return el(
+      'div',
+      {className: 'ui buttons mini'},
+      ...Object.values(Mode).map((value, idx) =>
+        el(
+          'div',
+          {
+            key: value,
+            className: `ui button ${this.state.mode === value ? 'active' : ''}`,
+            onClick: () => this.cbks.changeMode(value)
+          },
+          value)));
+  }
+
+  renderFilters() {
+    return el(
+      'form',
+      {id: 'filters', className: 'ui form'},
+      el('input', {
+        placeholder: 'Class to search',
+        value: this.state.needle,
+        onChange: this.cbks.updateNeedle
+      }));
+  }
+
+  renderChains() {
+    const {retrievals: nodes, roots, filter} = this.getFilteredData();
+
+    return el(
+      'div',
+      {id: 'chains'},
+      el(Chains, {roots, nodes, filter}));
+  }
+
+  renderGraph() {
+    const {retrievals: nodes, roots, filter} = this.getFilteredData();
+    const highlight = this.state.highlight !== null && nodes[this.state.highlight]
+      ? el(NodeInfo, {node: nodes[this.state.highlight]})
+      : null;
+    return el(
+      'div',
+      { id: 'graph' },
+      highlight,
+      el(
+        'div',
+        {
+          style: {
+            width: '100%',
+            overflowX: 'auto'
+          }
+        },
+        el(
+          Graph,
+          {
+            nodes,
+            onClick: this.cbks.highlightNode
+          })));
+  }
+
+  renderView() {
+    return this.props.mode === Mode.GRAPH
+      ? this.renderGraph()
+      : this.renderChains();
+  }
+
+  render() {
+    return el(
+      'div',
+      {id: 'analysis'},
+      this.renderFilters(),
+      this.renderView());
+  }
+}
+
+const NodeInfo = ({node, depth, filter, pre = []}) => {
+  let nameDisplay;
+  const needle = filter && filter.needle;
+  const name = node.type;
+  if (needle) {
+    let needleIdx = 0;
+    let idx;
+    const parts = [];
+    while ((idx = name.indexOf(needle, needleIdx)) >= 0) {
+      parts.push(name.substring(needleIdx, idx));
+      parts.push(el('span', {style: {backgroundColor: 'yellow'}}, needle));
+      needleIdx = idx + needle.length;
+    }
+    parts.push(name.substring(needleIdx));
+
+    nameDisplay = elp('b', ...parts);
+  } else {
+    nameDisplay = elp('b', name);
+  }
+
+  const details = [];
+  Object.keys(node.properties).forEach(property => {
+    details.push(
+      el('br'),
+      `${property}: ${node.properties[property].toString()}`);
+  });
+
+  const depthDisplay = depth !== undefined ? elp('span', ` {depth: ${depth}}`) : null;
+
+  return elp(
+    'div',
+    ...pre,
+    nameDisplay,
+    ` (#${node.id})`,
+    depthDisplay,
+    ...details);
+};
+
+class ChainNode extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {open: true};
+  }
+
+  getIcon(node, open) {
+    if (node.dependencies.length > 0) {
+      return open ? 'minus' : 'plus'
+    } else {
+      return 'leaf';
+    }
+  }
+
+  renderNodeBlock(node, depth) {
+    const expandButton = el(
+      'span',
+      {
+        key: `node#${node.id}`,
+        className: 'ui mini circular icon button',
+        onClick: () => this.setState({open: !this.state.open})
+      },
+      el(
+        'i',
+        {className: `window ${this.getIcon(node, this.state.open)} icon`}));
+    return el(
+      NodeInfo,
+      {
+        node,
+        depth,
+        filter: this.props.filter,
+        pre: [expandButton]
+      });
+  }
+
+  render() {
+    const node = this.props.node;
+    return el(
+        'li',
+        {key: node.id},
+        this.renderNodeBlock(node, this.props.depth),
+        (this.state.open
+          ? el(
+              Chains,
+              {
+                roots: node.dependencies.map(id => this.props.nodes[id])
+                  .filter(n => n !== undefined),
+                nodes: this.props.nodes,
+                filter: this.props.filter,
+                depth: this.props.depth + 1
+              })
+          : null))
+  }
+
+}
+
+const Chains = ({roots, nodes, filter, depth = 0}) => {
+  return roots && roots.length > 0
+    ? elp('ul',
+        roots.map(root => el(
+          ChainNode,
+          {
+            node: root,
+            nodes,
+            depth,
+            filter
+          })))
+    : null;
+}
+
+var d = 30;
+var s = 1;
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    const devInfo = /\?dev(?:=(\d+))?/.exec(window.location.href);
+    this.state = {
+      mode: Mode.INPUT,
+      percentage: null,
+      input: devInfo ? inputs[devInfo[1] || 0] : '',
+      retrievals: null,
+      root: null
+    };
+
+    this.cbks = {
+      clear: () => this.setState({input: ''}),
+      updateInput: (event) => this.setState({input: event.target.value}),
+      analyse: () => this.analyse(),
+      changeMode: mode => this.setState({
+        mode,
+        highlight: null
+      })
+    };
+  }
+
+  startSimulation({retrievals}) {
+    if (this.simulation) {
+      this.simulation.stop();
+    }
+
+    const nodes = Object.keys(retrievals)
+      .map((rId, i) => {
+        const r = retrievals[rId];
+        return {
+          index: i,
+          x: r.x,
+          y: r.y,
+          fy: r.y
+        };
+      });
+    const links =  nodes.reduce(
+      (ls, node) => {
+        const nodeLinks = retrievals[node.index].dependencies
+          .map(dId => ({source: node.index, target: dId}));
+        ls.push(...nodeLinks);
+        return ls;
+      },
+      []);
+    const simulation = d3.forceSimulation(nodes)
+      .force('collision', d3.forceCollide(20))
+      .force("charge", d3.forceManyBody())
+      .force("link", d3.forceLink(links));
+    simulation.on('tick', () => {
+      const updateRetrievals = nodes.reduce(
+        (update, node) => {
+          update[node.index].x = node.x;
+          return update;
+        },
+        {...this.state.retrievals});
+      this.setState({retrievals: updateRetrievals});
+    });
+    this.simulation = simulation;
+  }
+
+  analyse() {
+    // Clear the previous result
+    if (this.simulation) {
+      this.simulation.stop();
+    }
+    this.setState({percentage: 0, retrievals: null, root: null});
+    parseInput(
+      this.state.input,
+      (current, max) => this.setState({percentage: current / max * 100}))
+    .then(result => {
+      drawNodes(result);
+      this.startSimulation(result);
+      const {retrievals, root} = result;
+      this.setState({retrievals, root, /*, input: ''*/ percentage: null, mode: Mode.TREE});
+    });
+  }
+
+  renderResults() {
+    if (this.state.retrievals && this.state.root) {
+      return el(
+        Analysis,
+        {
+          root: this.state.root,
+          retrievals: this.state.retrievals,
+          mode: this.state.mode
+        });
+    }
+  }
+
+  renderLoader() {
+    if (this.state.percentage !== null) {
+      return el(
+        'div',
+        { className: 'ui blue progress' },
+        el(
+          'div',
+          {className: 'bar', key: `k-${this.state.percentage}`, style: {width: `${this.state.percentage.toFixed(2)}%`}},
+          el(
+            'div',
+            {className: 'progress'}
+          )),
+        el(
+          'div',
+          {className: 'label'},
+          'Parsing query plan'));
+    }
+  }
+
+  renderModes() {
+    return el(
+      'div',
+      {className: 'ui buttons mini'},
+      ...Object.values(Mode).map((value, idx) =>
+        el(
+          'div',
+          {
+            key: value,
+            className: `ui button ${this.state.mode === value ? 'active' : ''}`,
+            onClick: () => this.cbks.changeMode(value)
+          },
+          value)));
+  }
+
+  renderInput() {
+    return elp(
+      'div',
+      el(
+        'button',
+        {
+          className: 'circular ui icon right floated button',
+          onClick: this.cbks.clear
+        },
+        el('i', {className: 'trash icon'})),
+      el(
+        'textarea',
+        {
+          id: 'output',
+          value: this.state.input,
+          placeholder: 'Paste your query plan here',
+          onChange: this.cbks.updateInput
+        }),
+      el(
+        'button',
+        {
+          onClick: this.cbks.analyse,
+          className: 'ui button fluid'
+        },
+        'Analyze'),
+      this.renderLoader());
+  }
+
+  renderView() {
+    switch (this.state.mode) {
+    case Mode.TREE:
+    case Mode.GRAPH:
+      return this.renderResults();
+    case Mode.INPUT:
+      return this.renderInput();
+    default:
+      return elp('div', `Unknown mode ${this.state.mode}`);
+    }
+  }
+
+  render() {
+    return el(
+      'div',
+      {id: 'app', className: 'uploadcsv'},
+      el(
+        'h1',
+        {style: {marginBottom: 0}},
+        'Online Query Plan Analyzer'),
+      el(
+        'p',
+        {style: {fontSize: 10}},
+        'This page is client-side only, and no data will leave your computer when you click Analyze.'),
+      this.renderModes(),
+      this.renderView());
+  }
+}
+
+ReactDOM.render(
+  el(App),
+  document.getElementById('root'));
+</script>
+</html>
