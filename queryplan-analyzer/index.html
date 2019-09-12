@@ -508,7 +508,8 @@ const Graph = ({nodes, onClick}) => {
 const Mode = {
   INPUT: 'input',
   TREE: 'tree',
-  GRAPH: 'graph'
+  GRAPH: 'graph',
+  HELP: 'help'
 }
 
 class Analysis extends React.Component {
@@ -754,6 +755,96 @@ const Chains = ({roots, nodes, filter, depth = 0}) => {
 
 var d = 30;
 var s = 1;
+
+function Help() {
+  const operatorDoc = (operator, ...definition) => 
+    elp(
+      'li', 
+      [
+        elp('i', operator),
+        ...definition
+      ]);
+
+  return elp(
+    'div',
+    [
+      elp('h2', '-- How to use this tool --'),
+      elp(
+        'p', 
+        [
+          'Paste a printed query plan in the "input" section of the tool and click on "Analyse".',
+          'The format should be in the format of the above extract:'
+        ]),
+      elp(
+        'pre',
+`Retrieval #0: BitmapPrimitiveAggregatesRetrieval
+  Location= dimension 0@dimension 0:currency\\desk\\type=[*]\\[*]\\[*],dimension 1@dimension 1:year=[*]
+  Measures= [value.SUM]
+  Filter= Global query filter
+  Partitioning= Constant partitioning
+  Measures provider= SimpleMeasuresProvider
+
+Retrieval #1: PostProcessedAggregatesRetrieval
+  ...`),
+      elp(
+        'p',
+        [
+          'This will create a collapse tree representation of the graph - section "Tree", replicated every node in the',
+          'stack - unlike the string representation that refers to a previous printed entry.',
+        ]),
+      elp(
+        'p',
+        [
+          'A visual graph of the query is available under the section "Graph". It displays the connections between',
+          'every operation and use colors to distinguish the various steps.'
+        ]),
+      elp('h2', '-- Filtering a view --'),
+      elp(
+        'p', 
+        [
+          'It is possible to filter the graph using several operators. One can use multiple operators, separated',
+          'by spaces. All operators are applied and must provide a positive match for an operation to be retained.'
+        ]),
+      elp('h3', 'Filtering operators'),
+      elp(
+        'ul',
+        [
+          operatorDoc(
+            'from: <id>',
+            ': retains the operation tree for a root operation whose id is <id>.'),
+          operatorDoc(
+            'to: <id>',
+            ': retains the operation tree to a leaf operation whose id is <id>.'),
+          operatorDoc(
+            'by: <id>',
+            ': retains the operation trees that include the operation whose id is <id>.'),
+          operatorDoc(
+            'type: <t>',
+            ': filter the graph to retain only operations of the given type.',
+            elp('br'),
+            'This filter is used as a case-insensitive RegExp pattern upon the operation type.',
+            elp('br'),
+            'Any matching operation is retained, as well as their descendants and their parents.'),
+          operatorDoc(
+            'measures: <m1, m2, ...>',
+            ': filter the graph to retain only operations whose measure lists contain every listed measures.',
+            elp('br'),
+            'This filter only tests that the provided measure names are included in the listed measures.',
+            ' There are currently no mechanism to request for a full match',
+            elp('br'),
+            'Any matching operation is retained, as well as their descendants and their parents.'),
+          operatorDoc(
+            'location: <p1, p2, ...>',
+            ': filter the graph to retain only operations whose locations contain every listed location patterns.',
+            elp('br'),
+            'This filter only tests that the patterns are included in the location stringified value.',
+            ' There are currently no mechanism to request for a full match',
+            elp('br'),
+            'Any matching operation is retained, as well as their descendants and their parents.'),
+        ])
+    ]);
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -914,6 +1005,8 @@ class App extends React.Component {
       return this.renderResults();
     case Mode.INPUT:
       return this.renderInput();
+    case Mode.HELP:
+      return elp(Help);
     default:
       return elp('div', `Unknown mode ${this.state.mode}`);
     }
