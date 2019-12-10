@@ -1,0 +1,347 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "planInfo": {
+        "pivotType": "DistributedActivePivotVersion",
+        "pivotId": "EquityDerivativesCubeDist",
+        "epoch": "259",
+        "branch": "master",
+        "retrieverType": "DistributedActivePivotAggregatesRetriever",
+        "partialProviders": [],
+        "mdxPass": "SelectPass_0",
+        "clusterMemberId": "Hal_EquityDerivativesCubeDist_QUERY_58943",
+        "contextValues": {
+          "IBranch": "null",
+          "ISubCubeProperties": "SubCubeProperties [accessGranted=true, grantedMeasures=[pnl.bucket.SUM, rho.SUM, delta.SUM, pnlVega.bucket.SUM, theta.SUM, gamma.SUM, update.TIMESTAMP, pv.SUM, pnlVega.SUM, contributors.COUNT, vega.SUM, pv.UnderlyingsRatio, pnlDelta.SUM, pnlDelta.bucket.SUM, pnl.SUM, pnl.MINIMUM_DEPTH, pv.bucket.SUM], grantedMembers={}, subCubeTrees={}]",
+          "IAsOfEpoch": "null",
+          "IUserAuthentication": "UserAuthentication [userName=admin]",
+          "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false]",
+          "IQueriesTimeLimit": "QueriesTimeLimit [timeLimitInSeconds=30]"
+        },
+        "rangeSharing": 1000000,
+        "missedPrefetchBehavior": "WARN",
+        "aggregatesCache": "None",
+        "globalTimings": {
+          "FINALIZATION": 0,
+          "EXECUTION": 13,
+          "CONTEXT": 0,
+          "PLANNING": 0
+        },
+        "measures": [
+          "contributors.COUNT"
+        ],
+        "totalRetrievals": 2,
+        "retrievalsCountByType": {
+          "DistributedAggregatesRetrieval": 1,
+          "PrimitiveResultsMerger": 1
+        },
+        "partitioningCountByType": {
+          "Distributed partitioning": 1,
+          "Constant partitioning": 1
+        },
+        "queryFiltersById": {
+          "0": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={}, subCubeTrees={}],hash=1212813]"
+        },
+        "continuous": false
+      },
+      "retrievals": [
+        {
+          "retrId": 0,
+          "type": "PrimitiveResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            },
+            {
+              "dimension": "TargetCurrency",
+              "hierarchy": "TargetCurrency",
+              "level": [
+                "TargetCurrency"
+              ],
+              "path": [
+                "ZAR"
+              ]
+            }
+          ],
+          "measures": [
+            "contributors.COUNT"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 1,
+          "type": "DistributedAggregatesRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            },
+            {
+              "dimension": "TargetCurrency",
+              "hierarchy": "TargetCurrency",
+              "level": [
+                "TargetCurrency"
+              ],
+              "path": [
+                "ZAR"
+              ]
+            }
+          ],
+          "measures": [
+            "contributors.COUNT"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "executionTime": [
+              3
+            ],
+            "startTime": [
+              -13
+            ],
+            "broadcastingTime": [
+              13
+            ],
+            "processingTime": [
+              0
+            ],
+            "elapsedTime": [
+              13
+            ]
+          },
+          "underlyingDataNodes": [
+            "Hal_EquityDerivativesCubeEURGBP-master_DATA_8982"
+          ]
+        }
+      ],
+      "dependencies": {
+        "-1": [
+          0
+        ],
+        "0": [
+          1
+        ]
+      }
+    },
+    {
+      "planInfo": {
+        "pivotType": "ActivePivotVersion",
+        "pivotId": "EquityDerivativesCubeEURGBP",
+        "epoch": "895",
+        "branch": "master",
+        "retrieverType": "ActivePivotAggregatesRetriever",
+        "partialProviders": [
+          "LEAF",
+          "BITMAP",
+          "LEAF"
+        ],
+        "mdxPass": "SelectPass_0",
+        "clusterMemberId": "Hal_EquityDerivativesCubeEURGBP-master_DATA_8982",
+        "contextValues": {
+          "IBranch": "null",
+          "ISubCubeProperties": "SubCubeProperties [accessGranted=true, grantedMeasures=[pnl.bucket.SUM, rho.SUM, delta.SUM, pnlVega.bucket.SUM, theta.SUM, gamma.SUM, update.TIMESTAMP, pv.SUM, pnlVega.SUM, contributors.COUNT, vega.SUM, pv.UnderlyingsRatio, pnlDelta.SUM, pnlDelta.bucket.SUM, pnl.SUM, pnl.MINIMUM_DEPTH, pv.bucket.SUM], grantedMembers={}, subCubeTrees={}]",
+          "IAsOfEpoch": "null",
+          "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false]"
+        },
+        "rangeSharing": 1000000,
+        "missedPrefetchBehavior": "WARN",
+        "aggregatesCache": "capacity=1000, size=0",
+        "globalTimings": {
+          "FINALIZATION": 0,
+          "EXECUTION": 1,
+          "CONTEXT": 0,
+          "PLANNING": 0
+        },
+        "measures": [
+          "contributors.COUNT"
+        ],
+        "totalRetrievals": 3,
+        "retrievalsCountByType": {
+          "PrimitiveAnalysisAggregationRetrieval": 1,
+          "PartialPrimitiveAggregatesRetrieval": 1,
+          "PrimitiveResultsMerger": 1
+        },
+        "partitioningCountByType": {
+          "Constant partitioning": 2,
+          "value(AsOfDate)": 1
+        },
+        "queryFiltersById": {
+          "0": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={}, subCubeTrees={}],hash=1212813]"
+        },
+        "continuous": false
+      },
+      "retrievals": [
+        {
+          "retrId": 0,
+          "type": "PrimitiveAnalysisAggregationRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            },
+            {
+              "dimension": "TargetCurrency",
+              "hierarchy": "TargetCurrency",
+              "level": [
+                "TargetCurrency"
+              ],
+              "path": [
+                "ZAR"
+              ]
+            }
+          ],
+          "measures": [
+            "contributors.COUNT"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 1,
+          "type": "PrimitiveResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Currency",
+              "hierarchy": "Currency",
+              "level": [
+                "ALL",
+                "Currency"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            }
+          ],
+          "measures": [
+            "contributors.COUNT"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 2,
+          "type": "PartialPrimitiveAggregatesRetrieval",
+          "partitioning": "value(AsOfDate)",
+          "location": [
+            {
+              "dimension": "Currency",
+              "hierarchy": "Currency",
+              "level": [
+                "ALL",
+                "Currency"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            }
+          ],
+          "measures": [
+            "contributors.COUNT"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              -1,
+              -1,
+              -1
+            ],
+            "elapsedTime": [
+              0,
+              1,
+              1,
+              1
+            ]
+          },
+          "underlyingDataNodes": []
+        }
+      ],
+      "dependencies": {
+        "-1": [
+          0
+        ],
+        "0": [
+          1
+        ],
+        "1": [
+          2
+        ]
+      }
+    }
+  ]
+}
