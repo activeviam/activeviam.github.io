@@ -1,26 +1,9 @@
 import React, { Component } from "react";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import Link from "./Link";
 import Node from "./Node";
-
-const updateGraph = selection => {
-  selection.selectAll(".node").call(updateNode);
-  selection.selectAll(".link").call(updateLink);
-};
-
-const updateLink = selection => {
-  selection
-    .attr("x1", d => d.source.x)
-    .attr("y1", d => d.source.y)
-    .attr("x2", d => d.target.x)
-    .attr("y2", d => d.target.y);
-};
-
-const updateNode = selection => {
-  selection.attr("transform", d => "translate(" + d.x + "," + d.y + ")");
-};
-
+import { updateGraph } from "./helpers/graphHelpers";
 
 const width = 1080;
 const height = 250;

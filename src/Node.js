@@ -1,26 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from 'react-dom';
 import * as d3 from "d3";
-
-const color = d3.scaleOrdinal(d3.schemeCategory10);
-
-const enterNode = selection => {
-  selection
-    .select("circle")
-    .attr("r", 30)
-    .style("fill", function(d) {
-      return color(d.name);
-    });
-
-  selection
-    .select("text")
-    .attr("dy", ".35em")
-    .style("transform", "translateX(-50%,-50%");
-};
-
-const updateNode = selection => {
-  selection.attr("transform", d => "translate(" + d.x + "," + d.y + ")");
-};
+import { enterNode, updateNode } from "./helpers/graphHelpers";
 
 class Node extends Component {
   componentDidMount() {
