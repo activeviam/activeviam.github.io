@@ -8,8 +8,11 @@ import minimal from "./samples/minimal-query";
 class App extends Component {
   constructor(props) {
     super(props);
-    const data = parseJson(minimal);
+
+    const data = parseJson(basic);
+    // const data = parseJson(minimal);
     this.state = { data };
+
     // this.state = {
     //   data: {
     //     nodes: [

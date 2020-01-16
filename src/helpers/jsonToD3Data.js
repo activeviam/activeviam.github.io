@@ -16,8 +16,6 @@ const parseJson = jsonObject => {
     )
   );
 
-  console.log(nodes);
-  console.log(links);
   return { nodes, links };
 };
 
