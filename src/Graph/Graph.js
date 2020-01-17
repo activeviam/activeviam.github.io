@@ -6,7 +6,7 @@ import Node from "./Node";
 import { updateGraph } from "../helpers/graphHelpers";
 
 const width = 1080;
-const height = 250;
+const height = 500;
 
 class Graph extends Component {
   componentDidMount() {
@@ -14,7 +14,7 @@ class Graph extends Component {
 
     let force = d3
       .forceSimulation(this.props.data.nodes)
-      .force("charge", d3.forceManyBody().strength(-50))
+      .force("charge", d3.forceManyBody().strength(-500))
       .force("link", d3.forceLink(this.props.data.links).distance(90))
       .force(
         "center",

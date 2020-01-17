@@ -1,17 +1,17 @@
-import React, {Component, Fragment} from "react";
+import React, { Component, Fragment } from "react";
 import "./App.css";
 import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
 import parseJson from "./helpers/jsonToD3Data";
-// import basic from "./samples/basic-query";
+import basic from "./samples/basic-query";
 // import minimal from "./samples/minimal-query";
-import distributed from "./samples/distributed-query"
+// import distributed from "./samples/distributed-query";
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    const data = parseJson(distributed);
+    const data = parseJson(basic);
     this.state = { data };
 
     // this.state = {
@@ -31,15 +31,13 @@ class App extends Component {
   }
 
   render() {
-    // return (
-    //   <div className="graphContainer">
-    //     <Graph data={this.state.data} />
-    //   </div>
-    // );
     return (
       <Fragment>
-        <NavBar/>
-        <Graph data={this.state.data} />
+        <NavBar />
+        <main role="main" className="container">
+          <h1>Bootstrap starter template</h1>
+          <Graph data={this.state.data} />
+        </main>
       </Fragment>
     );
   }
