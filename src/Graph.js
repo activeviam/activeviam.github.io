@@ -42,7 +42,7 @@ class Graph extends Component {
       d.fy = null;
     }
 
-    const node = d3.selectAll("g.node").call(
+    d3.selectAll("g.node").call(
       d3
         .drag()
         .on("start", dragStarted)

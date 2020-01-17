@@ -2,15 +2,15 @@ import React, { Component } from "react";
 import "./App.css";
 import Graph from "./Graph";
 import parseJson from "./helpers/jsonToD3Data";
-import basic from "./samples/basic-query";
-import minimal from "./samples/minimal-query";
+// import basic from "./samples/basic-query";
+// import minimal from "./samples/minimal-query";
+import distributed from "./samples/distributed-query"
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    const data = parseJson(basic);
-    // const data = parseJson(minimal);
+    const data = parseJson(distributed);
     this.state = { data };
 
     // this.state = {
@@ -27,8 +27,6 @@ class App extends Component {
     //     ]
     //   }
     // };
-
-    // console.log(this.state.data);
   }
 
   render() {
