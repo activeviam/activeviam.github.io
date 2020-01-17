@@ -1,16 +1,13 @@
-import {dependencies} from "d3/dist/package";
-
 const getNodes = dependencies => {
-  const nodes = Object.keys(dependencies).map(key => ({
-    name: key,
-    id: parseInt(key)
-  }));
-  nodes.push({
-    name: "2",
-    id: 2
-  });
-  nodes.sort((a, b) => a.id - b.id);
-  return nodes;
+  return [
+    ...new Set(
+      Object.entries(dependencies)
+        .flat(2)
+        .map(x => parseInt(x))
+    )
+  ]
+    .map(x => ({ name: x.toString(), id: x }))
+    .sort((a, b) => a.id - b.id);
 };
 
 const getLinks = dependencies => {

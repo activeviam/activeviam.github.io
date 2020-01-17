@@ -60,7 +60,7 @@ class Graph extends Component {
       return <Node data={node} name={node.name} key={node.id} />;
     });
     let links = this.props.data.links.map((link, i) => {
-      return <Link key={link.target + i} data={link} />;
+      return <Link key={i} data={link} />;
     });
     return (
       <svg className="graph" width={width} height={height}>
