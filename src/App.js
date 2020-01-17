@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React, {Component, Fragment} from "react";
 import "./App.css";
-import Graph from "./Graph";
+import Graph from "./Graph/Graph";
+import NavBar from "./NavBar";
 import parseJson from "./helpers/jsonToD3Data";
 // import basic from "./samples/basic-query";
 // import minimal from "./samples/minimal-query";
@@ -30,10 +31,16 @@ class App extends Component {
   }
 
   render() {
+    // return (
+    //   <div className="graphContainer">
+    //     <Graph data={this.state.data} />
+    //   </div>
+    // );
     return (
-      <div className="graphContainer">
+      <Fragment>
+        <NavBar/>
         <Graph data={this.state.data} />
-      </div>
+      </Fragment>
     );
   }
 }

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import Link from "./Link";
 import Node from "./Node";
-import { updateGraph } from "./helpers/graphHelpers";
+import { updateGraph } from "../helpers/graphHelpers";
 
 const width = 1080;
 const height = 250;

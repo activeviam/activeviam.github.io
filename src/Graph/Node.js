@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from 'react-dom';
 import * as d3 from "d3";
-import { enterNode, updateNode } from "./helpers/graphHelpers";
+import { enterNode, updateNode } from "../helpers/graphHelpers";
 
 class Node extends Component {
   componentDidMount() {
