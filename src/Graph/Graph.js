@@ -5,7 +5,7 @@ import Link from "./Link";
 import Node from "./Node";
 import { updateGraph } from "../helpers/graphHelpers";
 
-const width = 1080;
+const width = 800;
 const height = 500;
 
 class Graph extends Component {
@@ -57,15 +57,15 @@ class Graph extends Component {
 
   render() {
     let nodes = this.props.data.nodes.map(node => {
-      return <Node data={node} name={node.name} key={node.id} />;
+      return <Node data={node} name={node.name} key={node.id} clickNode={this.props.clickNode}/>;
     });
     let links = this.props.data.links.map((link, i) => {
-      return <Link key={i} data={link} />;
+      return <Link key={i} data={link}/>;
     });
     return (
       <svg className="graph" width={width} height={height}>
-        <g>{nodes}</g>
         <g>{links}</g>
+        <g>{nodes}</g>
       </svg>
     );
   }

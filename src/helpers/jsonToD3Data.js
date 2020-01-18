@@ -6,7 +6,7 @@ const getNodes = dependencies => {
         .map(x => parseInt(x))
     )
   ]
-    .map(x => ({ name: x.toString(), id: x }))
+    .map(x => ({ name: x.toString(), id: x, isSelected: false }))
     .sort((a, b) => a.id - b.id);
 };
 

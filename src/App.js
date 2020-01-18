@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import "./App.css";
 import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
+import NodeDetail from "./NodeDetail"
 import parseJson from "./helpers/jsonToD3Data";
 import basic from "./samples/basic-query";
 // import minimal from "./samples/minimal-query";
@@ -12,7 +13,8 @@ class App extends Component {
     super(props);
 
     const data = parseJson(basic);
-    this.state = { data };
+    const selectedNode = null;
+    this.state = { data, selectedNode };
 
     // this.state = {
     //   data: {
@@ -30,13 +32,43 @@ class App extends Component {
     // };
   }
 
+  clickNode = id => {
+    this.setState(prevState=> {
+      const selectedNode = id === this.state.selectedNode ? null : id
+      let data = prevState.data
+      data.nodes.forEach(node => {
+        if (node.id === id) {
+          node.isSelected = !node.isSelected
+        } else {
+          node.isSelected = false
+        }
+      })
+      return {data, selectedNode }
+    })
+  }
+
+  getDetail = () => {
+    const nodeId = this.state.selectedNode;
+    // Return the first retirieval with retrId === id of selected node
+    return basic.data[0].retrievals.filter(node => node.retrId === nodeId)[0]
+  }
+
   render() {
     return (
       <Fragment>
         <NavBar />
         <main role="main" className="container">
           <h1>Bootstrap starter template</h1>
-          <Graph data={this.state.data} />
+          <div className='row'>
+            <div className='col-sm-8'>
+              <Graph data={this.state.data} clickNode={this.clickNode}/>
+            </div>
+            <div className='col-sm-4'>
+              {this.state.selectedNode !== null && 
+                <NodeDetail details={this.getDetail()} />
+              }
+            </div>
+          </div>
         </main>
       </Fragment>
     );
