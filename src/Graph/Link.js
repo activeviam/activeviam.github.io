@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import { enterLink, updateLink } from "../helpers/graphHelpers";
 
@@ -9,9 +9,9 @@ class Link extends Component {
       .select(ReactDOM.findDOMNode(this))
       .datum(this.props.data)
       .call(enterLink)
-      .style('stroke', '#000000')
-      .style('stroke-width', 7)
-      .style('opacity', 0.8);
+      .style("stroke", "#000000")
+      .style("stroke-width", 7)
+      .style("opacity", 0.8);
   }
 
   componentDidUpdate() {

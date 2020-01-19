@@ -56,12 +56,18 @@ class Graph extends Component {
   }
 
   render() {
-    let nodes = this.props.data.nodes.map(node => {
-      return <Node data={node} name={node.name} key={node.id} clickNode={this.props.clickNode}/>;
-    });
-    let links = this.props.data.links.map((link, i) => {
-      return <Link key={i} data={link}/>;
-    });
+    let nodes = this.props.data.nodes.map(node => (
+      <Node
+        data={node}
+        name={node.name}
+        key={node.id}
+        clickNode={this.props.clickNode}
+      />
+    ));
+    let links = this.props.data.links.map((link, i) => (
+      <Link key={i} data={link} />
+    ));
+
     return (
       <svg className="graph" width={width} height={height}>
         <g>{links}</g>

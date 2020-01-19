@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import "./App.css";
 import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
-import NodeDetail from "./NodeDetail"
+import NodeDetail from "./Graph/NodeDetail";
 import parseJson from "./helpers/jsonToD3Data";
 import basic from "./samples/basic-query";
 // import minimal from "./samples/minimal-query";
@@ -33,25 +33,25 @@ class App extends Component {
   }
 
   clickNode = id => {
-    this.setState(prevState=> {
-      const selectedNode = id === this.state.selectedNode ? null : id
-      let data = prevState.data
+    this.setState(prevState => {
+      const selectedNode = id === this.state.selectedNode ? null : id;
+      let data = prevState.data;
       data.nodes.forEach(node => {
         if (node.id === id) {
-          node.isSelected = !node.isSelected
+          node.isSelected = !node.isSelected;
         } else {
-          node.isSelected = false
+          node.isSelected = false;
         }
-      })
-      return {data, selectedNode }
-    })
-  }
+      });
+      return { data, selectedNode };
+    });
+  };
 
   getDetail = () => {
     const nodeId = this.state.selectedNode;
-    // Return the first retirieval with retrId === id of selected node
-    return basic.data[0].retrievals.filter(node => node.retrId === nodeId)[0]
-  }
+    // Return the first retrieval with retrId === id of selected node
+    return basic.data[0].retrievals.filter(node => node.retrId === nodeId)[0];
+  };
 
   render() {
     return (
@@ -59,14 +59,14 @@ class App extends Component {
         <NavBar />
         <main role="main" className="container">
           <h1>Bootstrap starter template</h1>
-          <div className='row'>
-            <div className='col-sm-8'>
-              <Graph data={this.state.data} clickNode={this.clickNode}/>
+          <div className="row">
+            <div className="col-sm-8">
+              <Graph data={this.state.data} clickNode={this.clickNode} />
             </div>
-            <div className='col-sm-4'>
-              {this.state.selectedNode !== null && 
+            <div className="col-sm-4">
+              {this.state.selectedNode !== null && (
                 <NodeDetail details={this.getDetail()} />
-              }
+              )}
             </div>
           </div>
         </main>
