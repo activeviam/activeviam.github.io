@@ -5,14 +5,17 @@ import Link from "./Link";
 import Node from "./Node";
 import { updateGraph } from "../helpers/graphHelpers";
 
-const width = 800;
-const height = 500;
+const width = 700;
+const height = 520;
 
 class Graph extends Component {
   componentDidMount() {
-    this.d3Graph = d3.select(ReactDOM.findDOMNode(this));
+    this.d3Graph = d3
+      .select(ReactDOM.findDOMNode(this))
+      .attr("width", width)
+      .attr("height", height);
 
-    let force = d3
+    const force = d3
       .forceSimulation(this.props.data.nodes)
       .force("charge", d3.forceManyBody().strength(-500))
       .force("link", d3.forceLink(this.props.data.links).distance(90))
@@ -50,13 +53,20 @@ class Graph extends Component {
         .on("end", dragEnded)
     );
 
+    // TODO: fix zoom
+    // this.d3Graph.call(
+    //   d3
+    //     .zoom()
+    //     .on("zoom", () => d3.selectAll("g").attr("transform", d3.event.transform))
+    // );
+
     force.on("tick", () => {
       this.d3Graph.call(updateGraph);
     });
   }
 
   render() {
-    let nodes = this.props.data.nodes.map(node => (
+    const nodes = this.props.data.nodes.map(node => (
       <Node
         data={node}
         name={node.name}
@@ -64,12 +74,15 @@ class Graph extends Component {
         clickNode={this.props.clickNode}
       />
     ));
-    let links = this.props.data.links.map((link, i) => (
-      <Link key={i} data={link} />
+    const links = this.props.data.links.map(link => (
+      <Link key={link.id} data={link} href="/" />
     ));
 
     return (
-      <svg className="graph" width={width} height={height}>
+      <svg
+        className="graph"
+        style={{ marginTop: "2em", backgroundColor: "#d1d1ff" }}
+      >
         <g>{links}</g>
         <g>{nodes}</g>
       </svg>

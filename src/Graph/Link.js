@@ -8,10 +8,7 @@ class Link extends Component {
     this.d3Link = d3
       .select(ReactDOM.findDOMNode(this))
       .datum(this.props.data)
-      .call(enterLink)
-      .style("stroke", "#000000")
-      .style("stroke-width", 7)
-      .style("opacity", 0.8);
+      .call(enterLink);
   }
 
   componentDidUpdate() {

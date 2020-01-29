@@ -8,27 +8,28 @@ class Node extends Component {
     this.d3Node = d3
       .select(ReactDOM.findDOMNode(this))
       .datum(this.props.data)
-      .call(enterNode)
-      .style("stroke-width", this.props.data.isSelected ? 2 : 0)
-      .style("stroke", "#000000");
+      .call(enterNode);
   }
 
   componentDidUpdate() {
     this.d3Node
-      .datum(this.props.data)
       .call(updateNode)
       .style("stroke-width", this.props.data.isSelected ? 2 : 0);
   }
 
   handle(e) {
-    console.log(this.props.data.id + " been clicked");
+    console.log(`${this.props.data.id} been clicked`);
     this.props.clickNode(this.props.data.id);
   }
 
   render() {
     return (
       <g className="node">
-        <circle ref="dragMe" onClick={this.handle.bind(this)} />
+        <circle
+          ref="dragMe"
+          onClick={this.handle.bind(this)}
+          onDoubleClick={() => console.log("hello")}
+        />
         <text onClick={this.handle.bind(this)}>{this.props.data.name}</text>
       </g>
     );
