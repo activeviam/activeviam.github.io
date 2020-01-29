@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import "./App.css";
 import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
@@ -55,7 +55,7 @@ class App extends Component {
 
   render() {
     return (
-      <Fragment>
+      <>
         <NavBar />
         <main role="main" className="container">
           <h1>Bootstrap starter template</h1>
@@ -70,7 +70,7 @@ class App extends Component {
             </div>
           </div>
         </main>
-      </Fragment>
+      </>
     );
   }
 }

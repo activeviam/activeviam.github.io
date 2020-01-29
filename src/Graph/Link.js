@@ -9,9 +9,6 @@ class Link extends Component {
       .select(ReactDOM.findDOMNode(this))
       .datum(this.props.data)
       .call(enterLink)
-      .style("stroke", "#000000")
-      .style("stroke-width", 7)
-      .style("opacity", 0.8);
   }
 
   componentDidUpdate() {
