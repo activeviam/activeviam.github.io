@@ -75,11 +75,14 @@ class Graph extends Component {
       />
     ));
     const links = this.props.data.links.map(link => (
-      <Link key={link.id} data={link} href="/"/>
+      <Link key={link.id} data={link} href="/" />
     ));
 
     return (
-      <svg className="graph" style={{marginTop: "2em", backgroundColor: "#d1d1ff"}}>
+      <svg
+        className="graph"
+        style={{ marginTop: "2em", backgroundColor: "#d1d1ff" }}
+      >
         <g>{links}</g>
         <g>{nodes}</g>
       </svg>

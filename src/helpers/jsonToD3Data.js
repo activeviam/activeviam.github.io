@@ -36,12 +36,12 @@ const getNodes = (dependencies, retrievals) => {
 const getLinks = dependencies => {
   const links = [];
   Object.entries(dependencies).forEach(([key, values]) =>
-    values.forEach((value, index) => {
+    values.forEach(value => {
       if (key !== "-1") {
         links.push({
           source: parseInt(key, 10),
           target: value,
-          id: index
+          id: `${key}-${value}`
         });
       }
     })
@@ -50,8 +50,8 @@ const getLinks = dependencies => {
 };
 
 const parseJson = jsonObject => {
-  const dependencies = jsonObject.data[0].dependencies;
-  const retrievals = jsonObject.data[0].retrievals;
+  const { dependencies } = jsonObject.data[0];
+  const { retrievals } = jsonObject.data[0];
 
   const nodes = getNodes(dependencies, retrievals);
   const links = getLinks(dependencies);

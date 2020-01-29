@@ -1,8 +1,3 @@
-const updateGraph = selection => {
-  selection.selectAll(".node").call(updateNode);
-  selection.selectAll(".link").call(updateLink);
-};
-
 const enterLink = selection => {
   selection
     .attr("stroke-width", 6)
@@ -22,7 +17,9 @@ const enterNode = selection => {
   selection
     .select("circle")
     .attr("r", d => d.radius)
-    .style("fill", d => d.isRoot ? "#FFD500" : d.isLeaf ? "#FC5400" : "#3A83C0")
+    .style("fill", d =>
+      d.isRoot ? "#FFD500" : d.isLeaf ? "#FC5400" : "#3A83C0"
+    )
     .style("stroke-width", d => (d.isSelected ? 3 : 1))
     .style("stroke", d => (d.isSelected ? "#2E2E2E" : "#BFBFBF"));
 
@@ -34,10 +31,15 @@ const enterNode = selection => {
 
 const updateNode = selection => {
   selection
-    .attr("transform", d => "translate(" + d.x + "," + d.yFixed + ")")
+    .attr("transform", d => `translate(${d.x},${d.yFixed})`)
     .select("circle")
-    .style("stroke-width", d => d.isSelected ? 3 : 1)
-    .style("stroke", d => d.isSelected ? "#2E2E2E" : "#BFBFBF");
+    .style("stroke-width", d => (d.isSelected ? 3 : 1))
+    .style("stroke", d => (d.isSelected ? "#2E2E2E" : "#BFBFBF"));
+};
+
+const updateGraph = selection => {
+  selection.selectAll(".node").call(updateNode);
+  selection.selectAll(".link").call(updateLink);
 };
 
 export { updateGraph, enterLink, updateLink, enterNode, updateNode };

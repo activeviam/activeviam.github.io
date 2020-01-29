@@ -4,7 +4,7 @@ import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
 import NodeDetail from "./Graph/NodeDetail";
 import parseJson from "./helpers/jsonToD3Data";
-import basic from "./samples/basic-query";
+import basic from "./samples/basic-query.json";
 // import minimal from "./samples/minimal-query";
 // import distributed from "./samples/distributed-query";
 
@@ -34,8 +34,8 @@ class App extends Component {
 
   clickNode = id => {
     this.setState(prevState => {
-      const selectedNode = id === this.state.selectedNode ? null : id;
-      let data = prevState.data;
+      const selectedNode = id === prevState.selectedNode ? null : id;
+      const { data } = prevState;
       data.nodes.forEach(node => {
         if (node.id === id) {
           node.isSelected = !node.isSelected;

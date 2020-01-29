@@ -12,6 +12,8 @@
   ],
   "rules": {
     "no-param-reassign": [2, {"props": false}],
+    "react/no-find-dom-node": "off",
+    "react/destructuring-assignment": "off",
     "semi": 0,
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "prettier/prettier": [

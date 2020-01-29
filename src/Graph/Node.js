@@ -8,7 +8,7 @@ class Node extends Component {
     this.d3Node = d3
       .select(ReactDOM.findDOMNode(this))
       .datum(this.props.data)
-      .call(enterNode)
+      .call(enterNode);
   }
 
   componentDidUpdate() {
@@ -18,14 +18,18 @@ class Node extends Component {
   }
 
   handle(e) {
-    console.log(this.props.data.id + " been clicked");
+    console.log(`${this.props.data.id} been clicked`);
     this.props.clickNode(this.props.data.id);
   }
 
   render() {
     return (
       <g className="node">
-        <circle ref="dragMe" onClick={this.handle.bind(this)} onDoubleClick={() => console.log('hello')} />
+        <circle
+          ref="dragMe"
+          onClick={this.handle.bind(this)}
+          onDoubleClick={() => console.log("hello")}
+        />
         <text onClick={this.handle.bind(this)}>{this.props.data.name}</text>
       </g>
     );

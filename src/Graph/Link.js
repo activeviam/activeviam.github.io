@@ -8,7 +8,7 @@ class Link extends Component {
     this.d3Link = d3
       .select(ReactDOM.findDOMNode(this))
       .datum(this.props.data)
-      .call(enterLink)
+      .call(enterLink);
   }
 
   componentDidUpdate() {
