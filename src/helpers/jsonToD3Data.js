@@ -6,18 +6,18 @@ const getNodes = (dependencies, retrievals) => {
   // ratio of the total runtime of the graph and the height of the SGV
   const ratio = 500 / runTime(retrievals);
   const margin = 10;
-  // Creates a Set containing all nodes present in the dependencies, then converts it to an array and map each
-  // node number to its node object. Finally sorts nodes by their id because the links are order dependant.
+  // Creates a Set containing all nodes present in the dependencies, then converts
+  // it to an array and map each node number to its node object. Finally sorts nodes by
+  // their id because the links are order dependant.
   return [
     ...new Set(
-      Object.entries(dependencies)
-        .map(x => x[1])
+      Object.values(dependencies)
         .flat(1)
         .map(x => parseInt(x, 10))
     )
   ]
     .map(x => {
-      const retr = retrievals.filter(r => r.retrId === x)[0];
+      const retr = retrievals.find(r => r.retrId === x);
       const start = Math.min(...retr.timingInfo.startTime);
       const elapsed = Math.max(...retr.timingInfo.elapsedTime);
       return {
