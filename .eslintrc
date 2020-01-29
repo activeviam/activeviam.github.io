@@ -14,6 +14,7 @@
     "semi": 0,
     "react/destructuring-assignment": "off",
     "react/no-find-dom-node": "off",
+    "no-nested-ternary": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "prettier/prettier": [
       "error", {

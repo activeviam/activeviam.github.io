@@ -18,7 +18,11 @@ const enterNode = selection => {
     .select("circle")
     .attr("r", d => d.radius)
     .style("fill", d =>
-      d.isRoot ? "#FFD500" : d.isLeaf ? "#FC5400" : "#3A83C0"
+      d.status === "root"
+        ? "#FFD500"
+        : d.status === "leaf"
+        ? "#FC5400"
+        : "#3A83C0"
     )
     .style("stroke-width", d => (d.isSelected ? 3 : 1))
     .style("stroke", d => (d.isSelected ? "#2E2E2E" : "#BFBFBF"));

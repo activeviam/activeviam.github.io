@@ -26,8 +26,11 @@ const getNodes = (dependencies, retrievals) => {
         isSelected: false,
         radius: ((elapsed - start) * ratio) / 2,
         yFixed: ((start + elapsed) / 2) * ratio + margin,
-        isRoot: dependencies[-1].includes(x),
-        isLeaf: !dependencies[x]
+        status: dependencies[-1].includes(x)
+          ? "root"
+          : dependencies[x]
+          ? null
+          : "leaf"
       };
     })
     .sort((a, b) => a.id - b.id);

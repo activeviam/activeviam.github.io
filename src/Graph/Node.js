@@ -17,7 +17,7 @@ class Node extends Component {
       .style("stroke-width", this.props.data.isSelected ? 2 : 0);
   }
 
-  handle(e) {
+  handle() {
     console.log(`${this.props.data.id} been clicked`);
     this.props.clickNode(this.props.data.id);
   }
