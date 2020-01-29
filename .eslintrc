@@ -12,10 +12,12 @@
   ],
   "rules": {
     "semi": 0,
+    "react/destructuring-assignment": "off",
+    "react/no-find-dom-node": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "prettier/prettier": [
       "error", {
-        "semi": false
+        "semi": true
       }
     ]
   }
