@@ -12,6 +12,7 @@
   ],
   "rules": {
     "semi": 0,
+    "no-param-reassign": [2, {"props": false}],
     "react/destructuring-assignment": "off",
     "react/no-find-dom-node": "off",
     "no-nested-ternary": "off",
