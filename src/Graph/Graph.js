@@ -1,3 +1,5 @@
+// TODO : add prop types
+/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
@@ -8,7 +10,7 @@ import { updateGraph } from "../helpers/graphHelpers";
 const width = 700;
 const height = 520;
 
-class Graph extends Component {
+class Graph extends Component { // TODO: fix data and replace by nodes/links
   componentDidMount() {
     this.d3Graph = d3
       .select(ReactDOM.findDOMNode(this))

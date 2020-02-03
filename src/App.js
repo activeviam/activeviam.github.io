@@ -13,32 +13,39 @@ class App extends Component {
     super(props);
 
     const data = parseJson(basic);
-    const selectedNode = null;
-    this.state = { data, selectedNode };
+    this.state = {
+      allQueries: data,
+      currentQueryId: 0,
+      selectedNodeId: null
+    };
   }
 
   clickNode = id => {
     this.setState(prevState => {
-      const selectedNode = id === prevState.selectedNode ? null : id;
-      const { data } = prevState;
-      data.nodes.forEach(node => {
+      const selectedNodeId = id === prevState.selectedNodeId ? null : id;
+      const { allQueries, currentQueryId } = prevState;
+      allQueries[currentQueryId].nodes.forEach(node => {
         if (node.id === id) {
           node.isSelected = !node.isSelected;
         } else {
           node.isSelected = false;
         }
       });
-      return { data, selectedNode };
+      return { allQueries, selectedNodeId };
     });
   };
 
   getDetail = () => {
-    const nodeId = this.state.selectedNode;
+    const { currentQueryId, selectedNodeId } = this.state;
     // Return the first retrieval with retrId === id of selected node
-    return basic.data[0].retrievals.filter(node => node.retrId === nodeId)[0];
+    // TODO: fix id (currentQueryId) and replace by name for uniqueness
+    return basic.data[currentQueryId].retrievals.filter(
+      retrieval => retrieval.retrId === selectedNodeId
+    )[0];
   };
 
   render() {
+    const { allQueries, currentQueryId } = this.state;
     return (
       <>
         <NavBar />
@@ -46,10 +53,13 @@ class App extends Component {
           <h1>Bootstrap starter template</h1>
           <div className="row">
             <div className="col-sm-8">
-              <Graph data={this.state.data} clickNode={this.clickNode} />
+              <Graph
+                data={allQueries[currentQueryId]}
+                clickNode={this.clickNode}
+              />
             </div>
             <div className="col-sm-4">
-              {this.state.selectedNode !== null && (
+              {this.state.selectedNodeId !== null && (
                 <NodeDetail details={this.getDetail()} />
               )}
             </div>

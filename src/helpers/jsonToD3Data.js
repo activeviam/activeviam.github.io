@@ -2,33 +2,29 @@ const runTime = retrievals =>
   // Returns the biggest elapsed time in the graph, ie the total runtime of the graph
   Math.max(...retrievals.map(x => x.timingInfo.elapsedTime[0]));
 
-const getNodes = (dependencies, retrievals) => {
+const getNodes = (dependencies, retrievals, queryId) => {
   // ratio of the total runtime of the graph and the height of the SGV
   const ratio = 500 / runTime(retrievals);
   const margin = 10;
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object. Finally sorts nodes by
   // their id because the links are order dependant.
-  return [
-    ...new Set(
-      Object.values(dependencies)
-        .flat(1)
-        .map(x => parseInt(x, 10))
-    )
-  ]
-    .map(x => {
-      const retr = retrievals.find(r => r.retrId === x);
-      const start = Math.min(...retr.timingInfo.startTime);
-      const elapsed = Math.max(...retr.timingInfo.elapsedTime);
+  return retrievals
+    .map(retrieval => {
+      const { retrId, timingInfo } = retrieval;
+      const start = Math.min(...timingInfo.startTime);
+      const elapsed = Math.max(...timingInfo.elapsedTime);
       return {
-        name: x.toString(),
-        id: x,
+        // id: `${queryId}-${retrId}`, // TODO: see if nodes need a different id
+        id: retrId,
+        name: retrId.toString(),
+        childrenIds: [],
         isSelected: false,
         radius: ((elapsed - start) * ratio) / 2,
         yFixed: ((start + elapsed) / 2) * ratio + margin,
-        status: dependencies[-1].includes(x)
+        status: dependencies[-1].includes(retrId)
           ? "root"
-          : dependencies[x]
+          : dependencies[retrId]
           ? null
           : "leaf"
       };
@@ -53,13 +49,40 @@ const getLinks = dependencies => {
 };
 
 const parseJson = jsonObject => {
-  const { dependencies } = jsonObject.data[0];
-  const { retrievals } = jsonObject.data[0];
+  // const { dependencies, retrievals } = jsonObject.data[0];
+  //
+  // const nodes = getNodes(dependencies, retrievals);
+  // const links = getLinks(dependencies);
 
-  const nodes = getNodes(dependencies, retrievals);
-  const links = getLinks(dependencies);
-
-  return { nodes, links };
+  const { data: queries } = jsonObject;
+  const res = queries.map((query, queryId) => {
+    const { planInfo, dependencies, retrievals } = query;
+    const nodes = getNodes(dependencies, retrievals, queryId);
+    const links = getLinks(dependencies);
+    return {
+      id: queryId,
+      parentId: null,
+      name: planInfo.clusterMemberId,
+      nodes,
+      links
+    };
+  });
+  // Now take care of distributed queries
+  queries.forEach((query, queryId) => {
+    const { retrievals } = query;
+    retrievals.forEach(retrieval => {
+      const { retrId, underlyingDataNodes } = retrieval;
+      res
+        .find(r => r.id === queryId) // find the good query
+        .nodes.find(
+          node => node.id === retrId // find the good node
+        ).childrenIds = underlyingDataNodes.map(
+        // give it its childrenIds
+        name => res.find(x => x.name === name).id
+      );
+    });
+  });
+  return res;
 };
 
 export default parseJson;

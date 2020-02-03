@@ -1,3 +1,5 @@
+// TODO : add prop types
+/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
