@@ -49,11 +49,6 @@ const getLinks = dependencies => {
 };
 
 const parseJson = jsonObject => {
-  // const { dependencies, retrievals } = jsonObject.data[0];
-  //
-  // const nodes = getNodes(dependencies, retrievals);
-  // const links = getLinks(dependencies);
-
   const { data: queries } = jsonObject;
   const res = queries.map((query, queryId) => {
     const { planInfo, dependencies, retrievals } = query;
@@ -79,6 +74,11 @@ const parseJson = jsonObject => {
         ).childrenIds = underlyingDataNodes.map(
         // give it its childrenIds
         name => res.find(x => x.name === name).id
+      );
+
+      underlyingDataNodes.forEach(
+        // eslint-disable-next-line no-return-assign
+        name => (res.find(x => x.name === name).parentId = queryId)
       );
     });
   });

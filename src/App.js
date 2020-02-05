@@ -17,13 +17,13 @@ class App extends Component {
       allQueries: data,
       currentQueryId: 0,
       selectedNodeId: null,
-      killGraph: false
+      restartGraph: false
     };
   }
 
   clickButton = childId => {
-    this.clickNode(this.state.selectedNodeId);
-    this.setState({ currentQueryId: childId, killGraph: true });
+    this.clickNode(this.state.selectedNodeId); // Easy way to un-click the current clicked node to prevent bug
+    this.setState({ currentQueryId: childId, restartGraph: true });
   };
 
   clickNode = id => {
@@ -51,7 +51,12 @@ class App extends Component {
   };
 
   render() {
-    const { allQueries, currentQueryId, selectedNodeId, killGraph } = this.state;
+    const {
+      allQueries,
+      currentQueryId,
+      selectedNodeId,
+      restartGraph
+    } = this.state;
     return (
       <>
         <NavBar />
@@ -59,15 +64,27 @@ class App extends Component {
           <h1>Bootstrap starter template</h1>
           <div className="row">
             <div className="col-sm-8">
-              {!killGraph && (
+              {!restartGraph && (
                 <Graph
                   data={allQueries[currentQueryId]}
                   clickNode={this.clickNode}
-                  restart={() => this.setState({ killGraph: false })}
+                  restart={() => this.setState({ restartGraph: false })}
                 />
               )}
             </div>
             <div className="col-sm-4">
+              <br />
+              {allQueries[currentQueryId].parentId !== null && (
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  onClick={() =>
+                    this.clickButton(allQueries[currentQueryId].parentId)
+                  }
+                >
+                  Go back to parent query.
+                </button>
+              )}
               {selectedNodeId !== null && (
                 <NodeDetail details={this.getDetail()} />
               )}
