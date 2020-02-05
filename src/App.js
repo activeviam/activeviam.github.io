@@ -16,13 +16,14 @@ class App extends Component {
     this.state = {
       allQueries: data,
       currentQueryId: 0,
-      selectedNodeId: null
+      selectedNodeId: null,
+      killGraph: false
     };
   }
 
   clickButton = childId => {
     this.clickNode(this.state.selectedNodeId);
-    this.setState({ currentQueryId: childId });
+    this.setState({ currentQueryId: childId, killGraph: true });
   };
 
   clickNode = id => {
@@ -50,7 +51,7 @@ class App extends Component {
   };
 
   render() {
-    const { allQueries, currentQueryId, selectedNodeId } = this.state;
+    const { allQueries, currentQueryId, selectedNodeId, killGraph } = this.state;
     return (
       <>
         <NavBar />
@@ -58,10 +59,13 @@ class App extends Component {
           <h1>Bootstrap starter template</h1>
           <div className="row">
             <div className="col-sm-8">
-              <Graph
-                data={allQueries[currentQueryId]}
-                clickNode={this.clickNode}
-              />
+              {!killGraph && (
+                <Graph
+                  data={allQueries[currentQueryId]}
+                  clickNode={this.clickNode}
+                  restart={() => this.setState({ killGraph: false })}
+                />
+              )}
             </div>
             <div className="col-sm-4">
               {selectedNodeId !== null && (

@@ -12,41 +12,15 @@ const height = 520;
 
 class Graph extends Component {
   // TODO: fix data and replace by nodes/links
-  constructor(props) {
-    super(props);
-
-    this.state = { d3Graph: undefined };
-  }
-
   componentDidMount() {
-    console.log("mounting");
+    const { data } = this.props;
+    const { nodes, links } = data;
+
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
       .attr("width", width)
       .attr("height", height);
 
-    const { data } = this.props;
-    const { nodes, links } = data;
-    const force = this.createD3Graph(nodes, links);
-    this.setState({ d3Graph, force });
-  }
-
-  // TODO : under construction
-  // componentDidUpdate() {
-  //   console.log("updating");
-  //
-  //   const { force } = this.state;
-  //   const { data } = this.props;
-  //   const { nodes, links } = data;
-  //
-  //   force.force("link", d3.forceLink(links).distance(90));
-  //   force.alpha(1);
-  //   force.restart();
-  //
-  //   // this.createD3Graph(nodes, links);
-  // }
-
-  createD3Graph = (nodes, links) => {
     const force = d3
       .forceSimulation(nodes)
       .force("charge", d3.forceManyBody().strength(-500))
@@ -93,10 +67,13 @@ class Graph extends Component {
     // );
 
     force.on("tick", () => {
-      this.state.d3Graph.call(updateGraph);
+      d3Graph.call(updateGraph);
     });
-    return force;
-  };
+  }
+
+  componentWillUnmount() {
+    this.props.restart();
+  }
 
   render() {
     const nodes = this.props.data.nodes.map(node => (
