@@ -14,14 +14,19 @@ const getNodes = (dependencies, retrievals, queryId) => {
       const { retrId, timingInfo } = retrieval;
       const start = Math.min(...timingInfo.startTime);
       const elapsed = Math.max(...timingInfo.elapsedTime);
+      const radius = ((elapsed - start) * ratio) / 2;
       return {
         // id: `${queryId}-${retrId}`, // TODO: see if nodes need a different id
         id: retrId,
         name: retrId.toString(),
         childrenIds: [],
         isSelected: false,
-        radius: ((elapsed - start) * ratio) / 2,
-        yFixed: ((start + elapsed) / 2) * ratio + margin,
+        radius,
+        yFixed:
+          ((start + elapsed) / 2) * ratio +
+          margin -
+          radius +
+          Math.sqrt(radius) * 4,
         status: dependencies[-1].includes(retrId)
           ? "root"
           : dependencies[retrId]
