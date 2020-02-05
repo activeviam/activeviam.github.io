@@ -10,17 +10,47 @@ import { updateGraph } from "../helpers/graphHelpers";
 const width = 700;
 const height = 520;
 
-class Graph extends Component { // TODO: fix data and replace by nodes/links
+class Graph extends Component {
+  // TODO: fix data and replace by nodes/links
+  constructor(props) {
+    super(props);
+
+    this.state = { d3Graph: undefined };
+  }
+
   componentDidMount() {
-    this.d3Graph = d3
+    console.log("mounting");
+    const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
       .attr("width", width)
       .attr("height", height);
 
+    const { data } = this.props;
+    const { nodes, links } = data;
+    const force = this.createD3Graph(nodes, links);
+    this.setState({ d3Graph, force });
+  }
+
+  // TODO : under construction
+  // componentDidUpdate() {
+  //   console.log("updating");
+  //
+  //   const { force } = this.state;
+  //   const { data } = this.props;
+  //   const { nodes, links } = data;
+  //
+  //   force.force("link", d3.forceLink(links).distance(90));
+  //   force.alpha(1);
+  //   force.restart();
+  //
+  //   // this.createD3Graph(nodes, links);
+  // }
+
+  createD3Graph = (nodes, links) => {
     const force = d3
-      .forceSimulation(this.props.data.nodes)
+      .forceSimulation(nodes)
       .force("charge", d3.forceManyBody().strength(-500))
-      .force("link", d3.forceLink(this.props.data.links).distance(90))
+      .force("link", d3.forceLink(links).distance(90))
       .force(
         "center",
         d3
@@ -63,9 +93,10 @@ class Graph extends Component { // TODO: fix data and replace by nodes/links
     // );
 
     force.on("tick", () => {
-      this.d3Graph.call(updateGraph);
+      this.state.d3Graph.call(updateGraph);
     });
-  }
+    return force;
+  };
 
   render() {
     const nodes = this.props.data.nodes.map(node => (

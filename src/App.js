@@ -4,21 +4,26 @@ import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
 import NodeDetail from "./Graph/NodeDetail";
 import parseJson from "./helpers/jsonToD3Data";
-import basic from "./samples/basic-query.json";
-// import minimal from "./samples/minimal-query";
-// import distributed from "./samples/distributed-query";
+// import json from "./samples/basic-query.json";
+import json from "./samples/distributed-query.json";
+// import json from "./samples/minimal-query.json";
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    const data = parseJson(basic);
+    const data = parseJson(json);
     this.state = {
       allQueries: data,
       currentQueryId: 0,
       selectedNodeId: null
     };
   }
+
+  clickButton = childId => {
+    this.clickNode(this.state.selectedNodeId);
+    this.setState({ currentQueryId: childId });
+  };
 
   clickNode = id => {
     this.setState(prevState => {
@@ -31,7 +36,7 @@ class App extends Component {
           node.isSelected = false;
         }
       });
-      return { allQueries, selectedNodeId };
+      return { selectedNodeId };
     });
   };
 
@@ -39,13 +44,13 @@ class App extends Component {
     const { currentQueryId, selectedNodeId } = this.state;
     // Return the first retrieval with retrId === id of selected node
     // TODO: fix id (currentQueryId) and replace by name for uniqueness
-    return basic.data[currentQueryId].retrievals.filter(
+    return json.data[currentQueryId].retrievals.filter(
       retrieval => retrieval.retrId === selectedNodeId
     )[0];
   };
 
   render() {
-    const { allQueries, currentQueryId } = this.state;
+    const { allQueries, currentQueryId, selectedNodeId } = this.state;
     return (
       <>
         <NavBar />
@@ -59,9 +64,22 @@ class App extends Component {
               />
             </div>
             <div className="col-sm-4">
-              {this.state.selectedNodeId !== null && (
+              {selectedNodeId !== null && (
                 <NodeDetail details={this.getDetail()} />
               )}
+              {selectedNodeId !== null &&
+                allQueries[currentQueryId].nodes
+                  .find(node => node.isSelected)
+                  .childrenIds.map(childId => (
+                    <button
+                      key={childId}
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => this.clickButton(childId)}
+                    >
+                      Enter sub-query {childId}.
+                    </button>
+                  ))}
             </div>
           </div>
         </main>
