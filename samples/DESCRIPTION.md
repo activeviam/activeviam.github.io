@@ -141,3 +141,8 @@ MDX Query: `SELECT NON EMPTY [Measures].[pnl.SUM] ON COLUMNS FROM [EquityDerivat
 This query hits a distributed ActivePivot, that is an ActivePivot instance that has underlying ActivePivots on separate machines, contacted through the network to obtain the query results.
 
 This plan illustrates that we can have many plans in a single request.
+
+## Other files
+
+_larger-distributed-query.json_ and _larger-distribution-query2.json_ provide more complex outputs, involving more operations and many underlying ActivePivots.
+
