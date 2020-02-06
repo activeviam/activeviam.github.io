@@ -1,0 +1,3533 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "planInfo": {
+        "pivotType": "DistributedActivePivotVersion",
+        "pivotId": "AllData",
+        "epoch": "23",
+        "branch": "master",
+        "retrieverType": "DistributedActivePivotAggregatesRetriever",
+        "partialProviders": [],
+        "mdxPass": "SelectPass_0",
+        "clusterMemberId": "Local-AllData-QUERY0",
+        "contextValues": {
+          "IBranch": "null",
+          "ISubCubeProperties": "null",
+          "IAsOfEpoch": "null",
+          "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false]",
+          "IUserAuthentication": "UserAuthentication [userName=admin]"
+        },
+        "rangeSharing": 1000000,
+        "missedPrefetchBehavior": "WARN",
+        "aggregatesCache": "None",
+        "globalTimings": {
+          "FINALIZATION": 0,
+          "EXECUTION": 49,
+          "CONTEXT": 0,
+          "PLANNING": 0
+        },
+        "measures": [
+          "AV_EstimatedMarginRate(Final)",
+          "AV_EstimatedMarginRate(Reco)",
+          "AV_EstimatedMarginRate(Initial)"
+        ],
+        "totalRetrievals": 32,
+        "retrievalsCountByType": {
+          "DistributedAggregatesRetrieval": 4,
+          "NoOpPrimitiveAggregatesRetrieval": 4,
+          "DistributedPostProcessedRetrieval": 12,
+          "PostProcessedResultsMerger": 12
+        },
+        "partitioningCountByType": {
+          "Distributed partitioning": 16,
+          "Constant partitioning": 16
+        },
+        "queryFiltersById": {
+          "0": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Store={AV_Store_Name=[[AllMember, AV Vitry-sur-Seine], [AllMember, AV New York], [AllMember, AV Versailles], [AllMember, AV Boulogne-Billancourt], [AllMember, N/A], [AllMember, AV Montreuil], [AllMember, AV Saint-Denis], [AllMember, AV Créteil], [AllMember, AV Argenteuil], [AllMember, AV Marseille], [AllMember, AV Paris], [AllMember, AV Courbevoie], [AllMember, AV London], [AllMember, AV Nanterre]]}}, subCubeTrees={Store={AV_Store_Name=SubCubeTree [intersectedNodes=[SubCubeNode [conditions=[], children={AllMember=SubCubeNode [conditions=[], children={AV New York=SubCubeNode [conditions=[], children={}], AV Saint-Denis=SubCubeNode [conditions=[], children={}], N/A=SubCubeNode [conditions=[], children={}], AV Marseille=SubCubeNode [conditions=[], children={}], AV Argenteuil=SubCubeNode [conditions=[], children={}], AV Nanterre=SubCubeNode [conditions=[], children={}], AV London=SubCubeNode [conditions=[], children={}], AV Courbevoie=SubCubeNode [conditions=[], children={}], AV Paris=SubCubeNode [conditions=[], children={}], AV Versailles=SubCubeNode [conditions=[], children={}], AV Boulogne-Billancourt=SubCubeNode [conditions=[], children={}], AV Vitry-sur-Seine=SubCubeNode [conditions=[], children={}], AV Montreuil=SubCubeNode [conditions=[], children={}], AV Créteil=SubCubeNode [conditions=[], children={}]}]}]]]}}],hash=435763043]"
+        },
+        "continuous": false
+      },
+      "retrievals": [
+        {
+          "retrId": 0,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 1,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 2,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -49
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 3,
+          "type": "DistributedAggregatesRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)",
+            "AV_EstimatedMarginRate(Reco)",
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "executionTime": [
+              47
+            ],
+            "startTime": [
+              -49
+            ],
+            "broadcastingTime": [
+              47
+            ],
+            "processingTime": [
+              0
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": [
+            "Local-Recommendation-master-DATA6"
+          ]
+        },
+        {
+          "retrId": 4,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 5,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 6,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -49
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 7,
+          "type": "DistributedAggregatesRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Reco)",
+            "AV_EstimatedMarginRate(Final)",
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "executionTime": [
+              47
+            ],
+            "startTime": [
+              -49
+            ],
+            "broadcastingTime": [
+              47
+            ],
+            "processingTime": [
+              0
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": [
+            "Local-Recommendation-master-DATA6"
+          ]
+        },
+        {
+          "retrId": 8,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 9,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 10,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -49
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 11,
+          "type": "DistributedAggregatesRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)",
+            "AV_EstimatedMarginRate(Reco)",
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "executionTime": [
+              47
+            ],
+            "startTime": [
+              -49
+            ],
+            "broadcastingTime": [
+              47
+            ],
+            "processingTime": [
+              0
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": [
+            "Local-Recommendation-master-DATA6"
+          ]
+        },
+        {
+          "retrId": 12,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 13,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 14,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -49
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 15,
+          "type": "DistributedAggregatesRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)",
+            "AV_EstimatedMarginRate(Reco)",
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "executionTime": [
+              47
+            ],
+            "startTime": [
+              -49
+            ],
+            "broadcastingTime": [
+              47
+            ],
+            "processingTime": [
+              0
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": [
+            "Local-Recommendation-master-DATA6"
+          ]
+        },
+        {
+          "retrId": 16,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 17,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -49
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 18,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 19,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -49
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 20,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 21,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -49
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 22,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 23,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -49
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 24,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 25,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -49
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 26,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 27,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -49
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 28,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -1
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 29,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -49
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 30,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 31,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Week",
+              "level": [
+                "ALL",
+                "Year"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -49
+            ],
+            "elapsedTime": [
+              48
+            ]
+          },
+          "underlyingDataNodes": []
+        }
+      ],
+      "dependencies": {
+        "-1": [
+          0,
+          16,
+          18,
+          4,
+          20,
+          22,
+          8,
+          24,
+          26,
+          12,
+          28,
+          30
+        ],
+        "0": [
+          1,
+          2
+        ],
+        "2": [
+          3
+        ],
+        "4": [
+          5,
+          6
+        ],
+        "6": [
+          7
+        ],
+        "8": [
+          9,
+          10
+        ],
+        "10": [
+          11
+        ],
+        "12": [
+          13,
+          14
+        ],
+        "14": [
+          15
+        ],
+        "16": [
+          1,
+          17
+        ],
+        "17": [
+          3
+        ],
+        "18": [
+          19,
+          5
+        ],
+        "19": [
+          7
+        ],
+        "20": [
+          21,
+          9
+        ],
+        "21": [
+          11
+        ],
+        "22": [
+          23,
+          13
+        ],
+        "23": [
+          15
+        ],
+        "24": [
+          1,
+          25
+        ],
+        "25": [
+          3
+        ],
+        "26": [
+          27,
+          5
+        ],
+        "27": [
+          7
+        ],
+        "28": [
+          9,
+          29
+        ],
+        "29": [
+          11
+        ],
+        "30": [
+          13,
+          31
+        ],
+        "31": [
+          15
+        ]
+      }
+    },
+    {
+      "planInfo": {
+        "pivotType": "ActivePivotVersion",
+        "pivotId": "Recommendation",
+        "epoch": "4",
+        "branch": "master",
+        "retrieverType": "ActivePivotAggregatesRetriever",
+        "partialProviders": [],
+        "mdxPass": "SelectPass_0",
+        "clusterMemberId": "Local-Recommendation-master-DATA6",
+        "contextValues": {
+          "IBranch": "null",
+          "ISubCubeProperties": "null",
+          "IAsOfEpoch": "null",
+          "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false]"
+        },
+        "rangeSharing": 1000000,
+        "missedPrefetchBehavior": "WARN",
+        "aggregatesCache": "None",
+        "globalTimings": {
+          "FINALIZATION": 3,
+          "EXECUTION": 21,
+          "CONTEXT": 0,
+          "PLANNING": 0
+        },
+        "measures": [
+          "AV_FinalPrice",
+          "AV_EstimatedTurnoverExTax(Reco)",
+          "AV_EstimatedMarginRate(Initial)",
+          "AV_EstimatedMargin(Initial)",
+          "AV_RecommendedPrice",
+          "AV_EstimatedMargin(Reco)",
+          "AV_InitialPrice",
+          "AV_EstimatedTurnoverExTax(Initial)",
+          "AV_RecommendedMargin.MIN",
+          "AV_EstimatedMarginRate(Reco)",
+          "AV_EstimatedMarginRate(Final)",
+          "AV_EstimatedTurnoverExTax(Final)",
+          "AV_InitialMargin.MIN",
+          "AV_FinalMargin.MIN",
+          "AV_RecoQuantity",
+          "AV_EstimatedMargin(Final)"
+        ],
+        "totalRetrievals": 36,
+        "retrievalsCountByType": {
+          "JITPrimitiveAggregatesRetrieval": 1,
+          "PostProcessedAggregatesRetrieval": 18,
+          "NoOpPrimitiveAggregatesRetrieval": 4,
+          "PostProcessedResultsMerger": 12,
+          "RangeSharingPrimitiveAggregatesRetrieval": 1
+        },
+        "partitioningCountByType": {
+          "hash8(AV_Prod_Id)": 16,
+          "Constant partitioning": 20
+        },
+        "queryFiltersById": {
+          "0": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Store={AV_Store_Name=[[AllMember, AV Vitry-sur-Seine], [AllMember, AV New York], [AllMember, AV Versailles], [AllMember, AV Boulogne-Billancourt], [AllMember, N/A], [AllMember, AV Montreuil], [AllMember, AV Saint-Denis], [AllMember, AV Créteil], [AllMember, AV Argenteuil], [AllMember, AV Marseille], [AllMember, AV Paris], [AllMember, AV Courbevoie], [AllMember, AV London], [AllMember, AV Nanterre]]}}, subCubeTrees={Store={AV_Store_Name=SubCubeTree [intersectedNodes=[SubCubeNode [conditions=[], children={AllMember=SubCubeNode [conditions=[], children={AV New York=SubCubeNode [conditions=[], children={}], AV Saint-Denis=SubCubeNode [conditions=[], children={}], N/A=SubCubeNode [conditions=[], children={}], AV Marseille=SubCubeNode [conditions=[], children={}], AV Argenteuil=SubCubeNode [conditions=[], children={}], AV Nanterre=SubCubeNode [conditions=[], children={}], AV London=SubCubeNode [conditions=[], children={}], AV Courbevoie=SubCubeNode [conditions=[], children={}], AV Paris=SubCubeNode [conditions=[], children={}], AV Versailles=SubCubeNode [conditions=[], children={}], AV Boulogne-Billancourt=SubCubeNode [conditions=[], children={}], AV Vitry-sur-Seine=SubCubeNode [conditions=[], children={}], AV Montreuil=SubCubeNode [conditions=[], children={}], AV Créteil=SubCubeNode [conditions=[], children={}]}]}]]]}}],hash=435763043]"
+        },
+        "continuous": false
+      },
+      "retrievals": [
+        {
+          "retrId": 0,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 1,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 2,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_EstimatedMargin(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 3,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [
+            "AV_EstimatedMargin(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -7,
+              -8,
+              -8,
+              -5,
+              -5,
+              0,
+              -6,
+              -9
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 4,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 5,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_FinalPrice",
+            "AV_RecommendedMargin.MIN",
+            "AV_InitialMargin.MIN",
+            "AV_FinalMargin.MIN",
+            "AV_RecommendedPrice",
+            "AV_RecoQuantity",
+            "AV_InitialPrice"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -8,
+              -14,
+              -14,
+              -13,
+              -12,
+              -4,
+              -12,
+              -15
+            ],
+            "elapsedTime": [
+              0,
+              4,
+              4,
+              6,
+              6,
+              0,
+              5,
+              5
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 6,
+          "type": "JITPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_FinalPrice",
+            "AV_RecommendedMargin.MIN",
+            "AV_InitialMargin.MIN",
+            "AV_FinalMargin.MIN",
+            "AV_RecommendedPrice",
+            "AV_RecoQuantity",
+            "AV_InitialPrice"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -20,
+              -20,
+              -20,
+              -20,
+              -20,
+              -20,
+              -20,
+              -20
+            ],
+            "elapsedTime": [
+              6,
+              4,
+              5,
+              6,
+              7,
+              9,
+              7,
+              4
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 7,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_EstimatedTurnoverExTax(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 8,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [
+            "AV_EstimatedTurnoverExTax(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -7,
+              -9,
+              -9,
+              -5,
+              -5,
+              -1,
+              -6,
+              -9
+            ],
+            "elapsedTime": [
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 9,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 10,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 11,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMargin(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -2
+            ],
+            "elapsedTime": [
+              2
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 12,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMargin(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -4,
+              -14,
+              -12,
+              -11,
+              -10,
+              -4,
+              -11,
+              -14
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 13,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 14,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedTurnoverExTax(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -3
+            ],
+            "elapsedTime": [
+              3
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 15,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedTurnoverExTax(Initial)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -4,
+              -14,
+              -12,
+              -11,
+              -10,
+              -4,
+              -11,
+              -14
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 16,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_EstimatedMarginRate(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 17,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_EstimatedTurnoverExTax(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -2
+            ],
+            "elapsedTime": [
+              1
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 18,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [
+            "AV_EstimatedTurnoverExTax(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -7,
+              -7,
+              -7,
+              -5,
+              -5,
+              -3,
+              -3,
+              -8
+            ],
+            "elapsedTime": [
+              1,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 19,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_EstimatedMargin(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 20,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [
+            "AV_EstimatedMargin(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -7,
+              -8,
+              -7,
+              -5,
+              -5,
+              0,
+              -3,
+              -9
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 21,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 22,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMargin(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -3
+            ],
+            "elapsedTime": [
+              2
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 23,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMargin(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -4,
+              -15,
+              -13,
+              -12,
+              -10,
+              -6,
+              -12,
+              -15
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 24,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedTurnoverExTax(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -3
+            ],
+            "elapsedTime": [
+              1
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 25,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedTurnoverExTax(Reco)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -4,
+              -14,
+              -13,
+              -11,
+              -10,
+              -6,
+              -11,
+              -15
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 26,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 27,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_EstimatedMargin(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -3
+            ],
+            "elapsedTime": [
+              2
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 28,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [
+            "AV_EstimatedMargin(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -8,
+              -9,
+              -9,
+              -6,
+              -6,
+              -3,
+              -7,
+              -9
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 29,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_EstimatedTurnoverExTax(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -2
+            ],
+            "elapsedTime": [
+              1
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 30,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [
+            "AV_EstimatedTurnoverExTax(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -6,
+              -9,
+              -6,
+              -5,
+              -4,
+              -3,
+              -5,
+              -8
+            ],
+            "elapsedTime": [
+              2,
+              3,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 31,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMarginRate(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 32,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedTurnoverExTax(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -10
+            ],
+            "elapsedTime": [
+              1
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 33,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedTurnoverExTax(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -10,
+              -16,
+              -14,
+              -13,
+              -13,
+              -10,
+              -13,
+              -16
+            ],
+            "elapsedTime": [
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 34,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMargin(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -2
+            ],
+            "elapsedTime": [
+              2
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 35,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_Store_Name",
+              "level": [
+                "ALL",
+                "AV_Store_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_EstimatedMargin(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              -4,
+              -15,
+              -13,
+              -12,
+              -11,
+              -7,
+              -12,
+              -16
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              4,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        }
+      ],
+      "dependencies": {
+        "-1": [
+          0,
+          16,
+          9,
+          26,
+          21,
+          31
+        ],
+        "0": [
+          1,
+          2,
+          7
+        ],
+        "2": [
+          1,
+          3
+        ],
+        "3": [
+          4,
+          5
+        ],
+        "5": [
+          6
+        ],
+        "7": [
+          8,
+          1
+        ],
+        "8": [
+          4,
+          5
+        ],
+        "9": [
+          10,
+          11,
+          14
+        ],
+        "11": [
+          10,
+          12
+        ],
+        "12": [
+          6,
+          13
+        ],
+        "14": [
+          10,
+          15
+        ],
+        "15": [
+          6,
+          13
+        ],
+        "16": [
+          1,
+          17,
+          19
+        ],
+        "17": [
+          1,
+          18
+        ],
+        "18": [
+          4,
+          5
+        ],
+        "19": [
+          20,
+          1
+        ],
+        "20": [
+          4,
+          5
+        ],
+        "21": [
+          22,
+          24,
+          10
+        ],
+        "22": [
+          23,
+          10
+        ],
+        "23": [
+          6,
+          13
+        ],
+        "24": [
+          25,
+          10
+        ],
+        "25": [
+          6,
+          13
+        ],
+        "26": [
+          1,
+          29,
+          27
+        ],
+        "27": [
+          28,
+          1
+        ],
+        "28": [
+          4,
+          5
+        ],
+        "29": [
+          1,
+          30
+        ],
+        "30": [
+          4,
+          5
+        ],
+        "31": [
+          32,
+          34,
+          10
+        ],
+        "32": [
+          33,
+          10
+        ],
+        "33": [
+          6,
+          13
+        ],
+        "34": [
+          35,
+          10
+        ],
+        "35": [
+          6,
+          13
+        ]
+      }
+    },
+    {
+      "planInfo": {
+        "mdxPass": "SubSelectPass_1"
+      },
+      "retrievals": [],
+      "dependencies": {}
+    }
+  ]
+}
