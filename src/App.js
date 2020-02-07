@@ -57,6 +57,12 @@ class App extends Component {
       selectedNodeId,
       restartGraph
     } = this.state;
+    const currentQuery = allQueries[currentQueryId];
+    const {
+      nodes: currentNodes,
+      links: currentLinks,
+      parentId: currentParentId
+    } = currentQuery;
     return (
       <>
         <NavBar />
@@ -66,7 +72,8 @@ class App extends Component {
             <div className="col-sm-8">
               {!restartGraph && (
                 <Graph
-                  data={allQueries[currentQueryId]}
+                  nodes={currentNodes}
+                  links={currentLinks}
                   clickNode={this.clickNode}
                   restart={() => this.setState({ restartGraph: false })}
                 />
@@ -74,13 +81,11 @@ class App extends Component {
             </div>
             <div className="col-sm-4">
               <br />
-              {allQueries[currentQueryId].parentId !== null && (
+              {currentParentId !== null && (
                 <button
                   type="button"
                   className="btn btn-success"
-                  onClick={() =>
-                    this.clickButton(allQueries[currentQueryId].parentId)
-                  }
+                  onClick={() => this.clickButton(currentParentId)}
                 >
                   Go back to parent query.
                 </button>
@@ -89,7 +94,7 @@ class App extends Component {
                 <NodeDetail details={this.getDetail()} />
               )}
               {selectedNodeId !== null &&
-                allQueries[currentQueryId].nodes
+                currentNodes
                   .find(node => node.isSelected)
                   .childrenIds.map(childId => (
                     <button

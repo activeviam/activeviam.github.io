@@ -1,5 +1,4 @@
 // TODO : add prop types
-/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
@@ -11,10 +10,8 @@ const width = 700;
 const height = 520;
 
 class Graph extends Component {
-  // TODO: fix data and replace by nodes/links
   componentDidMount() {
-    const { data } = this.props;
-    const { nodes, links } = data;
+    const { nodes, links } = this.props;
 
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
@@ -76,7 +73,8 @@ class Graph extends Component {
   }
 
   render() {
-    const nodes = this.props.data.nodes.map(node => (
+    const { nodes, links } = this.props;
+    const Nodes = nodes.map(node => (
       <Node
         data={node}
         name={node.name}
@@ -84,7 +82,7 @@ class Graph extends Component {
         clickNode={this.props.clickNode}
       />
     ));
-    const links = this.props.data.links.map(link => (
+    const Links = links.map(link => (
       <Link key={link.id} data={link} href="/" />
     ));
 
@@ -93,8 +91,8 @@ class Graph extends Component {
         className="graph"
         style={{ marginTop: "2em", backgroundColor: "#d1d1ff" }}
       >
-        <g>{links}</g>
-        <g>{nodes}</g>
+        <g>{Links}</g>
+        <g>{Nodes}</g>
       </svg>
     );
   }
