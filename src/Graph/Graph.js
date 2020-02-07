@@ -1,5 +1,6 @@
 // TODO : add prop types
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import Link from "./Link";
@@ -73,17 +74,12 @@ class Graph extends Component {
   }
 
   render() {
-    const { nodes, links } = this.props;
+    const { nodes, links, clickNode } = this.props;
     const Nodes = nodes.map(node => (
-      <Node
-        data={node}
-        name={node.name}
-        key={node.id}
-        clickNode={this.props.clickNode}
-      />
+      <Node node={node} key={node.id} clickNode={clickNode} />
     ));
     const Links = links.map(link => (
-      <Link key={link.id} data={link} href="/" />
+      <Link key={link.id} link={link} href="/" />
     ));
 
     return (
@@ -97,5 +93,12 @@ class Graph extends Component {
     );
   }
 }
+
+Graph.propTypes = {
+  nodes: PropTypes.any.isRequired,
+  links: PropTypes.any,
+  clickNode: PropTypes.any,
+  restart: PropTypes.any
+};
 
 export default Graph;

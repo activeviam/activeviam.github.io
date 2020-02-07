@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 function NodeDetail(props) {
   const { details } = props;
@@ -22,5 +23,9 @@ function NodeDetail(props) {
     </div>
   );
 }
+
+NodeDetail.propTypes = {
+  details: PropTypes.any.isRequired
+};
 
 export default NodeDetail;
