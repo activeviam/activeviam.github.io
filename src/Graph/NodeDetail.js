@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { detailsType } from "../types";
 
 function NodeDetail(props) {
   const { details } = props;
@@ -25,7 +25,7 @@ function NodeDetail(props) {
 }
 
 NodeDetail.propTypes = {
-  details: PropTypes.any.isRequired
+  details: detailsType.isRequired
 };
 
 export default NodeDetail;

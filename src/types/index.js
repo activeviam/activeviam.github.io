@@ -19,9 +19,9 @@ export const linkType = shape({
 });
 
 export const detailsType = shape({
-  type: "PrimitiveAnalysisAggregationRetrieval",
-  retrId: 0,
-  measureProvider: "SimpleMeasuresProvider",
-  measures: ["pnl.SUM"],
-  partitioning: "Constant partitioning"
+  type: string.isRequired,
+  retrId: number.isRequired,
+  measureProvider: string.isRequired,
+  measures: arrayOf(string).isRequired,
+  partitioning: string.isRequired
 });
