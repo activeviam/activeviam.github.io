@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-const { shape, number, string, oneOf, arrayOf, bool } = PropTypes;
+const { shape, number, string, oneOf, arrayOf, bool, oneOfType } = PropTypes;
 
 export const nodeType = shape({
   id: number.isRequired,
@@ -13,8 +13,8 @@ export const nodeType = shape({
 });
 
 export const linkType = shape({
-  source: number.isRequired,
-  target: number.isRequired,
+  source: oneOfType([number, nodeType]).isRequired,
+  target: oneOfType([number, nodeType]).isRequired,
   id: string.isRequired
 });
 
