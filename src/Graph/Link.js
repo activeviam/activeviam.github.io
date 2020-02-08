@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import { enterLink, updateLink } from "../helpers/graphHelpers";
+import { linkType } from "../types";
 
 class Link extends Component {
   componentDidMount() {
@@ -22,7 +22,7 @@ class Link extends Component {
 }
 
 Link.propTypes = {
-  link: PropTypes.any.isRequired
+  link: linkType.isRequired
 };
 
 export default Link;

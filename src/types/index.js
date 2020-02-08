@@ -9,5 +9,19 @@ export const nodeType = shape({
   isSelected: bool.isRequired,
   radius: number.isRequired,
   yFixed: number.isRequired,
-  status: oneOf([null, "root", "leaf"]).isRequired
+  status: oneOf([null, "root", "leaf"])
+});
+
+export const linkType = shape({
+  source: number.isRequired,
+  target: number.isRequired,
+  id: string.isRequired
+});
+
+export const detailsType = shape({
+  type: "PrimitiveAnalysisAggregationRetrieval",
+  retrId: 0,
+  measureProvider: "SimpleMeasuresProvider",
+  measures: ["pnl.SUM"],
+  partitioning: "Constant partitioning"
 });
