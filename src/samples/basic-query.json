@@ -97,7 +97,7 @@
               0
             ],
             "elapsedTime": [
-              0
+              3
             ]
           },
           "underlyingDataNodes": []
@@ -149,10 +149,10 @@
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
             "startTime": [
-              0
+              4
             ],
             "elapsedTime": [
-              0
+              5
             ]
           },
           "underlyingDataNodes": []
@@ -204,16 +204,10 @@
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
             "startTime": [
-              0,
-              0,
-              0,
-              0
+              5
             ],
             "elapsedTime": [
-              0,
-              0,
-              0,
-              0
+              7
             ]
           },
           "underlyingDataNodes": []
@@ -254,7 +248,7 @@
               0
             ],
             "elapsedTime": [
-              0
+              2
             ]
           },
           "underlyingDataNodes": []
@@ -294,10 +288,10 @@
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
             "startTime": [
-              0
+              2
             ],
             "elapsedTime": [
-              0
+              4
             ]
           },
           "underlyingDataNodes": []
