@@ -20,7 +20,10 @@ class Node extends Component {
   }
 
   handle() {
-    const { key: nodeId, clickNode } = this.props;
+    const {
+      node: { id: nodeId },
+      clickNode
+    } = this.props;
     console.log(`${nodeId} been clicked`);
     clickNode(nodeId);
   }
@@ -41,7 +44,6 @@ class Node extends Component {
 
 Node.propTypes = {
   node: nodeType.isRequired,
-  key: PropTypes.number.isRequired,
   clickNode: PropTypes.func.isRequired
 };
 

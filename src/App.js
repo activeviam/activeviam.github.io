@@ -45,9 +45,9 @@ class App extends Component {
     const { currentQueryId, selectedNodeId } = this.state;
     // Return the first retrieval with retrId === id of selected node
     // TODO: fix id (currentQueryId) and replace by name for uniqueness
-    return json.data[currentQueryId].retrievals.filter(
+    return json.data[currentQueryId].retrievals.find(
       retrieval => retrieval.retrId === selectedNodeId
-    )[0];
+    );
   };
 
   render() {
@@ -63,6 +63,7 @@ class App extends Component {
       links: currentLinks,
       parentId: currentParentId
     } = currentQuery;
+    const currentNodeClickedDetails = this.getDetail();
     return (
       <>
         <NavBar />
@@ -90,8 +91,8 @@ class App extends Component {
                   Go back to parent query.
                 </button>
               )}
-              {selectedNodeId !== null && (
-                <NodeDetail details={this.getDetail()} />
+              {selectedNodeId !== null && currentNodeClickedDetails && (
+                <NodeDetail details={currentNodeClickedDetails} />
               )}
               {selectedNodeId !== null &&
                 currentNodes
