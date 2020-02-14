@@ -3,9 +3,11 @@ import "./App.css";
 import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
 import parseJson from "./helpers/jsonToD3Data";
-// import json from "./samples/basic-query.json";
-import json from "./samples/distributed-query.json";
+import json from "./samples/basic-query.json";
+// import json from "./samples/distributed-query.json";
 // import json from "./samples/minimal-query.json";
+// import json from "./samples/larger-distributed-query.json";
+// import json from "./samples/larger-distribution-query2.json";
 
 class App extends Component {
   constructor(props) {

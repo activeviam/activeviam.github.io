@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
-import { nodeType } from "../types";
-import { enterNode, updateNode } from "../helpers/graphHelpers";
 import Popover from "react-bootstrap/Popover";
 import Overlay from "react-bootstrap/Overlay";
+import { nodeType } from "../types";
+import { enterNode, updateNode } from "../helpers/graphHelpers";
 
 class Node extends Component {
   constructor(props) {
@@ -36,6 +36,8 @@ class Node extends Component {
   }
 
   render() {
+    const { node, changeGraph } = this.props;
+    const { details, name, childrenIds, isSelected } = node;
     const {
       type,
       startTime,
@@ -43,10 +45,10 @@ class Node extends Component {
       measureProvider,
       measures,
       partitioning
-    } = this.props.node.details;
+    } = details;
     const popover = (
       <Popover id="popover-basic">
-        <Popover.Title as="h3">{`${type} (#${this.props.node.name})`}</Popover.Title>
+        <Popover.Title as="h3">{`${type} (#${name})`}</Popover.Title>
         <Popover.Content>
           <ul>
             <li>Start: {startTime}</li>
@@ -62,12 +64,12 @@ class Node extends Component {
             </li>
             <li>Partitioning: {partitioning}</li>
           </ul>
-          {this.props.node.childrenIds.map(childId => (
+          {childrenIds.map(childId => (
             <button
               key={childId}
               type="button"
               className="btn btn-primary"
-              onClick={() => this.props.changeGraph(childId)}
+              onClick={() => changeGraph(childId)}
             >
               Enter sub-query {childId}.
             </button>
@@ -79,13 +81,9 @@ class Node extends Component {
       <>
         <g className="node">
           <circle ref={this.myRef} onClick={this.handle.bind(this)} />
-          <text onClick={this.handle.bind(this)}>{this.props.node.name}</text>
+          <text onClick={this.handle.bind(this)}>{name}</text>
         </g>
-        <Overlay
-          show={this.props.node.isSelected}
-          placement="auto"
-          target={this.myRef.current}
-        >
+        <Overlay show={isSelected} placement="auto" target={this.myRef.current}>
           {popover}
         </Overlay>
       </>
