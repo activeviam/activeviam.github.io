@@ -42,15 +42,6 @@ class App extends Component {
     });
   };
 
-  // getDetail = () => {
-  //   const { currentQueryId, selectedNodeId } = this.state;
-  //   Return the first retrieval with retrId === id of selected node
-  //   TODO: fix id (currentQueryId) and replace by name for uniqueness
-  //   return json.data[currentQueryId].retrievals.find(
-  //     retrieval => retrieval.retrId === selectedNodeId
-  //   );
-  // };
-
   render() {
     const { allQueries, currentQueryId, restartGraph } = this.state;
     const currentQuery = allQueries[currentQueryId];
