@@ -7,8 +7,8 @@ import Link from "./Link";
 import Node from "./Node";
 import { updateGraph } from "../helpers/graphHelpers";
 
-const width = 700;
-const height = 520;
+const width = 1080;
+const height = 5200;
 
 class Graph extends Component {
   componentDidMount() {
@@ -74,9 +74,14 @@ class Graph extends Component {
   }
 
   render() {
-    const { nodes, links, clickNode } = this.props;
+    const { nodes, links, clickNode, changeGraph } = this.props;
     const Nodes = nodes.map(node => (
-      <Node node={node} key={node.id} clickNode={clickNode} />
+      <Node
+        node={node}
+        key={node.id}
+        clickNode={clickNode}
+        changeGraph={changeGraph}
+      />
     ));
     const Links = links.map(link => (
       <Link key={link.id} link={link} href="/" />
@@ -98,7 +103,8 @@ Graph.propTypes = {
   nodes: PropTypes.arrayOf(nodeType).isRequired,
   links: PropTypes.arrayOf(linkType).isRequired,
   clickNode: PropTypes.func.isRequired,
-  restart: PropTypes.func.isRequired
+  restart: PropTypes.func.isRequired,
+  changeGraph: PropTypes.func.isRequired
 };
 
 export default Graph;
