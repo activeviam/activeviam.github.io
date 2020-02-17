@@ -57,12 +57,14 @@ class Graph extends Component {
         .on("end", dragEnded)
     );
 
-    // TODO: fix zoom
-    // this.d3Graph.call(
-    //   d3
-    //     .zoom()
-    //     .on("zoom", () => d3.selectAll("g").attr("transform", d3.event.transform))
-    // );
+    d3Graph.call(
+      d3.zoom().on("zoom", () =>
+        d3
+          .select("svg")
+          .select("g")
+          .attr("transform", d3.event.transform)
+      )
+    );
 
     force.on("tick", () => {
       d3Graph.call(updateGraph);
@@ -92,8 +94,10 @@ class Graph extends Component {
         className="graph"
         style={{ marginTop: "2em", backgroundColor: "#d1d1ff" }}
       >
-        <g>{Links}</g>
-        <g>{Nodes}</g>
+        <g>
+          <g>{Links}</g>
+          <g>{Nodes}</g>
+        </g>
       </svg>
     );
   }
