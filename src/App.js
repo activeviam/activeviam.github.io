@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import "./App.css";
+import Input from "./Input/Input";
 import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
 import parseJson from "./helpers/jsonToD3Data";
-import json from "./samples/basic-query.json";
+// import json from "./samples/basic-query.json";
 // import json from "./samples/distributed-query.json";
 // import json from "./samples/minimal-query.json";
 // import json from "./samples/larger-distributed-query.json";
@@ -13,14 +14,24 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    const data = parseJson(json);
+    // const data = parseJson(json);
     this.state = {
-      allQueries: data,
+      router: "input",
+      allQueries: {},
       currentQueryId: 0,
       selectedNodeId: null,
       restartGraph: false
     };
   }
+
+  passInput = event => {
+    event.preventDefault();
+    console.log(JSON.parse(event.target[0].value));
+    this.setState({
+      allQueries: parseJson(JSON.parse(event.target[0].value)),
+      router: "graph"
+    });
+  };
 
   changeGraph = childId => {
     this.clickNode(this.state.selectedNodeId); // Easy way to un-click the current clicked node to prevent bug
@@ -52,15 +63,21 @@ class App extends Component {
   // };
 
   render() {
-    const { allQueries, currentQueryId, restartGraph } = this.state;
-    const currentQuery = allQueries[currentQueryId];
-    const { nodes: currentNodes, links: currentLinks } = currentQuery;
+    const { allQueries, currentQueryId, restartGraph, router } = this.state;
+    const dataIsEmpty = Object.entries(allQueries).length !== 0;
+    let currentNodes = [];
+    let currentLinks = [];
+    if (dataIsEmpty) {
+      const currentQuery = allQueries[currentQueryId];
+      currentNodes = currentQuery.nodes;
+      currentLinks = currentQuery.links;
+    }
     return (
       <>
-        <NavBar />
+        <NavBar navigate={dir => this.setState({ router: dir })} dataIsEmpty />
         <main role="main" className="container">
-          <h1>Bootstrap starter template</h1>
-          {!restartGraph && (
+          {router === "input" && <Input passInput={this.passInput} />}
+          {router === "graph" && !restartGraph && (
             <Graph
               nodes={currentNodes}
               links={currentLinks}
@@ -69,6 +86,7 @@ class App extends Component {
               changeGraph={this.changeGraph}
             />
           )}
+          {router === "timeline" && <></>}
         </main>
       </>
     );
