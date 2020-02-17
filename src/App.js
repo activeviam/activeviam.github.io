@@ -4,6 +4,7 @@ import Input from "./Input/Input";
 import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
 import parseJson from "./helpers/jsonToD3Data";
+import { parseV1, convertToV2 } from "./helpers/v1tov2";
 
 // QUERY JSON IMPORTS
 // import json from "./samples/basic-query.json";
@@ -32,10 +33,15 @@ class App extends Component {
     };
   }
 
-  passInput = event => {
-    event.preventDefault();
+  passInput = (mode, input) => {
+    let data = null;
+    if (mode === "json") {
+      data = parseJson(JSON.parse(input));
+    } else if (mode === "v1") {
+      data = convertToV2(parseV1(input));
+    }
     this.setState({
-      allQueries: parseJson(JSON.parse(event.target[0].value)),
+      allQueries: data,
       router: "graph"
     });
   };

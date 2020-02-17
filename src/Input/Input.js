@@ -4,22 +4,39 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
 class Input extends Component {
-  componentDidMount() {}
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: ""
+    };
+  }
 
-  componentWillUnmount() {}
+  submitJson = () => {
+    this.props.passInput("json", this.state.input);
+  };
+
+  submitV1 = () => {
+    this.props.passInput("v1", this.state.input);
+  };
 
   render() {
-    const { passInput } = this.props;
     return (
-      <form onSubmit={passInput}>
+      <Form>
         <Form.Group controlId="exampleForm.ControlTextarea1">
-          <Form.Label>Enter your query</Form.Label>
-          <Form.Control as="textarea" rows="10" />
+          <Form.Control
+            as="textarea"
+            rows="10"
+            onChange={event => this.setState({ input: event.target.value })}
+          />
         </Form.Group>
-        <Button variant="primary" type="submit">
-          Submit
+        <Button variant="primary" onClick={this.submitJson}>
+          Import from Json
         </Button>
-      </form>
+        {"  "}
+        <Button variant="primary" onClick={this.submitV1}>
+          Import from V1
+        </Button>
+      </Form>
     );
   }
 }
