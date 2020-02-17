@@ -58,12 +58,13 @@ class Graph extends Component {
     );
 
     d3Graph.call(
-      d3.zoom().on("zoom", () =>
-        d3
+      d3.zoom().on("zoom", () => {
+        this.props.clickNode(null);
+        return d3
           .select("svg")
           .select("g")
           .attr("transform", d3.event.transform)
-      )
+      })
     );
 
     force.on("tick", () => {
