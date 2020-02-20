@@ -7,6 +7,7 @@ import Link from "./Link";
 import Node from "./Node";
 import { updateGraph } from "../helpers/graphHelpers";
 
+// TODO: fix dynamic change of height and width
 const width = window.innerWidth;
 const height = window.innerHeight - 56;
 
@@ -63,7 +64,7 @@ class Graph extends Component {
         return d3
           .select("svg")
           .select("g")
-          .attr("transform", d3.event.transform)
+          .attr("transform", d3.event.transform);
       })
     );
 
