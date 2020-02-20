@@ -43,6 +43,7 @@ class App extends Component {
     }
     this.setState({
       allQueries: data,
+      currentQueryId: 0,
       router: "graph"
     });
   };
