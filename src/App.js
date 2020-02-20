@@ -80,10 +80,11 @@ class App extends Component {
     return (
       <>
         <NavBar navigate={dir => this.setState({ router: dir })} dataIsEmpty />
-        <main role="main" className="container">
+        <main role="main" className="container-fluid px-0">
           {router === "input" && <Input passInput={this.passInput} />}
           {router === "graph" && !restartGraph && (
             <Graph
+              className="my-0"
               nodes={currentNodes}
               links={currentLinks}
               clickNode={this.clickNode}

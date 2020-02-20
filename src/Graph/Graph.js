@@ -7,8 +7,8 @@ import Link from "./Link";
 import Node from "./Node";
 import { updateGraph } from "../helpers/graphHelpers";
 
-const width = 1080;
-const height = 5200;
+const width = window.innerWidth;
+const height = window.innerHeight - 56;
 
 class Graph extends Component {
   componentDidMount() {
@@ -92,7 +92,7 @@ class Graph extends Component {
 
     return (
       <svg
-        className="graph"
+        className="graph my-0"
         style={{ marginTop: "2em", backgroundColor: "#d1d1ff" }}
       >
         <g>

@@ -17,7 +17,7 @@ class Input extends Component {
 
   render() {
     return (
-      <Form>
+      <Form className="mx-4 my-4">
         <Form.Group controlId="exampleForm.ControlTextarea1">
           <Form.Control
             as="textarea"
