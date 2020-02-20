@@ -8,7 +8,7 @@ import Node from "./Node";
 import { updateGraph } from "../helpers/graphHelpers";
 
 const width = 1080;
-const height = 5200;
+const height = 520;
 
 class Graph extends Component {
   componentDidMount() {
@@ -63,7 +63,7 @@ class Graph extends Component {
         return d3
           .select("svg")
           .select("g")
-          .attr("transform", d3.event.transform)
+          .attr("transform", d3.event.transform);
       })
     );
 

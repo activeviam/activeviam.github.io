@@ -1,6 +1,10 @@
 const runTime = retrievals =>
   // Returns the biggest elapsed time in the graph, ie the total runtime of the graph
-  Math.max(...retrievals.map(x => x.timingInfo.elapsedTime[0]));
+  Math.max(
+    ...retrievals.map(
+      x => x.timingInfo.elapsedTime[0] + x.timingInfo.startTime[0]
+    )
+  );
 
 const getNodes = (dependencies, retrievals) => {
   // ratio of the total runtime of the graph and the height of the SGV
@@ -21,7 +25,7 @@ const getNodes = (dependencies, retrievals) => {
       } = retrieval;
       const start = Math.min(...timingInfo.startTime);
       const elapsed = Math.max(...timingInfo.elapsedTime);
-      const radius = ((elapsed - start) * ratio) / 2;
+      const radius = (elapsed * ratio) / 2;
       return {
         // id: `${queryId}-${retrId}`, // TODO: see if nodes need a different id
         id: retrId,
@@ -37,7 +41,7 @@ const getNodes = (dependencies, retrievals) => {
           partitioning
         },
         radius,
-        yFixed: ((start + elapsed) / 2) * ratio + margin,
+        yFixed: (start + elapsed / 2) * ratio + margin,
         status: dependencies[-1].includes(retrId)
           ? "root"
           : dependencies[retrId]

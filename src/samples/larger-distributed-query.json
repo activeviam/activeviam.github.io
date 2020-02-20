@@ -3521,13 +3521,6 @@
           13
         ]
       }
-    },
-    {
-      "planInfo": {
-        "mdxPass": "SubSelectPass_1"
-      },
-      "retrievals": [],
-      "dependencies": {}
     }
   ]
 }
