@@ -11,12 +11,8 @@ class Input extends Component {
     };
   }
 
-  submitJson = () => {
-    this.props.passInput("json", this.state.input);
-  };
-
-  submitV1 = () => {
-    this.props.passInput("v1", this.state.input);
+  submit = type => () => {
+    this.props.passInput(type, this.state.input);
   };
 
   render() {
@@ -29,11 +25,11 @@ class Input extends Component {
             onChange={event => this.setState({ input: event.target.value })}
           />
         </Form.Group>
-        <Button variant="primary" onClick={this.submitJson}>
+        <Button variant="primary" onClick={this.submit("json")}>
           Import from Json
         </Button>
         {"  "}
-        <Button variant="primary" onClick={this.submitV1}>
+        <Button variant="primary" onClick={this.submit("v1")}>
           Import from V1
         </Button>
       </Form>
