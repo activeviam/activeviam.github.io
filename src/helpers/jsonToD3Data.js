@@ -55,7 +55,7 @@ const getLinks = dependencies => {
       if (key !== "-1") {
         links.push({
           source: parseInt(key, 10),
-          target: value,
+          target: parseInt(value, 10),
           id: `${key}-${value}`
         });
       }

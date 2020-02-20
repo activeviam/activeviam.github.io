@@ -45,7 +45,7 @@ const parseLine = (state, line) => {
 
     const parent = last(state.parents);
     if (parent) {
-      parent.dependencies.push(retrieval.id);
+      parent.dependencies.push(parseInt(retrieval.id, 10));
     }
   });
   clauses.set(PARTITION_RESULT, match => {
@@ -190,7 +190,7 @@ const parseV1 = (input, tickCallback) => {
       const retrieval = result.retrievals[rId];
       retrieval.dependencies.forEach(dId => {
         const dependency = result.retrievals[dId];
-        dependency.parents.push(rId);
+        dependency.parents.push(parseInt(rId, 10));
       });
     });
 
@@ -298,7 +298,7 @@ const findFilter = (filters, needle) => {
 const createRetrievalMap = (v1Structure, filters) => {
   return Object.values(v1Structure.retrievals).map(retrieval => {
     return {
-      id: retrieval.id,
+      retrId: parseInt(retrieval.id, 10),
       type: retrieval.type,
       location: parseLocation(retrieval.properties.Location),
       measures: parseMeasures(retrieval.properties.Measures),
@@ -327,37 +327,36 @@ const convertToV2 = v1Structure => {
 
 export { parseV1, convertToV2 };
 
-/**
 const INPUTS = [
   `General information:
   -------------------
     ActivePivot: ActivePivotVersion [id=VaR, epoch=59]
     RetrieverActivePivotAggregatesRetriever : Standard aggregates retriever on cube VaR
-  
+
   Context values:
   --------------
     ISubCubeProperties: null
     IBranch: null
     IAsOfEpoch: null
     ICubeFilter: CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={View={View=[[EQUAL - REGULATORY-EU], [EQUAL - REGULATORY-JFSA-NHI], [EQUAL - REGULATORY-JFSA-NSC], [EQUAL - REGULATORY-USA], [EQUAL - REGULATORY-UKFSA]]}}, subCubeTrees={View={View=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@7c7e2a7a}}],hash=1141194390]
-  
+
   Additional properties:
   ---------------------
     Continuous: false
     Range sharing: 1000000
     Missed prefetches: WARN
     Cache: capacity=0, size=0
-  
+
   Planning:
   --------
     Planning time: 0ms
       Execution context creation time: 0ms
     Planning finalization time: 12ms
-  
+
   Execution:
   ---------
     Total query execution time: 18062ms
-  
+
   Query plan:
   ----------
   Retrieval #0: BitmapPrimitiveAggregatesRetrieval
@@ -476,31 +475,31 @@ const INPUTS = [
   -------------------
     ActivePivot: ActivePivotVersion [id=VaR, epoch=59]
     RetrieverActivePivotAggregatesRetriever : Standard aggregates retriever on cube VaR
-  
+
   Context values:
   --------------
     ISubCubeProperties: null
     IBranch: null
     IAsOfEpoch: null
     ICubeFilter: CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={View={View=[[EQUAL - REGULATORY-EU], [EQUAL - REGULATORY-JFSA-NHI], [EQUAL - REGULATORY-JFSA-NSC], [EQUAL - REGULATORY-USA], [EQUAL - REGULATORY-UKFSA]]}}, subCubeTrees={View={View=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@7c7e2a7a}}],hash=1141194390]
-  
+
   Additional properties:
   ---------------------
     Continuous: false
     Range sharing: 1000000
     Missed prefetches: WARN
     Cache: capacity=0, size=0
-  
+
   Planning:
   --------
     Planning time: 0ms
       Execution context creation time: 0ms
     Planning finalization time: 12ms
-  
+
   Execution:
   ---------
     Total query execution time: 18062ms
-  
+
   Query plan:
   ----------
   Retrieval #0: BitmapPrimitiveAggregatesRetrieval
@@ -557,6 +556,7 @@ const INPUTS = [
   }`
 ];
 
+/**
 const main = async () => {
   const v1Structure = await parseV1(INPUTS[1], () => {});
   console.log(v1Structure);
