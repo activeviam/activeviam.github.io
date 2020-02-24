@@ -327,6 +327,7 @@ const convertToV2 = v1Structure => {
 
 export { parseV1, convertToV2 };
 
+/**
 const INPUTS = [
   `General information:
   -------------------
@@ -556,7 +557,6 @@ const INPUTS = [
   }`
 ];
 
-/**
 const main = async () => {
   const v1Structure = await parseV1(INPUTS[1], () => {});
   console.log(v1Structure);
