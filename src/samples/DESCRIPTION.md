@@ -142,7 +142,25 @@ This query hits a distributed ActivePivot, that is an ActivePivot instance that 
 
 This plan illustrates that we can have many plans in a single request.
 
-## Other files
+## _larger-distributed-query.json_ 
 
-_larger-distributed-query.json_ and _larger-distribution-query2.json_ provide more complex outputs, involving more operations and many underlying ActivePivots.
+MDX Query: `SELECT NON EMPTY Crossjoin( { [Measures].[AV_EstimatedMarginRate(Initial)], [Measures].[AV_EstimatedMarginRate(Reco)], [Measures].[AV_EstimatedMarginRate(Final)] }, Hierarchize( DrilldownLevel( [Date].[Week].[ALL].[AllMember] ) ) ) ON COLUMNS, NON EMPTY Hierarchize( DrilldownLevel( [Store].[AV_Store_Name].[ALL].[AllMember] ) ) ON ROWS FROM ( SELECT Filter( [Product].[AV_Prod_Brand].[AV_Prod_Brand].Members, [Measures].[RawWebPriceIndexByPair_14] >= 10 And [Measures].[RawWebPriceIndexByPair_14] <= 350 ) ON COLUMNS FROM ( SELECT Filter( [Store].[AV_Store_Name].[AV_Store_Name].Members, [Store].[AV_Store_Name].CurrentMember.MEMBER_CAPTION < \"Store 129\" ) ON COLUMNS FROM ( SELECT TopPercent( Filter( [CompetitorStore].[AV_CompetitorStoreId].Levels( 1 ).Members, NOT IsEmpty( [Measures].[AV_Turnover] ) ), 50, [Measures].[AV_Turnover] ) ON COLUMNS FROM [AllData] ) ) ) CELL PROPERTIES VALUE, FORMATTED_VALUE, BACK_COLOR, FORE_COLOR, FONT_FLAGS`
+
+This query involves a series of filters, executed as sub-queries over multiple MDX passes, and requiring many Data Cubes.
+
+It is interesting to note that the query has several distinct MDX passes: "SelectPass_0", "SubSelectPass_1", etc and that
+some of those do not involve any underlying operations in the query plan - see "SubSelectPass_2". This happens when the
+MDX engine, interpreting the query is performing alone operations on the previous results, without the need for any
+additional information.
+
+Basic idea of the query: Display some margins on Sales per stores and weeks. The stores are restricted per caption and
+we applied two filters on some aggregated results:
+ - we only consider the competitors that are responsible for 50% of the Turnover of clients
+ - we only consider products whose prices are between 10 and 350 €
+
+## _larger-distribution-query2.json_ 
+
+MDX Query: `SELECT NON EMPTY { [Measures].[AV_CurrentPriceIndex(Final)], [Measures].[RawWebPriceIndexByPair_14], [Measures].[AV_FinalPrice.AVG], [Measures].[AV_Turnover] } ON COLUMNS, NON EMPTY Crossjoin( Hierarchize( DrilldownLevel( [CompetitorStore].[AV_CompetitorStore_Name].[ALL].[AllMember] ) ), Hierarchize( DrilldownLevel( [Product].[AV_Prod_Brand].[ALL].[AllMember] ) ) ) ON ROWS FROM [AllData] CELL PROPERTIES VALUE, FORMATTED_VALUE, BACK_COLOR, FORE_COLOR, FONT_FLAGS`
+
+This query targets a Query cube relying on many underlying data cubes. We can see 4 remote Cubes contacted to execute the query.
 
