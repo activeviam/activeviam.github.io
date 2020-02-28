@@ -64,9 +64,9 @@ const nodesDeepness = query => {
 };
 
 // Set timing info to UnitTime for whole json object
-const fillTimingInfo = json => {
-  json.data.forEach(query => setTimeToUnit(query));
-  json.data.forEach(query => {
+const fillTimingInfo = data => {
+  data.forEach(query => setTimeToUnit(query));
+  data.forEach(query => {
     const deepness = nodesDeepness(query);
     query.retrievals.forEach(retr => {
       retr.timingInfo.startTime = [deepness[retr.retrId]];

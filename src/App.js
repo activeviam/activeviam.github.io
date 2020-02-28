@@ -5,7 +5,6 @@ import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
 import parseJson from "./helpers/jsonToD3Data";
 import { parseV1, convertToV2 } from "./helpers/v1tov2";
-import { fillTimingInfo } from "./helpers/fillTimingInfo";
 
 // QUERY JSON IMPORTS
 // import json from "./samples/basic-query.json";
@@ -38,7 +37,6 @@ class App extends Component {
     let data = null;
     if (mode === "json") {
       const json = JSON.parse(input);
-      fillTimingInfo(json);
       data = parseJson(json);
     } else if (mode === "v1") {
       data = convertToV2(parseV1(input));

@@ -1,3 +1,5 @@
+import { fillTimingInfo } from "./fillTimingInfo";
+
 const runTime = retrievals =>
   // Returns the biggest elapsed time in the graph, ie the total runtime of the graph
   Math.max(
@@ -58,6 +60,7 @@ const getLinks = dependencies => {
     values.forEach(value => {
       if (key !== "-1") {
         links.push({
+          // TODO: fix source target not taking into account the fact we removed some retrievals
           source: parseInt(key, 10),
           target: value,
           id: `${key}-${value}`
@@ -68,10 +71,41 @@ const getLinks = dependencies => {
   return links;
 };
 
+const filterEmptyTimingInfo = data => {
+  return data.map(query => {
+    const {
+      planInfo,
+      dependencies: dependenciesToFilter,
+      retrievals: retrievalsToFilter
+    } = query;
+
+    const retrIdToRemove = retrievalsToFilter
+      .filter(retrieval => Object.entries(retrieval.timingInfo).length === 0)
+      .map(retrieval => retrieval.retrId);
+
+    const retrievals = retrievalsToFilter.filter(
+      retrieval => Object.entries(retrieval.timingInfo).length > 0
+    );
+    const dependencies = Object.fromEntries(
+      Object.entries(dependenciesToFilter).map(([key, values]) => [
+        key,
+        values.filter(value => !retrIdToRemove.includes(value))
+      ])
+    );
+
+    return { planInfo, dependencies, retrievals };
+  });
+};
+
 const parseJson = jsonObject => {
-  const { data: queries } = jsonObject;
+  const { data } = jsonObject;
+  const queries = filterEmptyTimingInfo(data);
+  fillTimingInfo(queries);
+  // const queries = data;
+
   const res = queries.map((query, queryId) => {
     const { planInfo, dependencies, retrievals } = query;
+
     const nodes = getNodes(dependencies, retrievals, queryId);
     const links = getLinks(dependencies);
     return {
