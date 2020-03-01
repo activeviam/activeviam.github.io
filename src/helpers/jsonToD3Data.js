@@ -8,6 +8,10 @@ const runTime = retrievals =>
     )
   );
 
+const indexInRetrievals = (retrievals, id) =>
+  // some retrievals might be missing so retrId != retrievals[retrId]
+  retrievals.findIndex(retrieval => retrieval.retrId === parseInt(id, 10));
+
 const getNodes = (dependencies, retrievals) => {
   // ratio of the total runtime of the graph and the height of the SGV
   const ratio = 500 / runTime(retrievals);
@@ -54,15 +58,14 @@ const getNodes = (dependencies, retrievals) => {
     .sort((a, b) => a.id - b.id);
 };
 
-const getLinks = dependencies => {
+const getLinks = (dependencies, retrievals) => {
   const links = [];
   Object.entries(dependencies).forEach(([key, values]) =>
     values.forEach(value => {
       if (key !== "-1") {
         links.push({
-          // TODO: fix source target not taking into account the fact we removed some retrievals
-          source: parseInt(key, 10),
-          target: value,
+          source: indexInRetrievals(retrievals, key),
+          target: indexInRetrievals(retrievals, value),
           id: `${key}-${value}`
         });
       }
@@ -101,13 +104,12 @@ const parseJson = jsonObject => {
   const { data } = jsonObject;
   const queries = filterEmptyTimingInfo(data);
   fillTimingInfo(queries);
-  // const queries = data;
 
   const res = queries.map((query, queryId) => {
     const { planInfo, dependencies, retrievals } = query;
 
     const nodes = getNodes(dependencies, retrievals, queryId);
-    const links = getLinks(dependencies);
+    const links = getLinks(dependencies, retrievals);
     return {
       id: queryId,
       parentId: null,
