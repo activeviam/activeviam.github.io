@@ -110,10 +110,10 @@ const filterEmptyTimingInfo = data => {
   });
 };
 
-const parseJson = jsonObject => {
+const parseJson = (jsonObject, type = "default") => {
   const { data } = jsonObject;
   const queries = filterEmptyTimingInfo(data);
-  fillTimingInfo(queries);
+  if (type === "fillTimingInfo") fillTimingInfo(queries);
 
   const res = queries.map((query, queryId) => {
     const { planInfo, dependencies, retrievals } = query;

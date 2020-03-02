@@ -7,16 +7,19 @@ class Input extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      input: ""
+      input: "",
+      type: "default"
     };
   }
 
+  checkRadio = type => () => this.setState({ type });
+
   submitJson = () => {
-    this.props.passInput("json", this.state.input);
+    this.props.passInput("json", this.state.type, this.state.input);
   };
 
   submitV1 = () => {
-    this.props.passInput("v1", this.state.input);
+    this.props.passInput("v1", this.state.type, this.state.input);
   };
 
   render() {
@@ -29,6 +32,27 @@ class Input extends Component {
             onChange={event => this.setState({ input: event.target.value })}
           />
         </Form.Group>
+
+        <div key="inline-radio" className="mb-3">
+          <Form.Check
+            inline
+            label="Default"
+            type="radio"
+            id="inline-radio -1"
+            onClick={this.checkRadio("default")}
+            // defaultChecked
+            checked={this.state.type === "default"}
+          />
+          <Form.Check
+            inline
+            label="Fill Timing Info"
+            type="radio"
+            id="inline-radio -2"
+            onClick={this.checkRadio("fillTimingInfo")}
+            checked={this.state.type === "fillTimingInfo"}
+          />
+        </div>
+
         <Button variant="primary" onClick={this.submitJson}>
           Import from Json
         </Button>

@@ -33,11 +33,11 @@ class App extends Component {
     };
   }
 
-  passInput = (mode, input) => {
+  passInput = (mode, type, input) => {
     let data = null;
     if (mode === "json") {
       const json = JSON.parse(input);
-      data = parseJson(json);
+      data = parseJson(json, type);
     } else if (mode === "v1") {
       data = convertToV2(parseV1(input));
     }
