@@ -4,12 +4,10 @@ const runTime = retrievals =>
   // Returns the biggest elapsed time in the graph, ie the total runtime of the graph
   Math.max(
     ...retrievals.map(retrieval => {
-      if (retrieval.fakeStartTime !== undefined) {
-        return retrieval.fakeStartTime + 1;
-      }
-      return (
-        retrieval.timingInfo.elapsedTime[0] + retrieval.timingInfo.startTime[0]
-      );
+      const { fakeStartTime, timingInfo } = retrieval;
+      if (fakeStartTime !== undefined) return retrieval.fakeStartTime + 1;
+      const { elapsedTime = [0], startTime = [0] } = timingInfo;
+      return elapsedTime[0] + startTime[0];
     })
   );
 
@@ -35,8 +33,9 @@ const getNodes = (dependencies, retrievals) => {
         measures,
         partitioning
       } = retrieval;
-      const realStart = Math.min(...timingInfo.startTime);
-      const realElapsed = Math.max(...timingInfo.elapsedTime);
+      const { elapsedTime = [0], startTime = [0] } = timingInfo;
+      const realStart = Math.min(...startTime);
+      const realElapsed = Math.max(...elapsedTime);
 
       const start = fakeStartTime !== undefined ? fakeStartTime : realStart;
       const elapsed = fakeStartTime !== undefined ? 1 : realElapsed;
@@ -112,8 +111,8 @@ const filterEmptyTimingInfo = data => {
 
 const parseJson = (jsonObject, type = "default") => {
   const { data } = jsonObject;
-  const queries = filterEmptyTimingInfo(data);
-  if (type === "fillTimingInfo") fillTimingInfo(queries);
+  const queries = type === "dev" ? data : filterEmptyTimingInfo(data);
+  if (type === "fillTimingInfo" || type === "dev") fillTimingInfo(queries);
 
   const res = queries.map((query, queryId) => {
     const { planInfo, dependencies, retrievals } = query;

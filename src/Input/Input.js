@@ -38,7 +38,6 @@ class Input extends Component {
             inline
             label="Default"
             type="radio"
-            id="inline-radio -1"
             onChange={this.checkRadio("default")}
             checked={this.state.type === "default"}
           />
@@ -46,9 +45,15 @@ class Input extends Component {
             inline
             label="Fill Timing Info"
             type="radio"
-            id="inline-radio -2"
             onChange={this.checkRadio("fillTimingInfo")}
             checked={this.state.type === "fillTimingInfo"}
+          />
+          <Form.Check
+            inline
+            label="Developer"
+            type="radio"
+            onChange={this.checkRadio("dev")}
+            checked={this.state.type === "dev"}
           />
         </div>
 
