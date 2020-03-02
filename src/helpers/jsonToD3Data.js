@@ -3,9 +3,14 @@ import { fillTimingInfo } from "./fillTimingInfo";
 const runTime = retrievals =>
   // Returns the biggest elapsed time in the graph, ie the total runtime of the graph
   Math.max(
-    ...retrievals.map(
-      x => x.timingInfo.elapsedTime[0] + x.timingInfo.startTime[0]
-    )
+    ...retrievals.map(retrieval => {
+      if (retrieval.fakeStartTime !== undefined) {
+        return retrieval.fakeStartTime + 1;
+      }
+      return (
+        retrieval.timingInfo.elapsedTime[0] + retrieval.timingInfo.startTime[0]
+      );
+    })
   );
 
 const indexInRetrievals = (retrievals, id) =>
@@ -24,13 +29,18 @@ const getNodes = (dependencies, retrievals) => {
       const {
         retrId,
         timingInfo,
+        fakeStartTime,
         type,
         measureProvider,
         measures,
         partitioning
       } = retrieval;
-      const start = Math.min(...timingInfo.startTime);
-      const elapsed = Math.max(...timingInfo.elapsedTime);
+      const realStart = Math.min(...timingInfo.startTime);
+      const realElapsed = Math.max(...timingInfo.elapsedTime);
+
+      const start = fakeStartTime !== undefined ? fakeStartTime : realStart;
+      const elapsed = fakeStartTime !== undefined ? 1 : realElapsed;
+
       const radius = (elapsed * ratio) / 2;
       return {
         // id: `${queryId}-${retrId}`, // TODO: see if nodes need a different id
@@ -39,8 +49,8 @@ const getNodes = (dependencies, retrievals) => {
         childrenIds: [],
         isSelected: false,
         details: {
-          startTime: start,
-          elapsedTime: elapsed,
+          startTime: realStart,
+          elapsedTime: realElapsed,
           type,
           measureProvider,
           measures,

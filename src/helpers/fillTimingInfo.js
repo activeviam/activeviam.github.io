@@ -1,12 +1,6 @@
-const UnitTime = {
-  startTime: [0],
-  elapsedTime: [1]
-};
-
-// Set timing info to UnitTime for all retrievals
 const setTimeToUnit = query => {
   query.retrievals.forEach(retr => {
-    retr.timingInfo = { ...UnitTime };
+    retr.fakeStartTime = 0;
   });
 };
 
@@ -40,10 +34,10 @@ const nodesDeepness = query => {
   while (next.length !== 0) {
     temp = [];
     const isPb = node => {
-      const X = invDep[node].filter(y => next.includes(y)).length === 0
-      const Y = invDep[node].filter(y => nodes.includes(y)).length === 0
+      const X = invDep[node].filter(y => next.includes(y)).length === 0;
+      const Y = invDep[node].filter(y => nodes.includes(y)).length === 0;
       return X && Y;
-    }
+    };
     next.forEach(n => {
       if (isPb(n)) {
         temp.push(n);
@@ -69,7 +63,7 @@ const fillTimingInfo = data => {
   data.forEach(query => {
     const deepness = nodesDeepness(query);
     query.retrievals.forEach(retr => {
-      retr.timingInfo.startTime = [deepness[retr.retrId]];
+      retr.fakeStartTime = [deepness[retr.retrId]][0];
     });
   });
 };
