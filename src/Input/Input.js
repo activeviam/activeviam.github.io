@@ -39,8 +39,7 @@ class Input extends Component {
             label="Default"
             type="radio"
             id="inline-radio -1"
-            onClick={this.checkRadio("default")}
-            // defaultChecked
+            onChange={this.checkRadio("default")}
             checked={this.state.type === "default"}
           />
           <Form.Check
@@ -48,7 +47,7 @@ class Input extends Component {
             label="Fill Timing Info"
             type="radio"
             id="inline-radio -2"
-            onClick={this.checkRadio("fillTimingInfo")}
+            onChange={this.checkRadio("fillTimingInfo")}
             checked={this.state.type === "fillTimingInfo"}
           />
         </div>
