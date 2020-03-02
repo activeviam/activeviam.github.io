@@ -1,12 +1,21 @@
+import { fillTimingInfo } from "./fillTimingInfo";
+
 const runTime = retrievals =>
   // Returns the biggest elapsed time in the graph, ie the total runtime of the graph
-  // Math.max(...retrievals.map(x => x.timingInfo.elapsedTime[0]));
   Math.max(
-    ...retrievals.map(x => {
-      const { elapsedTime = [0], startTime = [0] } = x.timingInfo;
-      return elapsedTime[0] + startTime[0];
+    ...retrievals.map(retrieval => {
+      if (retrieval.fakeStartTime !== undefined) {
+        return retrieval.fakeStartTime + 1;
+      }
+      return (
+        retrieval.timingInfo.elapsedTime[0] + retrieval.timingInfo.startTime[0]
+      );
     })
   );
+
+const indexInRetrievals = (retrievals, id) =>
+  // some retrievals might be missing so retrId != retrievals[retrId]
+  retrievals.findIndex(retrieval => retrieval.retrId === parseInt(id, 10));
 
 const getNodes = (dependencies, retrievals) => {
   // ratio of the total runtime of the graph and the height of the SGV
@@ -20,15 +29,19 @@ const getNodes = (dependencies, retrievals) => {
       const {
         retrId,
         timingInfo,
+        fakeStartTime,
         type,
         measureProvider,
         measures,
         partitioning
       } = retrieval;
-      const { startTime = [0], elapsedTime = [0] } = timingInfo;
-      const start = Math.min(...startTime);
-      const elapsed = Math.max(...elapsedTime);
-      const radius = ((elapsed - start) * ratio) / 2;
+      const realStart = Math.min(...timingInfo.startTime);
+      const realElapsed = Math.max(...timingInfo.elapsedTime);
+
+      const start = fakeStartTime !== undefined ? fakeStartTime : realStart;
+      const elapsed = fakeStartTime !== undefined ? 1 : realElapsed;
+
+      const radius = (elapsed * ratio) / 2;
       return {
         // id: `${queryId}-${retrId}`, // TODO: see if nodes need a different id
         id: retrId,
@@ -36,15 +49,15 @@ const getNodes = (dependencies, retrievals) => {
         childrenIds: [],
         isSelected: false,
         details: {
-          startTime: start,
-          elapsedTime: elapsed,
+          startTime: realStart,
+          elapsedTime: realElapsed,
           type,
           measureProvider,
           measures,
           partitioning
         },
         radius,
-        yFixed: ((start + elapsed) / 2) * ratio + margin,
+        yFixed: (start + elapsed / 2) * ratio + margin,
         status: dependencies[-1].includes(retrId)
           ? "root"
           : dependencies[retrId]
@@ -55,14 +68,14 @@ const getNodes = (dependencies, retrievals) => {
     .sort((a, b) => a.id - b.id);
 };
 
-const getLinks = dependencies => {
+const getLinks = (dependencies, retrievals) => {
   const links = [];
   Object.entries(dependencies).forEach(([key, values]) =>
     values.forEach(value => {
       if (key !== "-1") {
         links.push({
-          source: parseInt(key, 10),
-          target: parseInt(value, 10),
+          source: indexInRetrievals(retrievals, key),
+          target: indexInRetrievals(retrievals, value),
           id: `${key}-${value}`
         });
       }
@@ -71,12 +84,42 @@ const getLinks = dependencies => {
   return links;
 };
 
-const parseJson = jsonObject => {
-  const { data: queries } = jsonObject;
+const filterEmptyTimingInfo = data => {
+  return data.map(query => {
+    const {
+      planInfo,
+      dependencies: dependenciesToFilter,
+      retrievals: retrievalsToFilter
+    } = query;
+
+    const retrIdToRemove = retrievalsToFilter
+      .filter(retrieval => Object.entries(retrieval.timingInfo).length === 0)
+      .map(retrieval => retrieval.retrId);
+
+    const retrievals = retrievalsToFilter.filter(
+      retrieval => Object.entries(retrieval.timingInfo).length > 0
+    );
+    const dependencies = Object.fromEntries(
+      Object.entries(dependenciesToFilter).map(([key, values]) => [
+        key,
+        values.filter(value => !retrIdToRemove.includes(value))
+      ])
+    );
+
+    return { planInfo, dependencies, retrievals };
+  });
+};
+
+const parseJson = (jsonObject, type = "default") => {
+  const { data } = jsonObject;
+  const queries = filterEmptyTimingInfo(data);
+  if (type === "fillTimingInfo") fillTimingInfo(queries);
+
   const res = queries.map((query, queryId) => {
     const { planInfo, dependencies, retrievals } = query;
+
     const nodes = getNodes(dependencies, retrievals, queryId);
-    const links = getLinks(dependencies);
+    const links = getLinks(dependencies, retrievals);
     return {
       id: queryId,
       parentId: null,

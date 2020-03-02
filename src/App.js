@@ -33,10 +33,11 @@ class App extends Component {
     };
   }
 
-  passInput = async (mode, input) => {
+  passInput = async (mode, type, input) => {
     let data = null;
     if (mode === "json") {
-      data = parseJson(JSON.parse(input));
+      const json = JSON.parse(input);
+      data = parseJson(json, type);
     } else if (mode === "v1") {
       const v1Structure = await parseV1(input, () => {});
       data = parseJson({ data: convertToV2(v1Structure) });

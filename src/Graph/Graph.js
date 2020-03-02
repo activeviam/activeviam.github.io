@@ -61,7 +61,6 @@ class Graph extends Component {
     d3Graph.call(
       d3.zoom().on("zoom", () => {
         this.props.clickNode(null);
-        // TODO: close popup when clicking on svg background
         return d3
           .select("svg")
           .select("g")
