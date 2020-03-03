@@ -17,16 +17,10 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    // To display graph from imported json
-    // const data = parseJson(json);
-    // const defaultPage = "graph";
-
-    // To copy/paste graph;
-    const data = null;
     const defaultPage = "input";
     this.state = {
       router: defaultPage,
-      allQueries: data,
+      allQueries: [],
       currentQueryId: 0,
       selectedNodeId: null,
       restartGraph: false
@@ -71,16 +65,30 @@ class App extends Component {
 
   render() {
     const { allQueries, currentQueryId, restartGraph, router } = this.state;
-    let currentNodes = [];
-    let currentLinks = [];
-    if (allQueries !== null) {
-      const currentQuery = allQueries[currentQueryId];
-      currentNodes = currentQuery.nodes;
-      currentLinks = currentQuery.links;
-    }
+    const {
+      nodes: currentNodes = [],
+      links: currentLinks = [],
+      parentId: currentParentId = null
+    } = allQueries[currentQueryId] || {};
+
     return (
       <>
-        <NavBar navigate={dir => this.setState({ router: dir })} dataIsEmpty />
+        <NavBar
+          navigate={dir => this.setState({ router: dir })}
+          dataIsEmpty
+          goBackButton={
+            currentParentId !== null ? (
+              <input
+                className="btn btn-outline-light float-right"
+                type="button"
+                value="Go Back To Parent Query"
+                onClick={() => this.changeGraph(currentParentId)}
+              />
+            ) : (
+              <></>
+            )
+          }
+        />
         <main role="main" className="container-fluid px-0">
           {router === "input" && <Input passInput={this.passInput} />}
           {router === "graph" && !restartGraph && (
