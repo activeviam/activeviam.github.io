@@ -4,12 +4,12 @@ const setTimeToUnit = query => {
   });
 };
 
-const nodesDeepness = query => {
+const invertDependencies = dep => {
   const invDep = {};
-  Object.keys(query.dependencies).forEach(X => {
+  Object.keys(dep).forEach(X => {
     const x = parseInt(X, 10);
     if (x !== -1) {
-      query.dependencies[x].forEach(y => {
+      dep[x].forEach(y => {
         if (invDep[y]) {
           invDep[y].push(x);
         } else {
@@ -18,6 +18,11 @@ const nodesDeepness = query => {
       });
     }
   });
+  return invDep;
+};
+
+const nodesDeepness = query => {
+  const invDep = invertDependencies(query.dependencies);
   const deep = {};
   let nodes = Object.values(query.dependencies).flat(2);
   nodes = nodes.filter((a, b) => nodes.indexOf(a) === b);
@@ -68,4 +73,4 @@ const fillTimingInfo = data => {
   });
 };
 
-export { fillTimingInfo, setTimeToUnit };
+export { fillTimingInfo, setTimeToUnit, nodesDeepness, invertDependencies };

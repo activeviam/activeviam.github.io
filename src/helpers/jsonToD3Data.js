@@ -1,4 +1,5 @@
 import { fillTimingInfo } from "./fillTimingInfo";
+import criticalPath from "./criticalPath";
 
 const runTime = retrievals =>
   // Returns the biggest elapsed time in the graph, ie the total runtime of the graph
@@ -11,6 +12,16 @@ const runTime = retrievals =>
     })
   );
 
+const elapsedTimeExtrems = retrievals => {
+  const elapsed = retrievals.map(retr =>
+    Math.max(...retr.timingInfo.elapsedTime)
+  );
+  return {
+    max: Math.max(...elapsed),
+    min: Math.min(...elapsed)
+  };
+};
+
 const indexInRetrievals = (retrievals, id) =>
   // some retrievals might be missing so retrId != retrievals[retrId]
   retrievals.findIndex(retrieval => retrieval.retrId === parseInt(id, 10));
@@ -18,7 +29,9 @@ const indexInRetrievals = (retrievals, id) =>
 const getNodes = (dependencies, retrievals) => {
   // ratio of the total runtime of the graph and the height of the SGV
   const ratio = 500 / runTime(retrievals);
+  // const ratio = 100;
   const margin = 10;
+  const extr = elapsedTimeExtrems(retrievals);
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object. Finally sorts nodes by
   // their id because the links are order dependant.
@@ -40,7 +53,11 @@ const getNodes = (dependencies, retrievals) => {
       const start = fakeStartTime !== undefined ? fakeStartTime : realStart;
       const elapsed = fakeStartTime !== undefined ? 1 : realElapsed;
 
-      const radius = (elapsed * ratio) / 2;
+      const alpha = (realElapsed - extr.min) / (extr.max - extr.min);
+      const radius =
+        fakeStartTime !== undefined
+          ? alpha * 100 + (1 - alpha) * 50
+          : (realElapsed * ratio) / 2;
       return {
         // id: `${queryId}-${retrId}`, // TODO: see if nodes need a different id
         id: retrId,
@@ -75,7 +92,8 @@ const getLinks = (dependencies, retrievals) => {
         links.push({
           source: indexInRetrievals(retrievals, key),
           target: indexInRetrievals(retrievals, value),
-          id: `${key}-${value}`
+          id: `${key}-${value}`,
+          critical: false
         });
       }
     })
@@ -119,6 +137,7 @@ const parseJson = (jsonObject, type = "default") => {
 
     const nodes = getNodes(dependencies, retrievals, queryId);
     const links = getLinks(dependencies, retrievals);
+    criticalPath(query, links);
     return {
       id: queryId,
       parentId: null,
