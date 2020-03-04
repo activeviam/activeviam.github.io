@@ -61,10 +61,12 @@ const nodesDeepness = query => {
 const fillTimingInfo = data => {
   data.forEach(query => setTimeToUnit(query));
   data.forEach(query => {
-    const deepness = nodesDeepness(query);
-    query.retrievals.forEach(retr => {
-      retr.fakeStartTime = [deepness[retr.retrId]][0];
-    });
+    if (query.retrievals.length > 0) {
+      const deepness = nodesDeepness(query);
+      query.retrievals.forEach(retr => {
+        retr.fakeStartTime = [deepness[retr.retrId]][0];
+      });
+    }
   });
 };
 
