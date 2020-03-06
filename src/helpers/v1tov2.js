@@ -312,44 +312,73 @@ const createRetrievalMap = (v1Structure, filters) => {
   });
 };
 
+const reverseDependencies = dependencies => {
+  return Object.keys(dependencies)
+    .map(i => parseInt(i, 10))
+    .reduce((acc, parent) => {
+      return dependencies[parent]
+        .map(i => parseInt(i, 10))
+        .reduce((a, id) => {
+          let set = a.get(id);
+          if (!set) {
+            set = new Set();
+            a.set(id, set);
+          }
+          set.add(parent);
+          return a;
+        }, acc);
+    }, new Map());
+};
+
+const computeFakeStart = (id, retrievals, dependencies) => {
+  const start = Math.max(
+    ...dependencies[id].map(
+      i => retrievals.get(parseInt(i, 10)).timingInfo.startTime[0]
+    )
+  );
+  return start + 10;
+};
+
 const setSimulatedTimeInfo = (retrievals, dependencies) => {
+  const dependents = reverseDependencies(dependencies);
+  const retrMap = retrievals.reduce((acc, r) => {
+    acc.set(r.retrId, r);
+    return acc;
+  }, new Map());
+
   // Set a default duration
   retrievals.forEach(r => {
     if (!r.type.includes("NoOp")) {
       r.timingInfo.elapsedTime = [10];
+      const count = dependencies[r.retrId] || 0;
+      r.timingInfo.startTime = [-count];
     }
   });
 
-  // const timings = new Map();
-  // retrievals
-  //   .filter(r => dependencies[r.id] === undefined)
-  //   .forEach(r => {
-  //     r.timingInfo.startTime = [0];
-  //     timings.set(r.id, 0);
-  //   });
-  // const queue = Array.from(timings.keys());
-  // while (queue.length > 0) {
-  //   const id = queue.unshift();
-  //   const nextTiming = timings.get(id) + 10;
-  //   Object.keys(dependencies)
-  //     .filter(did => dependencies[did].includes(id))
-  //     .forEach(did => {
-  //       const parent = retrievals.find(r => r.id === did);
-  //       if (parent.timingInfo.startTime) {
-  //         const parentTiming = Math.max(
-  //           nextTiming,
-  //           parent.timingInfo.startTime[0]
-  //         );
-  //         timings.set(did, parentTiming);
-  //         parent.timingInfo.startTime[0] = parentTiming;
-  //       } else {
-  //         timings.set(did, nextTiming);
-  //         parent.timingInfo.startTime = [nextTiming];
-  //       }
+  const queue = retrievals
+    .filter(r => !r.type.includes("NoOp") && r.timingInfo.startTime[0] === 0)
+    .map(r => r.retrId);
+  let safeCount = 0;
+  while (queue.length > 0) {
+    if (safeCount > 5000) {
+      console.log("oops. Too much");
+      return;
+    }
+    safeCount += 1;
 
-  //       queue.push(did);
-  //     });
-  // }
+    const id = queue.unshift();
+    dependents.get(id).forEach(did => {
+      const parent = retrMap.get(did);
+      if (--parent.timingInfo.startTime[0] === 0) {
+        parent.timingInfo.startTime[0] = computeFakeStart(
+          did,
+          retrMap,
+          dependencies
+        );
+        queue.push(did);
+      }
+    });
+  }
 };
 
 const convertToV2 = v1Structure => {
