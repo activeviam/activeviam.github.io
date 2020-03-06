@@ -128,7 +128,8 @@ const mapping = {
   "Additional properties:": parseProps,
   "Planning:": parseTotalTime,
   "Execution:": parseExecution,
-  "Query plan:": parseLine
+  "Query plan:": parseLine,
+  "Query Plan Summary:": () => {} // No-op
 };
 
 const parseDefault = (state, line) => {
@@ -223,7 +224,7 @@ const createDependencyList = v1Structure => {
 
 const DIMENSION_EXPR = /([\w\s]+)@([\w\s]+):([\w\s\\]+)=(.+)/;
 const parseLocation = location => {
-  if (location === undefined) {
+  if (location === undefined || location === "GRAND TOTAL") {
     return [];
   }
 
@@ -311,10 +312,51 @@ const createRetrievalMap = (v1Structure, filters) => {
   });
 };
 
+const setSimulatedTimeInfo = (retrievals, dependencies) => {
+  // Set a default duration
+  retrievals.forEach(r => {
+    if (!r.type.includes("NoOp")) {
+      r.timingInfo.elapsedTime = [10];
+    }
+  });
+
+  // const timings = new Map();
+  // retrievals
+  //   .filter(r => dependencies[r.id] === undefined)
+  //   .forEach(r => {
+  //     r.timingInfo.startTime = [0];
+  //     timings.set(r.id, 0);
+  //   });
+  // const queue = Array.from(timings.keys());
+  // while (queue.length > 0) {
+  //   const id = queue.unshift();
+  //   const nextTiming = timings.get(id) + 10;
+  //   Object.keys(dependencies)
+  //     .filter(did => dependencies[did].includes(id))
+  //     .forEach(did => {
+  //       const parent = retrievals.find(r => r.id === did);
+  //       if (parent.timingInfo.startTime) {
+  //         const parentTiming = Math.max(
+  //           nextTiming,
+  //           parent.timingInfo.startTime[0]
+  //         );
+  //         timings.set(did, parentTiming);
+  //         parent.timingInfo.startTime[0] = parentTiming;
+  //       } else {
+  //         timings.set(did, nextTiming);
+  //         parent.timingInfo.startTime = [nextTiming];
+  //       }
+
+  //       queue.push(did);
+  //     });
+  // }
+};
+
 const convertToV2 = v1Structure => {
   const dependencies = createDependencyList(v1Structure);
   const queryFilters = createFilterMap(v1Structure);
   const retrievals = createRetrievalMap(v1Structure, queryFilters);
+  setSimulatedTimeInfo(retrievals, dependencies);
   return [
     {
       planInfo: v1Structure.info,
