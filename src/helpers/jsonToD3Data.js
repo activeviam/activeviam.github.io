@@ -71,17 +71,17 @@ const getNodes = (dependencies, retrievals) => {
 
 const getLinks = (dependencies, retrievals) => {
   const links = [];
-  Object.entries(dependencies).forEach(([key, values]) =>
-    values.forEach(value => {
-      if (key !== "-1") {
+  Object.entries(dependencies).forEach(([key, values]) => {
+    if (key !== "-1") {
+      values.forEach(value => {
         links.push({
           source: indexInRetrievals(retrievals, key),
           target: indexInRetrievals(retrievals, value),
           id: `${key}-${value}`
         });
-      }
-    })
-  );
+      });
+    }
+  });
   return links;
 };
 
