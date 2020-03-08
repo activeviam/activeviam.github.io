@@ -332,9 +332,9 @@ const reverseDependencies = dependencies => {
 
 const computeFakeStart = (id, retrievals, dependencies) => {
   const start = Math.max(
-    ...dependencies[id].map(
-      i => retrievals.get(parseInt(i, 10)).timingInfo.startTime[0]
-    )
+    ...dependencies[id]
+      .map(i => retrievals.get(parseInt(i, 10)).timingInfo)
+      .map(({ startTime }) => (startTime ? startTime[0] : 0))
   );
   return start + 10;
 };
@@ -356,7 +356,7 @@ const setSimulatedTimeInfo = (retrievals, dependencies) => {
   });
 
   const queue = retrievals
-    .filter(r => !r.type.includes("NoOp") && r.timingInfo.startTime[0] === 0)
+    .filter(r => r.type.includes("NoOp") || r.timingInfo.startTime[0] === 0)
     .map(r => r.retrId);
   let safeCount = 0;
   // debugger;
@@ -381,13 +381,22 @@ const setSimulatedTimeInfo = (retrievals, dependencies) => {
       }
     });
   }
+
+  const incomplete = retrievals
+    .filter(r => r.timingInfo.startTime && r.timingInfo.startTime[0] < 0)
+    .map(r => r.retrId);
+  if (incomplete.length > 0) {
+    throw new Error(`Remaining retrievals without timings: ${incomplete}`);
+  }
 };
 
 const convertToV2 = v1Structure => {
   const dependencies = createDependencyList(v1Structure);
   const queryFilters = createFilterMap(v1Structure);
   const retrievals = createRetrievalMap(v1Structure, queryFilters);
-  setSimulatedTimeInfo(retrievals, dependencies);
+  if (retrievals[0].timingInfo.startTime === undefined) {
+    setSimulatedTimeInfo(retrievals, dependencies);
+  }
   debugger;
   return [
     {
