@@ -74,11 +74,15 @@ const getLinks = (dependencies, retrievals) => {
   Object.entries(dependencies).forEach(([key, values]) => {
     if (key !== "-1") {
       values.forEach(value => {
-        links.push({
-          source: indexInRetrievals(retrievals, key),
-          target: indexInRetrievals(retrievals, value),
-          id: `${key}-${value}`
-        });
+        const target = indexInRetrievals(retrievals, value);
+        if (target !== -1) {
+          // The target may have been filtered (NoOp)
+          links.push({
+            source: indexInRetrievals(retrievals, key),
+            target,
+            id: `${key}-${value}`
+          });
+        }
       });
     }
   });
