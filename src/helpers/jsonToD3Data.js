@@ -11,9 +11,11 @@ const runTime = retrievals =>
     })
   );
 
-const indexInRetrievals = (retrievals, id) =>
+const indexInRetrievals = (retrievals, strId) => {
+  const id = parseInt(strId, 10);
   // some retrievals might be missing so retrId != retrievals[retrId]
-  retrievals.findIndex(retrieval => retrieval.retrId === parseInt(id, 10));
+  return retrievals.findIndex(retrieval => retrieval.retrId === id);
+};
 
 const getNodes = (dependencies, retrievals) => {
   // ratio of the total runtime of the graph and the height of the SGV
