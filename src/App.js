@@ -5,13 +5,7 @@ import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
 import parseJson from "./helpers/jsonToD3Data";
 import { parseV1, convertToV2 } from "./helpers/v1tov2";
-
-// QUERY JSON IMPORTS
-// import json from "./samples/basic-query.json";
-// import json from "./samples/distributed-query.json";
-// import json from "./samples/minimal-query.json";
-// import json from "./samples/larger-distributed-query.json";
-// import json from "./samples/larger-distribution-query2.json";
+import queryServer from "./helpers/server";
 
 class App extends Component {
   constructor(props) {
@@ -31,6 +25,9 @@ class App extends Component {
     let data = null;
     if (mode === "json") {
       const json = JSON.parse(input);
+      data = parseJson(json, type);
+    } else if (mode === "url") {
+      const json = await queryServer(input);
       data = parseJson(json, type);
     } else if (mode === "v1") {
       const v1Structure = await parseV1(input, () => {});
