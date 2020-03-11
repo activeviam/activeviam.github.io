@@ -11,14 +11,30 @@ const runTime = retrievals =>
     })
   );
 
+const computeRadius = elapsed => {
+  switch (true) {
+    case elapsed < 10:
+      return 25;
+    case elapsed < 50:
+      return 50;
+    default:
+      return 100;
+  }
+};
+
+const computeYFixed = (start, elapsed, ratio) => {
+  const margin = 20;
+  return (start + elapsed / 2) * ratio + margin;
+};
+
 const indexInRetrievals = (retrievals, id) =>
   // some retrievals might be missing so retrId != retrievals[retrId]
   retrievals.findIndex(retrieval => retrieval.retrId === parseInt(id, 10));
 
 const getNodes = (dependencies, retrievals) => {
   // ratio of the total runtime of the graph and the height of the SGV
-  const ratio = 500 / runTime(retrievals);
-  const margin = 10;
+  const ratio = 1000 / runTime(retrievals);
+  // const margin = 10;
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object. Finally sorts nodes by
   // their id because the links are order dependant.
@@ -35,12 +51,17 @@ const getNodes = (dependencies, retrievals) => {
       } = retrieval;
       const { elapsedTime = [0], startTime = [0] } = timingInfo;
       const realStart = Math.min(...startTime);
-      const realElapsed = Math.max(...elapsedTime);
+      const realEnd = Math.max(
+        ...startTime.map((start, i) => start + elapsedTime[i])
+      );
+      const realElapsed = realEnd - realStart;
 
-      const start = fakeStartTime !== undefined ? fakeStartTime : realStart;
-      const elapsed = fakeStartTime !== undefined ? 1 : realElapsed;
+      const start =
+        fakeStartTime !== undefined ? fakeStartTime * 10 : realStart;
+      const elapsed = fakeStartTime !== undefined ? 10 : realElapsed;
 
-      const radius = (elapsed * ratio) / 2;
+      const radius = computeRadius(elapsed);
+      const yFixed = computeYFixed(start, elapsed, ratio);
       return {
         // id: `${queryId}-${retrId}`, // TODO: see if nodes need a different id
         id: retrId,
@@ -56,12 +77,12 @@ const getNodes = (dependencies, retrievals) => {
           partitioning
         },
         radius,
-        yFixed: (start + elapsed / 2) * ratio + margin,
+        yFixed,
         status: dependencies[-1].includes(retrId)
-          ? "root"
+          ? "leaf"
           : dependencies[retrId]
           ? null
-          : "leaf"
+          : "root"
       };
     })
     .sort((a, b) => a.id - b.id);
@@ -83,6 +104,7 @@ const getLinks = (dependencies, retrievals) => {
   return links;
 };
 
+// Remove nodes without timing info
 const filterEmptyTimingInfo = data => {
   return data.map(query => {
     const {
