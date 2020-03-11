@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
-const NavBar = ({ dataIsEmpty, navigate }) => {
+const NavBar = ({ dataIsEmpty, navigate, goBackButton }) => {
   // noinspection CheckTagEmptyBody jsx-a11y/anchor-is-valid
   return (
     <Navbar bg="dark" variant="dark">
@@ -27,13 +27,15 @@ const NavBar = ({ dataIsEmpty, navigate }) => {
           Timeline
         </Nav.Link>
       </Nav>
+      <Nav className="ml-auto">{goBackButton}</Nav>
     </Navbar>
   );
 };
 
 NavBar.propTypes = {
   dataIsEmpty: PropTypes.bool.isRequired,
-  navigate: PropTypes.func.isRequired
+  navigate: PropTypes.func.isRequired,
+  goBackButton: PropTypes.element.isRequired
 };
 
 export default NavBar;

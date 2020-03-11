@@ -33,7 +33,7 @@ const indexInRetrievals = (retrievals, id) =>
 
 const getNodes = (dependencies, retrievals) => {
   // ratio of the total runtime of the graph and the height of the SGV
-  const ratio = 1000 / runTime(retrievals);
+  const ratio = 500 / runTime(retrievals);
   // const margin = 10;
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object. Finally sorts nodes by
