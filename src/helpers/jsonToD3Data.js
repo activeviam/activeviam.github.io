@@ -1,4 +1,5 @@
 import { fillTimingInfo } from "./fillTimingInfo";
+import criticalPath from "./criticalPath";
 
 const runTime = retrievals =>
   // Returns the biggest elapsed time in the graph, ie the total runtime of the graph
@@ -11,15 +12,16 @@ const runTime = retrievals =>
     })
   );
 
-const computeRadius = elapsed => {
-  switch (true) {
-    case elapsed < 10:
-      return 25;
-    case elapsed < 50:
-      return 50;
-    default:
-      return 100;
-  }
+const computeRadius = (elapsed, ratio) => {
+  // switch (true) {
+  //   case elapsed < 10:
+  //     return 25;
+  //   case elapsed < 50:
+  //     return 50;
+  //   default:
+  //     return 100;
+  // }
+  return (elapsed * ratio) / 2;
 };
 
 const computeYFixed = (start, elapsed, ratio) => {
@@ -60,7 +62,7 @@ const getNodes = (dependencies, retrievals) => {
         fakeStartTime !== undefined ? fakeStartTime * 10 : realStart;
       const elapsed = fakeStartTime !== undefined ? 10 : realElapsed;
 
-      const radius = computeRadius(elapsed);
+      const radius = computeRadius(elapsed, ratio);
       const yFixed = computeYFixed(start, elapsed, ratio);
       return {
         // id: `${queryId}-${retrId}`, // TODO: see if nodes need a different id
@@ -96,7 +98,8 @@ const getLinks = (dependencies, retrievals) => {
         links.push({
           source: indexInRetrievals(retrievals, key),
           target: indexInRetrievals(retrievals, value),
-          id: `${key}-${value}`
+          id: `${key}-${value}`,
+          critical: false
         });
       }
     })
@@ -141,6 +144,7 @@ const parseJson = (jsonObject, type = "default") => {
 
     const nodes = getNodes(dependencies, retrievals, queryId);
     const links = getLinks(dependencies, retrievals);
+    criticalPath(query, links);
     return {
       id: queryId,
       parentId: null,

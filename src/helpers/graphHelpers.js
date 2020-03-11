@@ -1,7 +1,7 @@
 const enterLink = selection => {
   selection
     .attr("stroke-width", 6)
-    .style("stroke", "#1B1978")
+    .style("stroke", d => (d.critical ? "#b30000" : "#1B1978"))
     .style("opacity", ".8");
 };
 

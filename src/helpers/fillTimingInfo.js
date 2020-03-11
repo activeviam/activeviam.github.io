@@ -34,6 +34,7 @@ const invertDependencies = dep => {
 };
 
 const nodesDeepness = query => {
+  if (query.retrievals.length === 0) return null;
   const { dependencies } = query;
   const invDependencies = invertDependencies(dependencies);
   const deepness = {
@@ -77,4 +78,4 @@ const fillTimingInfo = data => {
   });
 };
 
-export { fillTimingInfo, setTimeToUnit };
+export { fillTimingInfo, setTimeToUnit, nodesDeepness, invertDependencies };
