@@ -9,13 +9,12 @@ class Input extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      input:
-        "SELECT {[Measures].[contributors.COUNT]} on 0 from [EquityDerivativesCube]",
+      input: "",
       type: "default",
       urlMode: false,
-      username: "admin",
-      password: "admin",
-      url: "http://localhost:9090"
+      username: "",
+      password: "",
+      url: ""
     };
   }
 
