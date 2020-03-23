@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
-const NavBar = ({ dataIsEmpty, navigate, goBackButton }) => {
-  // noinspection CheckTagEmptyBody jsx-a11y/anchor-is-valid
+const NavBar = ({ navigate, goBackButton }) => {
   return (
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand href="">QueryViz</Navbar.Brand>
@@ -14,14 +13,12 @@ const NavBar = ({ dataIsEmpty, navigate, goBackButton }) => {
         </Nav.Link>
         <Nav.Link
           href=""
-          // disabled={dataIsEmpty}
           onClick={() => navigate("graph")}
         >
           Graph
         </Nav.Link>
         <Nav.Link
           href=""
-          // disabled={dataIsEmpty}
           onClick={() => navigate("timeline")}
         >
           Timeline
@@ -33,7 +30,6 @@ const NavBar = ({ dataIsEmpty, navigate, goBackButton }) => {
 };
 
 NavBar.propTypes = {
-  dataIsEmpty: PropTypes.bool.isRequired,
   navigate: PropTypes.func.isRequired,
   goBackButton: PropTypes.element.isRequired
 };

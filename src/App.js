@@ -34,6 +34,7 @@ class App extends Component {
       currentQueryId: 0,
       router: "graph"
     });
+    console.log(data);
   };
 
   changeGraph = childId => {
@@ -56,6 +57,19 @@ class App extends Component {
     });
   };
 
+  goBackToParentQueryButton = currentParentId => {
+    return currentParentId !== null ? (
+      <input
+        className="btn btn-outline-light float-right"
+        type="button"
+        value="Go Back To Parent Query"
+        onClick={() => this.changeGraph(currentParentId)}
+      />
+    ) : (
+      <></>
+    );
+  };
+
   render() {
     const { allQueries, currentQueryId, restartGraph, router } = this.state;
     const {
@@ -69,18 +83,7 @@ class App extends Component {
         <NavBar
           navigate={dir => this.setState({ router: dir })}
           dataIsEmpty
-          goBackButton={
-            currentParentId !== null ? (
-              <input
-                className="btn btn-outline-light float-right"
-                type="button"
-                value="Go Back To Parent Query"
-                onClick={() => this.changeGraph(currentParentId)}
-              />
-            ) : (
-              <></>
-            )
-          }
+          goBackButton={this.goBackToParentQueryButton(currentParentId)}
         />
         <main role="main" className="container-fluid px-0">
           {router === "input" && <Input passInput={this.passInput} />}

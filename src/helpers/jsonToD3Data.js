@@ -143,6 +143,7 @@ const parseJson = (jsonObject, type = "default") => {
 
   const res = queries.map((query, queryId) => {
     const { planInfo, dependencies, retrievals } = query;
+    const { clusterMemberId, mdxPass } = planInfo;
 
     const nodes = getNodes(dependencies, retrievals, queryId);
     const links = getLinks(dependencies, retrievals);
@@ -150,7 +151,8 @@ const parseJson = (jsonObject, type = "default") => {
     return {
       id: queryId,
       parentId: null,
-      name: planInfo.clusterMemberId,
+      pass: parseInt(mdxPass.split("_")[1], 10),
+      name: clusterMemberId,
       nodes,
       links
     };
