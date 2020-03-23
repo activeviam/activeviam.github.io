@@ -15,13 +15,14 @@ class App extends Component {
       router: defaultPage,
       allQueries: [],
       currentQueryId: 0,
+      currentPassId: 0,
       selectedNodeId: null,
       restartGraph: false
     };
   }
 
   passInput = async (mode, type, input) => {
-    let data = null;
+    let data = [];
     if (mode === "json") {
       const json = JSON.parse(input);
       data = parseJson(json, type);
@@ -31,15 +32,24 @@ class App extends Component {
     }
     this.setState({
       allQueries: data,
-      currentQueryId: 0,
+      currentQueryId: data
+        .filter(query => query.pass === 0)
+        .find(query => query.parentId === null).id,
       router: "graph"
     });
-    console.log(data);
   };
 
   changeGraph = childId => {
     this.clickNode(this.state.selectedNodeId); // Easy way to un-click the current clicked node to prevent bug
     this.setState({ currentQueryId: childId, restartGraph: true });
+  };
+
+  changePass = passId => {
+    const { allQueries } = this.state;
+    const newQueryId = allQueries
+      .filter(query => query.pass === passId)
+      .find(query => query.parentId === null).id;
+    this.changeGraph(newQueryId);
   };
 
   clickNode = id => {
