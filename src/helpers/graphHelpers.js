@@ -16,7 +16,7 @@ const updateLink = selection => {
 const enterNode = selection => {
   selection
     .select("circle")
-    .attr("r", d => Math.sqrt(d.radius) * 4)
+    .attr("r", d => Math.max(Math.sqrt(d.radius) * 4, 10))
     .style("fill", d =>
       d.status === "root"
         ? "#FFD500"

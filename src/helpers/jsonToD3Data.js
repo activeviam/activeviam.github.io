@@ -49,7 +49,8 @@ const getNodes = (dependencies, retrievals) => {
         type,
         measureProvider,
         measures,
-        partitioning
+        partitioning,
+        location
       } = retrieval;
       const { elapsedTime = [0], startTime = [0] } = timingInfo;
       const realStart = Math.min(...startTime);
@@ -76,7 +77,8 @@ const getNodes = (dependencies, retrievals) => {
           type,
           measureProvider,
           measures,
-          partitioning
+          partitioning,
+          location
         },
         radius,
         yFixed,
