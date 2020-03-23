@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
+import { NavDropdown } from "react-bootstrap";
 import Input from "./Input/Input";
 import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
@@ -50,6 +51,7 @@ class App extends Component {
       .filter(query => query.pass === passId)
       .find(query => query.parentId === null).id;
     this.changeGraph(newQueryId);
+    this.setState({ currentPassId: passId });
   };
 
   clickNode = id => {
@@ -68,20 +70,49 @@ class App extends Component {
   };
 
   goBackToParentQueryButton = currentParentId => {
-    return currentParentId !== null ? (
-      <input
-        className="btn btn-outline-light float-right"
-        type="button"
-        value="Go Back To Parent Query"
-        onClick={() => this.changeGraph(currentParentId)}
-      />
-    ) : (
-      <></>
+    if (currentParentId !== null) {
+      return (
+        <input
+          className="btn btn-outline-light ml-3"
+          type="button"
+          value="Go Back To Parent Query"
+          onClick={() => this.changeGraph(currentParentId)}
+        />
+      );
+    }
+    return <></>;
+  };
+
+  passChooser = (allQueries, currentPassId) => {
+    const allPassIds = [...new Set(allQueries.map(query => query.pass))].sort(
+      (a, b) => a - b
     );
+    if (allPassIds.length > 1) {
+      return (
+        <NavDropdown title="Pass number" id="basic-nav-dropdown" alignRight>
+          {allPassIds.map(passId => (
+            <NavDropdown.Item
+              as="button"
+              active={passId === currentPassId}
+              onClick={() => this.changePass(passId)}
+            >
+              {passId}
+            </NavDropdown.Item>
+          ))}
+        </NavDropdown>
+      );
+    }
+    return <></>;
   };
 
   render() {
-    const { allQueries, currentQueryId, restartGraph, router } = this.state;
+    const {
+      allQueries,
+      currentQueryId,
+      currentPassId,
+      restartGraph,
+      router
+    } = this.state;
     const {
       nodes: currentNodes = [],
       links: currentLinks = [],
@@ -94,6 +125,7 @@ class App extends Component {
           navigate={dir => this.setState({ router: dir })}
           dataIsEmpty
           goBackButton={this.goBackToParentQueryButton(currentParentId)}
+          passChooser={this.passChooser(allQueries, currentPassId)}
         />
         <main role="main" className="container-fluid px-0">
           {router === "input" && <Input passInput={this.passInput} />}
