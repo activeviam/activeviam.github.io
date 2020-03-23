@@ -6,13 +6,6 @@ import NavBar from "./NavBar";
 import parseJson from "./helpers/jsonToD3Data";
 import { parseV1, convertToV2 } from "./helpers/v1tov2";
 
-// QUERY JSON IMPORTS
-// import json from "./samples/basic-query.json";
-// import json from "./samples/distributed-query.json";
-// import json from "./samples/minimal-query.json";
-// import json from "./samples/larger-distributed-query.json";
-// import json from "./samples/larger-distribution-query2.json";
-
 class App extends Component {
   constructor(props) {
     super(props);
