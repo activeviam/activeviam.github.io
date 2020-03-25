@@ -1,17 +1,11 @@
 import React, { Component } from "react";
 import "./App.css";
+import { NavDropdown } from "react-bootstrap";
 import Input from "./Input/Input";
 import Graph from "./Graph/Graph";
 import NavBar from "./NavBar";
 import parseJson from "./helpers/jsonToD3Data";
 import { parseV1, convertToV2 } from "./helpers/v1tov2";
-
-// QUERY JSON IMPORTS
-// import json from "./samples/basic-query.json";
-// import json from "./samples/distributed-query.json";
-// import json from "./samples/minimal-query.json";
-// import json from "./samples/larger-distributed-query.json";
-// import json from "./samples/larger-distribution-query2.json";
 
 class App extends Component {
   constructor(props) {
@@ -22,13 +16,14 @@ class App extends Component {
       router: defaultPage,
       allQueries: [],
       currentQueryId: 0,
+      currentPassId: 0,
       selectedNodeId: null,
       restartGraph: false
     };
   }
 
   passInput = async (mode, type, input) => {
-    let data = null;
+    let data = [];
     if (mode === "json") {
       const json = JSON.parse(input);
       data = parseJson(json, type);
@@ -38,7 +33,9 @@ class App extends Component {
     }
     this.setState({
       allQueries: data,
-      currentQueryId: 0,
+      currentQueryId: data
+        .filter(query => query.pass === 0)
+        .find(query => query.parentId === null).id,
       router: "graph"
     });
   };
@@ -46,6 +43,15 @@ class App extends Component {
   changeGraph = childId => {
     this.clickNode(this.state.selectedNodeId); // Easy way to un-click the current clicked node to prevent bug
     this.setState({ currentQueryId: childId, restartGraph: true });
+  };
+
+  changePass = passId => {
+    const { allQueries } = this.state;
+    const newQueryId = allQueries
+      .filter(query => query.pass === passId)
+      .find(query => query.parentId === null).id;
+    this.changeGraph(newQueryId);
+    this.setState({ currentPassId: passId });
   };
 
   clickNode = id => {
@@ -63,8 +69,50 @@ class App extends Component {
     });
   };
 
+  goBackToParentQueryButton = currentParentId => {
+    if (currentParentId !== null) {
+      return (
+        <input
+          className="btn btn-outline-light ml-3"
+          type="button"
+          value="Go Back To Parent Query"
+          onClick={() => this.changeGraph(currentParentId)}
+        />
+      );
+    }
+    return <></>;
+  };
+
+  passChooser = (allQueries, currentPassId) => {
+    const allPassIds = [...new Set(allQueries.map(query => query.pass))].sort(
+      (a, b) => a - b
+    );
+    if (allPassIds.length > 1) {
+      return (
+        <NavDropdown title="Pass number" id="basic-nav-dropdown" alignRight>
+          {allPassIds.map(passId => (
+            <NavDropdown.Item
+              as="button"
+              active={passId === currentPassId}
+              onClick={() => this.changePass(passId)}
+            >
+              {passId}
+            </NavDropdown.Item>
+          ))}
+        </NavDropdown>
+      );
+    }
+    return <></>;
+  };
+
   render() {
-    const { allQueries, currentQueryId, restartGraph, router } = this.state;
+    const {
+      allQueries,
+      currentQueryId,
+      currentPassId,
+      restartGraph,
+      router
+    } = this.state;
     const {
       nodes: currentNodes = [],
       links: currentLinks = [],
@@ -76,18 +124,8 @@ class App extends Component {
         <NavBar
           navigate={dir => this.setState({ router: dir })}
           dataIsEmpty
-          goBackButton={
-            currentParentId !== null ? (
-              <input
-                className="btn btn-outline-light float-right"
-                type="button"
-                value="Go Back To Parent Query"
-                onClick={() => this.changeGraph(currentParentId)}
-              />
-            ) : (
-              <></>
-            )
-          }
+          goBackButton={this.goBackToParentQueryButton(currentParentId)}
+          passChooser={this.passChooser(allQueries, currentPassId)}
         />
         <main role="main" className="container-fluid px-0">
           {router === "input" && <Input passInput={this.passInput} />}
