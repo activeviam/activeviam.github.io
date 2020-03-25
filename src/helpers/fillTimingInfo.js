@@ -15,7 +15,7 @@ const invertDependencies = dep => {
     done.push(son);
     if (dep[son]) {
       dep[son].forEach(parent => {
-        if (!done.includes(parent)) temp.push(parent);
+        if (!done.includes(parent) && !temp.includes(parent)) temp.push(parent);
         try {
           invDep[parent].push(son);
         } catch {

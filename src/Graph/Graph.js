@@ -22,16 +22,14 @@ class Graph extends Component {
 
     const force = d3
       .forceSimulation(nodes)
-      .force("charge", d3.forceManyBody().strength(-500))
-      .force("link", d3.forceLink(links).distance(90))
+      .force("charge", d3.forceManyBody().strength(-1000))
+      .force("link", d3.forceLink(links).strength(0.5))
       .force(
-        "center",
-        d3
-          .forceCenter()
-          .x(width / 2)
-          .y(height / 2)
+        "collide",
+        d3.forceCollide().radius(d => d.radius)
       )
-      .force("collide", d3.forceCollide([5]).iterations([5]));
+      .force("forceY", d3.forceY(d => d.yFixed).strength(1))
+      .force("forceX", d3.forceX(d => d.clusterId * width).strength(0.1));
 
     function dragStarted(d) {
       if (!d3.event.active) force.alphaTarget(0.3).restart();

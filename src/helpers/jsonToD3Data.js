@@ -1,5 +1,6 @@
 import { fillTimingInfo } from "./fillTimingInfo";
 import criticalPath from "./criticalPath";
+import addClustersToNodes from "./cluster";
 
 const runTime = retrievals =>
   // Returns the biggest elapsed time in the graph, ie the total runtime of the graph
@@ -60,7 +61,7 @@ const getNodes = (dependencies, retrievals) => {
       const realElapsed = realEnd - realStart;
 
       const start =
-        fakeStartTime !== undefined ? fakeStartTime * 10 : realStart;
+        fakeStartTime !== undefined ? fakeStartTime * 20 : realStart;
       const elapsed = fakeStartTime !== undefined ? 10 : realElapsed;
 
       const radius = computeRadius(elapsed, ratio);
@@ -147,6 +148,7 @@ const parseJson = (jsonObject, type = "default") => {
     const nodes = getNodes(dependencies, retrievals, queryId);
     const links = getLinks(dependencies, retrievals);
     criticalPath(query, links);
+    addClustersToNodes(query, nodes);
     return {
       id: queryId,
       parentId: null,
