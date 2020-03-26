@@ -2,9 +2,11 @@ import { fillTimingInfo } from "./fillTimingInfo";
 import criticalPath from "./criticalPath";
 import addClustersToNodes from "./cluster";
 
-const indexInRetrievals = (retrievals, id) =>
+const indexInRetrievals = (retrievals, strId) => {
+  const id = parseInt(strId, 10);
   // some retrievals might be missing so retrId != retrievals[retrId]
-  retrievals.findIndex(retrieval => retrieval.retrId === parseInt(id, 10));
+  return retrievals.findIndex(retrieval => retrieval.retrId === id);
+};
 
 const getNodes = (dependencies, retrievals) => {
   // Creates a Set containing all nodes present in the dependencies, then converts
@@ -60,18 +62,22 @@ const getNodes = (dependencies, retrievals) => {
 
 const getLinks = (dependencies, retrievals) => {
   const links = [];
-  Object.entries(dependencies).forEach(([key, values]) =>
-    values.forEach(value => {
-      if (key !== "-1") {
-        links.push({
-          source: indexInRetrievals(retrievals, key),
-          target: indexInRetrievals(retrievals, value),
-          id: `${key}-${value}`,
-          critical: false
-        });
-      }
-    })
-  );
+  Object.entries(dependencies).forEach(([key, values]) => {
+    if (key !== "-1") {
+      values.forEach(value => {
+        const target = indexInRetrievals(retrievals, value);
+        if (target !== -1) {
+          // The target may have been filtered (NoOp)
+          links.push({
+            source: indexInRetrievals(retrievals, key),
+            target,
+            id: `${key}-${value}`,
+            critical: false
+          });
+        }
+      });
+    }
+  });
   return links;
 };
 
