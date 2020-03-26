@@ -8,7 +8,7 @@ class Input extends Component {
     super(props);
     this.state = {
       input: "",
-      type: "default"
+      type: "fillTimingInfo"
     };
   }
 
@@ -34,13 +34,6 @@ class Input extends Component {
         </Form.Group>
 
         <div key="inline-radio" className="mb-3">
-          <Form.Check
-            inline
-            label="Default"
-            type="radio"
-            onChange={this.checkRadio("default")}
-            checked={this.state.type === "default"}
-          />
           <Form.Check
             inline
             label="Fill Timing Info"

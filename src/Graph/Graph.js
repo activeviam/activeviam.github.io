@@ -19,7 +19,7 @@ class Graph extends Component {
     const force = d3
       .forceSimulation(nodes)
       .force("charge", d3.forceManyBody().strength(-1000))
-      .force("link", d3.forceLink(links).strength(0.5))
+      .force("link", d3.forceLink(links).distance(150))
       .force(
         "collide",
         d3.forceCollide().radius(d => d.radius)
@@ -27,7 +27,7 @@ class Graph extends Component {
       .force("forceY", d3.forceY(d => d.yFixed).strength(1))
       .force(
         "forceX",
-        d3.forceX(d => d.clusterId * window.innerWidth).strength(0.1)
+        d3.forceX(d => (d.clusterId * window.innerWidth) / 2).strength(0.1)
       );
 
     function dragStarted(d) {
