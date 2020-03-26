@@ -1,15 +1,6 @@
 import { fillTimingInfo } from "./fillTimingInfo";
-
-const runTime = retrievals =>
-  // Returns the biggest elapsed time in the graph, ie the total runtime of the graph
-  Math.max(
-    ...retrievals.map(retrieval => {
-      const { fakeStartTime, timingInfo } = retrieval;
-      if (fakeStartTime !== undefined) return retrieval.fakeStartTime + 1;
-      const { elapsedTime = [0], startTime = [0] } = timingInfo;
-      return elapsedTime[0] + startTime[0];
-    })
-  );
+import criticalPath from "./criticalPath";
+import addClustersToNodes from "./cluster";
 
 const indexInRetrievals = (retrievals, strId) => {
   const id = parseInt(strId, 10);
@@ -18,9 +9,6 @@ const indexInRetrievals = (retrievals, strId) => {
 };
 
 const getNodes = (dependencies, retrievals) => {
-  // ratio of the total runtime of the graph and the height of the SGV
-  const ratio = 500 / runTime(retrievals);
-  const margin = 10;
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object. Finally sorts nodes by
   // their id because the links are order dependant.
@@ -33,16 +21,18 @@ const getNodes = (dependencies, retrievals) => {
         type,
         measureProvider,
         measures,
-        partitioning
+        partitioning,
+        location
       } = retrieval;
       const { elapsedTime = [0], startTime = [0] } = timingInfo;
       const realStart = Math.min(...startTime);
-      const realElapsed = Math.max(...elapsedTime);
+      const realEnd = Math.max(
+        ...startTime.map((start, i) => start + elapsedTime[i])
+      );
+      const realElapsed = realEnd - realStart;
 
-      const start = fakeStartTime !== undefined ? fakeStartTime : realStart;
-      const elapsed = fakeStartTime !== undefined ? 1 : realElapsed;
-
-      const radius = (elapsed * ratio) / 2;
+      const radius = 50;
+      const yFixed = fakeStartTime * 150;
       return {
         // id: `${queryId}-${retrId}`, // TODO: see if nodes need a different id
         id: retrId,
@@ -55,15 +45,16 @@ const getNodes = (dependencies, retrievals) => {
           type,
           measureProvider,
           measures,
-          partitioning
+          partitioning,
+          location
         },
         radius,
-        yFixed: (start + elapsed / 2) * ratio + margin,
+        yFixed,
         status: dependencies[-1].includes(retrId)
-          ? "root"
+          ? "leaf"
           : dependencies[retrId]
           ? null
-          : "leaf"
+          : "root"
       };
     })
     .sort((a, b) => a.id - b.id);
@@ -80,7 +71,8 @@ const getLinks = (dependencies, retrievals) => {
           links.push({
             source: indexInRetrievals(retrievals, key),
             target,
-            id: `${key}-${value}`
+            id: `${key}-${value}`,
+            critical: false
           });
         }
       });
@@ -89,6 +81,7 @@ const getLinks = (dependencies, retrievals) => {
   return links;
 };
 
+// Remove nodes without timing info
 const filterEmptyTimingInfo = data => {
   return data.map(query => {
     const {
@@ -115,20 +108,24 @@ const filterEmptyTimingInfo = data => {
   });
 };
 
-const parseJson = (jsonObject, type = "default") => {
+const parseJson = (jsonObject, type = "fillTimingInfo") => {
   const { data } = jsonObject;
   const queries = type === "dev" ? data : filterEmptyTimingInfo(data);
-  if (type === "fillTimingInfo" || type === "dev") fillTimingInfo(queries);
+  fillTimingInfo(queries);
 
   const res = queries.map((query, queryId) => {
     const { planInfo, dependencies, retrievals } = query;
+    const { clusterMemberId, mdxPass } = planInfo;
 
     const nodes = getNodes(dependencies, retrievals, queryId);
     const links = getLinks(dependencies, retrievals);
+    criticalPath(query, links);
+    addClustersToNodes(query, nodes);
     return {
       id: queryId,
       parentId: null,
-      name: planInfo.clusterMemberId,
+      pass: parseInt(mdxPass.split("_")[1], 10),
+      name: clusterMemberId,
       nodes,
       links
     };

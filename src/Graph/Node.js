@@ -31,29 +31,38 @@ class Node extends Component {
       node: { id: nodeId },
       clickNode
     } = this.props;
-    console.log(`${nodeId} been clicked`);
     clickNode(nodeId);
   }
 
   render() {
-    const { node, changeGraph } = this.props;
+    const { node, changeGraph, clickNode } = this.props;
     const { details, name, childrenIds, isSelected } = node;
     const {
       type,
       startTime,
       elapsedTime,
-      measureProvider,
       measures,
-      partitioning
+      partitioning,
+      location
     } = details;
     const popover = (
-      <Popover id="popover-basic">
-        <Popover.Title as="h3">{`${type} (#${name})`}</Popover.Title>
+      <Popover id="popover-basic" style={{ maxWidth: "800px" }}>
+        <Popover.Title as="h3">
+          {`${type} (#${name})`}
+          <button
+            type="button"
+            className="close"
+            aria-label="Close"
+            onClick={() => clickNode(null)}
+            value="&times;"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </Popover.Title>
         <Popover.Content>
           <ul>
             <li>Start: {startTime}</li>
             <li>Elapsed: {elapsedTime}</li>
-            <li>Measures provider: {measureProvider}</li>
             <li>
               Measures:
               <ul>
@@ -62,17 +71,32 @@ class Node extends Component {
                 ))}
               </ul>
             </li>
+            <li>
+              Locations:
+              <ul>
+                {location.map((l, key) => (
+                  <li key={key}>
+                    {l.dimension}@{l.hierarchy}
+                    {l.level.map((lev, i) => {
+                      return `:${lev}=${l.path[i]}`;
+                    })}
+                  </li>
+                ))}
+              </ul>
+            </li>
             <li>Partitioning: {partitioning}</li>
           </ul>
           {childrenIds.map(childId => (
-            <button
-              key={childId}
-              type="button"
-              className="btn btn-primary"
-              onClick={() => changeGraph(childId)}
-            >
-              Enter sub-query {childId}.
-            </button>
+            <>
+              <button
+                key={childId}
+                type="button"
+                className="btn btn-primary"
+                onClick={() => changeGraph(childId)}
+              >
+                Enter sub-query {childId}.
+              </button>{" "}
+            </>
           ))}
         </Popover.Content>
       </Popover>

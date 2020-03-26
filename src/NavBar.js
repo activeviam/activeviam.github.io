@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
-const NavBar = ({ dataIsEmpty, navigate, goBackButton }) => {
-  // noinspection CheckTagEmptyBody jsx-a11y/anchor-is-valid
+const NavBar = ({ navigate, goBackButton, passChooser }) => {
   return (
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand href="">QueryViz</Navbar.Brand>
@@ -12,30 +11,25 @@ const NavBar = ({ dataIsEmpty, navigate, goBackButton }) => {
         <Nav.Link href="" onClick={() => navigate("input")}>
           Input
         </Nav.Link>
-        <Nav.Link
-          href=""
-          // disabled={dataIsEmpty}
-          onClick={() => navigate("graph")}
-        >
+        <Nav.Link href="" onClick={() => navigate("graph")}>
           Graph
         </Nav.Link>
-        <Nav.Link
-          href=""
-          // disabled={dataIsEmpty}
-          onClick={() => navigate("timeline")}
-        >
+        <Nav.Link href="" onClick={() => navigate("timeline")}>
           Timeline
         </Nav.Link>
       </Nav>
-      <Nav className="ml-auto">{goBackButton}</Nav>
+      <Nav className="ml-auto">
+        {passChooser}
+        {goBackButton}
+      </Nav>
     </Navbar>
   );
 };
 
 NavBar.propTypes = {
-  dataIsEmpty: PropTypes.bool.isRequired,
   navigate: PropTypes.func.isRequired,
-  goBackButton: PropTypes.element.isRequired
+  goBackButton: PropTypes.element.isRequired,
+  passChooser: PropTypes.element.isRequired
 };
 
 export default NavBar;

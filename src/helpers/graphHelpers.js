@@ -1,22 +1,22 @@
 const enterLink = selection => {
   selection
     .attr("stroke-width", 6)
-    .style("stroke", "#1B1978")
+    .style("stroke", d => (d.critical ? "#b30000" : "#1B1978"))
     .style("opacity", ".8");
 };
 
 const updateLink = selection => {
   selection
     .attr("x1", d => d.source.x)
-    .attr("y1", d => d.source.yFixed)
+    .attr("y1", d => d.source.y)
     .attr("x2", d => d.target.x)
-    .attr("y2", d => d.target.yFixed);
+    .attr("y2", d => d.target.y);
 };
 
 const enterNode = selection => {
   selection
     .select("circle")
-    .attr("r", d => Math.sqrt(d.radius) * 4)
+    .attr("r", d => Math.max(Math.sqrt(d.radius) * 4, 10))
     .style("fill", d =>
       d.status === "root"
         ? "#FFD500"
@@ -35,7 +35,7 @@ const enterNode = selection => {
 
 const updateNode = selection => {
   selection
-    .attr("transform", d => `translate(${d.x},${d.yFixed})`)
+    .attr("transform", d => `translate(${d.x},${d.y})`)
     .select("circle")
     .style("stroke-width", d => (d.isSelected ? 3 : 1))
     .style("stroke", d => (d.isSelected ? "#2E2E2E" : "#BFBFBF"));
