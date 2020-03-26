@@ -69,6 +69,9 @@ const fillTimingInfo = data => {
   data.forEach(query => {
     if (query.retrievals.length > 0) {
       const deepness = nodesDeepness(query);
+      Object.keys(deepness).forEach(d => {
+        deepness[d] = deepness[d].map(id => parseInt(id, 10));
+      });
       query.retrievals.forEach(retr => {
         retr.fakeStartTime = Object.keys(deepness).filter(d =>
           deepness[d].includes(retr.retrId)

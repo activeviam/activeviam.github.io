@@ -135,10 +135,18 @@ const parseJson = (jsonObject, type = "fillTimingInfo") => {
     const links = getLinks(dependencies, retrievals);
     criticalPath(query, links);
     addClustersToNodes(query, nodes);
+
+    let passNumber = 0;
+    try {
+      passNumber = parseInt(mdxPass.split("_")[1], 10)
+    } catch {
+      // pass number is not explicited in mdxPass
+    }
+
     return {
       id: queryId,
       parentId: null,
-      pass: parseInt(mdxPass.split("_")[1], 10),
+      pass: passNumber,
       name: clusterMemberId,
       nodes,
       links

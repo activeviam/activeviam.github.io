@@ -37,7 +37,11 @@ const addClustersToNodes = (query, nodes) => {
   const clust = clusters(query.dependencies);
   Object.keys(clust).forEach((cl, id) => {
     clust[cl].forEach(node => {
-      nodes.find(n => n.id === node).clusterId = id;
+      try {
+        nodes.find(n => n.id === parseInt(node, 10)).clusterId = id;
+      } catch {
+        // node in dependencies but not in retrievals...
+      }
     });
   });
 };
