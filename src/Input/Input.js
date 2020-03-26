@@ -10,7 +10,7 @@ class Input extends Component {
     super(props);
     this.state = {
       input: this.props.lastInput,
-      type: "fillTimingInfo"
+      type: "fillTimingInfo",
       urlMode: false,
       username: "",
       password: "",
