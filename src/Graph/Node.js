@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import Popover from "react-bootstrap/Popover";
 import Overlay from "react-bootstrap/Overlay";
+import Button from "react-bootstrap/Button";
 import { nodeType } from "../types";
 import { enterNode, updateNode } from "../helpers/graphHelpers";
 
@@ -35,7 +36,7 @@ class Node extends Component {
   }
 
   render() {
-    const { node, changeGraph } = this.props;
+    const { node, changeGraph, clickNode } = this.props;
     const { details, name, childrenIds, isSelected } = node;
     const {
       type,
@@ -47,7 +48,16 @@ class Node extends Component {
     } = details;
     const popover = (
       <Popover id="popover-basic" style={{ maxWidth: "800px" }}>
-        <Popover.Title as="h3">{`${type} (#${name})`}</Popover.Title>
+        <Popover.Title as="h3">
+          {`${type} (#${name})`}
+          <Button
+            onClick={() => clickNode(null)}
+            style={{ float: "right" }}
+            variant="Light"
+          >
+            X
+          </Button>
+        </Popover.Title>
         <Popover.Content>
           <ul>
             <li>Start: {startTime}</li>
