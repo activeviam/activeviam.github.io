@@ -1,3 +1,22 @@
+// Node border is a different color if it has subqueries
+const outlineColor = d => {
+  if (d.isSelected) {
+    return "#2E2E2E";
+  }
+  if (d.childrenIds.length === 0) {
+    return "#BFBFBF";
+  }
+  // node has subqueries
+  return "#E0281C";
+};
+
+// Node color varies
+// yellow if node depends on no one
+// orange if is output
+// blue otherwise
+const insideColor = d =>
+  d.status === "root" ? "#FFD500" : d.status === "leaf" ? "#FC5400" : "#3A83C0";
+
 const enterLink = selection => {
   selection
     .attr("stroke-width", 6)
@@ -17,15 +36,9 @@ const enterNode = selection => {
   selection
     .select("circle")
     .attr("r", d => Math.max(Math.sqrt(d.radius) * 4, 10))
-    .style("fill", d =>
-      d.status === "root"
-        ? "#FFD500"
-        : d.status === "leaf"
-        ? "#FC5400"
-        : "#3A83C0"
-    )
+    .style("fill", d => insideColor(d))
     .style("stroke-width", d => (d.isSelected ? 3 : 1))
-    .style("stroke", d => (d.isSelected ? "#2E2E2E" : "#BFBFBF"));
+    .style("stroke", d => outlineColor(d));
 
   selection
     .select("text")
@@ -38,7 +51,7 @@ const updateNode = selection => {
     .attr("transform", d => `translate(${d.x},${d.y})`)
     .select("circle")
     .style("stroke-width", d => (d.isSelected ? 3 : 1))
-    .style("stroke", d => (d.isSelected ? "#2E2E2E" : "#BFBFBF"));
+    .style("stroke", d => outlineColor(d));
 };
 
 const updateGraph = selection => {
