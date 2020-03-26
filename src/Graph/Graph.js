@@ -7,31 +7,28 @@ import Link from "./Link";
 import Node from "./Node";
 import { updateGraph } from "../helpers/graphHelpers";
 
-// TODO: fix dynamic change of height and width
-const width = window.innerWidth;
-const height = window.innerHeight - 56;
-
 class Graph extends Component {
   componentDidMount() {
     const { nodes, links } = this.props;
 
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
-      .attr("width", width)
-      .attr("height", height);
+      .attr("width", window.innerWidth)
+      .attr("height", window.innerHeight - 56);
 
     const force = d3
       .forceSimulation(nodes)
-      .force("charge", d3.forceManyBody().strength(-500))
-      .force("link", d3.forceLink(links).distance(90))
+      .force("charge", d3.forceManyBody().strength(-1000))
+      .force("link", d3.forceLink(links).distance(150))
       .force(
-        "center",
-        d3
-          .forceCenter()
-          .x(width / 2)
-          .y(height / 2)
+        "collide",
+        d3.forceCollide().radius(d => d.radius)
       )
-      .force("collide", d3.forceCollide([5]).iterations([5]));
+      .force("forceY", d3.forceY(d => d.yFixed).strength(1))
+      .force(
+        "forceX",
+        d3.forceX(d => (d.clusterId * window.innerWidth) / 2).strength(0.1)
+      );
 
     function dragStarted(d) {
       if (!d3.event.active) force.alphaTarget(0.3).restart();
@@ -57,6 +54,12 @@ class Graph extends Component {
         .on("drag", dragging)
         .on("end", dragEnded)
     );
+
+    d3.select(window).on("resize", () => {
+      d3Graph
+        .attr("width", window.innerWidth)
+        .attr("height", window.innerHeight - 56);
+    });
 
     d3Graph.call(
       d3.zoom().on("zoom", () => {

@@ -2,22 +2,24 @@ import { nodesDeepness } from "./fillTimingInfo";
 
 const findTime = (query, node) => {
   const nodeId = parseInt(node, 10);
-  const elapsed = Math.max(
-    ...query.retrievals.find(x => x.retrId === nodeId).timingInfo.elapsedTime
-  );
+  let elapsed = 0;
+  try {
+    elapsed = Math.max(
+      ...query.retrievals.find(x => x.retrId === nodeId).timingInfo.elapsedTime
+    );
+  } catch {
+    // timingInfo is likely to be empty
+  }
   return elapsed;
 };
 
 const criticalPath = (query, links) => {
-  console.log("---");
-  console.log(query);
   if (query.retrievals.length < 2) return;
   const deep2nodes = nodesDeepness(query);
   const invDep = query.dependencies;
   const critical = {};
   let maxTime = 0;
   let maxNode = null;
-  console.log(deep2nodes);
   Object.keys(deep2nodes)
     .sort()
     .forEach(deep => {
@@ -51,7 +53,6 @@ const criticalPath = (query, links) => {
         }
       });
     });
-  console.log(maxNode);
   while (critical[maxNode].parent !== null) {
     const source = critical[maxNode].parent;
     const target = maxNode;
