@@ -4,7 +4,6 @@ import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import Popover from "react-bootstrap/Popover";
 import Overlay from "react-bootstrap/Overlay";
-import Button from "react-bootstrap/Button";
 import { nodeType } from "../types";
 import { enterNode, updateNode } from "../helpers/graphHelpers";
 
