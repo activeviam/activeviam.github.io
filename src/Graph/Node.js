@@ -50,13 +50,15 @@ class Node extends Component {
       <Popover id="popover-basic" style={{ maxWidth: "800px" }}>
         <Popover.Title as="h3">
           {`${type} (#${name})`}
-          <Button
+          <button
+            type="button"
+            className="close"
+            aria-label="Close"
             onClick={() => clickNode(null)}
-            style={{ float: "right" }}
-            variant="Light"
+            value="&times;"
           >
-            X
-          </Button>
+            <span aria-hidden="true">&times;</span>
+          </button>
         </Popover.Title>
         <Popover.Content>
           <ul>
