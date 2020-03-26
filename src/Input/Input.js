@@ -7,7 +7,7 @@ class Input extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      input: "",
+      input: this.props.lastInput,
       type: "fillTimingInfo"
     };
   }
@@ -29,6 +29,7 @@ class Input extends Component {
           <Form.Control
             as="textarea"
             rows="10"
+            defaultValue={this.props.lastInput}
             onChange={event => this.setState({ input: event.target.value })}
           />
         </Form.Group>
@@ -63,7 +64,8 @@ class Input extends Component {
 }
 
 Input.propTypes = {
-  passInput: PropTypes.func.isRequired
+  passInput: PropTypes.func.isRequired,
+  lastInput: PropTypes.string.isRequired
 };
 
 export default Input;
