@@ -97,7 +97,7 @@ class Input extends Component {
         <div key="inline-radio" className="mb-3">
           <Form.Check
             inline
-            label="Fill Timing Info"
+            label="Classic"
             type="radio"
             onChange={this.checkRadio("fillTimingInfo")}
             checked={this.state.type === "fillTimingInfo"}
