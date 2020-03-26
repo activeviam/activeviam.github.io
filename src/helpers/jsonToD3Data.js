@@ -8,6 +8,20 @@ const indexInRetrievals = (retrievals, strId) => {
   return retrievals.findIndex(retrieval => retrieval.retrId === id);
 };
 
+const computeRadius = elapsed => {
+  let radius = 0;
+  if (elapsed < 5) {
+    radius = 20;
+  } else if (elapsed < 20) {
+    radius = 35;
+  } else if (elapsed < 100) {
+    radius = 50;
+  } else {
+    radius = 65;
+  }
+  return radius;
+};
+
 const getNodes = (dependencies, retrievals) => {
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object. Finally sorts nodes by
@@ -31,7 +45,7 @@ const getNodes = (dependencies, retrievals) => {
       );
       const realElapsed = realEnd - realStart;
 
-      const radius = 50;
+      const radius = computeRadius(realElapsed);
       const yFixed = fakeStartTime * 150;
       return {
         // id: `${queryId}-${retrId}`, // TODO: see if nodes need a different id
