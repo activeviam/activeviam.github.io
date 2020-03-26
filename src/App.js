@@ -18,7 +18,8 @@ class App extends Component {
       currentQueryId: 0,
       currentPassId: 0,
       selectedNodeId: null,
-      restartGraph: false
+      restartGraph: false,
+      lastInput: ""
     };
   }
 
@@ -36,7 +37,8 @@ class App extends Component {
       currentQueryId: data
         .filter(query => query.pass === 0)
         .find(query => query.parentId === null).id,
-      router: "graph"
+      router: "graph",
+      lastInput: input
     });
   };
 
@@ -111,7 +113,8 @@ class App extends Component {
       currentQueryId,
       currentPassId,
       restartGraph,
-      router
+      router,
+      lastInput
     } = this.state;
     const {
       nodes: currentNodes = [],
@@ -128,7 +131,9 @@ class App extends Component {
           passChooser={this.passChooser(allQueries, currentPassId)}
         />
         <main role="main" className="container-fluid px-0">
-          {router === "input" && <Input passInput={this.passInput} />}
+          {router === "input" && (
+            <Input passInput={this.passInput} lastInput={lastInput} />
+          )}
           {router === "graph" && !restartGraph && (
             <Graph
               className="my-0"

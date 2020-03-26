@@ -7,8 +7,8 @@ class Input extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      input: "",
-      type: "default"
+      input: this.props.lastInput,
+      type: "fillTimingInfo"
     };
   }
 
@@ -29,18 +29,12 @@ class Input extends Component {
           <Form.Control
             as="textarea"
             rows="10"
+            defaultValue={this.props.lastInput}
             onChange={event => this.setState({ input: event.target.value })}
           />
         </Form.Group>
 
         <div key="inline-radio" className="mb-3">
-          <Form.Check
-            inline
-            label="Default"
-            type="radio"
-            onChange={this.checkRadio("default")}
-            checked={this.state.type === "default"}
-          />
           <Form.Check
             inline
             label="Fill Timing Info"
@@ -70,7 +64,8 @@ class Input extends Component {
 }
 
 Input.propTypes = {
-  passInput: PropTypes.func.isRequired
+  passInput: PropTypes.func.isRequired,
+  lastInput: PropTypes.string.isRequired
 };
 
 export default Input;

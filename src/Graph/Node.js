@@ -31,7 +31,6 @@ class Node extends Component {
       node: { id: nodeId },
       clickNode
     } = this.props;
-    console.log(`${nodeId} been clicked`);
     clickNode(nodeId);
   }
 

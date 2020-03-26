@@ -1,42 +1,12 @@
 import { fillTimingInfo } from "./fillTimingInfo";
 import criticalPath from "./criticalPath";
-
-const runTime = retrievals =>
-  // Returns the biggest elapsed time in the graph, ie the total runtime of the graph
-  Math.max(
-    ...retrievals.map(retrieval => {
-      const { fakeStartTime, timingInfo } = retrieval;
-      if (fakeStartTime !== undefined) return retrieval.fakeStartTime + 1;
-      const { elapsedTime = [0], startTime = [0] } = timingInfo;
-      return elapsedTime[0] + startTime[0];
-    })
-  );
-
-const computeRadius = (elapsed, ratio) => {
-  // switch (true) {
-  //   case elapsed < 10:
-  //     return 25;
-  //   case elapsed < 50:
-  //     return 50;
-  //   default:
-  //     return 100;
-  // }
-  return (elapsed * ratio) / 2;
-};
-
-const computeYFixed = (start, elapsed, ratio) => {
-  const margin = 20;
-  return (start + elapsed / 2) * ratio + margin;
-};
+import addClustersToNodes from "./cluster";
 
 const indexInRetrievals = (retrievals, id) =>
   // some retrievals might be missing so retrId != retrievals[retrId]
   retrievals.findIndex(retrieval => retrieval.retrId === parseInt(id, 10));
 
 const getNodes = (dependencies, retrievals) => {
-  // ratio of the total runtime of the graph and the height of the SGV
-  const ratio = 500 / runTime(retrievals);
-  // const margin = 10;
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object. Finally sorts nodes by
   // their id because the links are order dependant.
@@ -59,12 +29,8 @@ const getNodes = (dependencies, retrievals) => {
       );
       const realElapsed = realEnd - realStart;
 
-      const start =
-        fakeStartTime !== undefined ? fakeStartTime * 10 : realStart;
-      const elapsed = fakeStartTime !== undefined ? 10 : realElapsed;
-
-      const radius = computeRadius(elapsed, ratio);
-      const yFixed = computeYFixed(start, elapsed, ratio);
+      const radius = 50;
+      const yFixed = fakeStartTime * 150;
       return {
         // id: `${queryId}-${retrId}`, // TODO: see if nodes need a different id
         id: retrId,
@@ -136,10 +102,10 @@ const filterEmptyTimingInfo = data => {
   });
 };
 
-const parseJson = (jsonObject, type = "default") => {
+const parseJson = (jsonObject, type = "fillTimingInfo") => {
   const { data } = jsonObject;
   const queries = type === "dev" ? data : filterEmptyTimingInfo(data);
-  if (type === "fillTimingInfo" || type === "dev") fillTimingInfo(queries);
+  fillTimingInfo(queries);
 
   const res = queries.map((query, queryId) => {
     const { planInfo, dependencies, retrievals } = query;
@@ -148,6 +114,7 @@ const parseJson = (jsonObject, type = "default") => {
     const nodes = getNodes(dependencies, retrievals, queryId);
     const links = getLinks(dependencies, retrievals);
     criticalPath(query, links);
+    addClustersToNodes(query, nodes);
     return {
       id: queryId,
       parentId: null,
