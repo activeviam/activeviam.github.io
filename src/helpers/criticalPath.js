@@ -2,9 +2,14 @@ import { nodesDeepness } from "./fillTimingInfo";
 
 const findTime = (query, node) => {
   const nodeId = parseInt(node, 10);
-  const elapsed = Math.max(
-    ...query.retrievals.find(x => x.retrId === nodeId).timingInfo.elapsedTime
-  );
+  let elapsed = 0;
+  try {
+    elapsed = Math.max(
+      ...query.retrievals.find(x => x.retrId === nodeId).timingInfo.elapsedTime
+    );
+  } catch {
+    // timingInfo is likely to be empty
+  }
   return elapsed;
 };
 
