@@ -359,7 +359,6 @@ const setSimulatedTimeInfo = (retrievals, dependencies) => {
     .filter(r => r.type.includes("NoOp") || r.timingInfo.startTime[0] === 0)
     .map(r => r.retrId);
   let safeCount = 0;
-  // debugger;
   while (queue.length > 0) {
     if (safeCount > 5000) {
       console.log("oops. Too much");
@@ -369,7 +368,6 @@ const setSimulatedTimeInfo = (retrievals, dependencies) => {
 
     const id = queue.shift();
     dependents.get(id).forEach(did => {
-      // debugger;
       const parent = retrMap.get(did);
       if (did !== -1 && ++parent.timingInfo.startTime[0] === 0) {
         parent.timingInfo.startTime[0] = computeFakeStart(
@@ -397,7 +395,6 @@ const convertToV2 = v1Structure => {
   if (retrievals[0].timingInfo.startTime === undefined) {
     setSimulatedTimeInfo(retrievals, dependencies);
   }
-  debugger;
   return [
     {
       planInfo: v1Structure.info,
