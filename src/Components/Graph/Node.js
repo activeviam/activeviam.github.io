@@ -4,8 +4,8 @@ import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import Popover from "react-bootstrap/Popover";
 import Overlay from "react-bootstrap/Overlay";
-import { nodeType } from "../types";
-import { enterNode, updateNode } from "../helpers/graphHelpers";
+import { nodeType } from "../../types";
+import { enterNode, updateNode } from "../../helpers/graphHelpers";
 
 class Node extends Component {
   constructor(props) {

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
-import { enterLink, updateLink } from "../helpers/graphHelpers";
-import { linkType } from "../types";
+import { enterLink, updateLink } from "../../helpers/graphHelpers";
+import { linkType } from "../../types";
 
 class Link extends Component {
   componentDidMount() {

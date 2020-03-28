@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import "./App.css";
-import { NavDropdown } from "react-bootstrap";
-import Input from "./Input/Input";
-import Graph from "./Graph/Graph";
-import NavBar from "./NavBar";
+import Input from "./Components/Input/Input";
+import Graph from "./Components/Graph/Graph";
+import NavBar from "./Components/NavBar/NavBar";
 import parseJson from "./helpers/jsonToD3Data";
 import { parseV1, convertToV2 } from "./helpers/v1tov2";
 import queryServer from "./helpers/server";
+import goParentQueryButton from "./Components/NavBar/GoBackToParentQueryButton";
+import passChooser from "./Components/NavBar/PassChooser";
 
 class App extends Component {
   constructor(props) {
@@ -75,42 +75,6 @@ class App extends Component {
     });
   };
 
-  goBackToParentQueryButton = currentParentId => {
-    if (currentParentId !== null) {
-      return (
-        <input
-          className="btn btn-outline-light ml-3"
-          type="button"
-          value="Go Back To Parent Query"
-          onClick={() => this.changeGraph(currentParentId)}
-        />
-      );
-    }
-    return <></>;
-  };
-
-  passChooser = (allQueries, currentPassId) => {
-    const allPassIds = [...new Set(allQueries.map(query => query.pass))].sort(
-      (a, b) => a - b
-    );
-    if (allPassIds.length > 1) {
-      return (
-        <NavDropdown title="Pass number" id="basic-nav-dropdown" alignRight>
-          {allPassIds.map(passId => (
-            <NavDropdown.Item
-              as="button"
-              active={passId === currentPassId}
-              onClick={() => this.changePass(passId)}
-            >
-              {passId}
-            </NavDropdown.Item>
-          ))}
-        </NavDropdown>
-      );
-    }
-    return <></>;
-  };
-
   render() {
     const {
       allQueries,
@@ -131,8 +95,8 @@ class App extends Component {
         <NavBar
           navigate={dir => this.setState({ router: dir })}
           dataIsEmpty
-          goBackButton={this.goBackToParentQueryButton(currentParentId)}
-          passChooser={this.passChooser(allQueries, currentPassId)}
+          goBackButton={goParentQueryButton(currentParentId, this.changeGraph)}
+          passChooser={passChooser(allQueries, currentPassId, this.changePass)}
         />
         <main role="main" className="container-fluid px-0">
           {router === "input" && (

@@ -1,5 +1,5 @@
 import React from "react";
-import { detailsType } from "../types";
+import { detailsType } from "../../types";
 
 function NodeDetail(props) {
   const { details } = props;

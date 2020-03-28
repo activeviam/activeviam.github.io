@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
-import { nodeType, linkType } from "../types";
+import { nodeType, linkType } from "../../types";
 import Link from "./Link";
 import Node from "./Node";
-import { updateGraph } from "../helpers/graphHelpers";
+import { updateGraph } from "../../helpers/graphHelpers";
 
 class Graph extends Component {
   componentDidMount() {
