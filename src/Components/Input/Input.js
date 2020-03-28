@@ -53,29 +53,31 @@ class Input extends Component {
   };
 
   render() {
+    const { input, urlMode, url, username, password, type } = this.state;
+
     return (
       <Form className="mx-4 my-4">
         <Form.Group controlId="exampleForm.ControlTextarea1">
           <Form.Control
             as="textarea"
             rows="10"
-            defaultValue={this.state.input}
+            defaultValue={input}
             onChange={event => this.setState({ input: event.target.value })}
           />
         </Form.Group>
-        {this.state.urlMode ? (
+        {urlMode ? (
           <Row>
             <Col md={6} lg={6}>
               <Form.Control
                 placeholder="Server URL"
-                defaultValue={this.state.url}
+                defaultValue={url}
                 onChange={event => this.setState({ url: event.target.value })}
               />
             </Col>
             <Col>
               <Form.Control
                 placeholder="Username"
-                defaultValue={this.state.username}
+                defaultValue={username}
                 onChange={event =>
                   this.setState({ username: event.target.value })
                 }
@@ -85,7 +87,7 @@ class Input extends Component {
               <Form.Control
                 placeholder="Password"
                 type="password"
-                defaultValue={this.state.password}
+                defaultValue={password}
                 onChange={event =>
                   this.setState({ password: event.target.value })
                 }
@@ -100,14 +102,14 @@ class Input extends Component {
             label="Classic"
             type="radio"
             onChange={this.checkRadio("fillTimingInfo")}
-            checked={this.state.type === "fillTimingInfo"}
+            checked={type === "fillTimingInfo"}
           />
           <Form.Check
             inline
             label="Developer"
             type="radio"
             onChange={this.checkRadio("dev")}
-            checked={this.state.type === "dev"}
+            checked={type === "dev"}
           />
         </div>
 
@@ -120,7 +122,7 @@ class Input extends Component {
         </Button>
         {"  "}
         <Button
-          variant={this.state.urlMode === "server" ? "primary" : "secondary"}
+          variant={urlMode === "server" ? "primary" : "secondary"}
           onClick={this.importFromServer}
         >
           Import from server
