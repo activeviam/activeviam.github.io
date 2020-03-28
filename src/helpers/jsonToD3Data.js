@@ -9,17 +9,10 @@ const indexInRetrievals = (retrievals, strId) => {
 };
 
 const computeRadius = elapsed => {
-  let radius = 0;
-  if (elapsed < 5) {
-    radius = 20;
-  } else if (elapsed < 20) {
-    radius = 35;
-  } else if (elapsed < 100) {
-    radius = 50;
-  } else {
-    radius = 65;
-  }
-  return radius;
+  if (elapsed < 5) return 20;
+  if (elapsed < 20) return 35;
+  if (elapsed < 100) return 50;
+  return 65;
 };
 
 const getNodes = (dependencies, retrievals) => {
@@ -138,9 +131,9 @@ const parseJson = (jsonObject, type = "fillTimingInfo") => {
 
     let passNumber = 0;
     try {
-      passNumber = parseInt(mdxPass.split("_")[1], 10)
+      passNumber = parseInt(mdxPass.split("_")[1], 10);
     } catch {
-      // pass number is not explicited in mdxPass
+      // pass number is not present in mdxPass
     }
 
     return {
