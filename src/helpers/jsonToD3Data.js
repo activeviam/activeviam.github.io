@@ -154,6 +154,7 @@ const parseJson = (jsonObject, type = "fillTimingInfo") => {
         name => res.find(x => x.name === name).id
       );
 
+      // give its children their parentId
       underlyingDataNodes.forEach(
         // eslint-disable-next-line no-return-assign
         name => (res.find(x => x.name === name).parentId = queryId)
