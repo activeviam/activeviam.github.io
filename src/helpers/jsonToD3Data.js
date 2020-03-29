@@ -41,7 +41,6 @@ const getNodes = (dependencies, retrievals) => {
       const radius = computeRadius(realElapsed);
       const yFixed = fakeStartTime * 150;
       return {
-        // id: `${queryId}-${retrId}`, // TODO: see if nodes need a different id
         id: retrId,
         name: retrId.toString(),
         childrenIds: [],
