@@ -129,12 +129,7 @@ const parseJson = (jsonObject, type = "fillTimingInfo") => {
     criticalPath(query, links);
     addClustersToNodes(query, nodes);
 
-    let passNumber = 0;
-    try {
-      passNumber = parseInt(mdxPass.split("_")[1], 10);
-    } catch {
-      // pass number is not present in mdxPass
-    }
+    const passNumber = parseInt((mdxPass || "_0").split("_")[1], 10);
 
     return {
       id: queryId,
