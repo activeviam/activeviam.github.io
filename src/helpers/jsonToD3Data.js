@@ -115,32 +115,7 @@ const filterEmptyTimingInfo = data => {
   });
 };
 
-const parseJson = (jsonObject, type = "fillTimingInfo") => {
-  const { data } = jsonObject;
-  const queries = type === "dev" ? data : filterEmptyTimingInfo(data);
-  fillTimingInfo(queries);
-
-  const res = queries.map((query, queryId) => {
-    const { planInfo, dependencies, retrievals } = query;
-    const { clusterMemberId, mdxPass } = planInfo;
-
-    const nodes = getNodes(dependencies, retrievals, queryId);
-    const links = getLinks(dependencies, retrievals);
-    criticalPath(query, links);
-    addClustersToNodes(query, nodes);
-
-    const passNumber = parseInt((mdxPass || "_0").split("_")[1], 10);
-
-    return {
-      id: queryId,
-      parentId: null,
-      pass: passNumber,
-      name: clusterMemberId,
-      nodes,
-      links
-    };
-  });
-  // Now take care of distributed queries
+const findChildrenAndParents = (res, queries) => {
   queries.forEach((query, queryId) => {
     const { retrievals } = query;
     retrievals.forEach(retrieval => {
@@ -161,6 +136,34 @@ const parseJson = (jsonObject, type = "fillTimingInfo") => {
       );
     });
   });
+};
+
+const parseJson = (jsonObject, type = "fillTimingInfo") => {
+  const { data } = jsonObject;
+  const queries = type === "dev" ? data : filterEmptyTimingInfo(data);
+  fillTimingInfo(queries);
+
+  const res = queries.map((query, queryId) => {
+    const { planInfo, dependencies, retrievals } = query;
+    const { clusterMemberId, mdxPass } = planInfo;
+
+    const nodes = getNodes(dependencies, retrievals, queryId);
+    const links = getLinks(dependencies, retrievals);
+    criticalPath(query, links);
+    addClustersToNodes(query, nodes);
+    const passNumber = parseInt((mdxPass || "_0").split("_")[1], 10);
+
+    return {
+      id: queryId,
+      parentId: null,
+      pass: passNumber,
+      name: clusterMemberId,
+      nodes,
+      links
+    };
+  });
+
+  findChildrenAndParents(res, queries);
   return res;
 };
 
