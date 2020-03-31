@@ -1,4 +1,4 @@
-import { nodesDeepness } from "./fillTimingInfo";
+import { nodeDepths } from "./fillTimingInfo";
 
 const findTime = (query, node) => {
   const nodeId = parseInt(node, 10);
@@ -13,9 +13,9 @@ const findTime = (query, node) => {
   return elapsed;
 };
 
-const criticalPath = (query, links) => {
-  if (query.retrievals.length < 2) return;
-  const deep2nodes = nodesDeepness(query);
+const criticalPath = (query, links, info) => {
+  if (info.selection.size < 2) return;
+  const deep2nodes = nodeDepths(query);
   const invDep = query.dependencies;
   const critical = {};
   let maxTime = 0;

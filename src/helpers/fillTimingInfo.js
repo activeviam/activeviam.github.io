@@ -1,7 +1,10 @@
-const setTimeToUnit = query => {
-  query.retrievals.forEach(retr => {
-    retr.fakeStartTime = 0;
-  });
+const setTimeToUnit = (query, graphInfo) => {
+  return query.retrievals
+    .filter(r => graphInfo.selection.has(r.retrId))
+    .reduce((acc, retr) => {
+      acc.set(retr.retrId, 0);
+      return acc;
+    }, new Map());
 };
 
 // dependencies is a dict {son: parents}
@@ -33,24 +36,24 @@ const invertDependencies = dep => {
   return invDep;
 };
 
-const nodesDeepness = query => {
+const nodeDepths = query => {
   if (query.retrievals.length === 0) return null;
   const { dependencies } = query;
   const invDependencies = invertDependencies(dependencies);
-  const deepness = {
+  const depth = {
     0: [...invDependencies[-1]]
   };
   const done = [...invDependencies[-1]];
   let toDo = [...new Set(done.map(parent => invDependencies[parent]).flat(2))];
-  let currentDeepness = 0;
+  let currentDepth = 0;
   while (toDo.length !== 0) {
-    currentDeepness += 1;
-    deepness[currentDeepness] = [];
+    currentDepth += 1;
+    depth[currentDepth] = [];
     const almostDone = [];
     for (let nodeId = 0; nodeId < toDo.length; nodeId += 1) {
       const node = toDo[nodeId];
       if (dependencies[node].every(parent => done.includes(parent))) {
-        deepness[currentDeepness].push(node);
+        depth[currentDepth].push(node);
         almostDone.push(node);
       }
     }
@@ -60,25 +63,32 @@ const nodesDeepness = query => {
     toDo = [...new Set(toDo)];
     done.push(...almostDone);
   }
-  return deepness;
+  return depth;
 };
 
 // Set timing info to UnitTime for whole json object
-const fillTimingInfo = data => {
-  data.forEach(query => setTimeToUnit(query));
-  data.forEach(query => {
-    if (query.retrievals.length > 0) {
-      const deepness = nodesDeepness(query);
-      Object.keys(deepness).forEach(d => {
-        deepness[d] = deepness[d].map(id => parseInt(id, 10));
+const fillTimingInfo = (data, graphInfo) => {
+  data.forEach((query, i) => {
+    const info = graphInfo[i];
+    if (info.selection.size > 0) {
+      const starts = setTimeToUnit(query, info);
+
+      const depth = nodeDepths(query);
+      Object.keys(depth).forEach(d => {
+        depth[d] = depth[d].map(id => parseInt(id, 10));
       });
-      query.retrievals.forEach(retr => {
-        retr.fakeStartTime = Object.keys(deepness).filter(d =>
-          deepness[d].includes(retr.retrId)
-        );
-      });
+      query.retrievals
+        .filter(r => info.selection.has(r.retrId))
+        .forEach(r => {
+          starts.set(
+            r.retrId,
+            Object.keys(depth).filter(d => depth[d].includes(r.retrId))
+          );
+        });
+
+      info.starts = starts;
     }
   });
 };
 
-export { fillTimingInfo, setTimeToUnit, nodesDeepness, invertDependencies };
+export { fillTimingInfo, setTimeToUnit, nodeDepths, invertDependencies };

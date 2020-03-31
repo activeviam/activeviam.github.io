@@ -39,8 +39,8 @@ class Node extends Component {
     const { details, name, childrenIds, isSelected } = node;
     const {
       type,
-      startTime,
-      elapsedTime,
+      startTimes,
+      elapsedTimes,
       measures,
       partitioning,
       location
@@ -61,21 +61,21 @@ class Node extends Component {
         </Popover.Title>
         <Popover.Content>
           <ul>
-            <li>Start: {startTime}</li>
-            <li>Elapsed: {elapsedTime}</li>
+            <li>Start: {startTimes}</li>
+            <li>Elapsed: {elapsedTimes}</li>
             <li>
               Measures:
               <ul>
-                {measures.map((m, key) => (
-                  <li key={key}>{m}</li>
+                {measures.map(m => (
+                  <li key={m}>{m}</li>
                 ))}
               </ul>
             </li>
             <li>
-              Locations:
+              Location:
               <ul>
-                {location.map((l, key) => (
-                  <li key={key}>
+                {location.map(l => (
+                  <li key={`${l.dimension}@${l.hierarchy}`}>
                     {l.dimension}@{l.hierarchy}
                     {l.level.map((lev, i) => {
                       return `:${lev}=${l.path[i]}`;

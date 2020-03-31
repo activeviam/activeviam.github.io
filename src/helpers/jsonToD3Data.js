@@ -15,22 +15,24 @@ const computeRadius = elapsed => {
   return 65;
 };
 
-const getNodes = (dependencies, retrievals) => {
+const getNodes = (dependencies, retrievals, queryId, info) => {
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object. Finally sorts nodes by
   // their id because the links are order dependant.
   return retrievals
+    .filter(r => info.selection.has(r.retrId))
     .map(retrieval => {
+      const fakeStartTime = info.starts.get(retrieval.retrId);
       const {
         retrId,
         timingInfo,
-        fakeStartTime,
         type,
         measureProvider,
         measures,
         partitioning,
         location
       } = retrieval;
+
       const { elapsedTime = [0], startTime = [0] } = timingInfo;
       const realStart = Math.min(...startTime);
       const realEnd = Math.max(
@@ -48,6 +50,8 @@ const getNodes = (dependencies, retrievals) => {
         details: {
           startTime: realStart,
           elapsedTime: realElapsed,
+          startTimes: startTime,
+          elapsedTimes: elapsedTime,
           type,
           measureProvider,
           measures,
@@ -66,22 +70,24 @@ const getNodes = (dependencies, retrievals) => {
     .sort((a, b) => a.id - b.id);
 };
 
-const getLinks = (dependencies, retrievals) => {
+const getLinks = (dependencies, retrievals, info) => {
   const links = [];
   Object.entries(dependencies).forEach(([key, values]) => {
-    if (key !== "-1") {
-      values.forEach(value => {
-        const target = indexInRetrievals(retrievals, value);
-        if (target !== -1) {
-          // The target may have been filtered (NoOp)
-          links.push({
-            source: indexInRetrievals(retrievals, key),
-            target,
-            id: `${key}-${value}`,
-            critical: false
-          });
-        }
-      });
+    if (key !== "-1" && info.selection.has(key)) {
+      values
+        .filter(value => info.selection.has(value))
+        .forEach(value => {
+          const target = indexInRetrievals(retrievals, value);
+          if (target !== -1) {
+            // The target may have been filtered (NoOp)
+            links.push({
+              source: indexInRetrievals(retrievals, key),
+              target,
+              id: `${key}-${value}`,
+              critical: false
+            });
+          }
+        });
     }
   });
   return links;
@@ -90,27 +96,12 @@ const getLinks = (dependencies, retrievals) => {
 // Remove nodes without timing info
 const filterEmptyTimingInfo = data => {
   return data.map(query => {
-    const {
-      planInfo,
-      dependencies: dependenciesToFilter,
-      retrievals: retrievalsToFilter
-    } = query;
+    const { retrievals: retrievalsToFilter } = query;
 
-    const retrIdToRemove = retrievalsToFilter
-      .filter(retrieval => Object.entries(retrieval.timingInfo).length === 0)
+    const selectedIds = retrievalsToFilter
+      .filter(retrieval => Object.entries(retrieval.timingInfo).length > 0)
       .map(retrieval => retrieval.retrId);
-
-    const retrievals = retrievalsToFilter.filter(
-      retrieval => Object.entries(retrieval.timingInfo).length > 0
-    );
-    const dependencies = Object.fromEntries(
-      Object.entries(dependenciesToFilter).map(([key, values]) => [
-        key,
-        values.filter(value => !retrIdToRemove.includes(value))
-      ])
-    );
-
-    return { planInfo, dependencies, retrievals };
+    return new Set(selectedIds);
   });
 };
 
@@ -137,19 +128,23 @@ const findChildrenAndParents = (res, queries) => {
   });
 };
 
-const parseJson = (jsonObject, type = "fillTimingInfo") => {
-  const { data } = jsonObject;
-  const queries = type === "dev" ? data : filterEmptyTimingInfo(data);
-  fillTimingInfo(queries);
+const parseJson = ({ data }, type = "fillTimingInfo") => {
+  const selections =
+    type === "dev"
+      ? new Set(data.map(({ retrievals }) => retrievals.map(r => r.retrId)))
+      : filterEmptyTimingInfo(data);
+  const graphInfo = selections.map(selection => ({ selection }));
+  fillTimingInfo(data, graphInfo);
 
-  const res = queries.map((query, queryId) => {
+  const res = data.map((query, queryId) => {
     const { planInfo, dependencies, retrievals } = query;
     const { clusterMemberId, mdxPass } = planInfo;
+    const info = graphInfo[queryId];
 
-    const nodes = getNodes(dependencies, retrievals, queryId);
-    const links = getLinks(dependencies, retrievals);
-    criticalPath(query, links);
-    addClustersToNodes(query, nodes);
+    const nodes = getNodes(dependencies, retrievals, queryId, info);
+    const links = getLinks(dependencies, retrievals, info);
+    criticalPath(query, links, info);
+    addClustersToNodes(query, nodes, info);
     const passNumber = parseInt((mdxPass || "_0").split("_")[1], 10);
 
     return {
@@ -162,7 +157,7 @@ const parseJson = (jsonObject, type = "fillTimingInfo") => {
     };
   });
 
-  findChildrenAndParents(res, queries);
+  findChildrenAndParents(res, data, graphInfo);
   return res;
 };
 

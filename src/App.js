@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Input from "./Components/Input/Input";
 import Graph from "./Components/Graph/Graph";
+import Timeline from "./Components/Timeline/Timeline";
 import NavBar from "./Components/NavBar/NavBar";
 import parseJson from "./helpers/jsonToD3Data";
 import { parseV1, convertToV2 } from "./helpers/v1tov2";
@@ -25,23 +26,29 @@ class App extends Component {
   }
 
   passInput = async (mode, type, input) => {
-    let data = [];
+    let data;
+    let json;
     if (mode === "json") {
-      const json = JSON.parse(input);
-      data = parseJson(json, type);
+      json = JSON.parse(input);
+      // data = parseJson(json, type);
     } else if (mode === "url") {
-      const json = await queryServer(input);
-      data = parseJson(json, type);
+      json = await queryServer(input);
+      // data = parseJson(json, type);
     } else if (mode === "v1") {
       const v1Structure = await parseV1(input, () => {});
-      data = parseJson({ data: convertToV2(v1Structure) });
+      json = { data: convertToV2(v1Structure) };
+      // data = parseJson(json);
     }
+    data = [];
+
     this.setState({
       allQueries: data,
-      currentQueryId: data
-        .filter(query => query.pass === 0)
-        .find(query => query.parentId === null).id,
-      router: "graph",
+      // currentQueryId: data
+      //   .filter(query => query.pass === 0)
+      //   .find(query => query.parentId === null).id,
+      currentQueryId: 0,
+      router: "timeline",
+      json: json.data,
       lastInput: input
     });
   };
@@ -112,7 +119,9 @@ class App extends Component {
               changeGraph={this.changeGraph}
             />
           )}
-          {router === "timeline" && <></>}
+          {router === "timeline" && (
+            <Timeline plan={this.state.json[currentQueryId || 0]} />
+          )}
         </main>
       </>
     );
