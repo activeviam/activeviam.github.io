@@ -1,3 +1,7 @@
+.timeline {
+  margin: 5px 10px;
+}
+
 .timeline-rows {
   overflow-x: auto;
 }

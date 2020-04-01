@@ -46,9 +46,11 @@ const computeLines = ({ retrievals }) => {
       last: []
     });
 
+  result.lines.sort((a, b) => a[a.length - 1].end - b[b.length - 1].end);
   return result.lines;
 };
 
+const margin = 0;
 const boxHeight = 25;
 const boxMargin = 5;
 const widthFactor = 5;
@@ -73,8 +75,8 @@ const Box = ({ rowIdx, entry, retrieval, selection, onSelect }) => {
       <rect
         key={key}
         className={`timeline-box ${selected ? "selected" : ""}`}
-        x={10 + x}
-        y={10 + rowIdx * (boxMargin + boxHeight)}
+        x={margin + x}
+        y={margin + rowIdx * (boxMargin + boxHeight)}
         width={w}
         height={boxHeight}
         onClick={() => onSelect(entry)}
@@ -87,8 +89,8 @@ const Box = ({ rowIdx, entry, retrieval, selection, onSelect }) => {
     <rect
       key={key}
       className={`timeline-box ${selected ? "selected" : ""}`}
-      x={10 + x}
-      y={10 + rowIdx * (boxMargin + boxHeight)}
+      x={margin + x}
+      y={margin + rowIdx * (boxMargin + boxHeight)}
       width={w}
       height={boxHeight}
       onClick={() => onSelect(entry)}
@@ -113,7 +115,6 @@ const Row = ({ row, idx, retrievals, selection, onSelect }) => {
   );
 };
 
-const margin = 10;
 const Rows = ({ rows, retrievals, selection, onSelect }) => {
   const height = 2 * margin + rows.length * (boxHeight + boxMargin) - boxMargin;
   const width =
@@ -182,8 +183,7 @@ class Timeline extends Component {
     const { selection, lines } = this.state;
     const { plan } = this.props;
     return (
-      <>
-        <p>This is the timeline</p>
+      <div className="timeline">
         <Rows
           rows={lines}
           retrievals={plan.retrievals}
@@ -213,7 +213,7 @@ class Timeline extends Component {
             })}
           </div>
         </div>
-      </>
+      </div>
     );
   }
 }
