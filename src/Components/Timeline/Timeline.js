@@ -52,7 +52,14 @@ const boxMargin = 5;
 const widthFactor = 5;
 
 // Logic for a factor of 5
-const Box = ({ rowIdx, entry, retrieval }) => {
+const Box = ({ rowIdx, entry, retrieval, onSelect }) => {
+  if (retrieval === undefined || entry.id !== retrieval.retrId) {
+    throw new Error(
+      `Inconsistent state: ${JSON.stringify(entry)} / ${JSON.stringify(
+        retrieval
+      )}`
+    );
+  }
   const key = `${entry.id}-${entry.partition}`;
   if (entry.start < entry.end) {
     const x = (entry.start + 1) * widthFactor - 1;
@@ -65,6 +72,7 @@ const Box = ({ rowIdx, entry, retrieval }) => {
         y={10 + rowIdx * (boxMargin + boxHeight)}
         width={w}
         height={boxHeight}
+        onClick={() => onSelect(entry)}
       />
     );
   }
@@ -78,19 +86,24 @@ const Box = ({ rowIdx, entry, retrieval }) => {
       y={10 + rowIdx * (boxMargin + boxHeight)}
       width={w}
       height={boxHeight}
+      onClick={() => onSelect(entry)}
     />
   );
 };
 
-const Row = ({ row, idx, retrievals }) => {
+const Row = ({ row, idx, retrievals, onSelect }) => {
   const boxes = row.map(entry =>
-    Box({ rowIdx: idx, entry, retrieval: retrievals[entry.id] })
+    Box({ rowIdx: idx, entry, retrieval: retrievals[entry.id], onSelect })
   );
-  return <g className="timeline-row">{boxes}</g>;
+  return (
+    <g className="timeline-row" key={idx}>
+      {boxes}
+    </g>
+  );
 };
 
 const margin = 10;
-const Rows = ({ rows, retrievals }) => {
+const Rows = ({ rows, retrievals, onSelect }) => {
   const height = 2 * margin + rows.length * (boxHeight + boxMargin) - boxMargin;
   const width =
     2 * margin +
@@ -99,7 +112,7 @@ const Rows = ({ rows, retrievals }) => {
   return (
     <div className="timeline-rows">
       <svg width={width} height={height}>
-        {rows.map((row, idx) => Row({ row, idx, retrievals }))}
+        {rows.map((row, idx) => Row({ row, idx, retrievals, onSelect }))}
       </svg>
     </div>
   );
@@ -110,7 +123,8 @@ class Timeline extends Component {
     super(props);
 
     this.state = {
-      lines: []
+      lines: [],
+      selection: []
     };
   }
 
@@ -122,16 +136,31 @@ class Timeline extends Component {
     return { lines: computeLines(newProps.plan) };
   }
 
+  selectBox = entry => {
+    this.setState(({ selection }) => {
+      const changed = [...selection];
+      const idx = selection.findIndex(
+        ([id, partition]) => id === entry.id && partition === entry.partition
+      );
+      if (idx >= 0) {
+        changed.splice(idx, 1);
+      } else {
+        changed.push([entry.id, entry.partition]);
+      }
+      return { selection: changed };
+    });
+  };
+
   render() {
     return (
       <>
         <p>This is the timeline</p>
-        <Rows rows={this.state.lines} retrievals={this.props.plan.retrievals} />
-        <ul>
-          {this.state.lines.map((line, i) => {
-            return <li key={i}>{JSON.stringify(line)}</li>;
-          })}
-        </ul>
+        <Rows
+          rows={this.state.lines}
+          retrievals={this.props.plan.retrievals}
+          onSelect={this.selectBox}
+        />
+        <p>Selected: {JSON.stringify(Array.from(this.state.selection))}</p>
       </>
     );
   }
