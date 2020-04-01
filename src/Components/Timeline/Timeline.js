@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Toast from "react-bootstrap/Toast";
 import "./Timeline.css";
 import Details from "../Details/Details";
+import * as labels from "../../helpers/labels";
 
 /* TODO how to dilate time not to have long boxes taking a lot of spaces
  * We must only dilate time for periods where all entries are in similar
@@ -200,6 +201,7 @@ class Timeline extends Component {
                   <Toast.Header>
                     Retrieval&nbsp;
                     <strong className="mr-auto">#{id}</strong>
+                    <small>{labels.type(retrieval.type)}</small>
                   </Toast.Header>
                   <Toast.Body className="body">
                     {Details({
