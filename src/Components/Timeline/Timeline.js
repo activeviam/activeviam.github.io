@@ -1,4 +1,9 @@
 import React, { Component } from "react";
+import "./Timeline.css";
+
+/* TODO how to dilate time not to have long boxes taking a lot of spaces
+ * We must only dilate time for periods where all entries are in similar
+ * buckets. */
 
 const placeRetrieval = (retrievals, state, entry) => {
   const { lines, last } = state;
@@ -15,6 +20,8 @@ const placeRetrieval = (retrievals, state, entry) => {
   }
   last[idx] = entry.end;
   return state;
+
+  // TODO may be smart to have a way to distribute 0ms on different lines
 };
 
 const computeLines = ({ retrievals }) => {
@@ -43,19 +50,42 @@ const computeLines = ({ retrievals }) => {
 const boxHeight = 25;
 const boxMargin = 5;
 const widthFactor = 5;
-const Row = ({ row, idx, retrievals }) => {
-  const boxes = row.map(entry => {
+
+// Logic for a factor of 5
+const Box = ({ rowIdx, entry, retrieval }) => {
+  const key = `${entry.id}-${entry.partition}`;
+  if (entry.start < entry.end) {
+    const x = (entry.start + 1) * widthFactor - 1;
+    const w = (entry.end - entry.start - 1) * widthFactor + 2;
     return (
       <rect
-        x={10 + widthFactor * entry.start}
-        y={10 + idx * (boxMargin + boxHeight)}
-        width={widthFactor * (entry.end - entry.start)}
+        key={key}
+        className="timeline-box"
+        x={10 + x}
+        y={10 + rowIdx * (boxMargin + boxHeight)}
+        width={w}
         height={boxHeight}
-        rx={3}
       />
     );
-  });
+  }
+  const x = entry.start * widthFactor + 2;
+  const w = 1;
+  return (
+    <rect
+      key={key}
+      className="timeline-box"
+      x={10 + x}
+      y={10 + rowIdx * (boxMargin + boxHeight)}
+      width={w}
+      height={boxHeight}
+    />
+  );
+};
 
+const Row = ({ row, idx, retrievals }) => {
+  const boxes = row.map(entry =>
+    Box({ rowIdx: idx, entry, retrieval: retrievals[entry.id] })
+  );
   return <g className="timeline-row">{boxes}</g>;
 };
 
