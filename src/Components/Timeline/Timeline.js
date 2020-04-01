@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Toast from "react-bootstrap/Toast";
 import "./Timeline.css";
 import Details from "../Details/Details";
 
@@ -53,7 +54,7 @@ const boxMargin = 5;
 const widthFactor = 5;
 
 // Logic for a factor of 5
-const Box = ({ rowIdx, entry, retrieval, onSelect }) => {
+const Box = ({ rowIdx, entry, retrieval, selection, onSelect }) => {
   if (retrieval === undefined || entry.id !== retrieval.retrId) {
     throw new Error(
       `Inconsistent state: ${JSON.stringify(entry)} / ${JSON.stringify(
@@ -61,6 +62,9 @@ const Box = ({ rowIdx, entry, retrieval, onSelect }) => {
       )}`
     );
   }
+  const selected = selection.some(
+    ([id, partition]) => entry.id === id && entry.partition === partition
+  );
   const key = `${entry.id}-${entry.partition}`;
   if (entry.start < entry.end) {
     const x = (entry.start + 1) * widthFactor - 1;
@@ -68,7 +72,7 @@ const Box = ({ rowIdx, entry, retrieval, onSelect }) => {
     return (
       <rect
         key={key}
-        className="timeline-box"
+        className={`timeline-box ${selected ? "selected" : ""}`}
         x={10 + x}
         y={10 + rowIdx * (boxMargin + boxHeight)}
         width={w}
@@ -82,7 +86,7 @@ const Box = ({ rowIdx, entry, retrieval, onSelect }) => {
   return (
     <rect
       key={key}
-      className="timeline-box"
+      className={`timeline-box ${selected ? "selected" : ""}`}
       x={10 + x}
       y={10 + rowIdx * (boxMargin + boxHeight)}
       width={w}
@@ -92,9 +96,15 @@ const Box = ({ rowIdx, entry, retrieval, onSelect }) => {
   );
 };
 
-const Row = ({ row, idx, retrievals, onSelect }) => {
+const Row = ({ row, idx, retrievals, selection, onSelect }) => {
   const boxes = row.map(entry =>
-    Box({ rowIdx: idx, entry, retrieval: retrievals[entry.id], onSelect })
+    Box({
+      rowIdx: idx,
+      entry,
+      retrieval: retrievals[entry.id],
+      selection,
+      onSelect
+    })
   );
   return (
     <g className="timeline-row" key={idx}>
@@ -104,7 +114,7 @@ const Row = ({ row, idx, retrievals, onSelect }) => {
 };
 
 const margin = 10;
-const Rows = ({ rows, retrievals, onSelect }) => {
+const Rows = ({ rows, retrievals, selection, onSelect }) => {
   const height = 2 * margin + rows.length * (boxHeight + boxMargin) - boxMargin;
   const width =
     2 * margin +
@@ -113,7 +123,9 @@ const Rows = ({ rows, retrievals, onSelect }) => {
   return (
     <div className="timeline-rows">
       <svg width={width} height={height}>
-        {rows.map((row, idx) => Row({ row, idx, retrievals, onSelect }))}
+        {rows.map((row, idx) =>
+          Row({ row, idx, retrievals, selection, onSelect })
+        )}
       </svg>
     </div>
   );
@@ -152,25 +164,54 @@ class Timeline extends Component {
     });
   };
 
+  closeBox = ([keyId, keyPartition]) => {
+    this.setState(({ selection }) => {
+      const idx = selection.findIndex(
+        ([id, partition]) => id === keyId && partition === keyPartition
+      );
+      if (idx >= 0) {
+        const changed = [...selection];
+        changed.splice(idx, 1);
+        return { selection: changed };
+      }
+      return {};
+    });
+  };
+
   render() {
+    const { selection, lines } = this.state;
+    const { plan } = this.props;
     return (
       <>
         <p>This is the timeline</p>
         <Rows
-          rows={this.state.lines}
-          retrievals={this.props.plan.retrievals}
+          rows={lines}
+          retrievals={plan.retrievals}
+          selection={selection}
           onSelect={this.selectBox}
         />
-        <p>Selected: {JSON.stringify(Array.from(this.state.selection))}</p>
-        <div>
-          {this.state.selection.map(([id, partition]) => {
-            const retrieval = this.props.plan.retrievals[id];
-            return Details({
-              ...retrieval,
-              ...retrieval.timingInfo,
-              partition
-            });
-          })}
+        <div className="timeline-details">
+          <div style={{ width: selection.length * 355 }}>
+            {selection.map(key => {
+              const [id, partition] = key;
+              const retrieval = plan.retrievals[id];
+              return (
+                <Toast className="entry" onClose={() => this.closeBox(key)}>
+                  <Toast.Header>
+                    Retrieval&nbsp;
+                    <strong className="mr-auto">#{id}</strong>
+                  </Toast.Header>
+                  <Toast.Body className="body">
+                    {Details({
+                      ...retrieval,
+                      ...retrieval.timingInfo,
+                      partition
+                    })}
+                  </Toast.Body>
+                </Toast>
+              );
+            })}
+          </div>
         </div>
       </>
     );

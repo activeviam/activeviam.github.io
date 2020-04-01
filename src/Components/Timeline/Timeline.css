@@ -1,8 +1,39 @@
 .timeline-rows {
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .timeline-box {
   fill: rgb(0, 146, 204);
   rx: 3px;
+}
+
+.timeline-box.selected {
+  fill: rgb(255, 211, 116);
+}
+
+.timeline-details {
+  overflow-x: auto;
+}
+
+.timeline-details .entry {
+  display: inline-block !important;
+  vertical-align: top;
+}
+
+.timeline-details .entry + .entry {
+  margin-left: 5px;
+}
+
+.timeline-details .body {
+  overflow-x: scroll;
+}
+
+.timeline-details .body ul {
+  list-style: none;
+  padding-left: 0px;
+}
+
+.timeline-details .body ul ul {
+  list-style: circle;
+  padding-left: 20px;
 }
