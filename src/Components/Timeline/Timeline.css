@@ -1,0 +1,8 @@
+.timeline-rows {
+  overflow-x: scroll;
+}
+
+.timeline-box {
+  fill: rgb(0, 146, 204);
+  rx: 3px;
+}

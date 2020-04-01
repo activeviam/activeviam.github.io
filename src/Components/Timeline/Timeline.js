@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./Timeline.css";
+import Details from "../Details/Details";
 
 /* TODO how to dilate time not to have long boxes taking a lot of spaces
  * We must only dilate time for periods where all entries are in similar
@@ -128,7 +129,7 @@ class Timeline extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({ lines: computeLines(this.props.plan) });
   }
 
@@ -161,6 +162,16 @@ class Timeline extends Component {
           onSelect={this.selectBox}
         />
         <p>Selected: {JSON.stringify(Array.from(this.state.selection))}</p>
+        <div>
+          {this.state.selection.map(([id, partition]) => {
+            const retrieval = this.props.plan.retrievals[id];
+            return Details({
+              ...retrieval,
+              ...retrieval.timingInfo,
+              partition
+            });
+          })}
+        </div>
       </>
     );
   }

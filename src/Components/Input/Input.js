@@ -8,13 +8,16 @@ import Button from "react-bootstrap/Button";
 class Input extends Component {
   constructor(props) {
     super(props);
+    const location = new URL(window.location.href);
+
     this.state = {
       input: this.props.lastInput,
       type: "fillTimingInfo",
       urlMode: false,
       username: "",
       password: "",
-      url: ""
+      url: "",
+      devMode: location.search.includes("dev")
     };
   }
 
@@ -50,6 +53,15 @@ class Input extends Component {
     this.setState({
       type: "default"
     });
+  };
+
+  saveToLocalStorage = () => {
+    window.localStorage.setItem("dev.input", this.state.input);
+  };
+
+  loadFromLocalStorage = () => {
+    const input = window.localStorage.getItem("dev.input");
+    this.setState({ input: input || "" });
   };
 
   render() {
@@ -127,6 +139,16 @@ class Input extends Component {
         >
           Import from server
         </Button>
+        {this.state.devMode ? (
+          <Button variant="outline-info" onClick={this.saveToLocalStorage}>
+            Into LS
+          </Button>
+        ) : null}
+        {this.state.devMode ? (
+          <Button variant="outline-info" onClick={this.loadFromLocalStorage}>
+            From LS
+          </Button>
+        ) : null}
       </Form>
     );
   }

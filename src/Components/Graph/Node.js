@@ -6,6 +6,7 @@ import Popover from "react-bootstrap/Popover";
 import Overlay from "react-bootstrap/Overlay";
 import { nodeType } from "../../types";
 import { enterNode, updateNode } from "../../helpers/graphHelpers";
+import Details from "../Details/Details";
 
 class Node extends Component {
   constructor(props) {
@@ -60,32 +61,13 @@ class Node extends Component {
           </button>
         </Popover.Title>
         <Popover.Content>
-          <ul>
-            <li>Start: {startTimes}</li>
-            <li>Elapsed: {elapsedTimes}</li>
-            <li>
-              Measures:
-              <ul>
-                {measures.map(m => (
-                  <li key={m}>{m}</li>
-                ))}
-              </ul>
-            </li>
-            <li>
-              Location:
-              <ul>
-                {location.map(l => (
-                  <li key={`${l.dimension}@${l.hierarchy}`}>
-                    {l.dimension}@{l.hierarchy}
-                    {l.level.map((lev, i) => {
-                      return `:${lev}=${l.path[i]}`;
-                    })}
-                  </li>
-                ))}
-              </ul>
-            </li>
-            <li>Partitioning: {partitioning}</li>
-          </ul>
+          <Details
+            startTime={startTimes}
+            elapsedTime={elapsedTimes}
+            measures={measures}
+            location={location}
+            partitioning={partitioning}
+          />
           {childrenIds.map(childId => (
             <>
               <button
