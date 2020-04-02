@@ -1,4 +1,5 @@
 import { nodeDepths } from "./fillTimingInfo";
+import { filterDependencies } from "./selection";
 
 const findTime = (query, node) => {
   const nodeId = parseInt(node, 10);
@@ -13,53 +14,58 @@ const findTime = (query, node) => {
   return elapsed;
 };
 
-const criticalPath = (query, links, info) => {
-  if (info.selection.size < 2) return;
-  const deep2nodes = nodeDepths(query);
-  const invDep = query.dependencies;
+const criticalPath = (query, info) => {
+  if (info.selection.size < 2) return new Set();
+
+  const deep2nodes = nodeDepths(query, info.selection);
+  const invDep = filterDependencies(query.dependencies, info.selection);
   const critical = {};
   let maxTime = 0;
   let maxNode = null;
-  Object.keys(deep2nodes)
-    .sort()
-    .forEach(deep => {
-      deep2nodes[deep].forEach(node => {
-        if (invDep[node]) {
-          // node has parents so critical = elapsedTime + max critical of parents
-          const elapsed = findTime(query, node);
-          let maxParentCritical = 0;
-          let parent = null;
-          invDep[node].forEach(parentNode => {
-            if (critical[parentNode].time >= maxParentCritical) {
-              maxParentCritical = critical[parentNode].time;
-              parent = parentNode;
-            }
-          });
-          critical[node] = {
-            parent,
-            time: elapsed + maxParentCritical
-          };
-          if (elapsed + maxParentCritical >= maxTime) {
-            maxTime = elapsed + maxParentCritical;
-            maxNode = node;
+  deep2nodes.forEach(nodes => {
+    if (nodes === undefined) return;
+
+    nodes.forEach(node => {
+      const deps = invDep.get(node);
+      if (deps) {
+        // node has parents so critical = elapsedTime + max critical of parents
+        const elapsed = findTime(query, node);
+        let maxParentCritical = 0;
+        let parent = null;
+        deps.forEach(parentNode => {
+          if (critical[parentNode].time >= maxParentCritical) {
+            maxParentCritical = critical[parentNode].time;
+            parent = parentNode;
           }
-        } else {
-          // node has no parent so critical = elapsedTime
-          const elapsed = findTime(query, node);
-          critical[node] = {
-            parent: null,
-            time: elapsed
-          };
+        });
+        critical[node] = {
+          parent,
+          time: elapsed + maxParentCritical
+        };
+        if (elapsed + maxParentCritical > maxTime) {
+          maxTime = elapsed + maxParentCritical;
+          maxNode = node;
         }
-      });
+      } else {
+        // node has no parent so critical = elapsedTime
+        const elapsed = findTime(query, node);
+        critical[node] = {
+          parent: null,
+          time: elapsed
+        };
+      }
     });
+  });
+
+  const criticalLinks = new Set();
   while (critical[maxNode].parent !== null) {
     const source = critical[maxNode].parent;
     const target = maxNode;
-    const linkId = `${target}-${source}`;
-    links.find(l => l.id === linkId).critical = true;
+    criticalLinks.add(`${target}-${source}`);
     maxNode = critical[maxNode].parent;
   }
+
+  return criticalLinks;
 };
 
 export default criticalPath;

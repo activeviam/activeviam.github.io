@@ -4,6 +4,7 @@ import Graph from "./Components/Graph/Graph";
 import Timeline from "./Components/Timeline/Timeline";
 import NavBar from "./Components/NavBar/NavBar";
 import parseJson from "./helpers/jsonToD3Data";
+import { applySelection } from "./helpers/selection";
 import { parseV1, convertToV2 } from "./helpers/v1tov2";
 import queryServer from "./helpers/server";
 import goParentQueryButton from "./Components/NavBar/GoBackToParentQueryButton";
@@ -15,6 +16,7 @@ class App extends Component {
 
     const defaultPage = "input";
     this.state = {
+      selections: new Set(),
       router: defaultPage,
       allQueries: [],
       currentQueryId: 0,
@@ -26,28 +28,26 @@ class App extends Component {
   }
 
   passInput = async (mode, type, input) => {
-    let data;
     let json;
     if (mode === "json") {
-      json = JSON.parse(input);
-      // data = parseJson(json, type);
+      json = JSON.parse(input).data;
     } else if (mode === "url") {
       json = await queryServer(input);
-      // data = parseJson(json, type);
     } else if (mode === "v1") {
       const v1Structure = await parseV1(input, () => {});
-      json = { data: convertToV2(v1Structure) };
-      // data = parseJson(json);
+      json = convertToV2(v1Structure);
     }
-    data = [];
+
+    const selections = applySelection(json, type);
+    const data = parseJson(json, selections);
 
     this.setState({
+      selections,
       allQueries: data,
-      // currentQueryId: data
-      //   .filter(query => query.pass === 0)
-      //   .find(query => query.parentId === null).id,
-      currentQueryId: 0,
-      router: "timeline",
+      currentQueryId: data
+        .filter(query => query.pass === 0)
+        .find(query => query.parentId === null).id,
+      router: "graph",
       json: json.data,
       lastInput: input
     });

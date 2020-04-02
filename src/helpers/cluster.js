@@ -1,49 +1,57 @@
 import { invertDependencies } from "./fillTimingInfo";
+import { filterDependencies } from "./selection";
+import * as iterators from "./iterators";
 
 const nodeCluster = (node, clust) => {
-  return Object.keys(clust).find(cl => clust[cl].includes(node));
+  return iterators.forEach(clust.entries(), ([cl, nodes]) =>
+    nodes.includes(node) ? cl : undefined
+  );
 };
 
-const clusters = dependencies => {
-  if (dependencies[-1] === undefined) return {};
-  const invDep = invertDependencies(dependencies);
-  const clust = {};
-  const todo = [];
-  invDep[-1].forEach((node, index) => {
-    clust[index] = [node];
-    todo.push(node);
-  });
+const computeClusters = (dependencies, selection) => {
+  if (dependencies[-1] === undefined) return new Map();
+
+  const deps = filterDependencies(dependencies, selection);
+  const invDep = invertDependencies(deps);
+  const clusters = new Map();
+  const todo = invDep.get(-1).reduce((acc, node, index) => {
+    clusters.set(index, [node]);
+    acc.push(node);
+    return acc;
+  }, []);
   while (todo.length !== 0) {
     const node = todo.shift();
-    const clust1 = nodeCluster(node, clust);
-    if (invDep[node]) {
-      invDep[node].forEach(parent => {
-        const clust2 = nodeCluster(parent, clust);
+    const clust1 = nodeCluster(node, clusters);
+    const nodeDeps = invDep.get(node);
+    if (nodeDeps) {
+      nodeDeps.forEach(parent => {
+        const clust2 = nodeCluster(parent, clusters);
         if (clust2 === undefined) {
-          clust[clust1].push(parent);
+          clusters.get(clust1).push(parent);
           todo.push(parent);
         } else if (clust1 !== clust2) {
-          clust[clust1].push(...clust[clust2]);
-          delete clust[clust2];
+          clusters.get(clust1).push(...clusters.get(clust2));
+          clusters.delete(clust2);
         }
       });
     }
   }
 
-  return clust;
+  return clusters;
 };
 
-const addClustersToNodes = (query, nodes) => {
-  const clust = clusters(query.dependencies);
-  Object.keys(clust).forEach((cl, id) => {
-    clust[cl].forEach(node => {
-      try {
-        nodes.find(n => n.id === parseInt(node, 10)).clusterId = id;
-      } catch {
-        // node in dependencies but not in retrievals...
-      }
-    });
-  });
+const addClustersToNodes = (query, info) => {
+  const clusters = computeClusters(query.dependencies, info.selection);
+  // Reverse the mapping
+  return iterators.reduce(
+    clusters.entries(),
+    (acc, [id, ns]) => {
+      return ns.reduce((store, node) => {
+        return store.set(node.retrId, id);
+      }, acc);
+    },
+    new Map()
+  );
 };
 
 export default addClustersToNodes;

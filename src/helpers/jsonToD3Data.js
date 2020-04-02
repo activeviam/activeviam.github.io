@@ -1,6 +1,8 @@
 import { fillTimingInfo } from "./fillTimingInfo";
 import criticalPath from "./criticalPath";
 import addClustersToNodes from "./cluster";
+import { filterDependencies } from "./selection";
+import * as its from "./iterators";
 
 const indexInRetrievals = (retrievals, strId) => {
   const id = parseInt(strId, 10);
@@ -42,6 +44,7 @@ const getNodes = (dependencies, retrievals, queryId, info) => {
 
       const radius = computeRadius(realElapsed);
       const yFixed = fakeStartTime * 150;
+      // if (retrId === 31) debugger;
       return {
         id: retrId,
         name: retrId.toString(),
@@ -71,38 +74,29 @@ const getNodes = (dependencies, retrievals, queryId, info) => {
 };
 
 const getLinks = (dependencies, retrievals, info) => {
-  const links = [];
-  Object.entries(dependencies).forEach(([key, values]) => {
+  const result = [];
+  const filtered = filterDependencies(dependencies, info.selection);
+  const retrIdxs = retrievals
+    .filter(r => info.selection.has(r.retrId))
+    .reduce((acc, r, i) => acc.set(r.retrId, i), new Map());
+  its.forEach(filtered.entries(), ([key, values]) => {
     if (key !== "-1" && info.selection.has(key)) {
-      values
-        .filter(value => info.selection.has(value))
-        .forEach(value => {
-          const target = indexInRetrievals(retrievals, value);
-          if (target !== -1) {
-            // The target may have been filtered (NoOp)
-            links.push({
-              source: indexInRetrievals(retrievals, key),
-              target,
-              id: `${key}-${value}`,
-              critical: false
-            });
-          }
-        });
+      values.reduce((links, value) => {
+        const target = retrIdxs.get(value);
+        if (target !== -1) {
+          // The target may have been filtered (NoOp)
+          links.push({
+            source: retrIdxs.get(key),
+            target,
+            id: `${key}-${value}`,
+            critical: false
+          });
+        }
+        return links;
+      }, result);
     }
   });
-  return links;
-};
-
-// Remove nodes without timing info
-const filterEmptyTimingInfo = data => {
-  return data.map(query => {
-    const { retrievals: retrievalsToFilter } = query;
-
-    const selectedIds = retrievalsToFilter
-      .filter(retrieval => Object.entries(retrieval.timingInfo).length > 0)
-      .map(retrieval => retrieval.retrId);
-    return new Set(selectedIds);
-  });
+  return result;
 };
 
 const findChildrenAndParents = (res, queries) => {
@@ -110,14 +104,17 @@ const findChildrenAndParents = (res, queries) => {
     const { retrievals } = query;
     retrievals.forEach(retrieval => {
       const { retrId, underlyingDataNodes } = retrieval;
-      res
+      const node = res
         .find(r => r.id === queryId) // find the good query
         .nodes.find(
-          node => node.id === retrId // find the good node
-        ).childrenIds = underlyingDataNodes.map(
-        // give it its childrenIds
-        name => res.find(x => x.name === name).id
-      );
+          n => n.id === retrId // find the good node
+        );
+      if (node) {
+        node.childrenIds = underlyingDataNodes.map(
+          // give it its childrenIds
+          name => res.find(x => x.name === name).id
+        );
+      }
 
       // give its children their parentId
       underlyingDataNodes.forEach(
@@ -128,11 +125,7 @@ const findChildrenAndParents = (res, queries) => {
   });
 };
 
-const parseJson = ({ data }, type = "fillTimingInfo") => {
-  const selections =
-    type === "dev"
-      ? new Set(data.map(({ retrievals }) => retrievals.map(r => r.retrId)))
-      : filterEmptyTimingInfo(data);
+const parseJson = (data, selections) => {
   const graphInfo = selections.map(selection => ({ selection }));
   fillTimingInfo(data, graphInfo);
 
@@ -143,8 +136,8 @@ const parseJson = ({ data }, type = "fillTimingInfo") => {
 
     const nodes = getNodes(dependencies, retrievals, queryId, info);
     const links = getLinks(dependencies, retrievals, info);
-    criticalPath(query, links, info);
-    addClustersToNodes(query, nodes, info);
+    info.criticalLinks = criticalPath(query, info);
+    info.clusters = addClustersToNodes(query, info);
     const passNumber = parseInt((mdxPass || "_0").split("_")[1], 10);
 
     return {
@@ -153,11 +146,12 @@ const parseJson = ({ data }, type = "fillTimingInfo") => {
       pass: passNumber,
       name: clusterMemberId,
       nodes,
-      links
+      links,
+      info
     };
   });
 
-  findChildrenAndParents(res, data, graphInfo);
+  findChildrenAndParents(res, data);
   return res;
 };
 
