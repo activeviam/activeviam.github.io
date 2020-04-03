@@ -48,7 +48,7 @@ class App extends Component {
         .filter(query => query.pass === 0)
         .find(query => query.parentId === null).id,
       router: "graph",
-      json: json.data,
+      json,
       lastInput: input
     });
   };
@@ -94,8 +94,13 @@ class App extends Component {
     const {
       nodes: currentNodes = [],
       links: currentLinks = [],
-      parentId: currentParentId = null
+      parentId: currentParentId = null,
+      id: jsonIdx
     } = allQueries[currentQueryId] || {};
+
+    const retrievals = this.state.json
+      ? this.state.json[jsonIdx].retrievals
+      : [];
 
     return (
       <>
@@ -114,6 +119,7 @@ class App extends Component {
               className="my-0"
               nodes={currentNodes}
               links={currentLinks}
+              retrievals={retrievals}
               clickNode={this.clickNode}
               restart={() => this.setState({ restartGraph: false })}
               changeGraph={this.changeGraph}

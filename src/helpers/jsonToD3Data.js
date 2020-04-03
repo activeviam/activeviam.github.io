@@ -4,12 +4,6 @@ import addClustersToNodes from "./cluster";
 import { filterDependencies } from "./selection";
 import * as its from "./iterators";
 
-const indexInRetrievals = (retrievals, strId) => {
-  const id = parseInt(strId, 10);
-  // some retrievals might be missing so retrId != retrievals[retrId]
-  return retrievals.findIndex(retrieval => retrieval.retrId === id);
-};
-
 const computeRadius = elapsed => {
   if (elapsed < 5) return 20;
   if (elapsed < 20) return 35;
@@ -74,29 +68,29 @@ const getNodes = (dependencies, retrievals, queryId, info) => {
 };
 
 const getLinks = (dependencies, retrievals, info) => {
-  const result = [];
   const filtered = filterDependencies(dependencies, info.selection);
   const retrIdxs = retrievals
     .filter(r => info.selection.has(r.retrId))
     .reduce((acc, r, i) => acc.set(r.retrId, i), new Map());
-  its.forEach(filtered.entries(), ([key, values]) => {
-    if (key !== "-1" && info.selection.has(key)) {
-      values.reduce((links, value) => {
+  return its.reduce(
+    filtered.entries(),
+    (result, [key, values]) => {
+      if (key === -1) return result;
+
+      const source = retrIdxs.get(key);
+      return values.reduce((links, value) => {
         const target = retrIdxs.get(value);
-        if (target !== -1) {
-          // The target may have been filtered (NoOp)
-          links.push({
-            source: retrIdxs.get(key),
-            target,
-            id: `${key}-${value}`,
-            critical: false
-          });
-        }
+        // The target may have been filtered (NoOp)
+        links.push({
+          source,
+          target,
+          id: `${key}-${value}`
+        });
         return links;
       }, result);
-    }
-  });
-  return result;
+    },
+    []
+  );
 };
 
 const findChildrenAndParents = (res, queries) => {
