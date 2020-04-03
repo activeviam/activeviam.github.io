@@ -47,7 +47,7 @@ class App extends Component {
       currentQueryId: data
         .filter(query => query.pass === 0)
         .find(query => query.parentId === null).id,
-      router: "graph",
+      router: "summary",
       json,
       lastInput: input
     });
@@ -113,6 +113,9 @@ class App extends Component {
         <main role="main" className="container-fluid px-0">
           {router === "input" && (
             <Input passInput={this.passInput} lastInput={lastInput} />
+          )}
+          {router === "summary" && (
+            <p>Summary of the query will come here...</p>
           )}
           {router === "graph" && !restartGraph && (
             <Graph
