@@ -1,4 +1,4 @@
-import { fillTimingInfo } from "./fillTimingInfo";
+import { computeDeepness } from "./deepness";
 import criticalPath from "./criticalPath";
 import addClustersToNodes from "./cluster";
 
@@ -8,6 +8,10 @@ const indexInRetrievals = (retrievals, strId) => {
   return retrievals.findIndex(retrieval => retrieval.retrId === id);
 };
 
+/**
+ * @param elapsed: the elapsed time of a node
+ * Returns the radius the node should be displayed with
+ */
 const computeRadius = elapsed => {
   if (elapsed < 5) return 20;
   if (elapsed < 20) return 35;
@@ -15,16 +19,20 @@ const computeRadius = elapsed => {
   return 65;
 };
 
+/**
+ * @param dependencies: dependencies of the request
+ * @param retrievals: retrievals of the request
+ * Returns a list of the request nodes we will later pass to D3
+ * Keeps all node information from retrievals and dependencies we might need
+ * Nodes are sorted by id
+ */
 const getNodes = (dependencies, retrievals) => {
-  // Creates a Set containing all nodes present in the dependencies, then converts
-  // it to an array and map each node number to its node object. Finally sorts nodes by
-  // their id because the links are order dependant.
   return retrievals
     .map(retrieval => {
       const {
         retrId,
         timingInfo,
-        fakeStartTime,
+        deepness,
         type,
         measureProvider,
         measures,
@@ -39,7 +47,7 @@ const getNodes = (dependencies, retrievals) => {
       const realElapsed = realEnd - realStart;
 
       const radius = computeRadius(realElapsed);
-      const yFixed = fakeStartTime * 150;
+      const yFixed = deepness * 150;
       return {
         id: retrId,
         name: retrId.toString(),
@@ -54,6 +62,7 @@ const getNodes = (dependencies, retrievals) => {
           partitioning,
           location
         },
+        clusterId: 0,
         radius,
         yFixed,
         status: dependencies[-1].includes(retrId)
@@ -66,6 +75,11 @@ const getNodes = (dependencies, retrievals) => {
     .sort((a, b) => a.id - b.id);
 };
 
+/**
+ * @param dependencies: dependencies of the request
+ * @param retrievals: retrievals of the request
+ * Returns a list of the request dependencies links we will later pass to D3
+ */
 const getLinks = (dependencies, retrievals) => {
   const links = [];
   Object.entries(dependencies).forEach(([key, values]) => {
@@ -87,7 +101,11 @@ const getLinks = (dependencies, retrievals) => {
   return links;
 };
 
-// Remove nodes without timing info
+/**
+ * @param data: a request object a user gave the app
+ * Some nodes does not contain information for the user. In the case we do
+ * not want to consider them, this funtion removes them
+ */
 const filterEmptyTimingInfo = data => {
   return data.map(query => {
     const {
@@ -114,6 +132,13 @@ const filterEmptyTimingInfo = data => {
   });
 };
 
+/**
+ * @param res: transformed query
+ * @param queries: initial query
+ * In order to navigate in distributed query, we need:
+ *   - for each node with underlyingGraphe, the id of the graph
+ *   - for each underlying graph, the id of the graph with the parent node
+ */
 const findChildrenAndParents = (res, queries) => {
   queries.forEach((query, queryId) => {
     const { retrievals } = query;
@@ -137,10 +162,15 @@ const findChildrenAndParents = (res, queries) => {
   });
 };
 
-const parseJson = (jsonObject, type = "fillTimingInfo") => {
+/**
+ * @param jsonObject: a request a user gave the app, on json format
+ * @param type: how the user wants to see the graph (classic or dev)
+ * Returns a transformed version of the input we will be able to manipulate and give to D3
+ */
+const parseJson = (jsonObject, type = "classic") => {
   const { data } = jsonObject;
   const queries = type === "dev" ? data : filterEmptyTimingInfo(data);
-  fillTimingInfo(queries);
+  computeDeepness(queries);
 
   const res = queries.map((query, queryId) => {
     const { planInfo, dependencies, retrievals } = query;
@@ -149,7 +179,7 @@ const parseJson = (jsonObject, type = "fillTimingInfo") => {
     const nodes = getNodes(dependencies, retrievals, queryId);
     const links = getLinks(dependencies, retrievals);
     criticalPath(query, links);
-    addClustersToNodes(query, nodes);
+    addClustersToNodes(dependencies, nodes);
     const passNumber = parseInt((mdxPass || "_0").split("_")[1], 10);
 
     return {

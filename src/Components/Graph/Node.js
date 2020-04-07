@@ -67,6 +67,7 @@ class Node extends Component {
               Measures:
               <ul>
                 {measures.map((m, key) => (
+                  // eslint-disable-next-line react/no-array-index-key
                   <li key={key}>{m}</li>
                 ))}
               </ul>
@@ -75,6 +76,7 @@ class Node extends Component {
               Locations:
               <ul>
                 {location.map((l, key) => (
+                  // eslint-disable-next-line react/no-array-index-key
                   <li key={key}>
                     {l.dimension}@{l.hierarchy}
                     {l.level.map((lev, i) => {

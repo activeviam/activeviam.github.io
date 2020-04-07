@@ -10,7 +10,7 @@ class Input extends Component {
     super(props);
     this.state = {
       input: this.props.lastInput,
-      type: "fillTimingInfo",
+      type: "classic",
       urlMode: false,
       username: "",
       password: "",
@@ -101,8 +101,8 @@ class Input extends Component {
             inline
             label="Classic"
             type="radio"
-            onChange={this.checkRadio("fillTimingInfo")}
-            checked={type === "fillTimingInfo"}
+            onChange={this.checkRadio("classic")}
+            checked={type === "classic"}
           />
           <Form.Check
             inline
