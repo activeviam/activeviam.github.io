@@ -99,7 +99,6 @@ class App extends Component {
     const { parentId: currentParentId = null } =
       allQueries[currentQueryId] || {};
 
-    debugger;
     return (
       <>
         <NavBar
