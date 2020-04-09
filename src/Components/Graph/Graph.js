@@ -6,10 +6,50 @@ import { nodeType, linkType } from "../../types";
 import Link from "./Link";
 import Node from "./Node";
 import { updateGraph } from "../../helpers/graphHelpers";
+import { buildD3 } from "../../helpers/jsonToD3Data";
 
 class Graph extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      nodes: [],
+      links: [],
+      selectedNodeId: null
+    };
+  }
+
   componentDidMount() {
-    const { nodes, links } = this.props;
+    this.generateGraph();
+  }
+
+  componentWillUnmount() {
+    this.props.restart();
+  }
+
+  clickNode = id => {
+    this.setState(prevState => {
+      const selectedNodeId = id === prevState.selectedNodeId ? null : id;
+      const { nodes } = prevState;
+      nodes.forEach(node => {
+        if (node.id === id) {
+          node.isSelected = node.isSelected !== true;
+        } else {
+          node.isSelected = false;
+        }
+      });
+      return { selectedNodeId, nodes };
+    });
+  };
+
+  changeGraph = (...args) => {
+    this.clickNode(null); // Unselect the current node( this. should be move to upated props)
+    this.props.changeGraph(...args);
+  };
+
+  generateGraph() {
+    const { query, selection } = this.props;
+    const { nodes, links } = buildD3(query, selection);
+    this.setState({ nodes, links });
 
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
@@ -63,7 +103,7 @@ class Graph extends Component {
 
     d3Graph.call(
       d3.zoom().on("zoom", () => {
-        this.props.clickNode(null);
+        this.clickNode(null);
         return d3
           .select("svg")
           .select("g")
@@ -76,18 +116,15 @@ class Graph extends Component {
     });
   }
 
-  componentWillUnmount() {
-    this.props.restart();
-  }
-
   render() {
-    const { nodes, links, clickNode, changeGraph } = this.props;
+    const { nodes, links } = this.state;
+
     const Nodes = nodes.map(node => (
       <Node
         node={node}
         key={node.id}
-        clickNode={clickNode}
-        changeGraph={changeGraph}
+        clickNode={this.clickNode}
+        changeGraph={this.changeGraph}
       />
     ));
     const Links = links.map(link => (

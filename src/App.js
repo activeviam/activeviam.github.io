@@ -21,7 +21,6 @@ class App extends Component {
       allQueries: [],
       currentQueryId: 0,
       currentPassId: 0,
-      selectedNodeId: null,
       restartGraph: false,
       lastInput: ""
     };
@@ -54,7 +53,6 @@ class App extends Component {
   };
 
   changeGraph = childId => {
-    this.clickNode(this.state.selectedNodeId); // Easy way to un-click the current clicked node to prevent bug
     this.setState({ currentQueryId: childId, restartGraph: true });
   };
 
@@ -67,20 +65,27 @@ class App extends Component {
     this.setState({ currentPassId: passId });
   };
 
-  clickNode = id => {
-    this.setState(prevState => {
-      const selectedNodeId = id === prevState.selectedNodeId ? null : id;
-      const { allQueries, currentQueryId } = prevState;
-      allQueries[currentQueryId].nodes.forEach(node => {
-        if (node.id === id) {
-          node.isSelected = !node.isSelected;
-        } else {
-          node.isSelected = false;
-        }
-      });
-      return { selectedNodeId };
-    });
-  };
+  renderGraph() {
+    const { currentQueryId, allQueries, selections } = this.state;
+    const query = this.state.json[currentQueryId];
+
+    return (
+      <Graph
+        className="my-0"
+        selection={selections[currentQueryId]}
+        query={query}
+        details={allQueries[currentQueryId]}
+        restart={() => this.setState({ restartGraph: false })}
+        changeGraph={this.changeGraph}
+      />
+    );
+  }
+
+  renderTimeline() {
+    const { currentQueryId } = this.state;
+
+    return <Timeline plan={this.state.json[currentQueryId || 0]} />;
+  }
 
   render() {
     const {
@@ -91,17 +96,10 @@ class App extends Component {
       router,
       lastInput
     } = this.state;
-    const {
-      nodes: currentNodes = [],
-      links: currentLinks = [],
-      parentId: currentParentId = null,
-      id: jsonIdx
-    } = allQueries[currentQueryId] || {};
+    const { parentId: currentParentId = null } =
+      allQueries[currentQueryId] || {};
 
-    const retrievals = this.state.json
-      ? this.state.json[jsonIdx].retrievals
-      : [];
-
+    debugger;
     return (
       <>
         <NavBar
@@ -117,20 +115,8 @@ class App extends Component {
           {router === "summary" && (
             <p>Summary of the query will come here...</p>
           )}
-          {router === "graph" && !restartGraph && (
-            <Graph
-              className="my-0"
-              nodes={currentNodes}
-              links={currentLinks}
-              retrievals={retrievals}
-              clickNode={this.clickNode}
-              restart={() => this.setState({ restartGraph: false })}
-              changeGraph={this.changeGraph}
-            />
-          )}
-          {router === "timeline" && (
-            <Timeline plan={this.state.json[currentQueryId || 0]} />
-          )}
+          {router === "graph" && !restartGraph && this.renderGraph()}
+          {router === "timeline" && this.renderTimeline()}
         </main>
       </>
     );

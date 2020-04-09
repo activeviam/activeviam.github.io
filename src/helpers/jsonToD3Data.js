@@ -11,7 +11,7 @@ const computeRadius = elapsed => {
   return 65;
 };
 
-const getNodes = (dependencies, retrievals, queryId, info, depths) => {
+const getNodes = (dependencies, retrievals, info, depths) => {
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object. Finally sorts nodes by
   // their id because the links are order dependant.
@@ -25,7 +25,8 @@ const getNodes = (dependencies, retrievals, queryId, info, depths) => {
         measureProvider,
         measures,
         partitioning,
-        location
+        location,
+        childrenIds = []
       } = retrieval;
 
       const { elapsedTime = [0], startTime = [0] } = timingInfo;
@@ -40,7 +41,7 @@ const getNodes = (dependencies, retrievals, queryId, info, depths) => {
       return {
         id: retrId,
         name: retrId.toString(),
-        childrenIds: [],
+        childrenIds,
         isSelected: false,
         details: {
           startTime: realStart,
@@ -97,21 +98,13 @@ const findChildrenAndParents = (res, queries) => {
   queries.forEach((query, queryId) => {
     const { retrievals } = query;
     retrievals.forEach(retrieval => {
-      const { retrId, underlyingDataNodes } = retrieval;
-      const node = res
-        .find(r => r.id === queryId) // find the good query
-        .nodes.find(
-          n => n.id === retrId // find the good node
-        );
-      if (node) {
-        node.childrenIds = underlyingDataNodes.map(
-          // give it its childrenIds
-          name => res.find(x => x.name === name).id
-        );
-      }
+      retrieval.childrenIds = retrieval.underlyingDataNodes.map(
+        // give it its childrenIds
+        name => res.find(x => x.name === name).id
+      );
 
       // give its children their parentId
-      underlyingDataNodes.forEach(
+      retrieval.underlyingDataNodes.forEach(
         // eslint-disable-next-line no-return-assign
         name => (res.find(x => x.name === name).parentId = queryId)
       );
@@ -119,39 +112,44 @@ const findChildrenAndParents = (res, queries) => {
   });
 };
 
+const buildD3 = (query, selection) => {
+  const info = { selection };
+  const { dependencies, retrievals } = query;
+  const ds = nodeDepths(query, info.selection);
+  const depths = ds.reduce((acc, ids, d) => {
+    return ids.reduce((store, id) => store.set(id, d), acc);
+  }, new Map());
+  const nodes = getNodes(dependencies, retrievals, info, depths);
+  const links = getLinks(dependencies, retrievals, info);
+  const criticalLinks = criticalPath(query, info);
+  links.forEach(link => {
+    link.critical = criticalLinks.has(link.id);
+  });
+  const clusters = addClustersToNodes(query, info);
+  nodes.forEach(node => {
+    node.clusterId = clusters.get(node.id);
+  });
+
+  return {
+    nodes,
+    links
+  };
+};
+
 const parseJson = (data, selections) => {
   const graphInfo = selections.map(selection => ({ selection }));
   fillTimingInfo(data, graphInfo);
 
   const res = data.map((query, queryId) => {
-    const { planInfo, dependencies, retrievals } = query;
+    const { planInfo } = query;
     const { clusterMemberId, mdxPass } = planInfo;
-    const info = graphInfo[queryId];
 
     const passNumber = parseInt((mdxPass || "_0").split("_")[1], 10);
-    const ds = nodeDepths(query, info.selection);
-    const depths = ds.reduce((acc, ids, d) => {
-      return ids.reduce((store, id) => store.set(id, d), acc);
-    }, new Map());
-    const nodes = getNodes(dependencies, retrievals, queryId, info, depths);
-    const links = getLinks(dependencies, retrievals, info);
-    const criticalLinks = criticalPath(query, info);
-    links.forEach(link => {
-      link.critical = criticalLinks.has(link.id);
-    });
-    const clusters = addClustersToNodes(query, info);
-    nodes.forEach(node => {
-      node.clusterId = clusters.get(node.id);
-    });
-
     return {
       id: queryId,
       parentId: null,
       pass: passNumber,
-      name: clusterMemberId,
-      nodes,
-      links,
-      info
+      name: clusterMemberId
     };
   });
 
@@ -160,3 +158,4 @@ const parseJson = (data, selections) => {
 };
 
 export default parseJson;
+export { buildD3 };
