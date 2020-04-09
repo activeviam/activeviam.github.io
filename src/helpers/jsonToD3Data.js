@@ -1,4 +1,4 @@
-import { fillTimingInfo } from "./fillTimingInfo";
+import { fillTimingInfo, nodeDepths } from "./fillTimingInfo";
 import criticalPath from "./criticalPath";
 import addClustersToNodes from "./cluster";
 import { filterDependencies } from "./selection";
@@ -11,14 +11,13 @@ const computeRadius = elapsed => {
   return 65;
 };
 
-const getNodes = (dependencies, retrievals, queryId, info) => {
+const getNodes = (dependencies, retrievals, queryId, info, depths) => {
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object. Finally sorts nodes by
   // their id because the links are order dependant.
   return retrievals
     .filter(r => info.selection.has(r.retrId))
     .map(retrieval => {
-      const fakeStartTime = info.starts.get(retrieval.retrId);
       const {
         retrId,
         timingInfo,
@@ -37,8 +36,7 @@ const getNodes = (dependencies, retrievals, queryId, info) => {
       const realElapsed = realEnd - realStart;
 
       const radius = computeRadius(realElapsed);
-      const yFixed = fakeStartTime * 150;
-      // if (retrId === 31) debugger;
+      const yFixed = depths.get(retrId) * 150;
       return {
         id: retrId,
         name: retrId.toString(),
@@ -55,6 +53,7 @@ const getNodes = (dependencies, retrievals, queryId, info) => {
           partitioning,
           location
         },
+        clusterId: -1, // Set later when computing clusters
         radius,
         yFixed,
         status: dependencies[-1].includes(retrId)
@@ -84,7 +83,8 @@ const getLinks = (dependencies, retrievals, info) => {
         links.push({
           source,
           target,
-          id: `${key}-${value}`
+          id: `${key}-${value}`,
+          critical: false // Set later when computing the critical path
         });
         return links;
       }, result);
@@ -128,11 +128,21 @@ const parseJson = (data, selections) => {
     const { clusterMemberId, mdxPass } = planInfo;
     const info = graphInfo[queryId];
 
-    const nodes = getNodes(dependencies, retrievals, queryId, info);
-    const links = getLinks(dependencies, retrievals, info);
-    info.criticalLinks = criticalPath(query, info);
-    info.clusters = addClustersToNodes(query, info);
     const passNumber = parseInt((mdxPass || "_0").split("_")[1], 10);
+    const ds = nodeDepths(query, info.selection);
+    const depths = ds.reduce((acc, ids, d) => {
+      return ids.reduce((store, id) => store.set(id, d), acc);
+    }, new Map());
+    const nodes = getNodes(dependencies, retrievals, queryId, info, depths);
+    const links = getLinks(dependencies, retrievals, info);
+    const criticalLinks = criticalPath(query, info);
+    links.forEach(link => {
+      link.critical = criticalLinks.has(link.id);
+    });
+    const clusters = addClustersToNodes(query, info);
+    nodes.forEach(node => {
+      node.clusterId = clusters.get(node.id);
+    });
 
     return {
       id: queryId,

@@ -47,7 +47,7 @@ const addClustersToNodes = (query, info) => {
     clusters.entries(),
     (acc, [id, ns]) => {
       return ns.reduce((store, node) => {
-        return store.set(node.retrId, id);
+        return store.set(node, id);
       }, acc);
     },
     new Map()

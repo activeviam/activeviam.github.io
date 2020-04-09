@@ -11,7 +11,6 @@ class Graph extends Component {
   componentDidMount() {
     const { nodes, links } = this.props;
 
-    debugger;
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
       .attr("width", window.innerWidth)
@@ -83,7 +82,6 @@ class Graph extends Component {
 
   render() {
     const { nodes, links, clickNode, changeGraph } = this.props;
-    debugger;
     const Nodes = nodes.map(node => (
       <Node
         node={node}
