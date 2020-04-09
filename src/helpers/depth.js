@@ -32,33 +32,33 @@ const invertDependencies = dependencies => {
 
 /**
  * @param query: a query contining dependencies and retrievals
- * Deepness of a node: a node must be deeper than the nodes it depends on
- * Nodes that depend on no other (roots) are at a 0 deepness
- * Returns a dict of deepness, key is deepness and value nodes at this deepness
+ * Depth of a node: a node must be depth than the nodes it depends on
+ * Nodes that depend on no other (roots) are at a 0 depth
+ * Returns a dict of depth, key is depth and value nodes at this depth
  */
-const nodesDeepness = query => {
+const nodesDepth = query => {
   const { dependencies, retrievals } = query;
   if (retrievals.length === 0) return null;
   const invDependencies = invertDependencies(dependencies);
-  const deepness = {
+  const depth = {
     0: [...invDependencies[-1]]
   };
-  // list of nodes we gave a deepness
+  // list of nodes we gave a depth
   const done = [...invDependencies[-1]];
-  // list of children of nodes we just gave deepness
+  // list of children of nodes we just gave depth
   let toDo = [...new Set(done.map(parent => invDependencies[parent]).flat(2))];
-  let currentDeepness = 0;
+  let currentDepth = 0;
   while (toDo.length !== 0) {
-    currentDeepness += 1;
-    deepness[currentDeepness] = [];
-    // list of nodes that will be at deepness currentDeepness
+    currentDepth += 1;
+    depth[currentDepth] = [];
+    // list of nodes that will be at depth currentDepth
     const almostDone = [];
     for (let nodeId = 0; nodeId < toDo.length; nodeId += 1) {
       const node = toDo[nodeId];
-      // Check that each parent has deepness. In this case we can say that node
-      // is at deepness ceurrentDeepness
+      // Check that each parent has depth. In this case we can say that node
+      // is at depth currentDepth
       if (dependencies[node].every(parent => done.includes(parent))) {
-        deepness[currentDeepness].push(node);
+        depth[currentDepth].push(node);
         almostDone.push(node);
       }
     }
@@ -70,29 +70,29 @@ const nodesDeepness = query => {
     toDo = [...new Set(toDo)];
     done.push(...almostDone);
   }
-  return deepness;
+  return depth;
 };
 
 /**
  * @param data: a list of query the user gave the app
- * For each query of data, compute the deepness of each node
- * The graph displays nodes according to their deepness, the y coordinate
- * of each node will be propotional to the deepness
+ * For each query of data, compute the depth of each node
+ * The graph displays nodes according to their depth, the y coordinate
+ * of each node will be propotional to the depth
  */
-const computeDeepness = data => {
+const computeDepth = data => {
   data.forEach(query => {
     if (query.retrievals.length === 0) return;
-    const deepness = nodesDeepness(query);
+    const depth = nodesDepth(query);
     // Take care of id being sometine int or str due to input format
-    Object.keys(deepness).forEach(d => {
-      deepness[d] = deepness[d].map(id => parseInt(id, 10));
+    Object.keys(depth).forEach(d => {
+      depth[d] = depth[d].map(id => parseInt(id, 10));
     });
     query.retrievals.forEach(retr => {
-      retr.deepness = Object.keys(deepness).filter(d =>
-        deepness[d].includes(retr.retrId)
+      retr.depth = Object.keys(depth).filter(d =>
+        depth[d].includes(retr.retrId)
       );
     });
   });
 };
 
-export { computeDeepness, nodesDeepness, invertDependencies };
+export { computeDepth, nodesDepth, invertDependencies };

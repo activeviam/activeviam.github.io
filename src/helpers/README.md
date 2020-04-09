@@ -60,11 +60,11 @@ In some case, a graph can actually be multiple graphs, because some groups of no
 
 This is why we compute clusters in our graph, so that D3 kwows he has to seperate some nodes
 
-## deepness.js
+## depth.js
 
-We define the concept of node deepness, such as each node must be deeper than the nodes it depends on. Our nodes are plotted according to their deepness, the attribute `yFixed` of a node is computed based on its deepness
+We define the concept of node depth, such as each node must be deeper than the nodes it depends on. Our nodes are plotted according to their depth, the attribute `yFixed` of a node is computed based on its depth
 
-The functions computeDeepness compute each node's deepness
+The functions computeDepth compute each node's depth
 
 ## criticalPath.js
 

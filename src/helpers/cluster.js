@@ -1,4 +1,4 @@
-import { invertDependencies } from "./deepness";
+import { invertDependencies } from "./depth";
 
 /**
  * @param nodeId

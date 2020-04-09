@@ -1,4 +1,4 @@
-import { nodesDeepness } from "./deepness";
+import { nodesDepth } from "./depth";
 
 /**
  * @param retrievals: a list of retrievals with timing info
@@ -27,17 +27,17 @@ const findTime = (retrievals, node) => {
 const criticalPath = (query, links) => {
   const { dependencies, retrievals } = query;
   if (retrievals.length < 2) return;
-  const deep2nodes = nodesDeepness(query);
+  const depth2nodes = nodesDepth(query);
   const critical = {};
   let maxTime = 0;
   let maxNode = null;
 
   // We compute a critical score for each node, going down from
-  // deepness = 0
-  Object.keys(deep2nodes)
+  // depth = 0
+  Object.keys(depth2nodes)
     .sort()
-    .forEach(deep => {
-      deep2nodes[deep].forEach(node => {
+    .forEach(depth => {
+      depth2nodes[depth].forEach(node => {
         if (dependencies[node]) {
           // node has parents so critical = elapsedTime + max critical of parents
           const elapsed = findTime(retrievals, node);

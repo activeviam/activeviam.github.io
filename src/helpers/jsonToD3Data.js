@@ -1,4 +1,4 @@
-import { computeDeepness } from "./deepness";
+import { computeDepth } from "./depth";
 import criticalPath from "./criticalPath";
 import addClustersToNodes from "./cluster";
 
@@ -32,7 +32,7 @@ const getNodes = (dependencies, retrievals) => {
       const {
         retrId,
         timingInfo,
-        deepness,
+        depth,
         type,
         measureProvider,
         measures,
@@ -47,7 +47,7 @@ const getNodes = (dependencies, retrievals) => {
       const realElapsed = realEnd - realStart;
 
       const radius = computeRadius(realElapsed);
-      const yFixed = deepness * 150;
+      const yFixed = depth * 150;
       return {
         id: retrId,
         name: retrId.toString(),
@@ -170,7 +170,7 @@ const findChildrenAndParents = (res, queries) => {
 const parseJson = (jsonObject, type = "classic") => {
   const { data } = jsonObject;
   const queries = type === "dev" ? data : filterEmptyTimingInfo(data);
-  computeDeepness(queries);
+  computeDepth(queries);
 
   const res = queries.map((query, queryId) => {
     const { planInfo, dependencies, retrievals } = query;
