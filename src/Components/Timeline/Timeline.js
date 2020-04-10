@@ -197,7 +197,11 @@ class Timeline extends Component {
               const [id, partition] = key;
               const retrieval = plan.retrievals[id];
               return (
-                <Toast className="entry" onClose={() => this.closeBox(key)}>
+                <Toast
+                  key={retrieval.retrId}
+                  className="entry"
+                  onClose={() => this.closeBox(key)}
+                >
                   <Toast.Header>
                     Retrieval&nbsp;
                     <strong className="mr-auto">#{id}</strong>

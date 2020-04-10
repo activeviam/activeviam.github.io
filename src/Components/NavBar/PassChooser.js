@@ -16,6 +16,7 @@ const passChooser = (allQueries, currentPassId, callback) => {
       <NavDropdown title={dropName} id="basic-nav-dropdown" alignRight>
         {allPassIds.map(pass => (
           <NavDropdown.Item
+            key={pass.pass}
             as="button"
             active={pass.pass === currentPassId}
             onClick={() => callback(pass.pass)}

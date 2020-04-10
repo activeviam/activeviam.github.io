@@ -6,12 +6,12 @@ const Values = ({ values, selected }) => {
     <>
       [
       {values.map((v, i, vs) => (
-        <>
+        <span key={i}>
           <span className={i === selected ? "selected-partition" : ""}>
             {v}
           </span>
           {i < vs.length - 1 ? "," : ""}
-        </>
+        </span>
       ))}
       ]
     </>
