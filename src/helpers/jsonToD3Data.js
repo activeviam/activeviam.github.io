@@ -144,10 +144,12 @@ const parseJson = (data, selections) => {
     const { planInfo } = query;
     const { clusterMemberId, mdxPass } = planInfo;
 
-    const passNumber = parseInt((mdxPass || "_0").split("_")[1], 10);
+    const passInfo = (mdxPass || "Select_0").split("_");
+    const passNumber = parseInt(passInfo[1], 10);
     return {
       id: queryId,
       parentId: null,
+      passType: passInfo[0],
       pass: passNumber,
       name: clusterMemberId
     };

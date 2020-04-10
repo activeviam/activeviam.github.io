@@ -13,6 +13,10 @@ const setTimeToUnit = (query, graphInfo) => {
 // the function returns {parent: sons}
 const invertDependencies = dep => {
   const invDep = new Map();
+  if (dep.size === 0) {
+    return invDep;
+  }
+
   const temp = [...dep.get(-1)];
   const done = [];
   while (temp.length !== 0) {
@@ -39,7 +43,7 @@ const invertDependencies = dep => {
 };
 
 const nodeDepths = (query, selection) => {
-  if (selection.size === 0) return null;
+  if (selection.size === 0 || query.retrievals.length === 0) return [[]];
 
   const dependencies = filterDependencies(query.dependencies, selection);
   const invDependencies = invertDependencies(dependencies);
@@ -76,9 +80,7 @@ const fillTimingInfo = (data, graphInfo) => {
     if (info.selection.size > 0) {
       const starts = setTimeToUnit(query, info);
 
-      const depth = nodeDepths(query, info.selection).map(rs =>
-        rs.map(id => parseInt(id, 10))
-      );
+      const depth = nodeDepths(query, info.selection);
       query.retrievals
         .filter(r => info.selection.has(r.retrId))
         .forEach(r => {
