@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Input from "./Components/Input/Input";
 import Graph from "./Components/Graph/Graph";
 import Timeline from "./Components/Timeline/Timeline";
+import Summary from "./Components/Summary/Summary";
 import NavBar from "./Components/NavBar/NavBar";
 import parseJson from "./helpers/jsonToD3Data";
 import { applySelection } from "./helpers/selection";
@@ -65,6 +66,14 @@ class App extends Component {
     this.setState({ currentPassId: passId });
   };
 
+  renderSummary() {
+    const { currentQueryId, allQueries, json } = this.state;
+
+    return (
+      <Summary info={allQueries} queries={json} currentQuery={currentQueryId} />
+    );
+  }
+
   renderGraph() {
     const { currentQueryId, allQueries, selections } = this.state;
     const query = this.state.json[currentQueryId];
@@ -111,9 +120,7 @@ class App extends Component {
           {router === "input" && (
             <Input passInput={this.passInput} lastInput={lastInput} />
           )}
-          {router === "summary" && (
-            <p>Summary of the query will come here...</p>
-          )}
+          {router === "summary" && this.renderSummary()}
           {router === "graph" && !restartGraph && this.renderGraph()}
           {router === "timeline" && this.renderTimeline()}
         </main>

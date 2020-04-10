@@ -69,3 +69,4 @@ const Details = ({
 };
 
 export default Details;
+export { Values };
