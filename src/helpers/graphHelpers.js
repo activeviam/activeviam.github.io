@@ -80,6 +80,12 @@ const updateNode = selection => {
     .select("circle")
     .style("stroke-width", d => (d.isSelected ? 3 : 1))
     .style("stroke", d => outlineColor(d));
+
+  selection
+    .attr("transform", d => `translate(${d.x},${d.y})`)
+    .select("rect")
+    .style("stroke-width", d => (d.isSelected ? 3 : 1))
+    .style("stroke", d => outlineColor(d));
 };
 
 const updateGraph = selection => {

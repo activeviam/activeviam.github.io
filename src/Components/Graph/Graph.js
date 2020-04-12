@@ -49,7 +49,6 @@ class Graph extends Component {
   generateGraph() {
     const { query, selection } = this.props;
     const { nodes, links } = buildD3(query, selection);
-    this.setState({ nodes, links });
 
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
@@ -71,7 +70,6 @@ class Graph extends Component {
       );
 
     function dragStarted(d) {
-      console.log("Drap on ", d);
       if (!d3.event.active) force.alphaTarget(0.3).restart();
       d.fx = d.x;
       d.fy = d.y;
@@ -87,15 +85,6 @@ class Graph extends Component {
       d.fx = null;
       d.fy = null;
     }
-
-    // FIXME: this is not working as the tree has not been generated yet
-    d3.selectAll("g.node").call(
-      d3
-        .drag()
-        .on("start", dragStarted)
-        .on("drag", dragging)
-        .on("end", dragEnded)
-    );
 
     d3.select(window).on("resize", () => {
       d3Graph
@@ -115,6 +104,17 @@ class Graph extends Component {
 
     force.on("tick", () => {
       d3Graph.call(updateGraph);
+    });
+
+    this.setState({ nodes, links }, () => {
+      // FIXME: this is not working as the tree has not been generated yet
+      d3Graph.selectAll("g.node").call(
+        d3
+          .drag()
+          .on("start", dragStarted)
+          .on("drag", dragging)
+          .on("end", dragEnded)
+      );
     });
   }
 
