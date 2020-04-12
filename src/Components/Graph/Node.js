@@ -37,7 +37,7 @@ class Node extends Component {
 
   render() {
     const { node, changeGraph, clickNode } = this.props;
-    const { details, name, childrenIds, isSelected } = node;
+    const { details, name, childrenIds, isSelected, status } = node;
     const {
       type,
       startTimes,
@@ -47,7 +47,7 @@ class Node extends Component {
       location
     } = details;
     const popover = (
-      <Popover id="popover-basic" style={{ maxWidth: "800px" }}>
+      <Popover style={{ maxWidth: "800px" }}>
         <Popover.Title as="h3">
           {`${type} (#${name})`}
           <button
@@ -83,10 +83,15 @@ class Node extends Component {
         </Popover.Content>
       </Popover>
     );
+
+    const nodeElem = status === "root" || status === "leaf" ? "rect" : "circle";
     return (
       <>
         <g className="node">
-          <circle ref={this.myRef} onClick={this.handle.bind(this)} />
+          {React.createElement(nodeElem, {
+            ref: this.myRef,
+            onClick: this.handle.bind(this)
+          })}
           <text onClick={this.handle.bind(this)}>{name}</text>
         </g>
         <Overlay show={isSelected} placement="auto" target={this.myRef.current}>

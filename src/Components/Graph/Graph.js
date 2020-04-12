@@ -88,6 +88,7 @@ class Graph extends Component {
       d.fy = null;
     }
 
+    // FIXME: this is not working as the tree has not been generated yet
     d3.selectAll("g.node").call(
       d3
         .drag()
@@ -95,7 +96,6 @@ class Graph extends Component {
         .on("drag", dragging)
         .on("end", dragEnded)
     );
-    d3.selectAll("g.node").call(s => console.log("Selection", s));
 
     d3.select(window).on("resize", () => {
       d3Graph

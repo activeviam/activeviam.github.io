@@ -14,8 +14,22 @@ const outlineColor = d => {
 // yellow if node depends on no one
 // orange if is output
 // blue otherwise
-const insideColor = d =>
-  d.status === "root" ? "#FFD500" : d.status === "leaf" ? "#FC5400" : "#3A83C0";
+// Colors from https://observablehq.com/@d3/color-schemes
+const nodeColors = new Map([
+  ["DistributedAggregatesRetrieval", "#549ce8"],
+  ["DistributedPostProcessedRetrieval", "#f28e2c"],
+  ["JITPrimitiveAggregatesRetrieval", "#e15759"],
+  ["NoOpPrimitiveAggregatesRetrieval", "#76b7b2"],
+  ["PostProcessedAggregatesRetrieval", "#59a14f"],
+  ["PostProcessedResultsMerger", "#edc949"],
+  ["PrimitiveResultsMerger", "#af7aa1"],
+  ["RangeSharingPrimitiveAggregatesRetrieval", "#ff9da7"],
+  ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#9c755f"],
+  ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#bab0ab"]
+]);
+
+const insideColor = d => nodeColors.get(d.details.type) || "grey";
+// d.status === "root" ? "#FFD500" : d.status === "leaf" ? "#FC5400" : "#3A83C0";
 
 const enterLink = selection => {
   selection
@@ -32,18 +46,32 @@ const updateLink = selection => {
     .attr("y2", d => d.target.y);
 };
 
+const computeRadius = d => Math.max(Math.sqrt(d.radius) * 4, 10);
+
 const enterNode = selection => {
   selection
     .select("circle")
-    .attr("r", d => Math.max(Math.sqrt(d.radius) * 4, 10))
+    .attr("r", computeRadius)
     .style("fill", d => insideColor(d))
     .style("stroke-width", d => (d.isSelected ? 3 : 1))
     .style("stroke", d => outlineColor(d));
+  selection
+    .select("rect")
+    .attr("width", d => 2 * computeRadius(d))
+    .attr("height", d => 2 * computeRadius(d))
+    .attr("rx", "3")
+    .style("fill", d => insideColor(d))
+    .style("stroke-width", d => (d.isSelected ? 3 : 1))
+    .style("stroke", d => outlineColor(d))
+    .style("transform", d => {
+      const r = computeRadius(d);
+      return `translate(-${r}px, -${r}px)`;
+    });
 
   selection
     .select("text")
     .attr("dy", ".35em")
-    .style("transform", "translateX(-50%,-70%");
+    .attr("dx", "-0.65em");
 };
 
 const updateNode = selection => {
