@@ -71,6 +71,7 @@ class Graph extends Component {
       );
 
     function dragStarted(d) {
+      console.log("Drap on ", d);
       if (!d3.event.active) force.alphaTarget(0.3).restart();
       d.fx = d.x;
       d.fy = d.y;
@@ -94,6 +95,7 @@ class Graph extends Component {
         .on("drag", dragging)
         .on("end", dragEnded)
     );
+    d3.selectAll("g.node").call(s => console.log("Selection", s));
 
     d3.select(window).on("resize", () => {
       d3Graph
@@ -132,10 +134,7 @@ class Graph extends Component {
     ));
 
     return (
-      <svg
-        className="graph my-0"
-        style={{ marginTop: "2em", backgroundColor: "#d1d1ff" }}
-      >
+      <svg className="graph my-0" style={{ marginTop: "2em" }}>
         <g>
           <g>{Links}</g>
           <g>{Nodes}</g>

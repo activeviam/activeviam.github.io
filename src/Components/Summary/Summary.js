@@ -1,7 +1,9 @@
-import React from "react";
+import React, { Component } from "react";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-import { Values } from "../Details/Details";
+import Table from "react-bootstrap/Table";
+import Form from "react-bootstrap/Form";
+import FuzzySearch from "fuzzy-search";
 
 const timingLabels = new Map([
   ["executionContextCreationTime", "Context creation time"],
@@ -31,6 +33,70 @@ const Timings = info => {
   );
 };
 
+const range = n => [...new Array(n).keys()];
+
+class MeasureList extends Component {
+  constructor(props) {
+    super(props);
+    const filtered = [...props.measures];
+    filtered.sort();
+    this.state = {
+      filter: "",
+      filtered
+    };
+  }
+
+  changeFilter = event => {
+    const needle = event.target.value.trim();
+    let result;
+    if (needle === "") {
+      result = [...this.props.measures];
+    } else {
+      const searcher = new FuzzySearch(this.props.measures, undefined, {
+        caseSensitive: true
+      });
+      result = searcher.search(needle);
+    }
+    result.sort();
+    this.setState({ filtered: result });
+  };
+
+  render() {
+    const { filtered: measures } = this.state;
+    const cols = 3;
+    const rows = parseInt(measures.length / cols, 10);
+    const cidx = range(cols);
+    const ridx = range(rows);
+    return (
+      <>
+        <Form>
+          <Form.Group>
+            <Form.Control
+              type="text"
+              placeholder="Measure name"
+              defaultValue={this.state.filter}
+              onChange={this.changeFilter}
+            />
+          </Form.Group>
+        </Form>
+        <Table striped bordered hover size="sm">
+          <tbody>
+            {ridx.map(r => (
+              <tr key={r}>
+                {cidx.map(c => {
+                  const measure = measures[r + c * rows];
+                  const key = measure || `m${r + c * rows}`;
+                  return <td key={key}>{measure}</td>;
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </>
+    );
+  }
+}
+
 const QuerySummary = ({ querySummary: summary, planInfo: info }) => {
   return (
     <div>
@@ -38,9 +104,7 @@ const QuerySummary = ({ querySummary: summary, planInfo: info }) => {
       <h4>Query timings</h4>
       {Timings(info)}
       <h4>Measures</h4>
-      <div>
-        <Values values={summary.measures} />
-      </div>
+      <MeasureList measures={summary.measures} />
       <h4>Retrievals per type</h4>
       <ul>
         {Object.entries(summary.retrievalCountByType).map(([type, count]) => (
