@@ -9,6 +9,7 @@ import Node from "./Node";
 import Menu from "./Menu";
 import { updateGraph } from "../../helpers/graphHelpers";
 import { buildD3 } from "../../helpers/jsonToD3Data";
+import { filterByMeasures } from "../../helpers/selection";
 import "./Drawer.css";
 
 class Graph extends Component {
@@ -17,6 +18,7 @@ class Graph extends Component {
     this.state = {
       showDrawer: false,
       selectedMeasures: [],
+      selectedRetrievals: null,
       nodes: [],
       links: [],
       selectedNodeId: null
@@ -57,22 +59,43 @@ class Graph extends Component {
   };
 
   selectMeasure = ({ measure, selected }) => {
-    this.setState(({ selectedMeasures }) => {
-      if (selected) {
-        if (selectedMeasures.includes(measure)) {
-          return {};
+    this.setState(
+      ({ selectedMeasures }) => {
+        if (selected) {
+          if (selectedMeasures.includes(measure)) {
+            return {};
+          }
+          const newSelection = [...selectedMeasures, measure];
+          return {
+            selectedMeasures: newSelection,
+            selectedRetrievals: filterByMeasures({
+              retrievals: this.props.query.retrievals,
+              dependencies: this.props.query.dependencies,
+              measures: newSelection
+            })
+          };
         }
-        return { selectedMeasures: [...selectedMeasures, measure] };
-      }
-      return { selectedMeasures: selectedMeasures.filter(m => m === measure) };
-    });
+
+        const newSelection = selectedMeasures.filter(m => m === measure);
+        return {
+          selectedMeasures: newSelection,
+          selectedRetrievals: filterByMeasures({
+            retrievals: this.props.query.retrievals,
+            dependencies: this.props.query.dependencies,
+            measures: newSelection
+          })
+        };
+      },
+      () => this.generateGraph()
+    );
   };
 
   generateGraph() {
     const { query, selection } = this.props;
+    const { selectedRetrievals } = this.state;
     if (query === undefined) return;
 
-    const { nodes, links } = buildD3(query, selection);
+    const { nodes, links } = buildD3(query, selectedRetrievals || selection);
 
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))

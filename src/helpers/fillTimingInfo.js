@@ -1,4 +1,4 @@
-import { filterDependencies } from "./selection";
+import { filterDependencies, invertDependencies } from "./selection";
 
 const setTimeToUnit = (query, graphInfo) => {
   return query.retrievals
@@ -7,39 +7,6 @@ const setTimeToUnit = (query, graphInfo) => {
       acc.set(retr.retrId, 0);
       return acc;
     }, new Map());
-};
-
-// dependencies is a dict {son: parents}
-// the function returns {parent: sons}
-const invertDependencies = dep => {
-  const invDep = new Map();
-  if (dep.size === 0) {
-    return invDep;
-  }
-
-  const temp = [...dep.get(-1)];
-  const done = [];
-  while (temp.length !== 0) {
-    const son = temp.shift();
-    done.push(son);
-    if (dep.has(son)) {
-      dep.get(son).forEach(parent => {
-        if (!done.includes(parent) && !temp.includes(parent)) temp.push(parent);
-        try {
-          invDep.get(parent).push(son);
-        } catch {
-          invDep.set(parent, [son]);
-        }
-      });
-    } else {
-      try {
-        invDep.get(-1).push(son);
-      } catch {
-        invDep.set(-1, [son]);
-      }
-    }
-  }
-  return invDep;
 };
 
 const nodeDepths = (query, selection) => {

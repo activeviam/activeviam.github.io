@@ -1,3 +1,39 @@
+import _ from "lodash";
+import * as iterators from "./iterators";
+
+// dependencies is a dict {son: parents}
+// the function returns {parent: sons}
+const invertDependencies = dep => {
+  const invDep = new Map();
+  if (dep.size === 0) {
+    return invDep;
+  }
+
+  const temp = [...dep.get(-1)];
+  const done = [];
+  while (temp.length !== 0) {
+    const son = temp.shift();
+    done.push(son);
+    if (dep.has(son)) {
+      dep.get(son).forEach(parent => {
+        if (!done.includes(parent) && !temp.includes(parent)) temp.push(parent);
+        try {
+          invDep.get(parent).push(son);
+        } catch {
+          invDep.set(parent, [son]);
+        }
+      });
+    } else {
+      try {
+        invDep.get(-1).push(son);
+      } catch {
+        invDep.set(-1, [son]);
+      }
+    }
+  }
+  return invDep;
+};
+
 const removeNoOps = queries => {
   return queries.map(query => {
     const { retrievals: retrievalsToFilter } = query;
@@ -29,4 +65,43 @@ const filterDependencies = (dependencies, selection) => {
   }, new Map());
 };
 
-export { applySelection, filterDependencies };
+const filterByMeasures = ({ retrievals, dependencies, measures }) => {
+  const predicate = r => _.intersection(measures, r.measures).length > 0;
+  const matching = retrievals.reduce(
+    (acc, r) => (predicate(r) ? acc.set(r.retrId) : acc),
+    new Set()
+  );
+  const selected = new Set(matching);
+  const visited = new Set(matching);
+  // Include all dependencies of the retrievals
+  const stack = iterators.reduce(
+    matching.values(),
+    (acc, id) => {
+      const deps = dependencies[id];
+      if (deps) {
+        acc.push(...deps);
+      }
+      return acc;
+    },
+    []
+  );
+  while (stack.length > 0) {
+    const rId = stack.shift();
+    if (!visited.has(rId)) {
+      visited.add(rId);
+      const deps = dependencies[rId];
+      if (deps) {
+        stack.push(...deps);
+      }
+    }
+  }
+
+  return selected;
+};
+
+export {
+  applySelection,
+  filterDependencies,
+  filterByMeasures,
+  invertDependencies
+};
