@@ -1,21 +1,44 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
+import Overlay from "react-bootstrap/Overlay";
+import Button from "react-bootstrap/Button";
 import * as d3 from "d3";
 import { nodeType, linkType } from "../../types";
 import Link from "./Link";
 import Node from "./Node";
 import { updateGraph } from "../../helpers/graphHelpers";
 import { buildD3 } from "../../helpers/jsonToD3Data";
+import "./Drawer.css";
+
+const Menu = props => {
+  return (
+    <>
+      <p>This is the menu</p>
+      <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+      </ul>
+      <div>Measures</div>
+      <ul>
+        {[...new Array(5).keys()].map(i => (
+          <li key={i}>M{i}</li>
+        ))}
+      </ul>
+    </>
+  );
+};
 
 class Graph extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      showDrawer: false,
       nodes: [],
       links: [],
       selectedNodeId: null
     };
+    this.svgRef = React.createRef();
   }
 
   componentDidMount() {
@@ -46,8 +69,14 @@ class Graph extends Component {
     this.props.changeGraph(...args);
   };
 
+  toggleDrawer = () => {
+    this.setState(({ showDrawer }) => ({ showDrawer: showDrawer !== true }));
+  };
+
   generateGraph() {
     const { query, selection } = this.props;
+    if (query === undefined) return;
+
     const { nodes, links } = buildD3(query, selection);
 
     const d3Graph = d3
@@ -134,12 +163,30 @@ class Graph extends Component {
     ));
 
     return (
-      <svg className="graph my-0" style={{ marginTop: "2em" }}>
-        <g>
-          <g>{Links}</g>
-          <g>{Nodes}</g>
-        </g>
-      </svg>
+      <>
+        <svg className="graph" style={{ marginTop: "2em" }} ref={this.svgRef}>
+          <g>
+            <g>{Links}</g>
+            <g>{Nodes}</g>
+          </g>
+        </svg>
+        <Button
+          className={`drawer-trigger ${this.state.showDrawer ? "open" : ""}`}
+          variant="outline-dark"
+          onClick={this.toggleDrawer}
+        >
+          Menu
+        </Button>
+        <Overlay
+          show={this.state.showDrawer}
+          placement="top-start"
+          target={this.svgRef.current}
+        >
+          <div className="drawer">
+            <Menu />
+          </div>
+        </Overlay>
+      </>
     );
   }
 }
