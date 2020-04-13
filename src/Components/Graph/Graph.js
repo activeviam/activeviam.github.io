@@ -2,38 +2,21 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import Overlay from "react-bootstrap/Overlay";
-import Button from "react-bootstrap/Button";
 import * as d3 from "d3";
 import { nodeType, linkType } from "../../types";
 import Link from "./Link";
 import Node from "./Node";
+import Menu from "./Menu";
 import { updateGraph } from "../../helpers/graphHelpers";
 import { buildD3 } from "../../helpers/jsonToD3Data";
 import "./Drawer.css";
-
-const Menu = props => {
-  return (
-    <>
-      <p>This is the menu</p>
-      <ul>
-        <li>Item 1</li>
-        <li>Item 2</li>
-      </ul>
-      <div>Measures</div>
-      <ul>
-        {[...new Array(5).keys()].map(i => (
-          <li key={i}>M{i}</li>
-        ))}
-      </ul>
-    </>
-  );
-};
 
 class Graph extends Component {
   constructor(props) {
     super(props);
     this.state = {
       showDrawer: false,
+      selectedMeasures: [],
       nodes: [],
       links: [],
       selectedNodeId: null
@@ -71,6 +54,18 @@ class Graph extends Component {
 
   toggleDrawer = () => {
     this.setState(({ showDrawer }) => ({ showDrawer: showDrawer !== true }));
+  };
+
+  selectMeasure = ({ measure, selected }) => {
+    this.setState(({ selectedMeasures }) => {
+      if (selected) {
+        if (selectedMeasures.includes(measure)) {
+          return {};
+        }
+        return { selectedMeasures: [...selectedMeasures, measure] };
+      }
+      return { selectedMeasures: selectedMeasures.filter(m => m === measure) };
+    });
   };
 
   generateGraph() {
@@ -164,30 +159,35 @@ class Graph extends Component {
 
     return (
       <>
-        <svg className="graph" style={{ marginTop: "2em" }} ref={this.svgRef}>
+        <svg className="graph" ref={this.svgRef}>
           <g>
             <g>{Links}</g>
             <g>{Nodes}</g>
           </g>
         </svg>
-        <Button
+        <div
           className={`drawer-trigger ${this.state.showDrawer ? "open" : ""}`}
           variant="outline-dark"
           onClick={this.toggleDrawer}
         >
           Menu
-        </Button>
+        </div>
         <Overlay
           show={this.state.showDrawer}
           placement="top-start"
           target={this.svgRef.current}
         >
           <div className="drawer">
-            <Menu />
+            <Menu
+              measures={this.props.query.querySummary.measures}
+              selectedMeasures={this.state.selectedMeasures}
+              onSelectedMeasure={this.selectMeasure}
+            />
           </div>
         </Overlay>
       </>
     );
+    // FIXME remove the extra space taken by the button
   }
 }
 
