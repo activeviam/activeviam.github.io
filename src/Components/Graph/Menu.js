@@ -65,7 +65,7 @@ class Menu extends Component {
                 onClick={() => onSelectedMeasure({ measure, selected: false })}
               >
                 -
-              </Button>
+              </Button>{" "}
               {measure}
             </li>
           ))
@@ -75,7 +75,9 @@ class Menu extends Component {
                 {m}
               </li>
             )),
-            <li className="sample">...</li>
+            <li key="__sample__" className="sample">
+              ...
+            </li>
           ];
     return (
       <div className="contextual-menu">

@@ -27,13 +27,13 @@ class Node extends Component {
       .style("stroke-width", this.props.node.isSelected ? 2 : 0);
   }
 
-  handle() {
+  handle = () => {
     const {
       node: { id: nodeId },
       clickNode
     } = this.props;
     clickNode(nodeId);
-  }
+  };
 
   render() {
     const { node, changeGraph, clickNode } = this.props;
@@ -92,7 +92,7 @@ class Node extends Component {
             ref: this.myRef,
             onClick: this.handle.bind(this)
           })}
-          <text onClick={this.handle.bind(this)}>{name}</text>
+          <text onClick={this.handle}>{name}</text>
         </g>
         <Overlay show={isSelected} placement="auto" target={this.myRef.current}>
           {popover}

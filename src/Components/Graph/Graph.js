@@ -21,7 +21,9 @@ class Graph extends Component {
       selectedRetrievals: null,
       nodes: [],
       links: [],
-      selectedNodeId: null
+      selectedNodeId: null,
+      // This is a tricky to force the graph to rebuild after a new graph is generated
+      epoch: 0
     };
     this.svgRef = React.createRef();
   }
@@ -97,12 +99,11 @@ class Graph extends Component {
 
   generateGraph() {
     const { query, selection } = this.props;
-    const { selectedRetrievals } = this.state;
+    const { selectedRetrievals, epoch } = this.state;
     if (query === undefined) return;
 
     const { nodes, links } = buildD3(query, selectedRetrievals || selection);
 
-    debugger;
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
       .attr("width", window.innerWidth)
@@ -159,7 +160,7 @@ class Graph extends Component {
       d3Graph.call(updateGraph);
     });
 
-    this.setState({ nodes, links }, () => {
+    this.setState({ nodes, links, epoch: epoch + 1 }, () => {
       d3Graph.selectAll("g.node").call(
         d3
           .drag()
@@ -172,7 +173,6 @@ class Graph extends Component {
 
   render() {
     const { nodes, links } = this.state;
-
     const Nodes = nodes.map(node => (
       <Node
         node={node}
@@ -188,9 +188,9 @@ class Graph extends Component {
     return (
       <>
         <svg className="graph" ref={this.svgRef}>
-          <g>
-            <g>{Links}</g>
-            <g>{Nodes}</g>
+          <g key={`e${this.state.epoch}`}>
+            {Links}
+            {Nodes}
           </g>
         </svg>
         <div
