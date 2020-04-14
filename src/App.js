@@ -67,6 +67,10 @@ class App extends Component {
   };
 
   renderSummary() {
+    if (!this.state.json) {
+      return <p>Load a query plan first!</p>;
+    }
+
     const { currentQueryId, allQueries, json } = this.state;
 
     return (
@@ -75,6 +79,10 @@ class App extends Component {
   }
 
   renderGraph() {
+    if (!this.state.json) {
+      return <p>Load a query plan first!</p>;
+    }
+
     const { currentQueryId, allQueries, selections } = this.state;
     const query = this.state.json[currentQueryId];
 
@@ -91,6 +99,10 @@ class App extends Component {
   }
 
   renderTimeline() {
+    if (!this.state.json) {
+      return <p>Load a query plan first!</p>;
+    }
+
     const { currentQueryId } = this.state;
 
     return <Timeline plan={this.state.json[currentQueryId || 0]} />;

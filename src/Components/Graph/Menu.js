@@ -23,7 +23,7 @@ class Menu extends Component {
         _.difference(this.props.measures, this.props.selectedMeasures),
         undefined,
         {
-          caseSensitive: true
+          caseSensitive: false
         }
       );
       const result = searcher.search(needle);

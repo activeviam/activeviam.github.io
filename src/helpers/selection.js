@@ -3,6 +3,14 @@ import * as iterators from "./iterators";
 
 // dependencies is a dict {son: parents}
 // the function returns {parent: sons}
+const dependenciesToMap = deps =>
+  new Map(
+    Object.entries(deps).map(entry => {
+      entry[0] = parseInt(entry[0], 10);
+      return entry;
+    })
+  );
+
 const invertDependencies = dep => {
   const invDep = new Map();
   if (dep.size === 0) {
@@ -65,19 +73,26 @@ const filterDependencies = (dependencies, selection) => {
   }, new Map());
 };
 
-const filterByMeasures = ({ retrievals, dependencies, measures }) => {
-  const predicate = r => _.intersection(measures, r.measures).length > 0;
+const filterByMeasures = ({
+  retrievals,
+  dependencies,
+  measures,
+  selection
+}) => {
+  const predicate = r =>
+    selection.has(r.retrId) && _.intersection(measures, r.measures).length > 0;
   const matching = retrievals.reduce(
-    (acc, r) => (predicate(r) ? acc.set(r.retrId) : acc),
+    (acc, r) => (predicate(r) ? acc.add(r.retrId) : acc),
     new Set()
   );
-  const selected = new Set(matching);
+
   const visited = new Set(matching);
+  const mDeps = filterDependencies(dependencies, selection);
   // Include all dependencies of the retrievals
-  const stack = iterators.reduce(
+  const downStack = iterators.reduce(
     matching.values(),
     (acc, id) => {
-      const deps = dependencies[id];
+      const deps = mDeps.get(id);
       if (deps) {
         acc.push(...deps);
       }
@@ -85,18 +100,44 @@ const filterByMeasures = ({ retrievals, dependencies, measures }) => {
     },
     []
   );
-  while (stack.length > 0) {
-    const rId = stack.shift();
+  while (downStack.length > 0) {
+    const rId = downStack.shift();
     if (!visited.has(rId)) {
       visited.add(rId);
-      const deps = dependencies[rId];
+      const deps = mDeps.get(rId);
       if (deps) {
-        stack.push(...deps);
+        downStack.push(...deps);
       }
     }
   }
 
-  return selected;
+  const mInvDeps = invertDependencies(mDeps);
+  // Include all parents of the retrievals
+  const upStack = iterators.reduce(
+    matching.values(),
+    (acc, id) => {
+      const deps = mInvDeps.get(id);
+      if (deps) {
+        acc.push(...deps);
+      }
+      return acc;
+    },
+    []
+  );
+  while (upStack.length > 0) {
+    const rId = upStack.shift();
+    if (!visited.has(rId)) {
+      visited.add(rId);
+      const deps = mInvDeps.get(rId);
+      if (deps) {
+        downStack.push(...deps);
+      }
+    }
+  }
+
+  // Always include the root -1 in the selection
+  visited.add(-1);
+  return visited;
 };
 
 export {

@@ -71,19 +71,24 @@ class Graph extends Component {
             selectedRetrievals: filterByMeasures({
               retrievals: this.props.query.retrievals,
               dependencies: this.props.query.dependencies,
-              measures: newSelection
+              measures: newSelection,
+              selection: this.props.selection
             })
           };
         }
 
-        const newSelection = selectedMeasures.filter(m => m === measure);
+        const newSelection = selectedMeasures.filter(m => m !== measure);
         return {
           selectedMeasures: newSelection,
-          selectedRetrievals: filterByMeasures({
-            retrievals: this.props.query.retrievals,
-            dependencies: this.props.query.dependencies,
-            measures: newSelection
-          })
+          selectedRetrievals:
+            newSelection.length === 0
+              ? null
+              : filterByMeasures({
+                  retrievals: this.props.query.retrievals,
+                  dependencies: this.props.query.dependencies,
+                  measures: newSelection,
+                  selection: this.props.selection
+                })
         };
       },
       () => this.generateGraph()
@@ -97,6 +102,7 @@ class Graph extends Component {
 
     const { nodes, links } = buildD3(query, selectedRetrievals || selection);
 
+    debugger;
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
       .attr("width", window.innerWidth)
@@ -154,7 +160,6 @@ class Graph extends Component {
     });
 
     this.setState({ nodes, links }, () => {
-      // FIXME: this is not working as the tree has not been generated yet
       d3Graph.selectAll("g.node").call(
         d3
           .drag()
