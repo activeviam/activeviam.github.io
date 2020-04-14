@@ -84,7 +84,7 @@ class Node extends Component {
       </Popover>
     );
 
-    const nodeElem = status === "root" ? "rect" : "circle";
+    const nodeElem = status === "leaf" ? "rect" : "circle";
     return (
       <>
         <g className="node">
