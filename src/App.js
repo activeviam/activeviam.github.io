@@ -108,11 +108,19 @@ class App extends Component {
     return <Timeline plan={this.state.json[currentQueryId || 0]} />;
   }
 
+  renderPassChooser() {
+    debugger;
+    const { allQueries, currentPassId, router } = this.state;
+    if (router === "graph" || router === "timeline") {
+      return passChooser(allQueries, currentPassId, this.changePass);
+    }
+    return null;
+  }
+
   render() {
     const {
       allQueries,
       currentQueryId,
-      currentPassId,
       restartGraph,
       router,
       lastInput
@@ -126,7 +134,7 @@ class App extends Component {
           navigate={dir => this.setState({ router: dir })}
           dataIsEmpty
           goBackButton={goParentQueryButton(currentParentId, this.changeGraph)}
-          passChooser={passChooser(allQueries, currentPassId, this.changePass)}
+          passChooser={this.renderPassChooser()}
         />
         <main role="main" className="container-fluid px-0">
           {router === "input" && (

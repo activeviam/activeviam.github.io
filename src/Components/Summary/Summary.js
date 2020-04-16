@@ -127,11 +127,11 @@ const QuerySummary = ({ querySummary: summary, planInfo: info }) => {
   );
 };
 
-const MultiPivotSummary = ({ queries, pivots }) => {
+const MultiPivotSummary = ({ queries, pivots, selected }) => {
   return (
     <>
       <h4>Underlying queries</h4>
-      <Tabs defaultActiveKey={pivots[0].name}>
+      <Tabs defaultActiveKey={pivots[selected].name}>
         {pivots.map(pivot => (
           <Tab eventKey={pivot.name} title={pivot.name} key={pivot.name}>
             {QuerySummary(queries[pivot.id])}
@@ -193,24 +193,38 @@ const computeGlobalSummary = (queries, rootInfo, underlyingInfos) => {
   };
 };
 
+const findRootInfo = (info, currentQuery) => {
+  let query = info[currentQuery];
+  while (query.parentId !== null) {
+    query = info[query.parentId];
+  }
+  return query;
+};
+
 export default ({ queries, currentQuery, info }) => {
-  const rootQuery = queries[currentQuery];
-  const currentPass = info[currentQuery];
-  const parentId = currentPass.id;
-  const pivots = info.filter(inf => inf.parentId === parentId);
+  const rootInfo = findRootInfo(info, currentQuery);
+  const rootId = rootInfo.id;
+  const rootQuery = queries[rootId];
+  const underlyingQueries = info.filter(inf => inf.parentId === rootId);
 
   let summary;
   if (rootQuery.retrievals.length === 0) {
     summary = "Empty query (MDX interal operation)";
-  } else if (pivots.length > 0) {
+  } else if (underlyingQueries.length > 0) {
     const fullInfo = {
       id: queries.length,
       name: "Global summary"
     };
-    const globalSummary = computeGlobalSummary(queries, currentPass, pivots);
+    const globalSummary = computeGlobalSummary(
+      queries,
+      rootInfo,
+      underlyingQueries
+    );
+    const allSummaries = [fullInfo, rootInfo, ...underlyingQueries];
     summary = MultiPivotSummary({
-      pivots: [fullInfo, currentPass, ...pivots],
-      queries: [...queries, { querySummary: globalSummary }]
+      pivots: allSummaries,
+      queries: [...queries, { querySummary: globalSummary }],
+      selected: allSummaries.findIndex(inf => inf.id === currentQuery)
     });
   } else {
     summary = QuerySummary(rootQuery);
@@ -218,7 +232,7 @@ export default ({ queries, currentQuery, info }) => {
   return (
     <div>
       <h3>
-        MDX pass {currentPass.passType} ({currentQuery})
+        MDX pass {rootInfo.passType} ({currentQuery})
       </h3>
       {summary}
     </div>
