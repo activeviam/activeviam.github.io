@@ -1,12 +1,8 @@
-import { computeDepth } from "./depth";
+import { fillTimingInfo, nodeDepths } from "./fillTimingInfo";
 import criticalPath from "./criticalPath";
 import addClustersToNodes from "./cluster";
-
-const indexInRetrievals = (retrievals, strId) => {
-  const id = parseInt(strId, 10);
-  // some retrievals might be missing so retrId != retrievals[retrId]
-  return retrievals.findIndex(retrieval => retrieval.retrId === id);
-};
+import { filterDependencies } from "./selection";
+import * as its from "./iterators";
 
 /**
  * @param elapsed: the elapsed time of a node
@@ -19,26 +15,24 @@ const computeRadius = elapsed => {
   return 65;
 };
 
-/**
- * @param dependencies: dependencies of the request
- * @param retrievals: retrievals of the request
- * Returns a list of the request nodes we will later pass to D3
- * Keeps all node information from retrievals and dependencies we might need
- * Nodes are sorted by id
- */
-const getNodes = (dependencies, retrievals) => {
+const getNodes = (dependencies, retrievals, info, depths) => {
+  // Creates a Set containing all nodes present in the dependencies, then converts
+  // it to an array and map each node number to its node object. Finally sorts nodes by
+  // their id because the links are order dependant.
   return retrievals
+    .filter(r => info.selection.has(r.retrId))
     .map(retrieval => {
       const {
         retrId,
         timingInfo,
-        depth,
         type,
         measureProvider,
         measures,
         partitioning,
-        location
+        location,
+        childrenIds = []
       } = retrieval;
+
       const { elapsedTime = [0], startTime = [0] } = timingInfo;
       const realStart = Math.min(...startTime);
       const realEnd = Math.max(
@@ -47,22 +41,24 @@ const getNodes = (dependencies, retrievals) => {
       const realElapsed = realEnd - realStart;
 
       const radius = computeRadius(realElapsed);
-      const yFixed = depth * 150;
+      const yFixed = depths.get(retrId) * 150;
       return {
         id: retrId,
         name: retrId.toString(),
-        childrenIds: [],
+        childrenIds,
         isSelected: false,
         details: {
           startTime: realStart,
           elapsedTime: realElapsed,
+          startTimes: startTime,
+          elapsedTimes: elapsedTime,
           type,
           measureProvider,
           measures,
           partitioning,
           location
         },
-        clusterId: 0,
+        clusterId: -1, // Set later when computing clusters
         radius,
         yFixed,
         status: dependencies[-1].includes(retrId)
@@ -75,86 +71,44 @@ const getNodes = (dependencies, retrievals) => {
     .sort((a, b) => a.id - b.id);
 };
 
-/**
- * @param dependencies: dependencies of the request
- * @param retrievals: retrievals of the request
- * Returns a list of the request dependencies links we will later pass to D3
- */
-const getLinks = (dependencies, retrievals) => {
-  const links = [];
-  Object.entries(dependencies).forEach(([key, values]) => {
-    if (key !== "-1") {
-      values.forEach(value => {
-        const target = indexInRetrievals(retrievals, value);
-        if (target !== -1) {
-          // The target may have been filtered (NoOp)
-          links.push({
-            source: indexInRetrievals(retrievals, key),
-            target,
-            id: `${key}-${value}`,
-            critical: false
-          });
-        }
-      });
-    }
-  });
-  return links;
+const getLinks = (dependencies, retrievals, info) => {
+  const filtered = filterDependencies(dependencies, info.selection);
+  const retrIdxs = retrievals
+    .filter(r => info.selection.has(r.retrId))
+    .reduce((acc, r, i) => acc.set(r.retrId, i), new Map());
+  return its.reduce(
+    filtered.entries(),
+    (result, [key, values]) => {
+      if (key === -1) return result;
+
+      const source = retrIdxs.get(key);
+      return values.reduce((links, value) => {
+        const target = retrIdxs.get(value);
+        // The target may have been filtered (NoOp)
+        links.push({
+          source,
+          target,
+          id: `${key}-${value}`,
+          critical: false // Set later when computing the critical path
+        });
+        return links;
+      }, result);
+    },
+    []
+  );
 };
 
-/**
- * @param data: a request object a user gave the app
- * Some nodes does not contain information for the user. In the case we do
- * not want to consider them, this funtion removes them
- */
-const filterEmptyTimingInfo = data => {
-  return data.map(query => {
-    const {
-      planInfo,
-      dependencies: dependenciesToFilter,
-      retrievals: retrievalsToFilter
-    } = query;
-
-    const retrIdToRemove = retrievalsToFilter
-      .filter(retrieval => Object.entries(retrieval.timingInfo).length === 0)
-      .map(retrieval => retrieval.retrId);
-
-    const retrievals = retrievalsToFilter.filter(
-      retrieval => Object.entries(retrieval.timingInfo).length > 0
-    );
-    const dependencies = Object.fromEntries(
-      Object.entries(dependenciesToFilter).map(([key, values]) => [
-        key,
-        values.filter(value => !retrIdToRemove.includes(value))
-      ])
-    );
-
-    return { planInfo, dependencies, retrievals };
-  });
-};
-
-/**
- * @param res: transformed query
- * @param queries: initial query
- * In order to navigate in distributed query, we need:
- *   - for each node with underlyingGraphe, the id of the graph
- *   - for each underlying graph, the id of the graph with the parent node
- */
 const findChildrenAndParents = (res, queries) => {
   queries.forEach((query, queryId) => {
     const { retrievals } = query;
     retrievals.forEach(retrieval => {
-      const { retrId, underlyingDataNodes } = retrieval;
-      res
-        .find(r => r.id === queryId) // find the good query
-        .nodes.find(
-          node => node.id === retrId // find the good node
-        ).childrenIds = underlyingDataNodes.map(
+      retrieval.childrenIds = retrieval.underlyingDataNodes.map(
         // give it its childrenIds
         name => res.find(x => x.name === name).id
       );
 
       // give its children their parentId
-      underlyingDataNodes.forEach(
+      retrieval.underlyingDataNodes.forEach(
         // eslint-disable-next-line no-return-assign
         name => (res.find(x => x.name === name).parentId = queryId)
       );
@@ -162,38 +116,52 @@ const findChildrenAndParents = (res, queries) => {
   });
 };
 
-/**
- * @param jsonObject: a request a user gave the app, on json format
- * @param type: how the user wants to see the graph (classic or dev)
- * Returns a transformed version of the input we will be able to manipulate and give to D3
- */
-const parseJson = (jsonObject, type = "classic") => {
-  const { data } = jsonObject;
-  const queries = type === "dev" ? data : filterEmptyTimingInfo(data);
-  computeDepth(queries);
+const buildD3 = (query, selection) => {
+  const info = { selection };
+  const { dependencies, retrievals } = query;
+  const ds = nodeDepths(query, info.selection);
+  const depths = ds.reduce((acc, ids, d) => {
+    return ids.reduce((store, id) => store.set(id, d), acc);
+  }, new Map());
+  const nodes = getNodes(dependencies, retrievals, info, depths);
+  const links = getLinks(dependencies, retrievals, info);
+  const criticalLinks = criticalPath(query, info);
+  links.forEach(link => {
+    link.critical = criticalLinks.has(link.id);
+  });
+  const clusters = addClustersToNodes(query, info);
+  nodes.forEach(node => {
+    node.clusterId = clusters.get(node.id);
+  });
 
-  const res = queries.map((query, queryId) => {
-    const { planInfo, dependencies, retrievals } = query;
+  return {
+    nodes,
+    links
+  };
+};
+
+const parseJson = (data, selections) => {
+  const graphInfo = selections.map(selection => ({ selection }));
+  fillTimingInfo(data, graphInfo);
+
+  const res = data.map((query, queryId) => {
+    const { planInfo } = query;
     const { clusterMemberId, mdxPass } = planInfo;
 
-    const nodes = getNodes(dependencies, retrievals, queryId);
-    const links = getLinks(dependencies, retrievals);
-    criticalPath(query, links);
-    addClustersToNodes(dependencies, nodes);
-    const passNumber = parseInt((mdxPass || "_0").split("_")[1], 10);
-
+    const passInfo = (mdxPass || "Select_0").split("_");
+    const passNumber = parseInt(passInfo[1], 10);
     return {
       id: queryId,
       parentId: null,
+      passType: passInfo[0],
       pass: passNumber,
-      name: clusterMemberId,
-      nodes,
-      links
+      name: clusterMemberId
     };
   });
 
-  findChildrenAndParents(res, queries);
+  findChildrenAndParents(res, data);
   return res;
 };
 
 export default parseJson;
+export { buildD3 };

@@ -1,0 +1,27 @@
+.drawer {
+  -webkit-box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.75);
+  background: rgb(255, 239, 223);
+  width: 300px;
+  height: calc(100vh - 80px);
+  margin-top: 56px;
+  border-right: 1px solid black;
+  padding: 3px 5px;
+  border-radius: 5px 0 5px 5px;
+  overflow-x: auto;
+}
+
+.drawer-trigger {
+  background: rgb(255, 239, 223);
+  position: absolute;
+  top: 60px;
+  left: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.drawer-trigger.open {
+  left: 305px;
+}

@@ -62,7 +62,7 @@ const queryServer = async ({ url, credentials, query }) => {
     body: JSON.stringify(body)
   });
   const payload = await response.json();
-  return payload;
+  return payload.data;
 };
 
 export default queryServer;

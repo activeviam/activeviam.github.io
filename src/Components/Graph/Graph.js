@@ -1,15 +1,108 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
+import Overlay from "react-bootstrap/Overlay";
 import * as d3 from "d3";
 import { nodeType, linkType } from "../../types";
 import Link from "./Link";
 import Node from "./Node";
+import Menu from "./Menu";
 import { updateGraph } from "../../helpers/graphHelpers";
+import { buildD3 } from "../../helpers/jsonToD3Data";
+import { filterByMeasures } from "../../helpers/selection";
+import "./Drawer.css";
 
 class Graph extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showDrawer: false,
+      selectedMeasures: [],
+      selectedRetrievals: null,
+      nodes: [],
+      links: [],
+      selectedNodeId: null,
+      // This is a tricky to force the graph to rebuild after a new graph is generated
+      epoch: 0
+    };
+    this.svgRef = React.createRef();
+  }
+
   componentDidMount() {
-    const { nodes, links } = this.props;
+    this.generateGraph();
+  }
+
+  componentWillUnmount() {
+    this.props.restart();
+  }
+
+  clickNode = id => {
+    this.setState(prevState => {
+      const selectedNodeId = id === prevState.selectedNodeId ? null : id;
+      const { nodes } = prevState;
+      nodes.forEach(node => {
+        if (node.id === id) {
+          node.isSelected = node.isSelected !== true;
+        } else {
+          node.isSelected = false;
+        }
+      });
+      return { selectedNodeId, nodes };
+    });
+  };
+
+  changeGraph = (...args) => {
+    this.clickNode(null); // Unselect the current node( this. should be move to upated props)
+    this.props.changeGraph(...args);
+  };
+
+  toggleDrawer = () => {
+    this.setState(({ showDrawer }) => ({ showDrawer: showDrawer !== true }));
+  };
+
+  selectMeasure = ({ measure, selected }) => {
+    this.setState(
+      ({ selectedMeasures }) => {
+        if (selected) {
+          if (selectedMeasures.includes(measure)) {
+            return {};
+          }
+          const newSelection = [...selectedMeasures, measure];
+          return {
+            selectedMeasures: newSelection,
+            selectedRetrievals: filterByMeasures({
+              retrievals: this.props.query.retrievals,
+              dependencies: this.props.query.dependencies,
+              measures: newSelection,
+              selection: this.props.selection
+            })
+          };
+        }
+
+        const newSelection = selectedMeasures.filter(m => m !== measure);
+        return {
+          selectedMeasures: newSelection,
+          selectedRetrievals:
+            newSelection.length === 0
+              ? null
+              : filterByMeasures({
+                  retrievals: this.props.query.retrievals,
+                  dependencies: this.props.query.dependencies,
+                  measures: newSelection,
+                  selection: this.props.selection
+                })
+        };
+      },
+      () => this.generateGraph()
+    );
+  };
+
+  generateGraph() {
+    const { query, selection } = this.props;
+    const { selectedRetrievals, epoch } = this.state;
+    if (query === undefined) return;
+
+    const { nodes, links } = buildD3(query, selectedRetrievals || selection);
 
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
@@ -47,14 +140,6 @@ class Graph extends Component {
       d.fy = null;
     }
 
-    d3.selectAll("g.node").call(
-      d3
-        .drag()
-        .on("start", dragStarted)
-        .on("drag", dragging)
-        .on("end", dragEnded)
-    );
-
     d3.select(window).on("resize", () => {
       d3Graph
         .attr("width", window.innerWidth)
@@ -63,7 +148,7 @@ class Graph extends Component {
 
     d3Graph.call(
       d3.zoom().on("zoom", () => {
-        this.props.clickNode(null);
+        this.clickNode(null);
         return d3
           .select("svg")
           .select("g")
@@ -74,20 +159,26 @@ class Graph extends Component {
     force.on("tick", () => {
       d3Graph.call(updateGraph);
     });
-  }
 
-  componentWillUnmount() {
-    this.props.restart();
+    this.setState({ nodes, links, epoch: epoch + 1 }, () => {
+      d3Graph.selectAll("g.node").call(
+        d3
+          .drag()
+          .on("start", dragStarted)
+          .on("drag", dragging)
+          .on("end", dragEnded)
+      );
+    });
   }
 
   render() {
-    const { nodes, links, clickNode, changeGraph } = this.props;
+    const { nodes, links } = this.state;
     const Nodes = nodes.map(node => (
       <Node
         node={node}
         key={node.id}
-        clickNode={clickNode}
-        changeGraph={changeGraph}
+        clickNode={this.clickNode}
+        changeGraph={this.changeGraph}
       />
     ));
     const Links = links.map(link => (
@@ -95,16 +186,36 @@ class Graph extends Component {
     ));
 
     return (
-      <svg
-        className="graph my-0"
-        style={{ marginTop: "2em", backgroundColor: "#d1d1ff" }}
-      >
-        <g>
-          <g>{Links}</g>
-          <g>{Nodes}</g>
-        </g>
-      </svg>
+      <>
+        <svg className="graph" ref={this.svgRef}>
+          <g key={`e${this.state.epoch}`}>
+            {Links}
+            {Nodes}
+          </g>
+        </svg>
+        <div
+          className={`drawer-trigger ${this.state.showDrawer ? "open" : ""}`}
+          variant="outline-dark"
+          onClick={this.toggleDrawer}
+        >
+          Menu
+        </div>
+        <Overlay
+          show={this.state.showDrawer}
+          placement="top-start"
+          target={this.svgRef.current}
+        >
+          <div className="drawer">
+            <Menu
+              measures={this.props.query.querySummary.measures}
+              selectedMeasures={this.state.selectedMeasures}
+              onSelectedMeasure={this.selectMeasure}
+            />
+          </div>
+        </Overlay>
+      </>
     );
+    // FIXME remove the extra space taken by the button
   }
 }
 

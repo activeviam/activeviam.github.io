@@ -1,69 +1,61 @@
-import { invertDependencies } from "./depth";
+import { invertDependencies } from "./fillTimingInfo";
+import { filterDependencies } from "./selection";
+import * as iterators from "./iterators";
 
-/**
- * @param nodeId
- * @param clusters: a dict {clusterId: [nodesId]}
- * Returns a clusterId the node belongs to, or undefined if node has no cluster yet
- */
-const nodeCluster = (nodeId, clusters) => {
-  return Object.keys(clusters).find(cl => clusters[cl].includes(nodeId));
+const nodeCluster = (node, clust) => {
+  return iterators.forEach(clust.entries(), ([cl, nodes]) =>
+    nodes.includes(node) ? cl : undefined
+  );
 };
 
-/**
- * @param dependencies: the dependencies relations, as found in a query
- * Returns a repartition of the nodes in dependencies clusters. Two nodes are
- * in the same cluster if the are connected by dependecies
- */
-const computeClusters = dependencies => {
-  if (dependencies[-1] === undefined) return {};
-  const invDep = invertDependencies(dependencies);
-  const clust = {};
-  const todo = []; // Will contain nodes that havr been given a cluster
+const computeClusters = (dependencies, selection) => {
+  if (dependencies[-1] === undefined) return new Map();
+
+  const deps = filterDependencies(dependencies, selection);
+  const invDep = invertDependencies(deps);
+  const clusters = new Map(); // Will contain nodes that havr been given a cluster
   // We first consider that each root of the graph belong to a different cluster
-  invDep[-1].forEach((node, index) => {
-    clust[index] = [node];
-    todo.push(node);
-  });
+  const todo = invDep.get(-1).reduce((acc, node, index) => {
+    clusters.set(index, [node]);
+    acc.push(node);
+    return acc;
+  }, []);
   while (todo.length !== 0) {
     const node = todo.shift();
-    const clust1 = nodeCluster(node, clust);
+    const clust1 = nodeCluster(node, clusters);
     // if node has children, they should be in clust1
-    if (invDep[node]) {
-      invDep[node].forEach(parent => {
+    const nodeDeps = invDep.get(node);
+    if (nodeDeps) {
+      nodeDeps.forEach(parent => {
         // Check if children alredy in cluster. If children in a different cluster,
         // then merge the two clusters beause they are the same
-        const clust2 = nodeCluster(parent, clust);
+        const clust2 = nodeCluster(parent, clusters);
         if (clust2 === undefined) {
-          clust[clust1].push(parent);
+          clusters.get(clust1).push(parent);
           todo.push(parent);
         } else if (clust1 !== clust2) {
-          clust[clust1].push(...clust[clust2]);
-          delete clust[clust2];
+          clusters.get(clust1).push(...clusters.get(clust2));
+          clusters.delete(clust2);
         }
       });
     }
   }
 
-  return clust;
+  return clusters;
 };
 
-/**
- * @param dependencies: the dependencies relations, as found in a query
- * @param nodes: the list of nodes we want to attribute cluster to
- * Calcutate a cluster for each nodes, and then set the clusterId attribute
- * for each node in the nodes list
- */
-const addClustersToNodes = (dependencies, nodes) => {
-  const clust = computeClusters(dependencies);
-  Object.keys(clust).forEach((cl, id) => {
-    clust[cl].forEach(node => {
-      try {
-        nodes.find(n => n.id === parseInt(node, 10)).clusterId = id;
-      } catch {
-        // node in dependencies but not in retrievals...
-      }
-    });
-  });
+const addClustersToNodes = (query, info) => {
+  const clusters = computeClusters(query.dependencies, info.selection);
+  // Reverse the mapping
+  return iterators.reduce(
+    clusters.entries(),
+    (acc, [id, ns]) => {
+      return ns.reduce((store, node) => {
+        return store.set(node, id);
+      }, acc);
+    },
+    new Map()
+  );
 };
 
 export default addClustersToNodes;

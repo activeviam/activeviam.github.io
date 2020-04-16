@@ -11,6 +11,9 @@ const NavBar = ({ navigate, goBackButton, passChooser }) => {
         <Nav.Link href="" onClick={() => navigate("input")}>
           Input
         </Nav.Link>
+        <Nav.Link href="" onClick={() => navigate("summary")}>
+          Summary
+        </Nav.Link>
         <Nav.Link href="" onClick={() => navigate("graph")}>
           Graph
         </Nav.Link>

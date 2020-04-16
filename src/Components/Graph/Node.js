@@ -6,6 +6,7 @@ import Popover from "react-bootstrap/Popover";
 import Overlay from "react-bootstrap/Overlay";
 import { nodeType } from "../../types";
 import { enterNode, updateNode } from "../../helpers/graphHelpers";
+import Details from "../Details/Details";
 
 class Node extends Component {
   constructor(props) {
@@ -26,27 +27,27 @@ class Node extends Component {
       .style("stroke-width", this.props.node.isSelected ? 2 : 0);
   }
 
-  handle() {
+  handle = () => {
     const {
       node: { id: nodeId },
       clickNode
     } = this.props;
     clickNode(nodeId);
-  }
+  };
 
   render() {
     const { node, changeGraph, clickNode } = this.props;
-    const { details, name, childrenIds, isSelected } = node;
+    const { details, name, childrenIds, isSelected, status } = node;
     const {
       type,
-      startTime,
-      elapsedTime,
+      startTimes,
+      elapsedTimes,
       measures,
       partitioning,
       location
     } = details;
     const popover = (
-      <Popover id="popover-basic" style={{ maxWidth: "800px" }}>
+      <Popover style={{ maxWidth: "800px" }}>
         <Popover.Title as="h3">
           {`${type} (#${name})`}
           <button
@@ -60,34 +61,13 @@ class Node extends Component {
           </button>
         </Popover.Title>
         <Popover.Content>
-          <ul>
-            <li>Start: {startTime}</li>
-            <li>Elapsed: {elapsedTime}</li>
-            <li>
-              Measures:
-              <ul>
-                {measures.map((m, key) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <li key={key}>{m}</li>
-                ))}
-              </ul>
-            </li>
-            <li>
-              Locations:
-              <ul>
-                {location.map((l, key) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <li key={key}>
-                    {l.dimension}@{l.hierarchy}
-                    {l.level.map((lev, i) => {
-                      return `:${lev}=${l.path[i]}`;
-                    })}
-                  </li>
-                ))}
-              </ul>
-            </li>
-            <li>Partitioning: {partitioning}</li>
-          </ul>
+          <Details
+            startTime={startTimes}
+            elapsedTime={elapsedTimes}
+            measures={measures}
+            location={location}
+            partitioning={partitioning}
+          />
           {childrenIds.map(childId => (
             <>
               <button
@@ -103,11 +83,16 @@ class Node extends Component {
         </Popover.Content>
       </Popover>
     );
+
+    const nodeElem = status === "leaf" ? "rect" : "circle";
     return (
       <>
         <g className="node">
-          <circle ref={this.myRef} onClick={this.handle.bind(this)} />
-          <text onClick={this.handle.bind(this)}>{name}</text>
+          {React.createElement(nodeElem, {
+            ref: this.myRef,
+            onClick: this.handle.bind(this)
+          })}
+          <text onClick={this.handle}>{name}</text>
         </g>
         <Overlay show={isSelected} placement="auto" target={this.myRef.current}>
           {popover}

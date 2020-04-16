@@ -1,16 +1,17 @@
-import { nodesDepth } from "./depth";
+import { nodeDepths } from "./fillTimingInfo";
+import { filterDependencies } from "./selection";
 
 /**
- * @param retrievals: a list of retrievals with timing info
+ * @param query: query with the list of retrievals with timing info
  * @param node: a node id (int or str depending of input format)
  * Returns the max of all elapsed time of the node
  */
-const findTime = (retrievals, node) => {
+const findTime = (query, node) => {
   const nodeId = parseInt(node, 10);
   let elapsed = 0;
   try {
     elapsed = Math.max(
-      ...retrievals.find(x => x.retrId === nodeId).timingInfo.elapsedTime
+      ...query.retrievals.find(x => x.retrId === nodeId).timingInfo.elapsedTime
     );
   } catch {
     // timingInfo is likely to be empty
@@ -18,65 +19,61 @@ const findTime = (retrievals, node) => {
   return elapsed;
 };
 
-/**
- * @param query: a query contining dependencies and retrievals
- * @param links: a list of the dependencies links in our graph
- * Compute the critical path of the graph from the dependancies and retrievals
- * For each link of links that is in the critical path, sets critical to true
- */
-const criticalPath = (query, links) => {
-  const { dependencies, retrievals } = query;
-  if (retrievals.length < 2) return;
-  const depth2nodes = nodesDepth(query);
+const criticalPath = (query, info) => {
+  if (info.selection.size < 2) return new Set();
+
+  const deep2nodes = nodeDepths(query, info.selection);
+  const invDep = filterDependencies(query.dependencies, info.selection);
   const critical = {};
   let maxTime = 0;
   let maxNode = null;
 
-  // We compute a critical score for each node, going down from
-  // depth = 0
-  Object.keys(depth2nodes)
-    .sort()
-    .forEach(depth => {
-      depth2nodes[depth].forEach(node => {
-        if (dependencies[node]) {
-          // node has parents so critical = elapsedTime + max critical of parents
-          const elapsed = findTime(retrievals, node);
-          let maxParentCritical = 0;
-          let parent = null;
-          dependencies[node].forEach(parentNode => {
-            if (critical[parentNode].time >= maxParentCritical) {
-              maxParentCritical = critical[parentNode].time;
-              parent = parentNode;
-            }
-          });
-          critical[node] = {
-            parent,
-            time: elapsed + maxParentCritical
-          };
-          if (elapsed + maxParentCritical >= maxTime) {
-            maxTime = elapsed + maxParentCritical;
-            maxNode = node;
-          }
-        } else {
-          // node has no parent so critical = elapsedTime
-          const elapsed = findTime(retrievals, node);
-          critical[node] = {
-            parent: null,
-            time: elapsed
-          };
-        }
-      });
-    });
+  // We compute a critical score for each node, going down from depth == 0
+  deep2nodes.forEach(nodes => {
+    if (nodes === undefined) return;
 
-  // Recreate path going up from the node with worst critical
-  // Set link critical attribute to true if it is in the critical path
+    nodes.forEach(node => {
+      const deps = invDep.get(node);
+      if (deps) {
+        // node has parents so critical = elapsedTime + max critical of parents
+        const elapsed = findTime(query, node);
+        let maxParentCritical = 0;
+        let parent = null;
+        deps.forEach(parentNode => {
+          if (critical[parentNode].time >= maxParentCritical) {
+            maxParentCritical = critical[parentNode].time;
+            parent = parentNode;
+          }
+        });
+        critical[node] = {
+          parent,
+          time: elapsed + maxParentCritical
+        };
+        if (elapsed + maxParentCritical > maxTime) {
+          maxTime = elapsed + maxParentCritical;
+          maxNode = node;
+        }
+      } else {
+        // node has no parent so critical = elapsedTime
+        const elapsed = findTime(query, node);
+        critical[node] = {
+          parent: null,
+          time: elapsed
+        };
+      }
+    });
+  });
+
+  // Recreate path going up from the node with worst critical and collect link ids
+  const criticalLinks = new Set();
   while (critical[maxNode].parent !== null) {
     const source = critical[maxNode].parent;
     const target = maxNode;
-    const linkId = `${target}-${source}`;
-    links.find(l => l.id === linkId).critical = true;
+    criticalLinks.add(`${target}-${source}`);
     maxNode = critical[maxNode].parent;
   }
+
+  return criticalLinks;
 };
 
 export default criticalPath;

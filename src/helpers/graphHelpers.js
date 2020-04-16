@@ -13,15 +13,25 @@ const outlineColor = d => {
   return "#E0281C";
 };
 
-/**
- * @param d: a D3 node
- * Returns the color of the node
- * yellow if node depends on no one
- * orange if is output
- * blue otherwise
- */
-const insideColor = d =>
-  d.status === "root" ? "#FFD500" : d.status === "leaf" ? "#FC5400" : "#3A83C0";
+// Node color varies
+// yellow if node depends on no one
+// orange if is output
+// blue otherwise
+// Colors from https://observablehq.com/@d3/color-schemes
+const nodeColors = new Map([
+  ["DistributedAggregatesRetrieval", "#549ce8"],
+  ["DistributedPostProcessedRetrieval", "#f28e2c"],
+  ["JITPrimitiveAggregatesRetrieval", "#e15759"],
+  ["NoOpPrimitiveAggregatesRetrieval", "#76b7b2"],
+  ["PostProcessedAggregatesRetrieval", "#59a14f"],
+  ["PostProcessedResultsMerger", "#edc949"],
+  ["PrimitiveResultsMerger", "#af7aa1"],
+  ["RangeSharingPrimitiveAggregatesRetrieval", "#ff9da7"],
+  ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#9c755f"],
+  ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#bab0ab"]
+]);
+
+const insideColor = d => nodeColors.get(d.details.type) || "grey";
 
 // enter functions are called when node or link is created
 // update functions allows to modify node or links graphic characteritics
@@ -42,24 +52,44 @@ const updateLink = selection => {
     .attr("y2", d => d.target.y);
 };
 
+const computeRadius = d => Math.max(Math.sqrt(d.radius) * 4, 10);
+
 const enterNode = selection => {
   selection
     .select("circle")
-    .attr("r", d => Math.max(Math.sqrt(d.radius) * 4, 10))
+    .attr("r", computeRadius)
     .style("fill", d => insideColor(d))
     .style("stroke-width", d => (d.isSelected ? 3 : 1))
     .style("stroke", d => outlineColor(d));
+  selection
+    .select("rect")
+    .attr("width", d => 2 * computeRadius(d))
+    .attr("height", d => 2 * computeRadius(d))
+    .attr("rx", "3")
+    .style("fill", d => insideColor(d))
+    .style("stroke-width", d => (d.isSelected ? 3 : 1))
+    .style("stroke", d => outlineColor(d))
+    .style("transform", d => {
+      const r = computeRadius(d);
+      return `translate(-${r}px, -${r}px)`;
+    });
 
   selection
     .select("text")
     .attr("dy", ".35em")
-    .style("transform", "translateX(-50%,-70%");
+    .attr("dx", "-0.65em");
 };
 
 const updateNode = selection => {
   selection
     .attr("transform", d => `translate(${d.x},${d.y})`)
     .select("circle")
+    .style("stroke-width", d => (d.isSelected ? 3 : 1))
+    .style("stroke", d => outlineColor(d));
+
+  selection
+    .attr("transform", d => `translate(${d.x},${d.y})`)
+    .select("rect")
     .style("stroke-width", d => (d.isSelected ? 3 : 1))
     .style("stroke", d => outlineColor(d));
 };
