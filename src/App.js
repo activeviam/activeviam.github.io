@@ -109,7 +109,6 @@ class App extends Component {
   }
 
   renderPassChooser() {
-    debugger;
     const { allQueries, currentPassId, router } = this.state;
     if (router === "graph" || router === "timeline") {
       return passChooser(allQueries, currentPassId, this.changePass);

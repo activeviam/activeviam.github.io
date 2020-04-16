@@ -4,6 +4,10 @@ import addClustersToNodes from "./cluster";
 import { filterDependencies } from "./selection";
 import * as its from "./iterators";
 
+/**
+ * @param elapsed: the elapsed time of a node
+ * Returns the radius the node should be displayed with
+ */
 const computeRadius = elapsed => {
   if (elapsed < 5) return 20;
   if (elapsed < 20) return 35;

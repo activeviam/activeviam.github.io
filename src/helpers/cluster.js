@@ -13,7 +13,8 @@ const computeClusters = (dependencies, selection) => {
 
   const deps = filterDependencies(dependencies, selection);
   const invDep = invertDependencies(deps);
-  const clusters = new Map();
+  const clusters = new Map(); // Will contain nodes that havr been given a cluster
+  // We first consider that each root of the graph belong to a different cluster
   const todo = invDep.get(-1).reduce((acc, node, index) => {
     clusters.set(index, [node]);
     acc.push(node);
@@ -22,9 +23,12 @@ const computeClusters = (dependencies, selection) => {
   while (todo.length !== 0) {
     const node = todo.shift();
     const clust1 = nodeCluster(node, clusters);
+    // if node has children, they should be in clust1
     const nodeDeps = invDep.get(node);
     if (nodeDeps) {
       nodeDeps.forEach(parent => {
+        // Check if children alredy in cluster. If children in a different cluster,
+        // then merge the two clusters beause they are the same
         const clust2 = nodeCluster(parent, clusters);
         if (clust2 === undefined) {
           clusters.get(clust1).push(parent);

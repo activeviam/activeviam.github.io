@@ -1,4 +1,7 @@
-// Node border is a different color if it has subqueries
+/**
+ * @param d: a D3 node
+ * Return the color of the border of the node according to its state
+ */
 const outlineColor = d => {
   if (d.isSelected) {
     return "#2E2E2E";
@@ -29,7 +32,10 @@ const nodeColors = new Map([
 ]);
 
 const insideColor = d => nodeColors.get(d.details.type) || "grey";
-// d.status === "root" ? "#FFD500" : d.status === "leaf" ? "#FC5400" : "#3A83C0";
+
+// enter functions are called when node or link is created
+// update functions allows to modify node or links graphic characteritics
+// updateGraph is called when D3 clock ticks, and unpdate nodes and links
 
 const enterLink = selection => {
   selection

@@ -1,6 +1,11 @@
 import { nodeDepths } from "./fillTimingInfo";
 import { filterDependencies } from "./selection";
 
+/**
+ * @param query: query with the list of retrievals with timing info
+ * @param node: a node id (int or str depending of input format)
+ * Returns the max of all elapsed time of the node
+ */
 const findTime = (query, node) => {
   const nodeId = parseInt(node, 10);
   let elapsed = 0;
@@ -22,6 +27,8 @@ const criticalPath = (query, info) => {
   const critical = {};
   let maxTime = 0;
   let maxNode = null;
+
+  // We compute a critical score for each node, going down from depth == 0
   deep2nodes.forEach(nodes => {
     if (nodes === undefined) return;
 
@@ -57,6 +64,7 @@ const criticalPath = (query, info) => {
     });
   });
 
+  // Recreate path going up from the node with worst critical and collect link ids
   const criticalLinks = new Set();
   while (critical[maxNode].parent !== null) {
     const source = critical[maxNode].parent;
