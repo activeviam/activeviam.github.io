@@ -20,6 +20,7 @@ const computeClusters = (dependencies, selection) => {
     acc.push(node);
     return acc;
   }, []);
+
   while (todo.length !== 0) {
     const node = todo.shift();
     const clust1 = nodeCluster(node, clusters);
@@ -47,9 +48,12 @@ const computeClusters = (dependencies, selection) => {
 const addClustersToNodes = (query, info) => {
   const clusters = computeClusters(query.dependencies, info.selection);
   // Reverse the mapping
+  let idx = 0;
   return iterators.reduce(
-    clusters.entries(),
-    (acc, [id, ns]) => {
+    clusters.values(),
+    (acc, ns) => {
+      const id = idx;
+      idx += 1;
       return ns.reduce((store, node) => {
         return store.set(node, id);
       }, acc);

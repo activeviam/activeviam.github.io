@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import Overlay from "react-bootstrap/Overlay";
 import * as d3 from "d3";
+import _ from "lodash";
 import { nodeType, linkType } from "../../types";
 import Link from "./Link";
 import Node from "./Node";
@@ -109,6 +110,11 @@ class Graph extends Component {
       .attr("width", window.innerWidth)
       .attr("height", window.innerHeight - 56);
 
+    const clusters = _(nodes).map(n => n.clusterId);
+    const minC = clusters.min();
+    const maxC = clusters.max();
+    const viewCenter = window.innerWidth / 2;
+    const clusterCenter = parseInt((maxC - minC + 1) / 2 + minC - 0.5, 10); // Floor value
     const force = d3
       .forceSimulation(nodes)
       .force("charge", d3.forceManyBody().strength(-1000))
@@ -120,7 +126,13 @@ class Graph extends Component {
       .force("forceY", d3.forceY(d => d.yFixed).strength(1))
       .force(
         "forceX",
-        d3.forceX(d => (d.clusterId * window.innerWidth) / 2).strength(0.1)
+        d3
+          .forceX(
+            d =>
+              viewCenter +
+              ((d.clusterId - clusterCenter) * window.innerWidth) / 2
+          )
+          .strength(0.1)
       );
 
     function dragStarted(d) {
