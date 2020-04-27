@@ -28,13 +28,10 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: docs/_build
+          at: .
       - run:
           name: Install and configure dependencies
-          command: |
-            npm install -g --silent gh-pages@2.2.0
-            git config user.email "ci-build@activeviam.com"
-            git config user.name "ci-build"
+          command: npm install -g --silent gh-pages@2.2.0
       - add_ssh_keys:
           fingerprints:
             - "67:b5:b5:4f:7c:af:bb:32:1e:0a:ea:82:7a:61:68:0c"
@@ -43,7 +40,8 @@ jobs:
           command: |
             gh-pages --dist atoti-query-analyser/build \
               --dest atoti-query-analyser \
-              --branch master
+              --branch master \
+              --user "ci-build <ci-build@activeviam.com>"
     
 workflows:
   version: 2
