@@ -1,0 +1,6655 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "planInfo": {
+        "pivotType": "DistributedActivePivotVersion",
+        "pivotId": "AllData",
+        "epoch": "23",
+        "branch": "master",
+        "retrieverType": "DistributedActivePivotAggregatesRetriever",
+        "partialProviders": [],
+        "mdxPass": "SelectPass_0",
+        "clusterMemberId": "Local-AllData-QUERY0",
+        "contextValues": {
+          "IBranch": "null",
+          "ISubCubeProperties": "null",
+          "IAsOfEpoch": "null",
+          "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false]",
+          "IUserAuthentication": "UserAuthentication [userName=admin]"
+        },
+        "rangeSharing": 1000000,
+        "missedPrefetchBehavior": "WARN",
+        "aggregatesCache": "None",
+        "globalTimings": {
+          "executionContextCreationTime": 0,
+          "finalizationTime": 0,
+          "planningTime": 0,
+          "queryExecutionTime": 516
+        },
+        "continuous": false
+      },
+      "retrievals": [
+        {
+          "retrId": 0,
+          "type": "PrimitiveResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_Turnover",
+            "AV_FinalPrice.AVG"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              278
+            ],
+            "elapsedTime": [
+              5
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 1,
+          "type": "DistributedAggregatesRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_Turnover",
+            "AV_FinalPrice.AVG",
+            "AV_CurrentPriceIndex(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "executionTime": [
+              8,
+              23
+            ],
+            "startTime": [
+              0
+            ],
+            "broadcastingTime": [
+              8,
+              24
+            ],
+            "processingTime": [
+              0,
+              0
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": [
+            "Local-Recommendation-master-DATA6",
+            "Local-Sale-master-DATA1"
+          ]
+        },
+        {
+          "retrId": 2,
+          "type": "PrimitiveResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_Turnover",
+            "AV_FinalPrice.AVG"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              278
+            ],
+            "elapsedTime": [
+              10
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 3,
+          "type": "DistributedAggregatesRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_Turnover",
+            "AV_FinalPrice.AVG",
+            "AV_CurrentPriceIndex(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "executionTime": [
+              8,
+              23
+            ],
+            "startTime": [
+              0
+            ],
+            "broadcastingTime": [
+              8,
+              24
+            ],
+            "processingTime": [
+              0,
+              0
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": [
+            "Local-Recommendation-master-DATA6",
+            "Local-Sale-master-DATA1"
+          ]
+        },
+        {
+          "retrId": 4,
+          "type": "PrimitiveResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_Turnover",
+            "AV_FinalPrice.AVG"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              278
+            ],
+            "elapsedTime": [
+              6
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 5,
+          "type": "DistributedAggregatesRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_Turnover",
+            "AV_FinalPrice.AVG",
+            "AV_CurrentPriceIndex(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "executionTime": [
+              8,
+              23
+            ],
+            "startTime": [
+              0
+            ],
+            "broadcastingTime": [
+              8,
+              24
+            ],
+            "processingTime": [
+              0,
+              0
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": [
+            "Local-Recommendation-master-DATA6",
+            "Local-Sale-master-DATA1"
+          ]
+        },
+        {
+          "retrId": 6,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CurrentPriceIndex(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              284
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 7,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CurrentPriceIndex(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 8,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CurrentPriceIndex(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              289
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 9,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CurrentPriceIndex(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 10,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CurrentPriceIndex(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              284
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 11,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CurrentPriceIndex(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 12,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "RawWebPriceIndexByPair_14"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              462
+            ],
+            "elapsedTime": [
+              54
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 13,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "PriceToDate_14"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              278
+            ],
+            "elapsedTime": [
+              120
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 14,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 15,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "PriceToDate_14"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 16,
+          "type": "DistributedAggregatesRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "PriceToDate_14",
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "executionTime": [
+              37,
+              139
+            ],
+            "startTime": [
+              0
+            ],
+            "broadcastingTime": [
+              42,
+              140
+            ],
+            "processingTime": [
+              28,
+              132
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": [
+            "Local-CompetitorPrice-master-DATA2",
+            "Local-SellingPrice-master-DATA7"
+          ]
+        },
+        {
+          "retrId": 17,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              279
+            ],
+            "elapsedTime": [
+              183
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 18,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              278
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 19,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "RawWebPriceIndexByPair_14"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              317
+            ],
+            "elapsedTime": [
+              88
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 20,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "PriceToDate_14"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              278
+            ],
+            "elapsedTime": [
+              38
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 21,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 22,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "PriceToDate_14"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 23,
+          "type": "DistributedAggregatesRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "PriceToDate_14",
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "executionTime": [
+              37,
+              139
+            ],
+            "startTime": [
+              0
+            ],
+            "broadcastingTime": [
+              42,
+              140
+            ],
+            "processingTime": [
+              28,
+              132
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": [
+            "Local-CompetitorPrice-master-DATA2",
+            "Local-SellingPrice-master-DATA7"
+          ]
+        },
+        {
+          "retrId": 24,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              284
+            ],
+            "elapsedTime": [
+              29
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 25,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              283
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 26,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            }
+          ],
+          "measures": [
+            "RawWebPriceIndexByPair_14"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              428
+            ],
+            "elapsedTime": [
+              57
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 27,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "PriceToDate_14"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              278
+            ],
+            "elapsedTime": [
+              110
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 28,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 29,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "PriceToDate_14"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 30,
+          "type": "DistributedAggregatesRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "PriceToDate_14",
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "executionTime": [
+              37,
+              139
+            ],
+            "startTime": [
+              0
+            ],
+            "broadcastingTime": [
+              42,
+              140
+            ],
+            "processingTime": [
+              28,
+              132
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": [
+            "Local-CompetitorPrice-master-DATA2",
+            "Local-SellingPrice-master-DATA7"
+          ]
+        },
+        {
+          "retrId": 31,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              278
+            ],
+            "elapsedTime": [
+              150
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 32,
+          "type": "DistributedPostProcessedRetrieval",
+          "partitioning": "Distributed partitioning",
+          "location": [
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PurchasePriceType",
+              "level": [
+                "ALL",
+                "AV_PurchasePriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PA"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              277
+            ]
+          },
+          "underlyingDataNodes": []
+        }
+      ],
+      "dependencies": {
+        "-1": [
+          0,
+          2,
+          19,
+          4,
+          6,
+          8,
+          10,
+          26,
+          12
+        ],
+        "0": [
+          1
+        ],
+        "2": [
+          3
+        ],
+        "4": [
+          5
+        ],
+        "6": [
+          0,
+          7
+        ],
+        "7": [
+          1
+        ],
+        "8": [
+          9,
+          2
+        ],
+        "9": [
+          3
+        ],
+        "10": [
+          4,
+          11
+        ],
+        "11": [
+          5
+        ],
+        "12": [
+          0,
+          13,
+          17
+        ],
+        "13": [
+          14,
+          15
+        ],
+        "15": [
+          16
+        ],
+        "17": [
+          18,
+          14
+        ],
+        "18": [
+          16
+        ],
+        "19": [
+          20,
+          24,
+          2
+        ],
+        "20": [
+          21,
+          22
+        ],
+        "22": [
+          23
+        ],
+        "24": [
+          21,
+          25
+        ],
+        "25": [
+          23
+        ],
+        "26": [
+          4,
+          27,
+          31
+        ],
+        "27": [
+          28,
+          29
+        ],
+        "29": [
+          30
+        ],
+        "31": [
+          32,
+          28
+        ],
+        "32": [
+          30
+        ]
+      },
+      "queryFilters": [
+        {
+          "id": 0,
+          "description": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={}, subCubeTrees={}],hash=1212813]"
+        }
+      ],
+      "querySummary": {
+        "measures": [
+          "AV_Turnover",
+          "AV_FinalPrice.AVG",
+          "RawWebPriceIndexByPair_14",
+          "PriceToDate_14",
+          "AV_CurrentPriceIndex(Final)",
+          "AV_SellingPriceToDate"
+        ],
+        "totalRetrievals": 33,
+        "retrievalCountByType": {
+          "DistributedAggregatesRetrieval": 6,
+          "PostProcessedAggregatesRetrieval": 3,
+          "NoOpPrimitiveAggregatesRetrieval": 3,
+          "PrimitiveResultsMerger": 3,
+          "DistributedPostProcessedRetrieval": 9,
+          "PostProcessedResultsMerger": 9
+        },
+        "partitioningCountByType": {
+          "Distributed partitioning": 15,
+          "Constant partitioning": 18
+        }
+      }
+    },
+    {
+      "planInfo": {
+        "pivotType": "ActivePivotVersion",
+        "pivotId": "Recommendation",
+        "epoch": "4",
+        "branch": "master",
+        "retrieverType": "ActivePivotAggregatesRetriever",
+        "partialProviders": [],
+        "mdxPass": "SelectPass_0",
+        "clusterMemberId": "Local-Recommendation-master-DATA6",
+        "contextValues": {
+          "IBranch": "null",
+          "ISubCubeProperties": "null",
+          "IAsOfEpoch": "null",
+          "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false]"
+        },
+        "rangeSharing": 1000000,
+        "missedPrefetchBehavior": "WARN",
+        "aggregatesCache": "None",
+        "globalTimings": {
+          "executionContextCreationTime": 0,
+          "finalizationTime": 1,
+          "planningTime": 0,
+          "queryExecutionTime": 2
+        },
+        "continuous": false
+      },
+      "retrievals": [
+        {
+          "retrId": 0,
+          "type": "PrimitiveResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_FinalPrice.AVG"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              2
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 1,
+          "type": "JITPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_FinalPrice.AVG"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 2,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_FinalPrice.AVG"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              2
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 3,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CurrentPriceIndex(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              2
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 4,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CurrentPriceIndex(Final)_intern"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              2
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 5,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CurrentPriceIndex(Final)_intern"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              1,
+              1,
+              1,
+              1,
+              2,
+              1,
+              2
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 6,
+          "type": "JITPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_FinalPrice",
+            "AV_RecoQuantity"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 7,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_CurrentPriceIndex(Final)"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              2
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 8,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_CurrentPriceIndex(Final)_intern"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              2
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 9,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [
+            "AV_CurrentPriceIndex(Final)_intern"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              1
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 10,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 11,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_FinalPrice",
+            "AV_RecoQuantity"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              1,
+              1,
+              1,
+              1,
+              0,
+              0,
+              1
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        }
+      ],
+      "dependencies": {
+        "-1": [
+          0,
+          2,
+          3,
+          7
+        ],
+        "0": [
+          1
+        ],
+        "2": [
+          0
+        ],
+        "3": [
+          0,
+          4
+        ],
+        "4": [
+          0,
+          5
+        ],
+        "5": [
+          1,
+          6
+        ],
+        "7": [
+          8,
+          2
+        ],
+        "8": [
+          9,
+          2
+        ],
+        "9": [
+          10,
+          11
+        ],
+        "11": [
+          6
+        ]
+      },
+      "queryFilters": [
+        {
+          "id": 0,
+          "description": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={}, subCubeTrees={}],hash=1212813]"
+        }
+      ],
+      "querySummary": {
+        "measures": [
+          "AV_FinalPrice",
+          "AV_FinalPrice.AVG",
+          "AV_RecoQuantity",
+          "AV_CurrentPriceIndex(Final)_intern",
+          "AV_CurrentPriceIndex(Final)"
+        ],
+        "totalRetrievals": 12,
+        "retrievalCountByType": {
+          "JITPrimitiveAggregatesRetrieval": 2,
+          "PostProcessedAggregatesRetrieval": 4,
+          "NoOpPrimitiveAggregatesRetrieval": 1,
+          "PrimitiveResultsMerger": 1,
+          "PostProcessedResultsMerger": 2,
+          "RangeSharingPrimitiveAggregatesRetrieval": 2
+        },
+        "partitioningCountByType": {
+          "hash8(AV_Prod_Id)": 6,
+          "Constant partitioning": 6
+        }
+      }
+    },
+    {
+      "planInfo": {
+        "pivotType": "ActivePivotVersion",
+        "pivotId": "CompetitorPrice",
+        "epoch": "2",
+        "branch": "master",
+        "retrieverType": "ActivePivotAggregatesRetriever",
+        "partialProviders": [],
+        "mdxPass": "SelectPass_0",
+        "clusterMemberId": "Local-CompetitorPrice-master-DATA2",
+        "contextValues": {
+          "IBranch": "null",
+          "ISubCubeProperties": "null",
+          "IAsOfEpoch": "null",
+          "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false]"
+        },
+        "rangeSharing": 1000000,
+        "missedPrefetchBehavior": "WARN",
+        "aggregatesCache": "None",
+        "globalTimings": {
+          "executionContextCreationTime": 0,
+          "finalizationTime": 2,
+          "planningTime": 0,
+          "queryExecutionTime": 30
+        },
+        "continuous": false
+      },
+      "retrievals": [
+        {
+          "retrId": 0,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "PriceToDate_14"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              21
+            ],
+            "elapsedTime": [
+              1
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 1,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 2,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStoreId",
+              "level": [
+                "ALL",
+                "AV_CompetitorStoreId"
+              ],
+              "path": [
+                "AllMember",
+                "14"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CompetitorPriceToDate"
+          ],
+          "filterId": 1,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              18
+            ],
+            "elapsedTime": [
+              1
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 3,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 1,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 4,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStoreId",
+              "level": [
+                "ALL",
+                "AV_CompetitorStoreId"
+              ],
+              "path": [
+                "AllMember",
+                "14"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CompetitorPriceToDate"
+          ],
+          "filterId": 1,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              6,
+              15,
+              14,
+              7,
+              5,
+              5,
+              10,
+              8
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              12,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 5,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStoreId",
+              "level": [
+                "ALL",
+                "AV_CompetitorStoreId"
+              ],
+              "path": [
+                "AllMember",
+                "14"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_DatedCompetitorPriceObject"
+          ],
+          "filterId": 1,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              3,
+              12,
+              11,
+              1,
+              3,
+              3,
+              8,
+              6
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 6,
+          "type": "JITPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStoreId",
+              "level": [
+                "ALL",
+                "AV_CompetitorStoreId"
+              ],
+              "path": [
+                "AllMember",
+                "14"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_DatedCompetitorPriceObject"
+          ],
+          "filterId": 1,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "elapsedTime": [
+              0,
+              8,
+              6,
+              0,
+              0,
+              0,
+              6,
+              3
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 7,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStoreId",
+              "level": [
+                "ALL",
+                "AV_CompetitorStoreId"
+              ],
+              "path": [
+                "AllMember",
+                "14"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_DatedCompetitorPriceObjectToDate"
+          ],
+          "filterId": 1,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              3,
+              12,
+              11,
+              1,
+              3,
+              3,
+              8,
+              6
+            ],
+            "elapsedTime": [
+              2,
+              2,
+              2,
+              6,
+              2,
+              2,
+              1,
+              2
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 8,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStoreId",
+              "level": [
+                "ALL",
+                "AV_CompetitorStoreId"
+              ],
+              "path": [
+                "AllMember",
+                "14"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_DatedCompetitorPriceObject"
+          ],
+          "filterId": 1,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              3,
+              12,
+              11,
+              1,
+              3,
+              3,
+              8,
+              6
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 9,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStoreId",
+              "level": [
+                "ALL",
+                "AV_CompetitorStoreId"
+              ],
+              "path": [
+                "AllMember",
+                "14"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_DatedCompetitorPriceObject"
+          ],
+          "filterId": 1,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              11,
+              6,
+              0,
+              0,
+              0,
+              6,
+              3
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 10,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_ExpandedCompetitorCountHidden"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              19
+            ],
+            "elapsedTime": [
+              1
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 11,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_ExpandedCompetitorCountHidden"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              18,
+              17,
+              15,
+              8,
+              10,
+              3,
+              11,
+              11
+            ],
+            "elapsedTime": [
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 12,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 13,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "contributors.COUNT"
+          ],
+          "filterId": 2,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              18,
+              17,
+              15,
+              8,
+              10,
+              3,
+              11,
+              11
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 14,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "contributors.COUNT"
+          ],
+          "filterId": 2,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              16,
+              14,
+              12,
+              7,
+              9,
+              2,
+              9,
+              11
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 15,
+          "type": "JITPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "contributors.COUNT"
+          ],
+          "filterId": 2,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "elapsedTime": [
+              8,
+              11,
+              9,
+              4,
+              7,
+              0,
+              8,
+              8
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 16,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "PriceToDate_14"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              24
+            ],
+            "elapsedTime": [
+              6
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 17,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 18,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_ExpandedCompetitorCountHidden"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              15
+            ],
+            "elapsedTime": [
+              8
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 19,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_ExpandedCompetitorCountHidden"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              14,
+              11,
+              9,
+              4,
+              8,
+              0,
+              8,
+              9
+            ],
+            "elapsedTime": [
+              1,
+              2,
+              2,
+              2,
+              1,
+              1,
+              1,
+              2
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 20,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 21,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStoreId",
+              "level": [
+                "ALL",
+                "AV_CompetitorStoreId"
+              ],
+              "path": [
+                "AllMember",
+                "14"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CompetitorPriceToDate"
+          ],
+          "filterId": 1,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              15
+            ],
+            "elapsedTime": [
+              5
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 22,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 1,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 23,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStoreId",
+              "level": [
+                "ALL",
+                "AV_CompetitorStoreId"
+              ],
+              "path": [
+                "AllMember",
+                "14"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_CompetitorPriceToDate"
+          ],
+          "filterId": 1,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              3,
+              14,
+              11,
+              3,
+              3,
+              3,
+              8,
+              5
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 24,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStoreId",
+              "level": [
+                "ALL",
+                "AV_CompetitorStoreId"
+              ],
+              "path": [
+                "AllMember",
+                "14"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_DatedCompetitorPriceObjectToDate"
+          ],
+          "filterId": 1,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              11,
+              6,
+              0,
+              0,
+              0,
+              6,
+              3
+            ],
+            "elapsedTime": [
+              2,
+              2,
+              5,
+              2,
+              2,
+              2,
+              2,
+              2
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 25,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "PriceToDate_14"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              24
+            ],
+            "elapsedTime": [
+              5
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 26,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 27,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_ExpandedCompetitorCountHidden"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              18
+            ],
+            "elapsedTime": [
+              5
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 28,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CompetitorStore",
+              "hierarchy": "AV_CompetitorStore_Name",
+              "level": [
+                "ALL",
+                "AV_CompetitorStore_Name"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_CompetitorPriceType",
+              "level": [
+                "ALL",
+                "AV_CompetitorPriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_ExpandedCompetitorCountHidden"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              16,
+              14,
+              12,
+              7,
+              9,
+              2,
+              9,
+              11
+            ],
+            "elapsedTime": [
+              2,
+              3,
+              2,
+              1,
+              1,
+              1,
+              1,
+              1
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 29,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        }
+      ],
+      "dependencies": {
+        "-1": [
+          0,
+          16,
+          25
+        ],
+        "0": [
+          1,
+          2,
+          10
+        ],
+        "2": [
+          4,
+          3
+        ],
+        "4": [
+          5,
+          7
+        ],
+        "5": [
+          6
+        ],
+        "7": [
+          8,
+          5
+        ],
+        "8": [
+          9
+        ],
+        "9": [
+          6
+        ],
+        "10": [
+          1,
+          11
+        ],
+        "11": [
+          12,
+          13
+        ],
+        "13": [
+          14
+        ],
+        "14": [
+          15
+        ],
+        "16": [
+          17,
+          18,
+          21
+        ],
+        "18": [
+          17,
+          19
+        ],
+        "19": [
+          15,
+          20
+        ],
+        "21": [
+          22,
+          23
+        ],
+        "23": [
+          24,
+          6
+        ],
+        "24": [
+          9,
+          6
+        ],
+        "25": [
+          2,
+          26,
+          27
+        ],
+        "27": [
+          26,
+          28
+        ],
+        "28": [
+          14,
+          29
+        ]
+      },
+      "queryFilters": [
+        {
+          "id": 0,
+          "description": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={}, subCubeTrees={}],hash=1212813]"
+        },
+        {
+          "id": 1,
+          "description": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={CompetitorStore={AV_CompetitorStoreId=[[AllMember, 14]]}}, subCubeTrees={CompetitorStore={AV_CompetitorStoreId=SubCubeTree [intersectedNodes=[SubCubeNode [conditions=[], children={AllMember=SubCubeNode [conditions=[], children={14=SubCubeNode [conditions=[], children={}]}]}]]]}}],hash=-899264537]"
+        },
+        {
+          "id": 2,
+          "description": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Date={Week=[[AllMember]], Date=[[AllMember]]}}, subCubeTrees={Date={Week=SubCubeTree [intersectedNodes=[SubCubeNode [conditions=[], children={AllMember=SubCubeNode [conditions=[], children={}]}]]], Date=SubCubeTree [intersectedNodes=[SubCubeNode [conditions=[], children={AllMember=SubCubeNode [conditions=[], children={}]}]]]}}],hash=-1521969735]"
+        }
+      ],
+      "querySummary": {
+        "measures": [
+          "contributors.COUNT",
+          "PriceToDate_14",
+          "AV_DatedCompetitorPriceObject",
+          "AV_ExpandedCompetitorCountHidden",
+          "AV_DatedCompetitorPriceObjectToDate",
+          "AV_CompetitorPriceToDate"
+        ],
+        "totalRetrievals": 30,
+        "retrievalCountByType": {
+          "JITPrimitiveAggregatesRetrieval": 2,
+          "PostProcessedAggregatesRetrieval": 10,
+          "NoOpPrimitiveAggregatesRetrieval": 8,
+          "PostProcessedResultsMerger": 5,
+          "RangeSharingPrimitiveAggregatesRetrieval": 5
+        },
+        "partitioningCountByType": {
+          "hash8(AV_Prod_Id)": 17,
+          "Constant partitioning": 13
+        }
+      }
+    },
+    {
+      "planInfo": {
+        "pivotType": "ActivePivotVersion",
+        "pivotId": "Sale",
+        "epoch": "2",
+        "branch": "master",
+        "retrieverType": "ActivePivotAggregatesRetriever",
+        "partialProviders": [],
+        "mdxPass": "SelectPass_0",
+        "clusterMemberId": "Local-Sale-master-DATA1",
+        "contextValues": {
+          "IBranch": "null",
+          "ISubCubeProperties": "null",
+          "IAsOfEpoch": "null",
+          "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false]"
+        },
+        "rangeSharing": 1000000,
+        "missedPrefetchBehavior": "WARN",
+        "aggregatesCache": "None",
+        "globalTimings": {
+          "executionContextCreationTime": 0,
+          "finalizationTime": 0,
+          "planningTime": 0,
+          "queryExecutionTime": 2
+        },
+        "continuous": false
+      },
+      "retrievals": [
+        {
+          "retrId": 0,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [
+            "AV_Turnover"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              2
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 1,
+          "type": "PrimitiveResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_Turnover"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              2
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 2,
+          "type": "JITPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_Turnover"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        }
+      ],
+      "dependencies": {
+        "-1": [
+          0,
+          1
+        ],
+        "0": [
+          1
+        ],
+        "1": [
+          2
+        ]
+      },
+      "queryFilters": [
+        {
+          "id": 0,
+          "description": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={}, subCubeTrees={}],hash=1212813]"
+        }
+      ],
+      "querySummary": {
+        "measures": [
+          "AV_Turnover"
+        ],
+        "totalRetrievals": 3,
+        "retrievalCountByType": {
+          "JITPrimitiveAggregatesRetrieval": 1,
+          "PrimitiveResultsMerger": 1,
+          "RangeSharingPrimitiveAggregatesRetrieval": 1
+        },
+        "partitioningCountByType": {
+          "hash8(AV_Prod_Id)": 1,
+          "Constant partitioning": 2
+        }
+      }
+    },
+    {
+      "planInfo": {
+        "pivotType": "ActivePivotVersion",
+        "pivotId": "SellingPrice",
+        "epoch": "2",
+        "branch": "master",
+        "retrieverType": "ActivePivotAggregatesRetriever",
+        "partialProviders": [],
+        "mdxPass": "SelectPass_0",
+        "clusterMemberId": "Local-SellingPrice-master-DATA7",
+        "contextValues": {
+          "IBranch": "null",
+          "ISubCubeProperties": "null",
+          "IAsOfEpoch": "null",
+          "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false]"
+        },
+        "rangeSharing": 1000000,
+        "missedPrefetchBehavior": "WARN",
+        "aggregatesCache": "None",
+        "globalTimings": {
+          "executionContextCreationTime": 0,
+          "finalizationTime": 0,
+          "planningTime": 0,
+          "queryExecutionTime": 121
+        },
+        "continuous": false
+      },
+      "retrievals": [
+        {
+          "retrId": 0,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              93
+            ],
+            "elapsedTime": [
+              27
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 1,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 2,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              11,
+              26,
+              42,
+              55,
+              65,
+              73,
+              82,
+              90
+            ],
+            "elapsedTime": [
+              3,
+              9,
+              3,
+              3,
+              4,
+              3,
+              3,
+              3
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 3,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_DatedSellingPriceObject"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 4,
+          "type": "JITPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_DatedSellingPriceObject"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "elapsedTime": [
+              1,
+              0,
+              1,
+              1,
+              1,
+              1,
+              0,
+              1
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 5,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_DatedSellingPriceObjectToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              4,
+              13,
+              34,
+              50,
+              59,
+              68,
+              76,
+              83
+            ],
+            "elapsedTime": [
+              7,
+              13,
+              8,
+              5,
+              6,
+              4,
+              6,
+              7
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 6,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_DatedSellingPriceObject"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              4,
+              13,
+              34,
+              50,
+              58,
+              68,
+              76,
+              83
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 7,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_DatedSellingPriceObject"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              2,
+              11,
+              33,
+              50,
+              58,
+              68,
+              76,
+              83
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 8,
+          "type": "PostProcessedResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              90
+            ],
+            "elapsedTime": [
+              21
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 9,
+          "type": "NoOpPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [],
+          "measures": [],
+          "filterId": 0,
+          "timingInfo": {},
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 10,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_SellingPriceToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              9,
+              24,
+              46,
+              54,
+              66,
+              73,
+              81,
+              88
+            ],
+            "elapsedTime": [
+              1,
+              9,
+              3,
+              3,
+              2,
+              3,
+              1,
+              2
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 11,
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash8(AV_Prod_Id)",
+          "location": [
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Id",
+              "level": [
+                "ALL",
+                "AV_Prod_Id"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Product",
+              "hierarchy": "AV_Prod_Brand",
+              "level": [
+                "ALL",
+                "AV_Prod_Brand"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Date",
+              "hierarchy": "Date",
+              "level": [
+                "ALL",
+                "Year",
+                "Month",
+                "Day"
+              ],
+              "path": [
+                "AllMember",
+                "*",
+                "*",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Store",
+              "hierarchy": "AV_StoreId",
+              "level": [
+                "ALL",
+                "AV_StoreId"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Price",
+              "hierarchy": "AV_PriceType",
+              "level": [
+                "ALL",
+                "AV_PriceType"
+              ],
+              "path": [
+                "AllMember",
+                "PVE"
+              ]
+            }
+          ],
+          "measures": [
+            "AV_DatedSellingPriceObjectToDate"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              2,
+              11,
+              34,
+              50,
+              58,
+              68,
+              76,
+              83
+            ],
+            "elapsedTime": [
+              6,
+              13,
+              12,
+              4,
+              7,
+              4,
+              4,
+              4
+            ]
+          },
+          "underlyingDataNodes": []
+        }
+      ],
+      "dependencies": {
+        "-1": [
+          0,
+          8
+        ],
+        "0": [
+          1,
+          2
+        ],
+        "2": [
+          5,
+          3
+        ],
+        "3": [
+          4
+        ],
+        "5": [
+          6,
+          3
+        ],
+        "6": [
+          7
+        ],
+        "7": [
+          4
+        ],
+        "8": [
+          9,
+          10
+        ],
+        "10": [
+          4,
+          11
+        ],
+        "11": [
+          4,
+          7
+        ]
+      },
+      "queryFilters": [
+        {
+          "id": 0,
+          "description": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={}, subCubeTrees={}],hash=1212813]"
+        }
+      ],
+      "querySummary": {
+        "measures": [
+          "AV_DatedSellingPriceObject",
+          "AV_DatedSellingPriceObjectToDate",
+          "AV_SellingPriceToDate"
+        ],
+        "totalRetrievals": 12,
+        "retrievalCountByType": {
+          "JITPrimitiveAggregatesRetrieval": 1,
+          "PostProcessedAggregatesRetrieval": 4,
+          "NoOpPrimitiveAggregatesRetrieval": 2,
+          "PostProcessedResultsMerger": 2,
+          "RangeSharingPrimitiveAggregatesRetrieval": 3
+        },
+        "partitioningCountByType": {
+          "hash8(AV_Prod_Id)": 8,
+          "Constant partitioning": 4
+        }
+      }
+    }
+  ]
+}

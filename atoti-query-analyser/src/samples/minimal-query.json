@@ -1,0 +1,198 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "planInfo": {
+        "pivotType": "ActivePivotVersion",
+        "pivotId": "EquityDerivativesCube",
+        "epoch": "733",
+        "branch": "master",
+        "retrieverType": "ActivePivotAggregatesRetriever",
+        "partialProviders": [
+          "LEAF",
+          "BITMAP",
+          "LEAF"
+        ],
+        "mdxPass": "SelectPass_0",
+        "contextValues": {
+          "IBranch": "null",
+          "ISubCubeProperties": "null",
+          "IAsOfEpoch": "null",
+          "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false]"
+        },
+        "rangeSharing": 1000000,
+        "missedPrefetchBehavior": "WARN",
+        "aggregatesCache": "capacity=1000, size=0",
+        "globalTimings": {
+          "FINALIZATION": 0,
+          "EXECUTION": 0,
+          "CONTEXT": 0,
+          "PLANNING": 0
+        },
+        "measures": [
+          "pnl.SUM"
+        ],
+        "totalRetrievals": 3,
+        "retrievalsCountByType": {
+          "PrimitiveAnalysisAggregationRetrieval": 1,
+          "PartialPrimitiveAggregatesRetrieval": 1,
+          "PrimitiveResultsMerger": 1
+        },
+        "partitioningCountByType": {
+          "Constant partitioning": 2,
+          "value(AsOfDate)": 1
+        },
+        "queryFiltersById": {
+          "0": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={}, subCubeTrees={}],hash=1212813]"
+        },
+        "continuous": false
+      },
+      "retrievals": [
+        {
+          "retrId": 0,
+          "type": "PrimitiveAnalysisAggregationRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            },
+            {
+              "dimension": "TargetCurrency",
+              "hierarchy": "TargetCurrency",
+              "level": [
+                "TargetCurrency"
+              ],
+              "path": [
+                "ZAR"
+              ]
+            }
+          ],
+          "measures": [
+            "pnl.SUM"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 1,
+          "type": "PrimitiveResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Currency",
+              "hierarchy": "Currency",
+              "level": [
+                "ALL",
+                "Currency"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            }
+          ],
+          "measures": [
+            "pnl.SUM"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 2,
+          "type": "PartialPrimitiveAggregatesRetrieval",
+          "partitioning": "value(AsOfDate)",
+          "location": [
+            {
+              "dimension": "Currency",
+              "hierarchy": "Currency",
+              "level": [
+                "ALL",
+                "Currency"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            }
+          ],
+          "measures": [
+            "pnl.SUM"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "elapsedTime": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "underlyingDataNodes": []
+        }
+      ],
+      "dependencies": {
+        "-1": [
+          0
+        ],
+        "0": [
+          1
+        ],
+        "1": [
+          2
+        ]
+      }
+    }
+  ]
+}

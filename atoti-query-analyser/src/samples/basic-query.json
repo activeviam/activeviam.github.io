@@ -1,0 +1,320 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "planInfo": {
+        "pivotType": "ActivePivotVersion",
+        "pivotId": "EquityDerivativesCube",
+        "epoch": "586",
+        "branch": "master",
+        "retrieverType": "ActivePivotAggregatesRetriever",
+        "partialProviders": [
+          "LEAF",
+          "BITMAP",
+          "LEAF"
+        ],
+        "mdxPass": "SelectPass_0",
+        "contextValues": {
+          "IBranch": "null",
+          "ISubCubeProperties": "null",
+          "IAsOfEpoch": "null",
+          "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false]"
+        },
+        "rangeSharing": 1000000,
+        "missedPrefetchBehavior": "WARN",
+        "aggregatesCache": "capacity=1000, size=0",
+        "globalTimings": {
+          "FINALIZATION": 0,
+          "EXECUTION": 0,
+          "CONTEXT": 0,
+          "PLANNING": 0
+        },
+        "measures": [
+          "pnl.SUM"
+        ],
+        "totalRetrievals": 5,
+        "retrievalsCountByType": {
+          "PrimitiveAnalysisAggregationRetrieval": 2,
+          "PartialPrimitiveAggregatesRetrieval": 1,
+          "PrimitiveResultsMerger": 1,
+          "RangeSharingPrimitiveAggregatesRetrieval": 1
+        },
+        "partitioningCountByType": {
+          "Constant partitioning": 4,
+          "value(AsOfDate)": 1
+        },
+        "queryFiltersById": {
+          "0": "CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={}, subCubeTrees={}],hash=1212813]"
+        },
+        "continuous": false
+      },
+      "retrievals": [
+        {
+          "retrId": 0,
+          "type": "PrimitiveAnalysisAggregationRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "CounterParty",
+              "hierarchy": "CounterParty",
+              "level": [
+                "ALL",
+                "CounterPartyGroup"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            },
+            {
+              "dimension": "TargetCurrency",
+              "hierarchy": "TargetCurrency",
+              "level": [
+                "TargetCurrency"
+              ],
+              "path": [
+                "ZAR"
+              ]
+            }
+          ],
+          "measures": [
+            "pnl.SUM"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              3
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 1,
+          "type": "PrimitiveResultsMerger",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Currency",
+              "hierarchy": "Currency",
+              "level": [
+                "ALL",
+                "Currency"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CounterParty",
+              "hierarchy": "CounterParty",
+              "level": [
+                "ALL",
+                "CounterPartyGroup"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            }
+          ],
+          "measures": [
+            "pnl.SUM"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              4
+            ],
+            "elapsedTime": [
+              5
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 2,
+          "type": "PartialPrimitiveAggregatesRetrieval",
+          "partitioning": "value(AsOfDate)",
+          "location": [
+            {
+              "dimension": "Currency",
+              "hierarchy": "Currency",
+              "level": [
+                "ALL",
+                "Currency"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "CounterParty",
+              "hierarchy": "CounterParty",
+              "level": [
+                "ALL",
+                "CounterPartyGroup"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            }
+          ],
+          "measures": [
+            "pnl.SUM"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              5
+            ],
+            "elapsedTime": [
+              7
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 3,
+          "type": "PrimitiveAnalysisAggregationRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            },
+            {
+              "dimension": "TargetCurrency",
+              "hierarchy": "TargetCurrency",
+              "level": [
+                "TargetCurrency"
+              ],
+              "path": [
+                "ZAR"
+              ]
+            }
+          ],
+          "measures": [
+            "pnl.SUM"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              0
+            ],
+            "elapsedTime": [
+              2
+            ]
+          },
+          "underlyingDataNodes": []
+        },
+        {
+          "retrId": 4,
+          "type": "RangeSharingPrimitiveAggregatesRetrieval",
+          "partitioning": "Constant partitioning",
+          "location": [
+            {
+              "dimension": "Currency",
+              "hierarchy": "Currency",
+              "level": [
+                "ALL",
+                "Currency"
+              ],
+              "path": [
+                "AllMember",
+                "*"
+              ]
+            },
+            {
+              "dimension": "Time",
+              "hierarchy": "HistoricalDates",
+              "level": [
+                "AsOfDate"
+              ],
+              "path": [
+                "2019-12-11"
+              ]
+            }
+          ],
+          "measures": [
+            "pnl.SUM"
+          ],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "timingInfo": {
+            "startTime": [
+              2
+            ],
+            "elapsedTime": [
+              4
+            ]
+          },
+          "underlyingDataNodes": []
+        }
+      ],
+      "dependencies": {
+        "-1": [
+          0,
+          3
+        ],
+        "0": [
+          1
+        ],
+        "1": [
+          2
+        ],
+        "3": [
+          4
+        ],
+        "4": [
+          1
+        ]
+      }
+    }
+  ]
+}
