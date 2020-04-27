@@ -6,12 +6,19 @@ jobs:
       - image: circleci/node:13.13
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - deps-atoti-{{ checksum "atoti-query-analyser/yarn.lock" }}
       - run:
           name: Install dependencies
           command: yarn install --cwd atoti-query-analyser
       - run:
           name: Build application
           command: yarn --cwd atoti-query-analyser build
+      - save_cache:
+          key: deps-atoti-{{ checksum "atoti-query-analyser/yarn.lock" }}
+          paths:
+            - atoti-query-analyser/node_modules
       - persist_to_workspace:
           root: docs/_build
           paths: atoti-query-analyser/build
