@@ -1,0 +1,54 @@
+version: 2
+    
+jobs:
+  atoti_query:
+    docker:
+      - image: circleci/node:13.13
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: yarn install --cwd atoti-query-analyser
+      - run:
+          name: Build application
+          command: yarn --cwd atoti-query-analyser build
+      - persist_to_workspace:
+          root: docs/_build
+          paths: atoti-query-analyser/build
+  deploy_to_master:
+    docker:
+      - image: circleci/node:13.13
+    steps:
+      - checkout
+      - attach_workspace:
+          at: docs/_build
+      - run:
+          name: Install and configure dependencies
+          command: |
+            npm install -g --silent gh-pages@2.2.0
+            git config user.email "ci-build@activeviam.com"
+            git config user.name "ci-build"
+      - add_ssh_keys:
+          fingerprints:
+            - "67:b5:b5:4f:7c:af:bb:32:1e:0a:ea:82:7a:61:68:0c"
+      - run:
+          name: Deploy applications to master
+          command: |
+            gh-pages --dist docs/_build/atoti-query-analyser/build \
+              --dest atoti-query-analyser \
+              --branch master
+    
+workflows:
+  version: 2
+  build:
+    jobs:
+      - atoti_query:
+          filters:
+            branch:
+              only: develop
+      - deploy_to_master:
+          requires:
+            - atoti_query
+          filters:
+            branch:
+              only: develop
