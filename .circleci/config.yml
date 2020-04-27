@@ -20,8 +20,8 @@ jobs:
           paths:
             - atoti-query-analyser/node_modules
       - persist_to_workspace:
-          root: docs/_build
-          paths: atoti-query-analyser/build
+          root: atoti-query-analyser
+          paths: build
   deploy_to_master:
     docker:
       - image: circleci/node:13.13
@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Deploy applications to master
           command: |
-            gh-pages --dist docs/_build/atoti-query-analyser/build \
+            gh-pages --dist atoti-query-analyser/build \
               --dest atoti-query-analyser \
               --branch master
     
