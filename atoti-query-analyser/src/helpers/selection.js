@@ -1,16 +1,6 @@
 import _ from "lodash";
 import * as iterators from "./iterators";
 
-// dependencies is a dict {son: parents}
-// the function returns {parent: sons}
-const dependenciesToMap = deps =>
-  new Map(
-    Object.entries(deps).map(entry => {
-      entry[0] = parseInt(entry[0], 10);
-      return entry;
-    })
-  );
-
 const invertDependencies = dep => {
   const invDep = new Map();
   if (dep.size === 0) {

@@ -6,15 +6,22 @@ jobs:
       - image: circleci/node:13.13
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - deps-atoti-{{ checksum "atoti-query-analyser/yarn.lock" }}
       - run:
           name: Install dependencies
           command: yarn install --cwd atoti-query-analyser
       - run:
           name: Build application
           command: yarn --cwd atoti-query-analyser build
+      - save_cache:
+          key: deps-atoti-{{ checksum "atoti-query-analyser/yarn.lock" }}
+          paths:
+            - atoti-query-analyser/node_modules
       - persist_to_workspace:
-          root: docs/_build
-          paths: atoti-query-analyser/build
+          root: atoti-query-analyser
+          paths: build
   deploy_to_master:
     docker:
       - image: circleci/node:13.13
@@ -34,7 +41,7 @@ jobs:
       - run:
           name: Deploy applications to master
           command: |
-            gh-pages --dist docs/_build/atoti-query-analyser/build \
+            gh-pages --dist atoti-query-analyser/build \
               --dest atoti-query-analyser \
               --branch master
     
@@ -42,10 +49,7 @@ workflows:
   version: 2
   build:
     jobs:
-      - atoti_query:
-          filters:
-            branches:
-              only: develop
+      - atoti_query
       - deploy_to_master:
           requires:
             - atoti_query
