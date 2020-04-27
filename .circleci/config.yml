@@ -44,11 +44,11 @@ workflows:
     jobs:
       - atoti_query:
           filters:
-            branch:
+            branches:
               only: develop
       - deploy_to_master:
           requires:
             - atoti_query
           filters:
-            branch:
+            branches:
               only: develop
