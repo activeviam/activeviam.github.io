@@ -49,10 +49,7 @@ workflows:
   version: 2
   build:
     jobs:
-      - atoti_query:
-          filters:
-            branches:
-              only: develop
+      - atoti_query
       - deploy_to_master:
           requires:
             - atoti_query
