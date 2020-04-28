@@ -52,7 +52,12 @@ workflows:
   version: 2
   build:
     jobs:
-      - atoti_query
+      - atoti_query:
+          filters:
+            branches:
+              ignore: 
+                - master
+                - /wip-*/
       - deploy_to_master:
           requires:
             - atoti_query
