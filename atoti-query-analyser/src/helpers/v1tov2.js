@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 const RETRIEVAL = /Retrieval #(\d+): ([\w_]+)( \(see)?/;
 const PROPERTY_EXPR = /\s*([\w\-_ ()]+)= (.+)\s*/;
 const PIVOT_EXPR = /\s*(\w+)\s+\[id=(.+?), epoch=(\d+)]/;
@@ -8,7 +10,7 @@ const DEPENDENCY_END = /^\s*}\s*$/;
 const PARTITION_PROPERTY = "Contributed partitions";
 const last = array => (array.length > 0 ? array[array.length - 1] : undefined);
 const parseNewRetrieval = (_line, match) => ({
-  id: match[1],
+  id: parseInt(match[1], 10),
   type: match[2],
   ref: match[3] !== undefined,
   dependencies: [],
@@ -388,6 +390,23 @@ const setSimulatedTimeInfo = (retrievals, dependencies) => {
   }
 };
 
+const createSummary = retrievals => {
+  const measures = _(retrievals)
+    .flatMap(r => r.measures)
+    .uniq()
+    .value();
+
+  const retrievalCountByType = _.countBy(retrievals, r => r.type);
+  const partitioningCountByType = _.countBy(retrievals, r => r.partitioning);
+
+  return {
+    measures,
+    totalRetrievals: _.size(retrievals),
+    retrievalCountByType,
+    partitioningCountByType
+  };
+};
+
 const convertToV2 = v1Structure => {
   const dependencies = createDependencyList(v1Structure);
   const queryFilters = createFilterMap(v1Structure);
@@ -395,12 +414,15 @@ const convertToV2 = v1Structure => {
   if (retrievals[0].timingInfo.startTime === undefined) {
     setSimulatedTimeInfo(retrievals, dependencies);
   }
+  const querySummary = createSummary(retrievals);
+
   return [
     {
       planInfo: v1Structure.info,
       dependencies,
       queryFilters,
-      retrievals
+      retrievals,
+      querySummary
     }
   ];
 };
