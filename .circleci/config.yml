@@ -2,6 +2,7 @@ jobs:
   do-nothing:
     docker:
       - image: bash:4.4.19
+    resource_class: small
     steps:
       - run:
           name: Nothing to do
@@ -10,5 +11,9 @@ workflows:
   version: 2
   build:
     jobs:
-      - do-nothing
+      - do-nothing:
+          filters:
+            branches:
+              ignore: 
+                - master
 version: 2
