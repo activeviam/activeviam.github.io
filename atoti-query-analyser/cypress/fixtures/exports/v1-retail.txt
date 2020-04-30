@@ -1,0 +1,681 @@
+GetAggregatesQuery explanation
+==============================
+
+General information:
+-------------------
+	ActivePivot: ActivePivotVersion [id=Bill, epoch=9]
+	RetrieverActivePivotAggregatesRetriever : Standard aggregates retriever on cube Bill
+
+Context values:
+--------------
+	IQueryMonitoring: QueryMonitoring [printExecutionPlan=true, printExecutionTiming=true]
+	ICubeFilter: CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={}, subCubeTrees={}],hash=1212813]
+	IBranch: null
+	IAsOfEpoch: null
+	ISubCubeProperties: null
+
+Additional properties:
+---------------------
+	Continuous: false
+	Range sharing: 1000000
+	Missed prefetches: WARN
+	Cache: None
+
+Planning:
+--------
+	Planning time: 0ms
+		Execution context creation time: 0ms
+	Planning finalization time: 5ms
+
+Execution:
+---------
+	Total query execution time: 17342ms
+
+Query plan:
+----------
+Retrieval #0: PostProcessedAggregatesRetrieval
+	Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+	Measures= [MadhForecastHidden]
+	Filter= Global query filter
+	Partitioning= Constant partitioning
+	Measures provider= SimpleMeasuresProvider
+	Start time   (in ms)= [17342]
+	Elapsed time (in ms)= [    0]
+ which depends on {
+	Retrieval #1: NoOpPrimitiveAggregatesRetrieval
+		Simple placeholder (no work done in this retrieval)
+		Partitioning= Constant partitioning
+		Start time   (in ms)= [9]
+		Elapsed time (in ms)= [0]
+	Retrieval #2: PostProcessedResultsMerger
+		Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+		Measures= [MadhSuiviForecastHidden]
+		Filter= Global query filter
+		Partitioning= Constant partitioning
+		Measures provider= SimpleMeasuresProvider
+		Start time   (in ms)= [17341]
+		Elapsed time (in ms)= [    0]
+	 which depends on {
+		Retrieval #1: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+		Retrieval #3: PostProcessedAggregatesRetrieval
+			Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+			Measures= [MadhSuiviForecastHidden]
+			Filter= Global query filter
+			Partitioning= hash32(Prod_AV_Id)
+			Measures provider= SimpleMeasuresProvider
+			Start time   (in ms)= [15522, 14011, 15955, 16493, 15727, 16138, 14606, 16489, 15054, 13214, 15431, 16210, 15635, 16068, 14302, 13501, 15788, 15942, 15340, 15442, 15748, 16801, 16389, 14063, 14962, 15368, 16686, 14140, 16024, 14912, 12715, 17337]
+			Elapsed time (in ms)= [    4,     4,     7,     5,     3,     6,     4,     3,     3,    14,     8,     3,     5,     2,     4,     4,     2,     3,     5,     4,     2,     2,     4,    27,     3,     5,     3,     5,     5,     4,     3,     4]
+		 which depends on {
+			Retrieval #4: NoOpPrimitiveAggregatesRetrieval
+				Simple placeholder (no work done in this retrieval)
+				Partitioning= hash32(Prod_AV_Id)
+				Start time   (in ms)= [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
+				Elapsed time (in ms)= [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+			Retrieval #5: PostProcessedAggregatesRetrieval
+				Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+				Measures= [mapToDouble(MadhSuiviForecastPrevYearHidden;MadhSuiviForecastLas...__#__Bill]
+				Filter= Global query filter
+				Partitioning= hash32(Prod_AV_Id)
+				Measures provider= SimpleMeasuresProvider
+				Start time   (in ms)= [15514, 14002, 15940, 16486, 15720, 16128, 14597, 16481, 15047, 13191, 15415, 16203, 15624, 16061, 14293, 13492, 15782, 15934, 15330, 15435, 15742, 16797, 16380, 14008, 14956, 15360, 16681, 14129, 16013, 14904, 12708, 17331]
+				Elapsed time (in ms)= [    8,     8,    15,     6,     7,    10,     9,     7,     6,    23,    16,     7,    10,     7,     8,     8,     5,     7,    10,     7,     5,     3,     8,    55,     6,     8,     5,    10,    10,     8,     7,     5]
+			 which depends on {
+				Retrieval #6: NoOpPrimitiveAggregatesRetrieval
+					Simple placeholder (no work done in this retrieval)
+					Partitioning= hash32(Prod_AV_Id)
+					Start time   (in ms)= [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
+					Elapsed time (in ms)= [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				Retrieval #7: PostProcessedAggregatesRetrieval
+					Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+					Measures= [MadhSuiviForecastPrevYearHidden]
+					Filter= Global query filter
+					Partitioning= hash32(Prod_AV_Id)
+					Measures provider= SimpleMeasuresProvider
+					Start time   (in ms)= [14182, 13206, 15722, 16366, 15572, 15967, 13762, 16367, 14920, 12799, 15148, 16081, 15432, 15715, 12738, 13347, 15637, 15819, 15158, 13263, 15652, 16719, 16190, 12672, 14761, 15196, 16595, 13954, 15710, 14765, 12586, 17250]
+					Elapsed time (in ms)= [  339,   155,   217,   119,   147,   160,   834,   113,   127,   391,   266,   121,   191,   346,   153,   145,   145,   115,   171,    96,    89,    77,   190,  1335,   195,   163,    86,   175,   303,   138,   121,    81]
+				 which depends on {
+					Retrieval #6: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+					Retrieval #8: PostProcessedAggregatesRetrieval
+						Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+						Measures= [ExpandedCountForForecastHidden]
+						Filter= Global query filter
+						Partitioning= hash32(Prod_AV_Id)
+						Measures provider= SimpleMeasuresProvider
+						Start time   (in ms)= [2041, 350, 565, 329, 331, 422, 250, 187, 275, 438, 402, 1271, 453, 539, 331, 1170, 119, 316, 426, 561, 351, 534, 344, 400, 398, 799, 348, 239, 588, 431, 626, 447]
+						Elapsed time (in ms)= [ 328,  22, 289,  51, 155,  55,  45,  52,  37,  75,  25,  427,  45,  94,  37,  193,  47,  24,  46, 266,  28, 249,  32,  51, 143, 421,  24,  48, 361,  23, 244,  43]
+					 which depends on {
+						Retrieval #6: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+						Retrieval #9: PostProcessedAggregatesRetrieval
+							Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+							Measures= [IntermediateExpandedCountHiddenForFix]
+							Filter= Global query filter
+							Partitioning= hash32(Prod_AV_Id)
+							Measures provider= SimpleMeasuresProvider
+							Start time   (in ms)= [1699, 323, 245, 271, 156, 369, 200, 129, 236, 367, 375, 740, 404, 393, 287, 764, 56, 287, 378, 239, 321, 243, 310, 347, 230, 576, 320, 185, 259, 386, 334, 400]
+							Elapsed time (in ms)= [ 341,  26, 319,  57, 175,  53,  49,  57,  38,  71,  27, 531,  48, 145,  44, 406, 62,  29,  48, 321,  30, 291,  34,  52, 168, 223,  28,  53, 329,  44, 292,  47]
+						 which depends on {
+							Retrieval #6: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+							Retrieval #10: JITPrimitiveAggregatesRetrieval
+								Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*]
+								Measures= [contributors.COUNT]
+								Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Date={Year/Month/Week=[[AllMember]]}}, subCubeTrees={Date={Year/Month/Week=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@61d9a914}}],hash=-584750962]
+								Partitioning= hash32(Prod_AV_Id)
+								Measures provider= SimpleMeasuresProvider
+								Start time   (in ms)= [  9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,  9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9]
+								Elapsed time (in ms)= [251, 313, 235, 261, 146, 359, 191, 120, 226, 357, 365, 730, 394, 383, 277, 755, 46, 277, 368, 230, 311, 233, 300, 337, 220, 566, 310, 175, 249, 376, 324, 390]
+						}
+					}
+					Retrieval #11: PostProcessedAggregatesRetrieval
+						Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+						Measures= [map(CurrentPpHtPerAreaHidden;CurrentPpHtPerBaseHidden;FinalPcPer...__#__2__#__Bill]
+						Filter= Global query filter
+						Partitioning= hash32(Prod_AV_Id)
+						Measures provider= SimpleMeasuresProvider
+						Start time   (in ms)= [14180, 13203, 15720, 16363, 15569, 15964, 13735, 16365, 14917, 12791, 15145, 16079, 15426, 15698, 12736, 13343, 15630, 15817, 15155, 13262, 15651, 16717, 16188, 12604, 14753, 15194, 16593, 13951, 15703, 14763, 12584, 17248]
+						Elapsed time (in ms)= [    2,     3,     2,     2,     2,     3,    27,     2,     2,     7,     2,     2,     6,    16,     2,     3,     6,     1,     3,     1,     1,     1,     2,    68,     7,     1,     1,     3,     6,     2,     2,     1]
+					 which depends on {
+						Retrieval #12: NoOpPrimitiveAggregatesRetrieval
+							Simple placeholder (no work done in this retrieval)
+							Partitioning= hash32(Prod_AV_Id)
+							Start time   (in ms)= [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
+							Elapsed time (in ms)= [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+						Retrieval #13: PostProcessedAggregatesRetrieval
+							Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+							Measures= [map(CurrentPpHtPerAreaHidden;CurrentPpHtPerBaseHidden;FinalPcPer...__#__1__#__Bill]
+							Filter= Global query filter
+							Partitioning= hash32(Prod_AV_Id)
+							Measures provider= SimpleMeasuresProvider
+							Start time   (in ms)= [14177, 13200, 15713, 16360, 15564, 15958, 13708, 16362, 14914, 12783, 15138, 16070, 15424, 15682, 12734, 13340, 15624, 15815, 15151, 13261, 15649, 16716, 16184, 12600, 14746, 15188, 16591, 13946, 15701, 14760, 12582, 17245]
+							Elapsed time (in ms)= [    2,     3,     7,     3,     4,     5,    27,     2,     2,     7,     6,     9,     1,    15,     2,     3,     6,     2,     3,     1,     1,     1,     3,     3,     7,     6,     1,     4,     2,     2,     2,     3]
+						 which depends on {
+							Retrieval #12: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+							Retrieval #14: PostProcessedAggregatesRetrieval
+								Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+								Measures= [map(CurrentPpHtPerAreaHidden;CurrentPpHtPerBaseHidden;FinalPcPer...__#__Bill]
+								Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+								Partitioning= hash32(Prod_AV_Id)
+								Measures provider= SimpleMeasuresProvider
+								Start time   (in ms)= [14172, 13194, 15699, 16355, 15560, 15952, 13679, 16357, 14911, 12756, 15130, 16061, 15417, 15666, 12730, 13335, 15620, 15811, 15146, 13259, 15646, 16713, 16181, 12530, 14737, 15184, 16588, 13940, 15693, 14757, 12561, 17242]
+								Elapsed time (in ms)= [    4,     5,    14,     4,     4,     5,    29,     5,     3,    26,     8,     8,     7,    16,     3,     4,     3,     4,     5,     2,     2,     3,     3,    70,     9,     3,     3,     5,     7,     3,    21,     3]
+							 which depends on {
+								Retrieval #15: JITPrimitiveAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+									Measures= [contributors.COUNT, ITM_Quantity.SUM__#__1__#__Bill]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [   9,     9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,     9,    9,    9,    9,    9,    9]
+									Elapsed time (in ms)= [3403, 10469, 6141, 6750, 9103, 6732, 5238, 5577, 5671, 9042, 5641, 5720, 6494, 8805, 2569, 8174, 6014, 7283, 8755, 8675, 9143, 7874, 6577, 4976, 3597, 8729, 10327, 9338, 6256, 4745, 8475, 5416]
+								Retrieval #16: PostProcessedAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+									Measures= [CurrentPpHtPerAreaHidden]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [14078, 12603, 7166, 8150, 10713, 8687, 6463, 6937, 7768, 10106, 7053, 6876, 7525, 9926, 7900, 9931, 7118, 9397, 10014, 10738, 10342, 8839, 7788, 6038, 6812, 9746, 12693, 10375, 7325, 6855, 9413, 6894]
+									Elapsed time (in ms)= [    1,     7,    5,    4,     1,    2,    2,    1,    1,     5,    1,    7,    3,    2,    2,   70,    2,    2,     2,     0,     1,    2,    1,    2,    1,    1,     2,     2,    0,    1,    0,    3]
+								 which depends on {
+									Retrieval #15: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									Retrieval #17: PrimitiveAnalysisAggregationRetrieval
+										Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*],ITM_BaseId@ITM_BaseId:ITM_BaseId=[*]
+										Measures= [RecommendationToCurrentSellingPrice/AV_HT_PublicPrice_fromStore_...__#__1__#__Bill, RecommendationToCurrentSellingPrice/AV_TTC_PublicPrice_fromStore...__#__Bill, AV_FinalPrice_fromStore_Recommendation__#__Bill, contributors.COUNT, ITM_Quantity.SUM__#__1__#__Bill]
+										Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+										Partitioning= hash32(Prod_AV_Id)
+										Measures provider= SimpleMeasuresProvider
+										Start time   (in ms)= [12697, 10479, 6151, 6759, 9113, 6741, 5248, 5587, 5681, 9051, 5651, 5730, 6504, 8814, 6939, 8184, 6023, 7293, 8765, 8685, 9152, 7884, 6587, 4985, 4596, 8738, 10337, 9348, 6265, 4755, 8485, 5425]
+										Elapsed time (in ms)= [ 1381,  2124, 1014, 1390, 1600, 1945, 1214, 1349, 2086, 1054, 1402, 1146, 1020, 1111,  960, 1746, 1094, 2103, 1248, 2053, 1189,  955, 1201, 1052, 2216, 1007,  2355, 1027, 1059, 2100,  928, 1468]
+									 which depends on {
+										Retrieval #15: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									}
+								}
+								Retrieval #18: PostProcessedAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+									Measures= [FinalPcPerBaseHidden]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [12695, 13018, 15696, 16353, 15557, 15950, 13658, 16355, 14909, 12649, 15128, 16055, 15399, 15664, 12570, 13159, 15600, 15809, 15144, 13099, 15638, 16710, 16180, 12475, 14728, 15181, 16586, 13716, 15688, 14755, 12451, 17240]
+									Elapsed time (in ms)= [    1,     1,     2,     1,     3,     1,     2,     2,     1,     2,     2,     5,    17,     1,     1,     1,    20,     2,     1,     2,     7,     2,     1,     2,     2,     2,     2,     2,     3,     1,     1,     1]
+								 which depends on {
+									Retrieval #15: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									Retrieval #19: PrimitiveAnalysisAggregationRetrieval
+										Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseId@Base:Base_ITM_BaseId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*],ITM_BassinId@ITM_BassinId:ITM_BassinId=[*]
+										Measures= [RecommendationToCurrentSellingPrice/AV_TTC_PublicPrice_fromStore...__#__1__#__Bill, RecommendationToCurrentSellingPrice/AV_HT_PublicPrice_fromStore_...__#__Bill, AV_FinalPrice_fromStore_Recommendation__#__1__#__Bill, contributors.COUNT]
+										Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+										Partitioning= hash32(Prod_AV_Id)
+										Measures provider= SimpleMeasuresProvider
+										Start time   (in ms)= [11821, 12243, 14732, 15038, 14799, 14955, 12858, 15666, 13331, 11870, 14241, 15093, 14632, 14295, 11815, 12381, 14701, 14793, 14135, 12320, 14836, 16133, 15435, 11718, 13776, 13497, 15997, 11528, 14856, 13959, 11662, 16803]
+										Elapsed time (in ms)= [  737,   774,   950,  1314,   757,   995,   799,   688,  1577,   778,   873,   962,   767,  1344,   754,   778,   883,  1015,  1008,   779,   802,   577,   744,   757,   939,  1683,   588,  2176,   823,   794,   788,   437]
+									 which depends on {
+										Retrieval #20: JITPrimitiveAggregatesRetrieval
+											Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseId@Base:Base_ITM_BaseId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+											Measures= [contributors.COUNT]
+											Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+											Partitioning= hash32(Prod_AV_Id)
+											Measures provider= SimpleMeasuresProvider
+											Start time   (in ms)= [   41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41,    41]
+											Elapsed time (in ms)= [11780, 12202, 14691, 14997, 14757, 14914, 12817, 15625, 13289, 11828, 14200, 15051, 14591, 14253, 11774, 12340, 14659, 14752, 14094, 12278, 14794, 16092, 15393, 11677, 13734, 13456, 15955, 11486, 14815, 13917, 11620, 14186]
+									}
+								}
+								Retrieval #21: PostProcessedAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+									Measures= [FinalPcPerAreaHidden]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [14169, 12618, 7173, 8156, 10716, 8691, 6467, 6939, 7771, 10113, 7056, 6890, 7530, 9931, 7903, 10003, 7122, 9401, 10018, 10742, 10344, 8845, 7790, 6043, 6814, 9748, 12743, 10380, 7329, 6857, 9414, 6900]
+									Elapsed time (in ms)= [    2,     7,    2,    1,     1,    1,    1,    0,    1,     1,    1,    2,    2,    2,    0,     1,    1,    1,     1,     0,     0,    1,    1,    2,    0,    0,     7,     2,    0,    0,    0,    6]
+								 which depends on {
+									Retrieval #15: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									Retrieval #17: PrimitiveAnalysisAggregationRetrieval (see above for dependencies)
+								}
+								Retrieval #22: PostProcessedAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+									Measures= [CurrentPpHtPerBaseHidden]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [12944, 13193, 15682, 16353, 15557, 15950, 13677, 16355, 14909, 12750, 15115, 16056, 15412, 15640, 12728, 13334, 15585, 15809, 15144, 13258, 15638, 16710, 16180, 12495, 14730, 15181, 16586, 13938, 15691, 14753, 12559, 17240]
+									Elapsed time (in ms)= [    1,     1,     2,     2,     2,     1,     1,     2,     1,     6,     1,     1,     1,     1,     2,     1,     0,     2,     1,     1,     2,     0,     1,    34,     6,     3,     1,     2,     1,     2,     1,     1]
+								 which depends on {
+									Retrieval #15: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									Retrieval #19: PrimitiveAnalysisAggregationRetrieval (see above for dependencies)
+								}
+							}
+						}
+					}
+				}
+				Retrieval #23: PostProcessedAggregatesRetrieval
+					Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+					Measures= [MadhSuiviForecastLastMonthHidden]
+					Filter= Global query filter
+					Partitioning= hash32(Prod_AV_Id)
+					Measures provider= SimpleMeasuresProvider
+					Start time   (in ms)= [15387, 13854, 9766, 10459, 9162, 14018, 9671, 13365, 11274, 12595, 12626, 11295, 9891, 9415, 14147, 7838, 9934, 9858, 14677, 15267, 14615, 11905, 11298, 11651, 12142, 10721, 12754, 10556, 9935, 9749, 9581, 15156]
+					Elapsed time (in ms)= [  126,   148,  168,  1772,  216,   151,  110,   312,   126,   189,   315,   172,  150,  123,   146,  120,  164,  162,   160,   167,   165,   297,   351,   351,  1566,   166,    88,   165,  152,  140,  138,   480]
+				 which depends on {
+					Retrieval #6: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+					Retrieval #24: PostProcessedAggregatesRetrieval
+						Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+						Measures= [map(CurrentPpHtPerAreaHidden;CurrentPpHtPerBaseHidden;FinalPcPer...__#__2__#__Bill]
+						Filter= Global query filter
+						Partitioning= hash32(Prod_AV_Id)
+						Measures provider= SimpleMeasuresProvider
+						Start time   (in ms)= [15387, 13854, 9765, 10459, 9162, 14017, 9671, 13364, 11274, 12595, 12625, 11295, 9891, 9415, 14146, 7838, 9933, 9858, 14676, 15267, 14615, 11905, 11298, 11651, 12142, 10721, 12754, 10555, 9935, 9749, 9581, 15156]
+						Elapsed time (in ms)= [    0,     0,    0,     0,    0,     0,    0,     0,     0,     0,     0,     0,    0,    0,     0,    0,    0,    0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,    0,    0,    0,     0]
+					 which depends on {
+						Retrieval #25: NoOpPrimitiveAggregatesRetrieval
+							Simple placeholder (no work done in this retrieval)
+							Partitioning= hash32(Prod_AV_Id)
+							Start time   (in ms)= [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
+							Elapsed time (in ms)= [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+						Retrieval #26: PostProcessedAggregatesRetrieval
+							Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+							Measures= [map(CurrentPpHtPerAreaHidden;CurrentPpHtPerBaseHidden;FinalPcPer...__#__1__#__Bill]
+							Filter= Global query filter
+							Partitioning= hash32(Prod_AV_Id)
+							Measures provider= SimpleMeasuresProvider
+							Start time   (in ms)= [15386, 13853, 9765, 10459, 9162, 14017, 9671, 13364, 11274, 12595, 12625, 11295, 9891, 9415, 14146, 7838, 9933, 9857, 14676, 15267, 14615, 11904, 11297, 11650, 12141, 10721, 12754, 10525, 9935, 9749, 9580, 15156]
+							Elapsed time (in ms)= [    0,     0,    0,     0,    0,     0,    0,     0,     0,     0,     0,     0,    0,    0,     0,    0,    0,    0,     0,     0,     0,     0,     0,     0,     0,     0,     0,    30,    0,    0,    0,     0]
+						 which depends on {
+							Retrieval #25: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+							Retrieval #27: PostProcessedAggregatesRetrieval
+								Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+								Measures= [map(CurrentPpHtPerAreaHidden;CurrentPpHtPerBaseHidden;FinalPcPer...__#__Bill]
+								Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+								Partitioning= hash32(Prod_AV_Id)
+								Measures provider= SimpleMeasuresProvider
+								Start time   (in ms)= [15386, 13853, 9764, 10458, 9161, 14016, 9671, 13363, 11273, 12594, 12625, 11294, 9890, 9415, 14146, 7837, 9933, 9857, 14675, 15267, 14614, 11900, 11297, 11650, 12141, 10720, 12754, 10524, 9935, 9749, 9580, 15155]
+								Elapsed time (in ms)= [    0,     0,    0,     0,    0,     0,    0,     0,     0,     0,     0,     0,    0,    0,     0,    0,    0,    0,     0,     0,     0,     4,     0,     0,     0,     0,     0,     0,    0,    0,    0,     0]
+							 which depends on {
+								Retrieval #28: PostProcessedAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+									Measures= [FinalPcPerAreaHidden]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [8720, 13771, 6873, 9944, 8231, 13893, 9560, 13297, 11149, 12504, 12602, 11122, 5924, 7649, 14123, 6952, 6200, 9470, 14675, 15267, 12742, 11473, 10869, 11520, 12021, 10569, 11442, 10508, 9915, 9670, 9438, 15155]
+									Elapsed time (in ms)= [   0,     0,    0,    0,    0,     0,    0,     0,     0,     0,     0,     0,    0,    0,     0,    0,    0,    0,     0,     0,     0,     0,     0,     4,     0,     0,     0,     0,    0,    0,    0,     0]
+								 which depends on {
+									Retrieval #29: JITPrimitiveAggregatesRetrieval
+										Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+										Measures= [contributors.COUNT, ITM_Quantity.SUM__#__1__#__Bill]
+										Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+										Partitioning= hash32(Prod_AV_Id)
+										Measures provider= SimpleMeasuresProvider
+										Start time   (in ms)= [   9,     9,    9,    9,    9,     9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,     9,     9,     9,    9,    9,    9,    9,     9,    9,    9,    9,    9,    9]
+										Elapsed time (in ms)= [3461, 10011, 4804, 8965, 7271, 10219, 2579, 2996, 3908, 4414, 4442, 3965, 4910, 4599, 1288, 4728, 5154, 6233, 2859, 12189, 10763, 10409, 9796, 3771, 3109, 3068, 10343, 4097, 4184, 3097, 8405, 3630]
+									Retrieval #30: PrimitiveAnalysisAggregationRetrieval
+										Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2,ITM_BaseId@ITM_BaseId:ITM_BaseId=[*]
+										Measures= [RecommendationToCurrentSellingPrice/AV_HT_PublicPrice_fromStore_...__#__1__#__Bill, RecommendationToCurrentSellingPrice/AV_TTC_PublicPrice_fromStore...__#__Bill, AV_FinalPrice_fromStore_Recommendation__#__Bill, contributors.COUNT, ITM_Quantity.SUM__#__1__#__Bill]
+										Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+										Partitioning= hash32(Prod_AV_Id)
+										Measures provider= SimpleMeasuresProvider
+										Start time   (in ms)= [6815, 10021, 4813, 8974, 7280, 10229, 8721, 9782, 10098, 10092, 10079, 10042, 4919, 4608, 10020, 4738, 5163, 6243, 10005, 12199, 10772, 10419, 9805, 9945, 9856, 9471, 10352, 9436, 8919, 8451, 8415, 13893]
+										Elapsed time (in ms)= [1905,  3750, 2059,  969,  950,  3663,  839, 3515,  1051,  2411,  2522,  1079, 1004, 3040,  4102, 2214, 1036, 3227,  4670,  3067,  1969,  1053, 1063, 1575, 2164, 1098,  1089, 1071,  996, 1219, 1023,  1261]
+									 which depends on {
+										Retrieval #29: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									}
+								}
+								Retrieval #31: PostProcessedAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+									Measures= [CurrentPpHtPerAreaHidden]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [8721, 13852, 6873, 9945, 8231, 14016, 9670, 13363, 11273, 12594, 12625, 11294, 5925, 7650, 14146, 6953, 6200, 9471, 14675, 15266, 12742, 11474, 10869, 11649, 12141, 10720, 11445, 10524, 9934, 9748, 9438, 15155]
+									Elapsed time (in ms)= [   0,     0,    0,    0,    0,     0,    0,     0,     0,     0,     0,     0,    0,    0,     0,    0,    0,    0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,    0,    0,    0,     0]
+								 which depends on {
+									Retrieval #29: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									Retrieval #30: PrimitiveAnalysisAggregationRetrieval (see above for dependencies)
+								}
+								Retrieval #32: PostProcessedAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+									Measures= [FinalPcPerBaseHidden]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [15386, 10021, 9615, 10457, 9013, 10501, 8146, 8392, 10523, 8918, 9447, 10430, 9781, 9273, 8638, 7705, 9895, 9646, 7992, 12198, 14614, 11818, 10962, 8449, 7089, 10457, 12660, 8531, 9855, 8281, 8415, 13893]
+									Elapsed time (in ms)= [    0,     0,    0,     0,    0,     0,    0,    0,     0,    0,    0,     0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,     0,    0,    0,     0,     0,    0,    0,    0,    0,     0]
+								 which depends on {
+									Retrieval #29: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									Retrieval #33: PrimitiveAnalysisAggregationRetrieval
+										Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseId@Base:Base_ITM_BaseId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2,ITM_BassinId@ITM_BassinId:ITM_BassinId=[*]
+										Measures= [RecommendationToCurrentSellingPrice/AV_TTC_PublicPrice_fromStore...__#__1__#__Bill, RecommendationToCurrentSellingPrice/AV_HT_PublicPrice_fromStore_...__#__Bill, AV_FinalPrice_fromStore_Recommendation__#__1__#__Bill, contributors.COUNT]
+										Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+										Partitioning= hash32(Prod_AV_Id)
+										Measures provider= SimpleMeasuresProvider
+										Start time   (in ms)= [14614, 7324, 8842, 9685, 8282, 9737, 7364, 7636, 8205, 8157, 8674, 8243, 8976, 8465, 7904, 6399, 9111, 8857, 7271, 9232, 10280, 10305, 9742, 7791, 6285, 7477, 11806, 7772, 8286, 7506, 5958, 7850]
+										Elapsed time (in ms)= [  771, 1726,  773,  771,  731,  763,  781,  756, 2317,  761,  772, 2187,  805,  807,  734, 1305,  784,  789,  719,  767,  4334,  1459, 1220,  657,  804, 2980,   853,  758, 1569,  774, 1093,  672]
+									 which depends on {
+										Retrieval #34: JITPrimitiveAggregatesRetrieval
+											Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseId@Base:Base_ITM_BaseId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+											Measures= [contributors.COUNT]
+											Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+											Partitioning= hash32(Prod_AV_Id)
+											Measures provider= SimpleMeasuresProvider
+											Start time   (in ms)= [   9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,     9,     9,    9,    9,    9,    9,     9,    9,    9,    9,    9,    9]
+											Elapsed time (in ms)= [2428, 7315, 8832, 9676, 4014, 9728, 7355, 7627, 8195, 3408, 8665, 8233, 8966, 8455, 2661, 6389, 9101, 8847, 7261, 9222, 10270, 10295, 9733, 2738, 6275, 7467, 11796, 3065, 8276, 7496, 5948, 7840]
+									}
+								}
+								Retrieval #35: PostProcessedAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+									Measures= [CurrentPpHtPerBaseHidden]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [15386, 10431, 9764, 10458, 9161, 10501, 8147, 8393, 10524, 8919, 9447, 10431, 9890, 9415, 8639, 7837, 9933, 9856, 7992, 12231, 14614, 11900, 11297, 8450, 7090, 10458, 12753, 8532, 9856, 8281, 9580, 14145]
+									Elapsed time (in ms)= [    0,     0,    0,     0,    0,     0,    0,    0,     0,    0,    0,     0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,     0,    0,    0,     0,     0,    0,    0,    0,    0,     0]
+								 which depends on {
+									Retrieval #29: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									Retrieval #33: PrimitiveAnalysisAggregationRetrieval (see above for dependencies)
+								}
+								Retrieval #29: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+							}
+						}
+					}
+					Retrieval #8: PostProcessedAggregatesRetrieval (see above for dependencies)
+				}
+			}
+		}
+	}
+	Retrieval #36: PostProcessedResultsMerger
+		Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+		Measures= [TurnoverSuiviForecastHidden]
+		Filter= Global query filter
+		Partitioning= Constant partitioning
+		Measures provider= SimpleMeasuresProvider
+		Start time   (in ms)= [17341]
+		Elapsed time (in ms)= [    0]
+	 which depends on {
+		Retrieval #1: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+		Retrieval #37: PostProcessedAggregatesRetrieval
+			Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+			Measures= [TurnoverSuiviForecastHidden]
+			Filter= Global query filter
+			Partitioning= hash32(Prod_AV_Id)
+			Measures provider= SimpleMeasuresProvider
+			Start time   (in ms)= [15523, 13933, 15950, 16568, 15736, 16138, 13847, 16566, 15059, 12886, 15326, 16236, 15611, 16060, 14524, 13329, 15777, 16004, 15488, 15442, 15826, 16800, 16389, 12677, 14962, 15480, 16686, 13932, 16006, 14886, 12590, 17337]
+			Elapsed time (in ms)= [    4,     4,     8,     4,     4,     6,     5,     5,     3,     6,     4,     3,     4,     4,     4,     4,     3,     5,     6,     4,     5,     2,     4,     5,     5,    12,     3,     5,     4,     3,     4,     4]
+		 which depends on {
+			Retrieval #4: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+			Retrieval #38: PostProcessedAggregatesRetrieval
+				Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+				Measures= [mapToDouble(TurnoverSuiviForecastPrevYearHidden;TurnoverSuiviFor...__#__Bill]
+				Filter= Global query filter
+				Partitioning= hash32(Prod_AV_Id)
+				Measures provider= SimpleMeasuresProvider
+				Start time   (in ms)= [15516, 13924, 15934, 16558, 15727, 16128, 13837, 16555, 15052, 12874, 15318, 16229, 15601, 16051, 14515, 13320, 15770, 15994, 15467, 15434, 15816, 16795, 16378, 12667, 14953, 15463, 16680, 13922, 15997, 14880, 12582, 17331]
+				Elapsed time (in ms)= [    7,     8,    16,     9,     9,    10,    10,    11,     6,    11,     8,     7,    10,     9,     8,     9,     6,    10,    21,     7,     9,     4,    10,    10,     8,    16,     5,    10,     9,     6,     7,     5]
+			 which depends on {
+				Retrieval #6: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+				Retrieval #39: PostProcessedAggregatesRetrieval
+					Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+					Measures= [TurnoverSuiviForecastPrevYearHidden]
+					Filter= Global query filter
+					Partitioning= hash32(Prod_AV_Id)
+					Measures provider= SimpleMeasuresProvider
+					Start time   (in ms)= [14150, 13033, 15709, 16367, 15572, 15967, 13675, 16375, 14921, 12667, 15132, 16082, 15411, 15660, 12582, 13175, 15595, 15825, 15155, 13113, 15653, 16717, 16190, 12494, 14735, 15197, 16594, 13741, 15700, 14767, 12462, 17250]
+					Elapsed time (in ms)= [  519,   159,   224,   191,   154,   160,   161,   180,   131,   206,   185,   146,   190,   391,   145,   144,   174,   169,   311,   144,   163,    77,   188,   172,   217,   265,    85,   181,   297,   113,   119,    81]
+				 which depends on {
+					Retrieval #6: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+					Retrieval #40: PostProcessedAggregatesRetrieval
+						Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+						Measures= [map(CurrentPpTtcPerAreaHidden;CurrentPpTtcPerBaseHidden;ITM_Quan...__#__2__#__Bill]
+						Filter= Global query filter
+						Partitioning= hash32(Prod_AV_Id)
+						Measures provider= SimpleMeasuresProvider
+						Start time   (in ms)= [14149, 13030, 15702, 16364, 15569, 15964, 13672, 16370, 14919, 12664, 15126, 16079, 15409, 15658, 12580, 13172, 15593, 15821, 15153, 13110, 15650, 16716, 16188, 12491, 14728, 15194, 16593, 13737, 15697, 14764, 12460, 17248]
+						Elapsed time (in ms)= [    1,     3,     6,     3,     2,     3,     3,     4,     2,     3,     6,     2,     1,     2,     2,     2,     2,     3,     1,     2,     2,     1,     2,     3,     7,     2,     1,     3,     2,     2,     2,     1]
+					 which depends on {
+						Retrieval #12: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+						Retrieval #41: PostProcessedAggregatesRetrieval
+							Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+							Measures= [map(CurrentPpTtcPerAreaHidden;CurrentPpTtcPerBaseHidden;ITM_Quan...__#__1__#__Bill]
+							Filter= Global query filter
+							Partitioning= hash32(Prod_AV_Id)
+							Measures provider= SimpleMeasuresProvider
+							Start time   (in ms)= [14135, 13026, 15694, 16360, 15564, 15958, 13668, 16366, 14916, 12660, 15123, 16073, 15407, 15654, 12578, 13169, 15591, 15818, 15150, 13108, 15646, 16714, 16185, 12486, 14724, 15188, 16590, 13733, 15686, 14762, 12458, 17245]
+							Elapsed time (in ms)= [   13,     3,     8,     3,     5,     5,     3,     4,     2,     4,     2,     6,     2,     3,     2,     3,     2,     3,     2,     2,     3,     1,     2,     4,     3,     6,     2,     4,    11,     2,     2,     3]
+						 which depends on {
+							Retrieval #12: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+							Retrieval #42: PostProcessedAggregatesRetrieval
+								Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+								Measures= [map(CurrentPpTtcPerAreaHidden;CurrentPpTtcPerBaseHidden;ITM_Quan...__#__Bill]
+								Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+								Partitioning= hash32(Prod_AV_Id)
+								Measures provider= SimpleMeasuresProvider
+								Start time   (in ms)= [14132, 13020, 15687, 16355, 15559, 15952, 13662, 16359, 14912, 12653, 15118, 16059, 15402, 15649, 12573, 13163, 15586, 15813, 15146, 13103, 15641, 16711, 16181, 12480, 14718, 15183, 16587, 13726, 15682, 14757, 12454, 17242]
+								Elapsed time (in ms)= [    3,     5,     6,     5,     5,     5,     6,     7,     4,     6,     4,    13,     4,     5,     4,     5,     4,     5,     4,     4,     5,     2,     3,     6,     6,     4,     3,     7,     4,     4,     3,     3]
+							 which depends on {
+								Retrieval #15: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+								Retrieval #43: PostProcessedAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+									Measures= [CurrentPpTtcPerBaseHidden]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [13362, 13019, 15685, 16353, 15557, 15950, 13660, 16355, 14911, 12651, 15117, 16058, 15400, 15648, 12572, 13161, 15586, 15811, 15144, 13101, 15638, 16710, 16180, 12478, 14715, 15181, 16586, 13719, 15679, 14755, 12452, 17240]
+									Elapsed time (in ms)= [    1,     0,     2,     1,     2,     1,     1,     4,     1,     1,     1,     1,     2,     1,     1,     1,     0,     1,     1,     1,     2,     0,     1,     1,     2,     2,     1,     7,     2,     1,     1,     1]
+								 which depends on {
+									Retrieval #15: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									Retrieval #19: PrimitiveAnalysisAggregationRetrieval (see above for dependencies)
+								}
+								Retrieval #44: PostProcessedAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+									Measures= [CurrentPpTtcPerAreaHidden]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [14079, 12611, 7171, 8154, 10715, 8689, 6465, 6938, 7770, 10111, 7055, 6883, 7528, 9929, 7903, 10002, 7120, 9399, 10016, 10739, 10343, 8841, 7789, 6041, 6813, 9747, 12942, 10378, 7326, 6856, 9414, 6898]
+									Elapsed time (in ms)= [   53,     6,    2,    1,     1,    1,    1,    0,    1,     2,    1,    6,    2,    1,    0,     1,    1,    1,     1,     3,     0,    4,    0,    2,    0,    0,     2,     2,    3,    0,    0,    1]
+								 which depends on {
+									Retrieval #15: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									Retrieval #17: PrimitiveAnalysisAggregationRetrieval (see above for dependencies)
+								}
+							}
+						}
+					}
+					Retrieval #8: PostProcessedAggregatesRetrieval (see above for dependencies)
+				}
+				Retrieval #45: PostProcessedAggregatesRetrieval
+					Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+					Measures= [TurnoverSuiviForecastLastMonthHidden]
+					Filter= Global query filter
+					Partitioning= hash32(Prod_AV_Id)
+					Measures provider= SimpleMeasuresProvider
+					Start time   (in ms)= [15387, 13773, 9617, 10459, 9016, 14091, 9563, 13312, 11153, 12505, 12603, 11123, 9783, 9274, 14124, 7706, 9896, 9662, 14676, 15279, 14615, 11848, 10964, 11526, 12022, 10570, 12660, 10528, 9916, 9683, 9442, 15156]
+					Elapsed time (in ms)= [  128,   150,  146,  1681,  144,   503,  107,   322,   120,   103,   165,   170,  153,  162,   391,  131,  195,  323,   127,   155,   177,   296,   333,   373,   340,   149,    92,  1966,  162,  173,  137,   388]
+				 which depends on {
+					Retrieval #6: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+					Retrieval #46: PostProcessedAggregatesRetrieval
+						Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+						Measures= [map(CurrentPpTtcPerAreaHidden;CurrentPpTtcPerBaseHidden;ITM_Quan...__#__2__#__Bill]
+						Filter= Global query filter
+						Partitioning= hash32(Prod_AV_Id)
+						Measures provider= SimpleMeasuresProvider
+						Start time   (in ms)= [15387, 13773, 9617, 10459, 9016, 14090, 9561, 13298, 11153, 12504, 12603, 11123, 9783, 9274, 14124, 7706, 9896, 9661, 14676, 15278, 14615, 11820, 10964, 11526, 12022, 10570, 12660, 10528, 9916, 9671, 9442, 15156]
+						Elapsed time (in ms)= [    0,     0,    0,     0,    0,     0,    2,    14,     0,     0,     0,     0,    0,    0,     0,    0,    0,    0,     0,     0,     0,    28,     0,     0,     0,     0,     0,     0,    0,   11,    0,     0]
+					 which depends on {
+						Retrieval #25: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+						Retrieval #47: PostProcessedAggregatesRetrieval
+							Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+							Measures= [map(CurrentPpTtcPerAreaHidden;CurrentPpTtcPerBaseHidden;ITM_Quan...__#__1__#__Bill]
+							Filter= Global query filter
+							Partitioning= hash32(Prod_AV_Id)
+							Measures provider= SimpleMeasuresProvider
+							Start time   (in ms)= [15386, 13772, 9617, 10458, 9014, 14090, 9561, 13298, 11152, 12504, 12603, 11123, 9782, 9274, 14123, 7706, 9896, 9661, 14676, 15267, 14615, 11820, 10963, 11525, 12021, 10570, 12660, 10510, 9916, 9671, 9442, 15155]
+							Elapsed time (in ms)= [    0,     0,    0,     0,    1,     0,    0,     0,     0,     0,     0,     0,    0,    0,     0,    0,    0,    0,     0,    11,     0,     0,     0,     0,     0,     0,     0,    18,    0,    0,    0,     0]
+						 which depends on {
+							Retrieval #25: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+							Retrieval #48: PostProcessedAggregatesRetrieval
+								Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+								Measures= [map(CurrentPpTtcPerAreaHidden;CurrentPpTtcPerBaseHidden;ITM_Quan...__#__Bill]
+								Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+								Partitioning= hash32(Prod_AV_Id)
+								Measures provider= SimpleMeasuresProvider
+								Start time   (in ms)= [15386, 13772, 9616, 10458, 9014, 14090, 9560, 13298, 11150, 12504, 12602, 11122, 9782, 9273, 14123, 7705, 9895, 9660, 14675, 15267, 14614, 11818, 10963, 11525, 12021, 10569, 12660, 10509, 9915, 9671, 9441, 15155]
+								Elapsed time (in ms)= [    0,     0,    0,     0,    0,     0,    0,     0,     2,     0,     0,     0,    0,    0,     0,    0,    0,    0,     0,     0,     0,     1,     0,     0,     0,     0,     0,     0,    0,    0,    0,     0]
+							 which depends on {
+								Retrieval #49: PostProcessedAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+									Measures= [CurrentPpTtcPerBaseHidden]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [15386, 10431, 9616, 10458, 9013, 10501, 8147, 8393, 10523, 8918, 9447, 10431, 9782, 9273, 8639, 7705, 9895, 9646, 7992, 12362, 14614, 11818, 10963, 8449, 7090, 10458, 12660, 8531, 9856, 8281, 9439, 14146]
+									Elapsed time (in ms)= [    0,     0,    0,     0,    0,     0,    0,    0,     0,    0,    0,     0,    0,    0,    0,    0,    0,   14,    0,     0,     0,     0,     0,    1,    0,     0,     0,    1,    0,    0,    2,     0]
+								 which depends on {
+									Retrieval #29: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									Retrieval #33: PrimitiveAnalysisAggregationRetrieval (see above for dependencies)
+								}
+								Retrieval #50: PostProcessedAggregatesRetrieval
+									Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*],Year/Month/Week@Date:AV_Year\AV_Month=2020\2
+									Measures= [CurrentPpTtcPerAreaHidden]
+									Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+									Partitioning= hash32(Prod_AV_Id)
+									Measures provider= SimpleMeasuresProvider
+									Start time   (in ms)= [8721, 13772, 6873, 9944, 8231, 14090, 9560, 13297, 11149, 12504, 12602, 11122, 5924, 7650, 14123, 6952, 6200, 9471, 14675, 15266, 12742, 11473, 10869, 11524, 12021, 10569, 11442, 10509, 9915, 9671, 9438, 15155]
+									Elapsed time (in ms)= [   0,     0,    0,    0,    0,     0,    0,     0,     0,     0,     0,     0,    0,    0,     0,    0,    0,    0,     0,     0,     0,     0,     0,     0,     0,     0,     2,     0,    0,    0,    0,     0]
+								 which depends on {
+									Retrieval #29: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+									Retrieval #30: PrimitiveAnalysisAggregationRetrieval (see above for dependencies)
+								}
+								Retrieval #29: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+							}
+						}
+					}
+					Retrieval #8: PostProcessedAggregatesRetrieval (see above for dependencies)
+				}
+			}
+		}
+	}
+	Retrieval #51: PostProcessedAggregatesRetrieval
+		Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+		Measures= [MadhInDiscountPrevYearHidden]
+		Filter= Global query filter
+		Partitioning= Constant partitioning
+		Measures provider= SimpleMeasuresProvider
+		Start time   (in ms)= [7101]
+		Elapsed time (in ms)= [   0]
+	 which depends on {
+		Retrieval #1: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+		Retrieval #52: PostProcessedAggregatesRetrieval
+			Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+			Measures= [ExpandedCountForForecastHidden]
+			Filter= Global query filter
+			Partitioning= Constant partitioning
+			Measures provider= SimpleMeasuresProvider
+			Start time   (in ms)= [1792]
+			Elapsed time (in ms)= [   0]
+		 which depends on {
+			Retrieval #1: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+			Retrieval #53: PostProcessedAggregatesRetrieval
+				Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+				Measures= [IntermediateExpandedCountHiddenForFix]
+				Filter= Global query filter
+				Partitioning= Constant partitioning
+				Measures provider= SimpleMeasuresProvider
+				Start time   (in ms)= [1791]
+				Elapsed time (in ms)= [   0]
+			 which depends on {
+				Retrieval #1: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+				Retrieval #54: RangeSharingPrimitiveAggregatesRetrieval
+					Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77
+					Measures= [contributors.COUNT]
+					Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Date={Year/Month/Week=[[AllMember]]}}, subCubeTrees={Date={Year/Month/Week=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@61d9a914}}],hash=-584750962]
+					Partitioning= Constant partitioning
+					Measures provider= SimpleMeasuresProvider
+					Start time   (in ms)= [1783]
+					Elapsed time (in ms)= [   8]
+				 which depends on {
+					Retrieval #55: PrimitiveResultsMerger
+						Location= Prod_AV_Id@Product:Prod_AV_Id=[*],Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Area_ITM_BassinId@Area:Area_ITM_BassinId=[*],Base_ITM_BaseName@Base:Base_ITM_BaseName=[*]
+						Measures= [contributors.COUNT]
+						Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Date={Year/Month/Week=[[AllMember]]}}, subCubeTrees={Date={Year/Month/Week=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@61d9a914}}],hash=-584750962]
+						Partitioning= Constant partitioning
+						Measures provider= SimpleMeasuresProvider
+						Start time   (in ms)= [1763]
+						Elapsed time (in ms)= [  19]
+					 which depends on {
+						Retrieval #10: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+					}
+				}
+			}
+		}
+		Retrieval #56: PostProcessedAggregatesRetrieval
+			Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+			Measures= [MADH.filter([SingleCopperLevelCondition{condition=EQUAL - true; ...__#__Bill]
+			Filter= Global query filter
+			Partitioning= Constant partitioning
+			Measures provider= SimpleMeasuresProvider
+			Start time   (in ms)= [7101]
+			Elapsed time (in ms)= [   0]
+		 which depends on {
+			Retrieval #57: NoOpPrimitiveAggregatesRetrieval
+				Simple placeholder (no work done in this retrieval)
+				Partitioning= Constant partitioning
+				Start time   (in ms)= [9]
+				Elapsed time (in ms)= [0]
+			Retrieval #58: PrimitiveResultsMerger
+				Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+				Measures= [MADH]
+				Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - true]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@2fbc405d}}],hash=-694152033]
+				Partitioning= Constant partitioning
+				Measures provider= SimpleMeasuresProvider
+				Start time   (in ms)= [7100]
+				Elapsed time (in ms)= [   0]
+			 which depends on {
+				Retrieval #59: JITPrimitiveAggregatesRetrieval
+					Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+					Measures= [MADH]
+					Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - true]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@2fbc405d}}],hash=-694152033]
+					Partitioning= hash32(Prod_AV_Id)
+					Measures provider= SimpleMeasuresProvider
+					Start time   (in ms)= [   9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,   9,    9,    9,    9,    9,    9,    9,    9,    9,    9,   9,    9,    9,    9,    9,    9,    9,    9]
+					Elapsed time (in ms)= [3228, 4554, 4211, 3610, 6165, 3795, 2066, 1753, 3955, 4742, 4198, 3094, 4274, 2838, 497, 5209, 3600, 2825, 1744, 7090, 4141, 4296, 3608, 3779, 931, 3579, 4090, 4264, 3304, 3838, 4741, 2276]
+			}
+		}
+	}
+	Retrieval #60: PostProcessedAggregatesRetrieval
+		Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=[*]\[*]
+		Measures= [TurnoverNotInDiscountPrevYearHidden]
+		Filter= Global query filter
+		Partitioning= Constant partitioning
+		Measures provider= SimpleMeasuresProvider
+		Start time   (in ms)= [7707]
+		Elapsed time (in ms)= [   0]
+	 which depends on {
+		Retrieval #1: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+		Retrieval #52: PostProcessedAggregatesRetrieval (see above for dependencies)
+		Retrieval #61: PostProcessedAggregatesRetrieval
+			Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+			Measures= [CA.filter([SingleCopperLevelCondition{condition=EQUAL - false; l...__#__Bill]
+			Filter= Global query filter
+			Partitioning= Constant partitioning
+			Measures provider= SimpleMeasuresProvider
+			Start time   (in ms)= [7707]
+			Elapsed time (in ms)= [   0]
+		 which depends on {
+			Retrieval #57: NoOpPrimitiveAggregatesRetrieval (see above for dependencies)
+			Retrieval #62: PrimitiveResultsMerger
+				Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+				Measures= [CA]
+				Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+				Partitioning= Constant partitioning
+				Measures provider= SimpleMeasuresProvider
+				Start time   (in ms)= [7706]
+				Elapsed time (in ms)= [   0]
+			 which depends on {
+				Retrieval #63: JITPrimitiveAggregatesRetrieval
+					Location= Prod_ITM_CategoryId@Product:Prod_ITM_CategoryId=77,Year/Month/Week@Date:AV_Year\AV_Month=2019\[*]
+					Measures= [CA]
+					Filter= CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={Bills={ITM_InDiscount=[[null, EQUAL - false]]}}, subCubeTrees={Bills={ITM_InDiscount=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@52590420}}],hash=-694151943]
+					Partitioning= hash32(Prod_AV_Id)
+					Measures provider= SimpleMeasuresProvider
+					Start time   (in ms)= [   9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9,    9]
+					Elapsed time (in ms)= [7139, 3124, 4140, 2359, 2819, 5186, 1878, 4065, 1091, 3273, 2006, 1994, 1386, 1588, 2723, 3201, 1987, 1952, 1478, 2761, 4518, 4854, 1958, 3910, 7697, 1901, 2538, 4528, 1260, 1792, 3098, 1763]
+			}
+		}
+	}
+}
