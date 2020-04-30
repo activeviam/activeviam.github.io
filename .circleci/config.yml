@@ -1,0 +1,14 @@
+jobs:
+  do-nothing:
+    docker:
+      - image: bash:4.4.19
+    steps:
+      - run:
+          name: Nothing to do
+          command: "echo 'job done'"
+workflows:
+  version: 2
+  build:
+    jobs:
+      - do-nothing
+version: 2
