@@ -29,7 +29,6 @@ class App extends Component {
 
   passInput = async (mode, type, input) => {
     let json;
-    debugger;
     if (mode === "json") {
       json = JSON.parse(input).data;
     } else if (mode === "url") {

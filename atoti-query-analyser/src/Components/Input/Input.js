@@ -22,14 +22,12 @@ class Input extends Component {
   }
 
   saveInput = event => {
-    debugger;
     this.setState({ input: event.target.value });
   };
 
   checkRadio = type => () => this.setState({ type });
 
   submitJson = () => {
-    debugger;
     this.props.passInput("json", this.state.type, this.state.input);
   };
 

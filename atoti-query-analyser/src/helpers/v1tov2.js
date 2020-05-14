@@ -22,21 +22,21 @@ const parseProperty = (_line, match) => ({
   value: match[2]
 });
 
-const matchLine = (line, matchClauses) => {
+const matchLine = (state, line, matchClauses) => {
   const entries = matchClauses.entries();
   for (let entry = entries.next(); !entry.done; entry = entries.next()) {
     const [expr, action] = entry.value;
     const match = expr.exec(line);
     if (match !== null) {
-      action(match);
+      action(state, match, line);
       return;
     }
   }
 };
 
-const parseLine = (state, line) => {
-  const clauses = new Map();
-  clauses.set(RETRIEVAL, match => {
+
+const RETRIEVAL_CLAUSES = new Map([
+  [RETRIEVAL, (state, match, line) => {
     const retrieval = parseNewRetrieval(line, match);
     if (retrieval.ref) {
       state.current = state.retrievals[retrieval.id];
@@ -49,8 +49,8 @@ const parseLine = (state, line) => {
     if (parent) {
       parent.dependencies.push(parseInt(retrieval.id, 10));
     }
-  });
-  clauses.set(PARTITION_RESULT, match => {
+  }],
+  [PARTITION_RESULT, (state, match) => {
     // Before properties as results contain '=' and more
     const partitionId = match[1];
     const result = match[2];
@@ -59,14 +59,17 @@ const parseLine = (state, line) => {
       partitions.push(partitionId);
       state.current.properties[PARTITION_PROPERTY] = partitions;
     }
-  });
-  clauses.set(PROPERTY_EXPR, match => {
+  }],
+  [PROPERTY_EXPR, (state, match, line) => {
     const property = parseProperty(line, match);
     state.current.properties[property.key] = property.value;
-  });
-  clauses.set(DEPENDENCY_START, () => state.parents.push(state.current));
-  clauses.set(DEPENDENCY_END, () => state.parents.pop());
-  matchLine(line, clauses);
+  }],
+  [DEPENDENCY_START, (state) => state.parents.push(state.current)],
+  [DEPENDENCY_END, (state) => state.parents.pop()]
+]);
+
+const parseLine = (state, line) => {
+  matchLine(state, line, RETRIEVAL_CLAUSES);
 };
 
 const parseGeneral = (state, line) => {
@@ -131,7 +134,7 @@ const mapping = {
   "Planning:": parseTotalTime,
   "Execution:": parseExecution,
   "Query plan:": parseLine,
-  "Query Plan Summary:": () => {} // No-op
+  "Query Plan Summary:": () => { } // No-op
 };
 
 const parseDefault = (state, line) => {
