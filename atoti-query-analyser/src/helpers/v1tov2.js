@@ -137,6 +137,9 @@ const mapping = {
 const parseDefault = (state, line) => {
   const { last: lastLine } = state;
   state.last = line;
+  if (line in mapping) {
+    return false; // Marker line, we have to wait one turn
+  }
   if (line.includes("-----")) {
     state.phase = lastLine;
     return false;
