@@ -7,19 +7,34 @@
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+const findLastChar = input => {
+  for (let i = input.length - 1; i >= 0; i -= 1) {
+    if (/\S/.test(input[i])) {
+      return i;
+    }
+  }
+  throw new Error(`No char`);
+};
+
+const loadInputInForm = content => {
+  const lastIndex = findLastChar(content);
+  cy.get("#query-input")
+    .invoke("val", content.substring(0, lastIndex))
+    .trigger("change")
+    .type(content[lastIndex]);
+};
+
+Cypress.Commands.add("loadTextInput", (inputFile) => {
+  cy.fixture(`exports/${inputFile}`).then(input => {
+    loadInputInForm(input);
+  });
+});
+
+Cypress.Commands.add("loadJsonInput", (inputFile) => {
+  cy.fixture(`exports/${inputFile}`).then(input => {
+    // Setting the content in two steps, as using val(..) then triggering changes was sometimes failing
+    const content = JSON.stringify(input);
+    loadInputInForm(content);
+  });
+});
