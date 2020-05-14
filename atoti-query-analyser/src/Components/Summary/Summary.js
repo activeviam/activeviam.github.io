@@ -106,7 +106,7 @@ const QuerySummary = ({ querySummary: summary, planInfo: info }) => {
       <MeasureList measures={summary.measures} />
       <h4>Retrievals per type</h4>
       <ul>
-        {Object.entries(summary.retrievalCountByType).map(([type, count]) => (
+        {Object.entries(summary.retrievalsCountByType).map(([type, count]) => (
           <li key={type}>
             <b>{type}</b>: {count}
           </li>
@@ -154,9 +154,9 @@ const computeGlobalSummary = (queries, rootInfo, underlyingInfos) => {
     (acc, summary) => acc + summary.totalRetrievals,
     0
   );
-  const retrievalCountByType = summaries.reduce(
+  const retrievalsCountByType = summaries.reduce(
     (acc, summary) =>
-      Object.entries(summary.retrievalCountByType).reduce(
+      Object.entries(summary.retrievalsCountByType).reduce(
         (res, [type, count]) => {
           if (Reflect.has(res, type)) {
             res[type] += count;
@@ -187,7 +187,7 @@ const computeGlobalSummary = (queries, rootInfo, underlyingInfos) => {
   return {
     measures: [...measures],
     totalRetrievals,
-    retrievalCountByType,
+    retrievalsCountByType,
     partitioningCountByType
   };
 };

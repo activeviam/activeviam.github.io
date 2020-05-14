@@ -402,13 +402,13 @@ const createSummary = retrievals => {
     .uniq()
     .value();
 
-  const retrievalCountByType = _.countBy(retrievals, r => r.type);
+  const retrievalsCountByType = _.countBy(retrievals, r => r.type);
   const partitioningCountByType = _.countBy(retrievals, r => r.partitioning);
 
   return {
     measures,
     totalRetrievals: _.size(retrievals),
-    retrievalCountByType,
+    retrievalsCountByType,
     partitioningCountByType
   };
 };

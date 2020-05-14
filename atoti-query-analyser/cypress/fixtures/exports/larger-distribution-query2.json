@@ -2168,7 +2168,7 @@
           "AV_EstimatedMarginRate(Final)"
         ],
         "totalRetrievals": 32,
-        "retrievalCountByType": {
+        "retrievalsCountByType": {
           "DistributedAggregatesRetrieval": 4,
           "NoOpPrimitiveAggregatesRetrieval": 4,
           "DistributedPostProcessedRetrieval": 12,
@@ -3519,7 +3519,7 @@
           "AV_EstimatedMargin(Final)"
         ],
         "totalRetrievals": 36,
-        "retrievalCountByType": {
+        "retrievalsCountByType": {
           "JITPrimitiveAggregatesRetrieval": 1,
           "PostProcessedAggregatesRetrieval": 18,
           "NoOpPrimitiveAggregatesRetrieval": 4,
@@ -4249,7 +4249,7 @@
           "AV_SellingPriceToDate"
         ],
         "totalRetrievals": 8,
-        "retrievalCountByType": {
+        "retrievalsCountByType": {
           "DistributedAggregatesRetrieval": 1,
           "PostProcessedAggregatesRetrieval": 1,
           "NoOpPrimitiveAggregatesRetrieval": 2,
@@ -5147,7 +5147,7 @@
           "AV_CompetitorPriceToDate"
         ],
         "totalRetrievals": 12,
-        "retrievalCountByType": {
+        "retrievalsCountByType": {
           "JITPrimitiveAggregatesRetrieval": 2,
           "PostProcessedAggregatesRetrieval": 4,
           "NoOpPrimitiveAggregatesRetrieval": 3,
@@ -5697,7 +5697,7 @@
           "AV_SellingPriceToDate"
         ],
         "totalRetrievals": 6,
-        "retrievalCountByType": {
+        "retrievalsCountByType": {
           "JITPrimitiveAggregatesRetrieval": 1,
           "PostProcessedAggregatesRetrieval": 2,
           "NoOpPrimitiveAggregatesRetrieval": 1,
@@ -5916,7 +5916,7 @@
           "AV_Turnover"
         ],
         "totalRetrievals": 2,
-        "retrievalCountByType": {
+        "retrievalsCountByType": {
           "DistributedAggregatesRetrieval": 1,
           "PrimitiveResultsMerger": 1
         },
@@ -6028,7 +6028,7 @@
           "AV_Turnover"
         ],
         "totalRetrievals": 2,
-        "retrievalCountByType": {
+        "retrievalsCountByType": {
           "JITPrimitiveAggregatesRetrieval": 1,
           "PrimitiveResultsMerger": 1
         },

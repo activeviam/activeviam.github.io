@@ -10,12 +10,18 @@ const clearCache = () => {
   serverCache.clear();
 };
 
+const cleanseUrl = url => {
+  const match = /^(.+?)\/*$/.exec(url);
+  return match[1];
+};
+
 /**
  * Resolves the version of the API of the target server.
  * @param {String} url url of the target server
  * @returns {Promise<String>} promise with the URL to the pivot service
  */
-const resolveQueryEndpoint = url => {
+const resolveQueryEndpoint = userUrl => {
+  const url = cleanseUrl(userUrl);
   const cached = serverCache.get(url);
   if (cached) {
     return cached;
