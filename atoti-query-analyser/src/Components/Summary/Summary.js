@@ -4,6 +4,7 @@ import Tab from "react-bootstrap/Tab";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import FuzzySearch from "fuzzy-search";
+import _ from 'lodash';
 
 const timingLabels = new Map([
   ["executionContextCreationTime", "Context creation time"],
@@ -32,8 +33,6 @@ const Timings = info => {
     </p>
   );
 };
-
-const range = n => [...new Array(n).keys()];
 
 class MeasureList extends Component {
   constructor(props) {
@@ -64,9 +63,9 @@ class MeasureList extends Component {
   render() {
     const { filtered: measures } = this.state;
     const cols = 3;
-    const rows = parseInt(measures.length / cols, 10);
-    const cidx = range(cols);
-    const ridx = range(rows);
+    const rows = parseInt((measures.length - 0.1) / cols, 10) + 1;
+    const cidx = _.times(cols);
+    const ridx = _.times(rows);
     return (
       <>
         <Form>
