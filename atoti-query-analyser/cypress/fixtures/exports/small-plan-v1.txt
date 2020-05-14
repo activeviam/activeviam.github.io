@@ -1,0 +1,52 @@
+General information:
+-------------------
+	ActivePivot: ActivePivotVersion [id=MemoryCube, epoch=2]
+	RetrieverActivePivotAggregatesRetriever : Standard aggregates retriever on cube MemoryCube
+
+Context values:
+--------------
+	IAsOfEpoch: null
+	ICubeFilter: CubeFilter [underlying=SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={}, subCubeTrees={}],hash=1212813]
+	IQueryMonitoring: QueryMonitoring [printExecutionPlan=true, printExecutionTiming=false, queryPlanExport=false, queryPlanSummary=false]
+	ISubCubeProperties: null
+	IBranch: null
+
+Additional properties:
+---------------------
+	Continuous: false
+	Range sharing: 1000000
+	Missed prefetches: WARN
+	Cache: None
+
+Query plan:
+----------
+Retrieval #0: RangeSharingPrimitiveAggregatesRetrieval
+	Location= Import info@Import info:Import info=autoload-20:10:50
+	Measures= [ChunkSize.SUM]
+	Filter= Global query filter
+	Partitioning= Constant partitioning
+	Measures provider= SimpleMeasuresProvider
+ which depends on {
+	Retrieval #1: JITPrimitiveAggregatesRetrieval
+		Location= Type@Chunks:Type=[*],ParentID@Chunks:ParentID=[*],Import info@Import info:Import info=autoload-20:10:50
+		Measures= [ChunkSize.SUM]
+		Filter= Global query filter
+		Partitioning= Constant partitioning
+		Measures provider= SimpleMeasuresProvider
+}
+Retrieval #2: PrimitiveAnalysisAggregationRetrieval
+	Location= Import info@Import info:Import info=autoload-20:10:50,Field name@Field name:Field name=[*]
+	Measures= [ChunkSize.SUM]
+	Filter= Global query filter
+	Partitioning= Constant partitioning
+	Measures provider= SimpleMeasuresProvider
+ which depends on {
+	Retrieval #1: JITPrimitiveAggregatesRetrieval (see above for dependencies)
+}
+
+Query Plan Summary:
+-------------------
+	Total number of retrievals: 3
+	List of retrievals measures: [ChunkSize.SUM]
+	Retrievals count by type: {JITPrimitiveAggregatesRetrieval=1, PrimitiveAnalysisAggregationRetrieval=1, RangeSharingPrimitiveAggregatesRetrieval=1}
+	Partitioning count by type: {Constant partitioning=3}

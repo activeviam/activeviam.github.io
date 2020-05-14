@@ -25,3 +25,7 @@ yarn-error.log*
 # personal
 .idea
 online-tool
+
+# Cypress
+/cypress/screenshots/*
+/cypress/videos/*
