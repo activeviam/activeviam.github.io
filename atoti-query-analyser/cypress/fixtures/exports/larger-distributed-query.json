@@ -2949,7 +2949,7 @@
           "AV_SellingPriceToDate"
         ],
         "totalRetrievals": 33,
-        "retrievalCountByType": {
+        "retrievalsCountByType": {
           "DistributedAggregatesRetrieval": 6,
           "PostProcessedAggregatesRetrieval": 3,
           "NoOpPrimitiveAggregatesRetrieval": 3,
@@ -3477,7 +3477,7 @@
           "AV_CurrentPriceIndex(Final)"
         ],
         "totalRetrievals": 12,
-        "retrievalCountByType": {
+        "retrievalsCountByType": {
           "JITPrimitiveAggregatesRetrieval": 2,
           "PostProcessedAggregatesRetrieval": 4,
           "NoOpPrimitiveAggregatesRetrieval": 1,
@@ -5491,7 +5491,7 @@
           "AV_CompetitorPriceToDate"
         ],
         "totalRetrievals": 30,
-        "retrievalCountByType": {
+        "retrievalsCountByType": {
           "JITPrimitiveAggregatesRetrieval": 2,
           "PostProcessedAggregatesRetrieval": 10,
           "NoOpPrimitiveAggregatesRetrieval": 8,
@@ -5656,7 +5656,7 @@
           "AV_Turnover"
         ],
         "totalRetrievals": 3,
-        "retrievalCountByType": {
+        "retrievalsCountByType": {
           "JITPrimitiveAggregatesRetrieval": 1,
           "PrimitiveResultsMerger": 1,
           "RangeSharingPrimitiveAggregatesRetrieval": 1
@@ -6638,7 +6638,7 @@
           "AV_SellingPriceToDate"
         ],
         "totalRetrievals": 12,
-        "retrievalCountByType": {
+        "retrievalsCountByType": {
           "JITPrimitiveAggregatesRetrieval": 1,
           "PostProcessedAggregatesRetrieval": 4,
           "NoOpPrimitiveAggregatesRetrieval": 2,
