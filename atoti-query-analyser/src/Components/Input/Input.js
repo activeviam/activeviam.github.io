@@ -21,9 +21,15 @@ class Input extends Component {
     };
   }
 
+  saveInput = event => {
+    debugger;
+    this.setState({ input: event.target.value });
+  };
+
   checkRadio = type => () => this.setState({ type });
 
   submitJson = () => {
+    debugger;
     this.props.passInput("json", this.state.type, this.state.input);
   };
 
@@ -69,12 +75,12 @@ class Input extends Component {
 
     return (
       <Form className="mx-4 my-4">
-        <Form.Group controlId="exampleForm.ControlTextarea1">
+        <Form.Group controlId="query-input">
           <Form.Control
             as="textarea"
             rows="10"
             defaultValue={input}
-            onChange={event => this.setState({ input: event.target.value })}
+            onChange={this.saveInput}
           />
         </Form.Group>
         {urlMode ? (

@@ -1,0 +1,131 @@
+GetAggregatesQuery explanation
+==============================
+General information:
+-------------------
+	ActivePivot: ActivePivotVersion [id=pivot1, epoch=1]
+	RetrieverActivePivotAggregatesRetriever : Continuous aggregates retriever on cube pivot1
+Context values:
+--------------
+	IQueryMonitoring: QueryMonitoring [printExecutionPlan=true, printExecutionTiming=false]
+	ISubCubeProperties: SubCubeProperties [accessGranted=true, grantedMeasures=[], grantedMembers={dimension 2={dimension 2=[[AllMember, Chang], [AllMember, Jose], [AllMember, Ahmed], [AllMember, Edouard], [AllMember, Virgil], [AllMember, Ringo], [AllMember, Anatole], [AllMember, Paul], [AllMember, John]]}}, subCubeTrees={dimension 2={dimension 2=com.quartetfs.biz.pivot.context.subcube.impl.SubCubeTree@27e9a1a1}}]
+	IBranch: Branch [name=master]
+	IAsOfEpoch: null
+	ICubeFilter: null
+Additional properties:
+---------------------
+	Continuous: true
+	Range sharing: 10000
+	Missed prefetches: WARN
+	Cache: capacity=10, size=0
+Query plan:
+----------
+Retrieval #0: PostProcessedAggregatesRetrieval
+	Location= dimension 0@dimension 0:currency\desk=EUR\FXMM,dimension 1@dimension 1:year=2015
+	Measures= [ThrowingShiftPP.ShiftingPP]
+	Filter= Global query filter
+	Partitioning= Constant partitioning
+	Measures provider= SimpleMeasuresProvider
+ which depends on {
+	Retrieval #1: PrimitiveResultsMerger
+		Location= dimension 0@dimension 0:currency\desk=EUR\FXMM,dimension 1@dimension 1:year=2015
+		Measures= [contributors.COUNT]
+		Filter= Global query filter
+		Partitioning= Constant partitioning
+		Measures provider= SimpleMeasuresProvider
+	 which depends on {
+		Retrieval #2: BitmapPrimitiveAggregatesRetrieval
+			Location= dimension 0@dimension 0:currency\desk=EUR\FXMM,dimension 1@dimension 1:year=2015
+			Measures= [contributors.COUNT]
+			Filter= Global query filter
+			Partitioning= hash8(currency)
+			Measures provider= SimpleMeasuresProvider
+	}
+}
+Retrieval #3: PostProcessedAggregatesRetrieval
+	Location= dimension 0@dimension 0:currency\desk=EUR\FIXED INCOME,dimension 1@dimension 1:year=2015
+	Measures= [ThrowingShiftPP.ShiftingPP]
+	Filter= Global query filter
+	Partitioning= Constant partitioning
+	Measures provider= SimpleMeasuresProvider
+ which depends on {
+	Retrieval #4: PrimitiveResultsMerger
+		Location= dimension 0@dimension 0:currency\desk=EUR\FIXED INCOME,dimension 1@dimension 1:year=2015
+		Measures= [contributors.COUNT]
+		Filter= Global query filter
+		Partitioning= Constant partitioning
+		Measures provider= SimpleMeasuresProvider
+	 which depends on {
+		Retrieval #5: BitmapPrimitiveAggregatesRetrieval
+			Location= dimension 0@dimension 0:currency\desk=EUR\FIXED INCOME,dimension 1@dimension 1:year=2015
+			Measures= [contributors.COUNT]
+			Filter= Global query filter
+			Partitioning= hash8(currency)
+			Measures provider= SimpleMeasuresProvider
+	}
+}
+Retrieval #6: PostProcessedAggregatesRetrieval
+	Location= dimension 0@dimension 0:currency\desk=EUR\IRD,dimension 1@dimension 1:year=2015
+	Measures= [ThrowingShiftPP.ShiftingPP]
+	Filter= Global query filter
+	Partitioning= Constant partitioning
+	Measures provider= SimpleMeasuresProvider
+ which depends on {
+	Retrieval #7: PrimitiveResultsMerger
+		Location= dimension 0@dimension 0:currency\desk=EUR\IRD,dimension 1@dimension 1:year=2015
+		Measures= [contributors.COUNT]
+		Filter= Global query filter
+		Partitioning= Constant partitioning
+		Measures provider= SimpleMeasuresProvider
+	 which depends on {
+		Retrieval #8: BitmapPrimitiveAggregatesRetrieval
+			Location= dimension 0@dimension 0:currency\desk=EUR\IRD,dimension 1@dimension 1:year=2015
+			Measures= [contributors.COUNT]
+			Filter= Global query filter
+			Partitioning= hash8(currency)
+			Measures provider= SimpleMeasuresProvider
+	}
+}
+Retrieval #9: PostProcessedAggregatesRetrieval
+	Location= dimension 0@dimension 0:currency=EUR,dimension 1@dimension 1:year=2015
+	Measures= [ThrowingShiftPP.ShiftingPP]
+	Filter= Global query filter
+	Partitioning= Constant partitioning
+	Measures provider= SimpleMeasuresProvider
+ which depends on {
+	Retrieval #10: PrimitiveResultsMerger
+		Location= dimension 0@dimension 0:currency=EUR,dimension 1@dimension 1:year=2015
+		Measures= [contributors.COUNT]
+		Filter= Global query filter
+		Partitioning= Constant partitioning
+		Measures provider= SimpleMeasuresProvider
+	 which depends on {
+		Retrieval #11: BitmapPrimitiveAggregatesRetrieval
+			Location= dimension 0@dimension 0:currency=EUR,dimension 1@dimension 1:year=2015
+			Measures= [contributors.COUNT]
+			Filter= Global query filter
+			Partitioning= hash8(currency)
+			Measures provider= SimpleMeasuresProvider
+	}
+}
+Retrieval #12: PostProcessedAggregatesRetrieval
+	Location= dimension 0@dimension 0:currency\desk=EUR\CREDIT,dimension 1@dimension 1:year=2015
+	Measures= [ThrowingShiftPP.ShiftingPP]
+	Filter= Global query filter
+	Partitioning= Constant partitioning
+	Measures provider= SimpleMeasuresProvider
+ which depends on {
+	Retrieval #13: PrimitiveResultsMerger
+		Location= dimension 0@dimension 0:currency\desk=EUR\CREDIT,dimension 1@dimension 1:year=2015
+		Measures= [contributors.COUNT]
+		Filter= Global query filter
+		Partitioning= Constant partitioning
+		Measures provider= SimpleMeasuresProvider
+	 which depends on {
+		Retrieval #14: BitmapPrimitiveAggregatesRetrieval
+			Location= dimension 0@dimension 0:currency\desk=EUR\CREDIT,dimension 1@dimension 1:year=2015
+			Measures= [contributors.COUNT]
+			Filter= Global query filter
+			Partitioning= hash8(currency)
+			Measures provider= SimpleMeasuresProvider
+	}
+}
