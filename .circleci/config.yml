@@ -1,4 +1,7 @@
-version: 2
+version: 2.1
+
+orbs:
+  cypress: cypress-io/cypress@1
     
 jobs:
   atoti_query:
@@ -64,3 +67,18 @@ workflows:
           filters:
             branches:
               only: develop
+  check:
+    jobs:
+      - cypress/install:
+          build: 'yarn install'
+          working_directory: atoti-query-analyser
+          cache-key: >-
+            deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
+      - cypress/run:
+          requires:
+            - cypress/install
+          working_directory: atoti-query-analyser
+          cache-key: >-
+            deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
+          record: true
+          start: yarn start
