@@ -111,6 +111,7 @@ workflows:
           no-workspace: true
           install-command: yarn install
           start: yarn start
+          wait-on: "http://localhost:3000"
           filters:
             branches:
               ignore: 
