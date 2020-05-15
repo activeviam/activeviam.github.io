@@ -30,6 +30,33 @@ jobs:
       - persist_to_workspace:
           root: _build
           paths: atoti_query
+
+  # atoti_query_test:
+  #   docker:
+  #     - image: circleci/node:13.13
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys:
+  #           - deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
+  #     - run:
+  #         name: Install dependencies
+  #         command: yarn install --cwd atoti-query-analyser
+  #     - run:
+  #         name: Start application
+  #         command: yarn --cwd atoti-query-analyser start
+  #         background: true
+  #     - run:
+  #         name: Cypress tests
+  #         command: yarn --cwd
+  #     - store_artifacts:
+  #         path: atoti-query-analyser/cypress/screenshots
+  #         destination: cypress/screenshots
+  #     - store_artifacts:
+  #         path: atoti-query-analyser/cypress/videos
+  #         destination: cypress/videos
+
+
   deploy_to_master:
     docker:
       - image: circleci/node:13.13
@@ -61,6 +88,13 @@ workflows:
               ignore: 
                 - master
                 - /wip-*/
+      # - atoti_query:
+      #     filters:
+      #       branches:
+      #         ignore: 
+      #           - master
+      #           - develop
+      #           - /wip-*/
       - deploy_to_master:
           requires:
             - atoti_query
@@ -76,5 +110,10 @@ workflows:
           yarn: true
           no-workspace: true
           install-command: yarn install
-          record: true
           start: yarn start
+          filters:
+            branches:
+              ignore: 
+                - master
+                - develop
+                - /wip-*/
