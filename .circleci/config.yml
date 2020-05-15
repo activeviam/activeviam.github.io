@@ -69,18 +69,12 @@ workflows:
               only: develop
   check:
     jobs:
-      - cypress/install:
-          install-command: yarn install
-          build: 'echo "Nothing to do"'
+      - cypress/run:
           working_directory: atoti-query-analyser
           cache-key: >-
             deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
           yarn: true
-      - cypress/run:
-          requires:
-            - cypress/install
-          working_directory: atoti-query-analyser
-          cache-key: >-
-            deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
+          no-workspace: true
+          install-command: yarn install
           record: true
           start: yarn start
