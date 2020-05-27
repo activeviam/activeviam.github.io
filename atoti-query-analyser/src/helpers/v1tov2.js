@@ -257,7 +257,11 @@ const parseMeasures = measures => {
     ? []
     : measures.substring(1, measures.length - 1).split(/\s*,\s*/);
 };
-const parseTimings = props => {
+const parseTimings = (type, props) => {
+  if (type.includes("NoOp")) {
+    return {};
+  }
+  
   const starts = props["Start time   (in ms)"];
   const elapsed = props["Elapsed time (in ms)"];
   if (starts && elapsed) {
@@ -311,7 +315,7 @@ const createRetrievalMap = (v1Structure, filters) => {
       type: retrieval.type,
       location: parseLocation(retrieval.properties.Location),
       measures: parseMeasures(retrieval.properties.Measures),
-      timingInfo: parseTimings(retrieval.properties),
+      timingInfo: parseTimings(retrieval.type, retrieval.properties),
       partitioning: retrieval.properties.Partitioning,
       filterId: findFilter(filters, retrieval.properties.Filter),
       measureProvider: retrieval.properties["Measures provider"],
