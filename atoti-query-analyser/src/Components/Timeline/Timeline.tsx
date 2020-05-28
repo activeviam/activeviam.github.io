@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import Toast from "react-bootstrap/Toast";
+import { Card, Button } from 'antd';
+
 import "./Timeline.css";
 import Details from "../Details/Details";
 import * as labels from "../../helpers/labels";
@@ -200,25 +201,26 @@ class Timeline extends Component<TimelineProps, any> {
             {selection.map(key => {
               const [id, partition] = key;
               const retrieval = plan.retrievals[id];
+              const closeBtn = (<Button 
+                  shape="circle"
+                  size="small"
+                  onClick={() => this.closeBox(key)}>
+                  x
+                </Button>
+              );
               return (
-                <Toast
-                  key={retrieval.retrId}
+                <Card
+                  key={`${retrieval.retrId}-${partition}`}
                   className="entry"
-                  onClose={() => this.closeBox(key)}
+                  extra={closeBtn}
+                  title={`Retrieval #${id} ${labels.type(retrieval.type)}`}
                 >
-                  <Toast.Header>
-                    Retrieval&nbsp;
-                    <strong className="mr-auto">#{id}</strong>
-                    <small>{labels.type(retrieval.type)}</small>
-                  </Toast.Header>
-                  <Toast.Body className="body">
                     {Details({
                       ...retrieval,
                       ...retrieval.timingInfo,
                       partition
                     })}
-                  </Toast.Body>
-                </Toast>
+                </Card>
               );
             })}
           </div>
