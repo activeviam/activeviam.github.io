@@ -37,7 +37,7 @@ const removeNoOps = queries => {
     const { retrievals: retrievalsToFilter } = query;
 
     const selectedIds = retrievalsToFilter
-      .filter(retrieval => Object.entries(retrieval.timingInfo).length > 0)
+      .filter(retrieval => retrieval.timingInfo)
       .map(retrieval => retrieval.retrId);
     return new Set(selectedIds);
   });

@@ -29,7 +29,7 @@ const placeRetrieval = (retrievals, state, entry) => {
 
 const computeLines = ({ retrievals }) => {
   const result = retrievals
-    .filter(r => r.timingInfo.startTime && r.timingInfo.elapsedTime)
+    .filter(r => r.timingInfo)
     .map(r =>
       r.timingInfo.startTime.map((time, i) => ({
         id: r.retrId,
