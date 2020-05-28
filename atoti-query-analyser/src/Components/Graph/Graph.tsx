@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Drawer, Button } from 'antd';
+import {MenuOutlined} from '@ant-design/icons';
 import * as d3 from "d3";
 import _ from "lodash";
+
 import Link from "./Link";
 import Node from "./Node";
 import Menu from "./Menu";
@@ -230,7 +232,7 @@ class Graph extends Component<GraphType, GraphState> {
           className={`drawer-trigger ${this.state.showDrawer ? "open" : ""}`}
           onClick={this.toggleDrawer}
         >
-          Menu
+          <MenuOutlined />
         </div>
         <Drawer
           title="Tool menu"
