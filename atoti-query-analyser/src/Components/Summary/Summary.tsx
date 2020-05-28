@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import {Tabs} from 'antd';
-import Table from "react-bootstrap/Table";
-import Form from "react-bootstrap/Form";
+import { Tabs, Table, Input, Row, Col } from 'antd';
 import FuzzySearch from "fuzzy-search";
 import _ from 'lodash';
 
@@ -38,7 +36,7 @@ type ListProps = {
   measures: string[]
 }
 
-class MeasureList extends Component<ListProps, {filter: string, filtered: string[]}> {
+class MeasureList extends Component<ListProps, { filter: string, filtered: string[] }> {
   constructor(props) {
     super(props);
     const filtered = [...props.measures];
@@ -66,35 +64,43 @@ class MeasureList extends Component<ListProps, {filter: string, filtered: string
 
   render() {
     const { filtered: measures } = this.state;
-    const cols = 3;
-    const rows = Math.floor((measures.length - 0.1) / cols) + 1;
-    const cidx = _.times(cols);
-    const ridx = _.times(rows);
+    const columns = [
+      {
+        title: 'a',
+        dataIndex: 'a',
+        key: 'a'
+        // },
+        // {
+        //   title: 'b',
+        //   dataIndex: 'b',
+        //   key: 'b',
+        // },
+        // {
+        //   title: 'c',
+        //   dataIndex: 'c',
+        //   key: 'c',
+      }
+    ];
+
+    const data = _(measures).chunk(1)
+      .map(([a, b, c], idx) => ({
+        key: idx,
+        a,
+        // b,
+        // c
+      }))
+      .value();
+
     return (
       <>
-        <Form>
-          <Form.Group>
-            <Form.Control
-              type="text"
-              placeholder="Measure name"
-              defaultValue={this.state.filter}
-              onChange={this.changeFilter}
-            />
-          </Form.Group>
-        </Form>
-        <Table striped bordered hover size="sm">
-          <tbody>
-            {ridx.map(r => (
-              <tr key={r}>
-                {cidx.map(c => {
-                  const measure = measures[r + c * rows];
-                  const key = measure || `m${r + c * rows}`;
-                  return <td key={key}>{measure}</td>;
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <Input
+          placeholder="Measure name"
+          defaultValue={this.state.filter}
+          onChange={this.changeFilter}
+        />
+        <Table columns={columns} dataSource={data}
+          showHeader={false}
+          size="small" />
       </>
     );
   }
@@ -103,29 +109,43 @@ class MeasureList extends Component<ListProps, {filter: string, filtered: string
 const QuerySummary = ({ querySummary: summary, planInfo: info }) => {
   return (
     <div>
-      <p>Total number of retrievals: {summary.totalRetrievals}</p>
-      <h4>Query timings</h4>
-      {Timings(info)}
-      <h4>Measures</h4>
-      <MeasureList measures={summary.measures} />
-      <h4>Retrievals per type</h4>
-      <ul>
-        {Object.entries(summary.retrievalsCountByType).map(([type, count]) => (
-          <li key={type}>
-            <b>{type}</b>: {count}
-          </li>
-        ))}
-      </ul>
-      <h4>Retrievals per partitioning</h4>
-      <ul>
-        {Object.entries(summary.partitioningCountByType).map(
-          ([type, count]) => (
-            <li key={type}>
-              <b>{type}</b>: {count}
-            </li>
-          )
-        )}
-      </ul>
+      <Row>
+        <Col span={24}>
+          <p>Total number of retrievals: {summary.totalRetrievals}</p>
+          <h4>Query timings</h4>
+          {Timings(info)}
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <h4>Measures</h4>
+          <MeasureList measures={summary.measures} />
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <h4>Retrievals per type</h4>
+          <ul>
+            {Object.entries(summary.retrievalsCountByType).map(([type, count]) => (
+              <li key={type}>
+                <b>{type}</b>: {count}
+              </li>
+            ))}
+          </ul>
+        </Col>
+        <Col span={12}>
+          <h4>Retrievals per partitioning</h4>
+          <ul>
+            {Object.entries(summary.partitioningCountByType).map(
+              ([type, count]) => (
+                <li key={type}>
+                  <b>{type}</b>: {count}
+                </li>
+              )
+            )}
+          </ul>
+        </Col>
+      </Row>
     </div>
   );
 };
