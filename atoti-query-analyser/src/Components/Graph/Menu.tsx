@@ -1,102 +1,100 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import FuzzySearch from "fuzzy-search";
 import _ from "lodash";
+import {Button, Form, Input} from 'antd';
 
 import "./Menu.css";
 
-// class Menu extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       matchingMeasures: null
-//     };
-//   }
+type MenuProps = {
+  measures: string[],
+  selectedMeasures: string[],
+  onSelectedMeasure: (string) => void
+};
 
-//   searchMeasures = event => {
-//     const needle = event.target.value.trim();
-//     if (needle === "") {
-//       this.setState({ matchingMeasures: null });
-//     } else {
-//       const searcher = new FuzzySearch(
-//         _.difference(this.props.measures, this.props.selectedMeasures),
-//         undefined,
-//         {
-//           caseSensitive: false
-//         }
-//       );
-//       const result = searcher.search(needle);
-//       this.setState({ matchingMeasures: result });
-//     }
-//   };
+const searchMeasures = (props: MenuProps, value: string, setMatches) => {
+  const needle = value.trim();
+  if (needle === "") {
+    setMatches(null);
+  } else {
+    const searcher = new FuzzySearch(
+      _.difference(props.measures, props.selectedMeasures),
+      undefined,
+      {
+        caseSensitive: false
+      }
+    );
+    const result = searcher.search(needle);
+    setMatches(result);
+  }
+};
 
-//   renderMatchingMeasures() {
-//     if (this.state.matchingMeasures === null) return null;
+type MatchingMeasuresProps = {
+  matches: null | string[],
+  onSelectedMeasure: ({measure: string, selected: boolean}) => void
+}
+const MatchingMeasures: React.FC<MatchingMeasuresProps> = (props) => {
+  const { onSelectedMeasure, matches } = props;
+  if (matches === null) return null;
 
-//     const { onSelectedMeasure } = this.props;
-//     return (
-//       <ul className="measures">
-//         {this.state.matchingMeasures.map(measure => (
-//           <li key={measure}>
-//             <Button
-//               variant="outline-success"
-//               size="sm"
-//               onClick={() => onSelectedMeasure({ measure, selected: true })}
-//             >
-//               +
-//             </Button>{" "}
-//             {measure}
-//           </li>
-//         ))}
-//       </ul>
-//     );
-//   }
+  return (
+    <ul className="measures">
+      {matches.map(measure => (
+        <li key={measure}>
+          <Button
+            size="small"
+            onClick={() => onSelectedMeasure({ measure, selected: true })}
+          >
+            +
+          </Button>{" "}
+          {measure}
+        </li>
+      ))}
+    </ul>
+  );
+}
 
-//   render() {
-//     const { measures, selectedMeasures, onSelectedMeasure } = this.props;
-//     const listing =
-//       selectedMeasures.length > 0
-//         ? selectedMeasures.map(measure => (
-//             <li key={measure}>
-//               <Button
-//                 variant="outline-danger"
-//                 size="sm"
-//                 onClick={() => onSelectedMeasure({ measure, selected: false })}
-//               >
-//                 -
-//               </Button>{" "}
-//               {measure}
-//             </li>
-//           ))
-//         : [
-//             ...measures.slice(0, 5).map(m => (
-//               <li key={m} className="sample">
-//                 {m}
-//               </li>
-//             )),
-//             <li key="__sample__" className="sample">
-//               ...
-//             </li>
-//           ];
-//     return (
-//       <div className="contextual-menu">
-//         <h5>Selected measures</h5>
-//         <Form>
-//           <Form.Group>
-//             <Form.Control
-//               type="text"
-//               placeholder="Search a measure"
-//               defaultValue=""
-//               onChange={this.searchMeasures}
-//             />
-//           </Form.Group>
-//         </Form>
-//         {this.renderMatchingMeasures()}
-//         <ul className="measures">{listing}</ul>
-//       </div>
-//     );
-//   }
-// }
+const Menu: React.FC<MenuProps> = (props) => {
+  const [matchingMeasures, setMatchingMeasures] = useState<string[]>(null);
 
-const Menu = (props: any) => <div>Menu</div>;
+  const { measures, selectedMeasures, onSelectedMeasure } = props;
+  const listing =
+    selectedMeasures.length > 0
+      ? selectedMeasures.map(measure => (
+          <li key={measure}>
+            <Button
+              danger
+              size="small"
+              onClick={() => onSelectedMeasure({ measure, selected: false })}
+            >
+              -
+            </Button>{" "}
+            {measure}
+          </li>
+        ))
+      : [
+          ...measures.slice(0, 5).map(m => (
+            <li key={m} className="sample">
+              {m}
+            </li>
+          )),
+          <li key="__sample__" className="sample">
+            ...
+          </li>
+        ];
+  return (
+    <div className="contextual-menu">
+      <h5>Selected measures</h5>
+      <Input
+        placeholder="Search a measure"
+        defaultValue=""
+        onChange={e => searchMeasures(props, e.target.value, setMatchingMeasures)}
+      />
+      <MatchingMeasures 
+        matches={matchingMeasures} 
+        onSelectedMeasure={onSelectedMeasure} />
+      <ul className="measures">{listing}</ul>
+    </div>
+  );
+};
 
 export default Menu;

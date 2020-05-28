@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
-import Overlay from "react-bootstrap/Overlay";
+import { Drawer, Button } from 'antd';
 import * as d3 from "d3";
 import _ from "lodash";
-import { nodeType, linkType } from "../../types";
 import Link from "./Link";
 import Node from "./Node";
 import Menu from "./Menu";
@@ -21,7 +19,17 @@ type GraphType = {
   changeGraph: any
 }
 
-class Graph extends Component<GraphType, any> {
+type GraphState = {
+  showDrawer: boolean,
+  selectedMeasures: string[],
+  selectedRetrievals: null | number[],
+  nodes: any[],
+  links: any[],
+  selectedNodeId: null | number,
+  epoch: number
+}
+
+class Graph extends Component<GraphType, GraphState> {
   svgRef: any;
 
   constructor(props) {
@@ -73,13 +81,15 @@ class Graph extends Component<GraphType, any> {
 
   selectMeasure = ({ measure, selected }) => {
     this.setState(
-      ({ selectedMeasures }) => {
+      (prevState) => {
+        const {selectedMeasures} = prevState;
         if (selected) {
           if (selectedMeasures.includes(measure)) {
             return {};
           }
           const newSelection = [...selectedMeasures, measure];
           return {
+            ...prevState,
             selectedMeasures: newSelection,
             selectedRetrievals: filterByMeasures({
               retrievals: this.props.query.retrievals,
@@ -92,6 +102,7 @@ class Graph extends Component<GraphType, any> {
 
         const newSelection = selectedMeasures.filter(m => m !== measure);
         return {
+          ...prevState,
           selectedMeasures: newSelection,
           selectedRetrievals:
             newSelection.length === 0
@@ -221,19 +232,20 @@ class Graph extends Component<GraphType, any> {
         >
           Menu
         </div>
-        <Overlay
-          show={this.state.showDrawer}
-          placement="top-start"
-          target={this.svgRef.current}
+        <Drawer
+          title="Tool menu"
+          placement="left"
+          closable={false}
+          onClose={() => this.setState({showDrawer: false})}
+          visible={this.state.showDrawer}
+          width={300}
         >
-          <div className="drawer">
-            <Menu
-              measures={this.props.query.querySummary.measures}
-              selectedMeasures={this.state.selectedMeasures}
-              onSelectedMeasure={this.selectMeasure}
-            />
-          </div>
-        </Overlay>
+          <Menu
+            measures={this.props.query.querySummary.measures}
+            selectedMeasures={this.state.selectedMeasures}
+            onSelectedMeasure={this.selectMeasure}
+          />
+        </Drawer>
       </>
     );
     // FIXME remove the extra space taken by the button

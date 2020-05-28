@@ -197,7 +197,7 @@ class Timeline extends Component<TimelineProps, any> {
           onSelect={this.selectBox}
         />
         <div className="timeline-details">
-          <div style={{ width: selection.length * 355 }}>
+          <div style={{ width: selection.length * 571 }}>
             {selection.map(key => {
               const [id, partition] = key;
               const retrieval = plan.retrievals[id];
