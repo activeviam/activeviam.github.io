@@ -6,6 +6,7 @@
   width: 300px;
   height: calc(100vh - 80px);
   margin-top: 56px;
+  margin-right: 10px;
   border-right: 1px solid black;
   padding: 3px 5px;
   border-radius: 5px 0 5px 5px;

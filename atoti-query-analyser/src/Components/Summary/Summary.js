@@ -207,7 +207,7 @@ export default ({ queries, currentQuery, info }) => {
   const underlyingQueries = info.filter(inf => inf.parentId === rootId);
 
   let summary;
-  if (rootQuery.retrievals.length === 0) {
+  if (rootQuery.graph.getVertexCount() <= 1) {
     summary = "Empty query (MDX interal operation)";
   } else if (underlyingQueries.length > 0) {
     const fullInfo = {

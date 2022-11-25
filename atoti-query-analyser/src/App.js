@@ -4,12 +4,14 @@ import Graph from "./Components/Graph/Graph";
 import Timeline from "./Components/Timeline/Timeline";
 import Summary from "./Components/Summary/Summary";
 import NavBar from "./Components/NavBar/NavBar";
-import parseJson from "./helpers/jsonToD3Data";
-import { applySelection } from "./helpers/selection";
-import { parseV1, convertToV2 } from "./helpers/v1tov2";
-import queryServer from "./helpers/server";
+import parseJson from "./library/graphView/jsonToD3Data";
+import { applySelection } from "./library/graphProcessors/selection";
+import { parseV1, convertToV2 } from "./library/inputProcessors/v1tov2";
+import queryServer from "./library/inputProcessors/server";
 import goParentQueryButton from "./Components/NavBar/GoBackToParentQueryButton";
 import passChooser from "./Components/NavBar/PassChooser";
+import buildGraph from "./library/graphProcessors/buildGraph";
+import { setSimulatedTimingInfo } from "./library/graphProcessors/fillTimingInfo";
 
 class App extends Component {
   constructor(props) {
@@ -34,12 +36,37 @@ class App extends Component {
     } else if (mode === "url") {
       json = await queryServer(input);
     } else if (mode === "v1") {
-      const v1Structure = await parseV1(input, () => {});
+      const v1Structure = await parseV1(input, () => {
+      });
+      console.log(v1Structure);
       json = convertToV2(v1Structure);
     }
 
-    const selections = applySelection(json, type);
-    const data = parseJson(json, selections);
+    const queryPlan = json.map(query => {
+        const {
+          aggregateRetrievals,
+          retrievals,
+          externalRetrievals = [],
+          dependencies,
+          externalDependencies = [],
+          needFillTimingInfo,
+          ...rest
+        } = query;
+
+        const asMap = (object) => new Map(Object.entries(object).map(([k, v]) => ([Number.parseInt(k, 10), new Set(v)])));
+
+        const graph = buildGraph(aggregateRetrievals || retrievals, externalRetrievals, asMap(dependencies), asMap(externalDependencies));
+        if (needFillTimingInfo) {
+          setSimulatedTimingInfo(graph);
+        }
+        return { graph, ...rest };
+      }
+    );
+
+    console.log(queryPlan);
+
+    const selections = applySelection(queryPlan, type);
+    const data = parseJson(queryPlan, selections);
 
     this.setState({
       selections,
@@ -48,7 +75,7 @@ class App extends Component {
         .filter(query => query.pass === 0)
         .find(query => query.parentId === null).id,
       router: "summary",
-      json,
+      json: queryPlan,
       lastInput: input
     });
   };

@@ -20,7 +20,7 @@ export const linkType = shape({
 
 export const detailsType = shape({
   type: string.isRequired,
-  retrId: number.isRequired,
+  retrievalId: number.isRequired,
   measureProvider: string.isRequired,
   measures: arrayOf(string).isRequired,
   partitioning: string.isRequired

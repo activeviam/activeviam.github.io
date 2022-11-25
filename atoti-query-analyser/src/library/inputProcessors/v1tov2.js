@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-const RETRIEVAL = /Retrieval #(\d+): ([\w_]+)( \(see)?/;
+const RETRIEVAL = /(\w*Retrieval) #(\d+): ([\w_]+)( \(see)?/;
 const PROPERTY_EXPR = /\s*([\w\-_ ()]+)= (.+)\s*/;
 const PIVOT_EXPR = /\s*(\w+)\s+\[id=(.+?), epoch=(\d+)]/;
 const PLAN_EXPR = /\s*([\w\-_ ()]+?)\s*: (.+)\s*/;
@@ -9,14 +9,24 @@ const DEPENDENCY_START = /which depends on \{/;
 const DEPENDENCY_END = /^\s*}\s*$/;
 const PARTITION_PROPERTY = "Contributed partitions";
 const last = array => (array.length > 0 ? array[array.length - 1] : undefined);
-const parseNewRetrieval = (_line, match) => ({
-  id: parseInt(match[1], 10),
-  type: match[2],
-  ref: match[3] !== undefined,
-  dependencies: [],
-  parents: [],
-  properties: {}
-});
+
+const parseNewRetrieval = (state, _line, match) => {
+  const sourceId = `${match[1]}#${match[2]}`;
+  if (!state.retrievalIndex.has(sourceId)) {
+    state.retrievalIndex.set(sourceId, state.retrievalIndex.size);
+  }
+  const id = state.retrievalIndex.get(sourceId);
+
+  return {
+    id,
+    sourceId,
+    type: match[3],
+    ref: match[4] !== undefined,
+    dependencies: [],
+    parents: [],
+    properties: {}
+  };
+};
 const parseProperty = (_line, match) => ({
   key: match[1],
   value: match[2]
@@ -34,10 +44,9 @@ const matchLine = (state, line, matchClauses) => {
   }
 };
 
-
 const RETRIEVAL_CLAUSES = new Map([
   [RETRIEVAL, (state, match, line) => {
-    const retrieval = parseNewRetrieval(line, match);
+    const retrieval = parseNewRetrieval(state, line, match);
     if (retrieval.ref) {
       state.current = state.retrievals[retrieval.id];
     } else {
@@ -47,7 +56,7 @@ const RETRIEVAL_CLAUSES = new Map([
 
     const parent = last(state.parents);
     if (parent) {
-      parent.dependencies.push(parseInt(retrieval.id, 10));
+      parent.dependencies.push(retrieval.id);
     }
   }],
   [PARTITION_RESULT, (state, match) => {
@@ -134,7 +143,8 @@ const mapping = {
   "Planning:": parseTotalTime,
   "Execution:": parseExecution,
   "Query plan:": parseLine,
-  "Query Plan Summary:": () => { } // No-op
+  "Query Plan Summary:": () => {
+  } // No-op
 };
 
 const parseDefault = (state, line) => {
@@ -175,6 +185,7 @@ const parseV1 = (input, tickCallback) => {
       },
       retrievals: {},
       current: null,
+      retrievalIndex: new Map(),
       parents: []
     };
     accumulator.parents.push(accumulator.root);
@@ -207,6 +218,15 @@ const parseV1 = (input, tickCallback) => {
   });
 };
 
+const parseSourceId = retrieval => {
+  const [kind, retrievalIdStr, ...tail] = retrieval.sourceId.split("#");
+  const retrievalId = Number.parseInt(retrievalIdStr);
+  if (tail.length !== 0 || !Number.isInteger(retrievalId)) {
+    throw new Error(`Bad source id: ${retrieval.sourceId}`);
+  }
+  return { kind, retrievalId };
+};
+
 const computeIfAbsent = (dic, key, value) => {
   if (!(key in dic)) {
     dic[key] = value;
@@ -214,20 +234,41 @@ const computeIfAbsent = (dic, key, value) => {
   return dic[key];
 };
 
-const createDependencyList = v1Structure => {
-  return Object.values(v1Structure.retrievals).reduce(
-    (acc, retrieval) => {
-      if (retrieval.parents.length === 0) {
-        computeIfAbsent(acc, "-1", []).push(retrieval.id);
-      } else {
-        retrieval.parents.forEach(rId =>
-          computeIfAbsent(acc, rId, []).push(retrieval.id)
-        );
-      }
-      return acc;
-    },
-    { "-1": [] }
-  );
+const createDependencyList = (v1Structure) => {
+  const result = {
+    dependencies: {},
+    externalDependencies: {}
+  };
+
+  Object.values(v1Structure.retrievals).forEach(retrieval => {
+    const { kind, retrievalId } = parseSourceId(retrieval);
+
+    let mapToInsert;
+    switch (kind) {
+      case "Retrieval":
+        mapToInsert = result.dependencies;
+        break;
+      case "ExternalRetrieval":
+        mapToInsert = result.externalDependencies;
+        break;
+      default:
+        throw new Error(`Bad retrieval kind: ${kind}`);
+    }
+
+    if (retrieval.parents.length === 0) {
+      computeIfAbsent(mapToInsert, "-1", []).push(retrievalId);
+    } else {
+      retrieval.parents.forEach(parentId => {
+        const parentInfo = parseSourceId(v1Structure.retrievals[parentId]);
+        if (parentInfo.kind !== "Retrieval") {
+          throw new Error("Only aggregate retrievals can have dependencies");
+        }
+        computeIfAbsent(mapToInsert, parentInfo.retrievalId, []).push(retrievalId);
+      });
+    }
+  });
+
+  return result;
 };
 
 const DIMENSION_EXPR = /([\w\s]+)@([\w\s]+):([\w\s\\]+)=(.+)/;
@@ -252,16 +293,30 @@ const parseLocation = location => {
     };
   });
 };
+
+const parseFields = fields => {
+  const regex = /`(([^`]|`\/`)*)`/gm;
+
+  let match;
+  let result = [];
+  while ((match = regex.exec(fields)) !== null) {
+    result.push(match[1].split("`/`").join("/"));
+  }
+
+  return result;
+};
+
 const parseMeasures = measures => {
   return measures === undefined
     ? []
     : measures.substring(1, measures.length - 1).split(/\s*,\s*/);
 };
+
 const parseTimings = (type, props) => {
   if (type.includes("NoOp")) {
     return {};
   }
-  
+
   const starts = props["Start time   (in ms)"];
   const elapsed = props["Elapsed time (in ms)"];
   if (starts && elapsed) {
@@ -308,131 +363,111 @@ const findFilter = (filters, needle) => {
   return entries[i][0];
 };
 
+const mapAggregateRetrieval = (retrieval, filters) => {
+  return {
+    retrievalId: parseSourceId(retrieval).retrievalId,
+    type: retrieval.type,
+    location: parseLocation(retrieval.properties.Location),
+    measures: parseMeasures(retrieval.properties.Measures),
+    timingInfo: parseTimings(retrieval.type, retrieval.properties),
+    partitioning: retrieval.properties.Partitioning,
+    filterId: findFilter(filters, retrieval.properties.Filter),
+    measureProvider: retrieval.properties["Measures provider"],
+    underlyingDataNodes: [], // Not supported in previous versions
+    resultSizes: []
+  };
+};
+
+const mapExternalRetrieval = (retrieval, filters) => {
+  return {
+    retrievalId: parseSourceId(retrieval).retrievalId,
+    type: retrieval.type, // This is not provided in V2 json, but we fix it in buildGraph.ts
+    store: retrieval.properties.store,
+    fields : parseFields(retrieval.properties.fields),
+    joinedMeasure: parseMeasures(retrieval.properties.JoinedMeasures),
+    condition: retrieval.properties.Condition,
+    resultSizes: [],
+    timingInfo: parseTimings("", retrieval.properties),
+  };
+};
+
 const createRetrievalMap = (v1Structure, filters) => {
-  return Object.values(v1Structure.retrievals).map(retrieval => {
-    return {
-      retrId: parseInt(retrieval.id, 10),
-      type: retrieval.type,
-      location: parseLocation(retrieval.properties.Location),
-      measures: parseMeasures(retrieval.properties.Measures),
-      timingInfo: parseTimings(retrieval.type, retrieval.properties),
-      partitioning: retrieval.properties.Partitioning,
-      filterId: findFilter(filters, retrieval.properties.Filter),
-      measureProvider: retrieval.properties["Measures provider"],
-      underlyingDataNodes: [] // Not supported in previous versions
-    };
-  });
-};
+  const result = {
+    aggregateRetrievals: [],
+    externalRetrievals: []
+  };
 
-const reverseDependencies = dependencies => {
-  return Object.keys(dependencies)
-    .map(i => parseInt(i, 10))
-    .reduce((acc, parent) => {
-      return dependencies[parent]
-        .map(i => parseInt(i, 10))
-        .reduce((a, id) => {
-          let set = a.get(id);
-          if (!set) {
-            set = new Set();
-            a.set(id, set);
-          }
-          set.add(parent);
-          return a;
-        }, acc);
-    }, new Map());
-};
+  Object
+    .values(v1Structure.retrievals)
+    .sort((lhs, rhs) => lhs.sourceId.localeCompare(rhs.sourceId))
+    .forEach(retrieval => {
+      const { kind, retrievalId } = parseSourceId(retrieval);
 
-const computeFakeStart = (id, retrievals, dependencies) => {
-  const start = Math.max(
-    ...dependencies[id]
-      .map(i => retrievals.get(parseInt(i, 10)).timingInfo)
-      .map(({ startTime }) => (startTime ? startTime[0] : 0))
-  );
-  return start + 10;
-};
+      let arrayToInsert;
+      let mappedRetrieval;
 
-const setSimulatedTimeInfo = (retrievals, dependencies) => {
-  const dependents = reverseDependencies(dependencies);
-  const retrMap = retrievals.reduce((acc, r) => {
-    acc.set(r.retrId, r);
-    return acc;
-  }, new Map());
-
-  // Set a default duration
-  retrievals.forEach(r => {
-    if (!r.type.includes("NoOp")) {
-      r.timingInfo.elapsedTime = [10];
-      const deps = dependencies[r.retrId];
-      r.timingInfo.startTime = [deps ? -deps.length : 0];
-    }
-  });
-
-  const queue = retrievals
-    .filter(r => r.type.includes("NoOp") || r.timingInfo.startTime[0] === 0)
-    .map(r => r.retrId);
-  let safeCount = 0;
-  while (queue.length > 0) {
-    if (safeCount > 5000) {
-      console.log("oops. Too much");
-      return;
-    }
-    safeCount += 1;
-
-    const id = queue.shift();
-    dependents.get(id).forEach(did => {
-      const parent = retrMap.get(did);
-      if (did !== -1 && ++parent.timingInfo.startTime[0] === 0) {
-        parent.timingInfo.startTime[0] = computeFakeStart(
-          did,
-          retrMap,
-          dependencies
-        );
-        queue.push(did);
+      switch (kind) {
+        case "Retrieval":
+          arrayToInsert = result.aggregateRetrievals;
+          mappedRetrieval = mapAggregateRetrieval(retrieval, filters);
+          break;
+        case "ExternalRetrieval":
+          arrayToInsert = result.externalRetrievals;
+          mappedRetrieval = mapExternalRetrieval(retrieval, filters);
+          break;
+        default:
+          throw new Error(`Unexpected retrieval kind: ${kind}`);
       }
-    });
-  }
 
-  const incomplete = retrievals
-    .filter(r => r.timingInfo.startTime && r.timingInfo.startTime[0] < 0)
-    .map(r => r.retrId);
-  if (incomplete.length > 0) {
-    throw new Error(`Remaining retrievals without timings: ${incomplete}`);
-  }
+      if (retrievalId !== arrayToInsert.length) {
+        throw new Error(`Cannot insert ${retrieval.sourceId} because ${kind}#${retrievalId - 1} not found`);
+      }
+
+      arrayToInsert.push(mappedRetrieval);
+    });
+
+  return result;
 };
 
-const createSummary = retrievals => {
-  const measures = _(retrievals)
+const createSummary = (aggregateRetrievals, externalRetrievals) => {
+  // TODO Add externalRetrievals info
+  const measures = _(aggregateRetrievals)
     .flatMap(r => r.measures)
     .uniq()
     .value();
 
-  const retrievalsCountByType = _.countBy(retrievals, r => r.type);
-  const partitioningCountByType = _.countBy(retrievals, r => r.partitioning);
+  const retrievalsCountByType = _.countBy(aggregateRetrievals, r => r.type);
+  retrievalsCountByType["ExternalDatabaseRetrieval"] = _.size(externalRetrievals);
+  const partitioningCountByType = _.countBy(aggregateRetrievals, r => r.partitioning);
 
   return {
     measures,
-    totalRetrievals: _.size(retrievals),
+    totalRetrievals: _.size(aggregateRetrievals) + _.size(externalRetrievals),
     retrievalsCountByType,
-    partitioningCountByType
+    partitioningCountByType,
+    resultSizeByPartitioning: {}, // ???
+    partialProviders: [], // ???
+    totalExternalResultSize: 0, // ???
   };
 };
 
 const convertToV2 = v1Structure => {
-  const dependencies = createDependencyList(v1Structure);
   const queryFilters = createFilterMap(v1Structure);
-  const retrievals = createRetrievalMap(v1Structure, queryFilters);
-  if (retrievals[0].timingInfo.startTime === undefined) {
-    setSimulatedTimeInfo(retrievals, dependencies);
-  }
-  const querySummary = createSummary(retrievals);
+  const { aggregateRetrievals, externalRetrievals } = createRetrievalMap(v1Structure, queryFilters);
+  const { dependencies, externalDependencies } = createDependencyList(v1Structure);
+  const needFillTimingInfo = aggregateRetrievals.find(r => r.retrievalId === 0).timingInfo.startTime === undefined;
+  const querySummary = createSummary(aggregateRetrievals, externalRetrievals);
 
   return [
     {
       planInfo: v1Structure.info,
-      dependencies,
       queryFilters,
-      retrievals,
-      querySummary
+      aggregateRetrievals,
+      externalRetrievals,
+      querySummary,
+      dependencies,
+      externalDependencies,
+      needFillTimingInfo
     }
   ];
 };

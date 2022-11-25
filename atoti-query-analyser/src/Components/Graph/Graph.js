@@ -8,9 +8,9 @@ import { nodeType, linkType } from "../../types";
 import Link from "./Link";
 import Node from "./Node";
 import Menu from "./Menu";
-import { updateGraph } from "../../helpers/graphHelpers";
-import { buildD3 } from "../../helpers/jsonToD3Data";
-import { filterByMeasures } from "../../helpers/selection";
+import { updateGraph } from "../../library/graphView/graphHelpers";
+import { buildD3 } from "../../library/graphView/jsonToD3Data";
+import { filterByMeasures } from "../../library/graphProcessors/selection";
 import "./Drawer.css";
 
 class Graph extends Component {
@@ -27,6 +27,7 @@ class Graph extends Component {
       epoch: 0
     };
     this.svgRef = React.createRef();
+    this.triggerRef = React.createRef();
   }
 
   componentDidMount() {
@@ -72,8 +73,7 @@ class Graph extends Component {
           return {
             selectedMeasures: newSelection,
             selectedRetrievals: filterByMeasures({
-              retrievals: this.props.query.retrievals,
-              dependencies: this.props.query.dependencies,
+              graph: this.props.query.graph,
               measures: newSelection,
               selection: this.props.selection
             })
@@ -87,11 +87,10 @@ class Graph extends Component {
             newSelection.length === 0
               ? null
               : filterByMeasures({
-                  retrievals: this.props.query.retrievals,
-                  dependencies: this.props.query.dependencies,
-                  measures: newSelection,
-                  selection: this.props.selection
-                })
+                graph: this.props.query.graph,
+                measures: newSelection,
+                selection: this.props.selection
+              })
         };
       },
       () => this.generateGraph()
@@ -105,16 +104,24 @@ class Graph extends Component {
 
     const { nodes, links } = buildD3(query, selectedRetrievals || selection);
 
+    console.log(nodes, links);
+
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
       .attr("width", window.innerWidth)
       .attr("height", window.innerHeight - 56);
 
     const clusters = _(nodes).map(n => n.clusterId);
+    console.log(clusters);
     const minC = clusters.min();
     const maxC = clusters.max();
     const viewCenter = window.innerWidth / 2;
-    const clusterCenter = parseInt((maxC - minC + 1) / 2 + minC - 0.5, 10); // Floor value
+    const clusterCenter = (minC + maxC) / 2;
+
+    const desiredXPos = (node) => {
+      return viewCenter + ((node.clusterId - clusterCenter) * window.innerWidth) / 2;
+    };
+
     const force = d3
       .forceSimulation(nodes)
       .force("charge", d3.forceManyBody().strength(-1000))
@@ -127,11 +134,7 @@ class Graph extends Component {
       .force(
         "forceX",
         d3
-          .forceX(
-            d =>
-              viewCenter +
-              ((d.clusterId - clusterCenter) * window.innerWidth) / 2
-          )
+          .forceX(desiredXPos)
           .strength(0.1)
       );
 
@@ -206,6 +209,7 @@ class Graph extends Component {
           </g>
         </svg>
         <div
+          ref={this.triggerRef}
           className={`drawer-trigger ${this.state.showDrawer ? "open" : ""}`}
           variant="outline-dark"
           onClick={this.toggleDrawer}
@@ -214,8 +218,8 @@ class Graph extends Component {
         </div>
         <Overlay
           show={this.state.showDrawer}
-          placement="top-start"
-          target={this.svgRef.current}
+          placement="left"
+          target={this.triggerRef.current}
         >
           <div className="drawer">
             <Menu

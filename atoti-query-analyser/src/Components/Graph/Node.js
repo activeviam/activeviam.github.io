@@ -5,7 +5,7 @@ import * as d3 from "d3";
 import Popover from "react-bootstrap/Popover";
 import Overlay from "react-bootstrap/Overlay";
 import { nodeType } from "../../types";
-import { enterNode, updateNode } from "../../helpers/graphHelpers";
+import { enterNode, updateNode } from "../../library/graphView/graphHelpers";
 import Details from "../Details/Details";
 
 class Node extends Component {
@@ -37,19 +37,20 @@ class Node extends Component {
 
   render() {
     const { node, changeGraph, clickNode } = this.props;
-    const { details, name, childrenIds, isSelected, status } = node;
+    const { details, childrenIds, isSelected, status } = node;
     const {
-      type,
       startTimes,
       elapsedTimes,
-      measures,
-      partitioning,
-      location
+      metadata
     } = details;
+    const type = metadata.get("type");
+    const fullName = metadata.get("$kind") + "#" + metadata.get("retrievalId");
+    const label = node.name;
+
     const popover = (
       <Popover style={{ maxWidth: "800px" }}>
         <Popover.Title as="h3">
-          {`${type} (#${name})`}
+          {`${type} (${fullName})`}
           <button
             type="button"
             className="close"
@@ -64,9 +65,7 @@ class Node extends Component {
           <Details
             startTime={startTimes}
             elapsedTime={elapsedTimes}
-            measures={measures}
-            location={location}
-            partitioning={partitioning}
+            metadata={metadata}
           />
           {childrenIds.map(childId => (
             <>
@@ -92,7 +91,7 @@ class Node extends Component {
             ref: this.myRef,
             onClick: this.handle.bind(this)
           })}
-          <text onClick={this.handle}>{name}</text>
+          <text onClick={this.handle}>{label}</text>
         </g>
         <Overlay show={isSelected} placement="auto" target={this.myRef.current}>
           {popover}

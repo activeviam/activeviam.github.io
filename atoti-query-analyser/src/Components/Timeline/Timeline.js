@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import Toast from "react-bootstrap/Toast";
 import "./Timeline.css";
 import Details from "../Details/Details";
-import * as labels from "../../helpers/labels";
+import * as labels from "../../library/graphView/labels";
 
 /* TODO how to dilate time not to have long boxes taking a lot of spaces
  * We must only dilate time for periods where all entries are in similar
  * buckets. */
 
-const placeRetrieval = (retrievals, state, entry) => {
+const placeRetrieval = (nodes, state, entry) => {
   const { lines, last } = state;
   // Find the first one whose last is before entry start
   const candidates = last.filter(t => t <= entry.start);
@@ -27,22 +27,31 @@ const placeRetrieval = (retrievals, state, entry) => {
   // TODO may be smart to have a way to distribute 0ms on different lines
 };
 
-const computeLines = ({ retrievals }) => {
-  const result = retrievals
-    .filter(r => r.timingInfo.startTime && r.timingInfo.elapsedTime)
-    .map(r =>
-      r.timingInfo.startTime.map((time, i) => ({
-        id: r.retrId,
-        partition: i,
-        start: time,
-        end: r.timingInfo.elapsedTime[i] + time
-      }))
+const hasTimingInfo = (node) => {
+  const metadata = node.getMetadata();
+  const timingInfo = metadata.get("timingInfo");
+  return timingInfo && timingInfo.startTime && timingInfo.elapsedTime;
+};
+
+const computeLines = ({ graph }) => {
+  const nodes = [...graph.getVertices()];
+  const result = nodes
+    .filter(hasTimingInfo)
+    .map(node => {
+        const timingInfo = node.getMetadata().get("timingInfo");
+        return timingInfo.startTime.map((time, i) => ({
+          id: node.getUUID(),
+          partition: i,
+          start: time,
+          end: timingInfo.elapsedTime[i] + time
+        }));
+      }
     )
     .flat()
     .sort((a, b) => {
       return a.start - b.start;
     })
-    .reduce(placeRetrieval.bind(null, retrievals), {
+    .reduce(placeRetrieval.bind(null, nodes), {
       lines: [],
       last: []
     });
@@ -57,11 +66,11 @@ const boxMargin = 5;
 const widthFactor = 5;
 
 // Logic for a factor of 5
-const Box = ({ rowIdx, entry, retrieval, selection, onSelect }) => {
-  if (retrieval === undefined || entry.id !== retrieval.retrId) {
+const Box = ({ rowIdx, entry, node, selection, onSelect }) => {
+  if (node === undefined || entry.id !== node.getUUID()) {
     throw new Error(
       `Inconsistent state: ${JSON.stringify(entry)} / ${JSON.stringify(
-        retrieval
+        node
       )}`
     );
   }
@@ -99,12 +108,12 @@ const Box = ({ rowIdx, entry, retrieval, selection, onSelect }) => {
   );
 };
 
-const Row = ({ row, idx, retrievals, selection, onSelect }) => {
+const Row = ({ row, idx, graph, selection, onSelect }) => {
   const boxes = row.map(entry =>
     Box({
       rowIdx: idx,
       entry,
-      retrieval: retrievals[entry.id],
+      node: graph.getVertexByUUID(entry.id),
       selection,
       onSelect
     })
@@ -116,17 +125,17 @@ const Row = ({ row, idx, retrievals, selection, onSelect }) => {
   );
 };
 
-const Rows = ({ rows, retrievals, selection, onSelect }) => {
+const Rows = ({ rows, graph, selection, onSelect }) => {
   const height = 2 * margin + rows.length * (boxHeight + boxMargin) - boxMargin;
   const width =
     2 * margin +
     widthFactor *
-      Math.max(...rows.map(row => row[row.length - 1]).map(entry => entry.end));
+    Math.max(...rows.map(row => row[row.length - 1]).map(entry => entry.end));
   return (
     <div className="timeline-rows">
       <svg width={width} height={height}>
         {rows.map((row, idx) =>
-          Row({ row, idx, retrievals, selection, onSelect })
+          Row({ row, idx, graph, selection, onSelect })
         )}
       </svg>
     </div>
@@ -183,11 +192,15 @@ class Timeline extends Component {
   render() {
     const { selection, lines } = this.state;
     const { plan } = this.props;
+
+    const retrievalGraph = plan.graph;
+    console.log(retrievalGraph);
+
     return (
       <div className="timeline">
         <Rows
           rows={lines}
-          retrievals={plan.retrievals}
+          graph={plan.graph}
           selection={selection}
           onSelect={this.selectBox}
         />
@@ -195,22 +208,29 @@ class Timeline extends Component {
           <div style={{ width: selection.length * 355 }}>
             {selection.map(key => {
               const [id, partition] = key;
-              const retrieval = plan.retrievals[id];
+              const node = plan.graph.getVertexByUUID(id);
+
+              const metadata = node.getMetadata();
+              const kind = metadata.get("$kind");
+              const retrievalId = metadata.get("retrievalId");
+              const type = metadata.get("type");
+              const timingInfo = metadata.get("timingInfo");
+
               return (
                 <Toast
-                  key={retrieval.retrId}
+                  key={node.getUUID()}
                   className="entry"
                   onClose={() => this.closeBox(key)}
                 >
                   <Toast.Header>
-                    Retrieval&nbsp;
-                    <strong className="mr-auto">#{id}</strong>
-                    <small>{labels.type(retrieval.type)}</small>
+                    {kind}&nbsp;
+                    <strong className="mr-auto">#{retrievalId}</strong>
+                    <small>{labels.type(type)}</small>
                   </Toast.Header>
                   <Toast.Body className="body">
                     {Details({
-                      ...retrieval,
-                      ...retrieval.timingInfo,
+                      metadata: metadata,
+                      ...timingInfo,
                       partition
                     })}
                   </Toast.Body>

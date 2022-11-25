@@ -1,5 +1,7 @@
 # The helper files
 
+This README is completely outdated, TODO fix it
+
 In this folders are all the functions that allows us to manipulate the data of the application.
 
 We will explain here the purpose of each file.
