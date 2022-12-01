@@ -31,7 +31,7 @@ const nodeColors = new Map([
   ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#bab0ab"]
 ]);
 
-const insideColor = d => nodeColors.get(d.details.metadata.get("type")) || "grey";
+const insideColor = d => nodeColors.get(d.details.metadata.type) || "grey";
 
 // enter functions are called when node or link is created
 // update functions allows to modify node or links graphic characteritics

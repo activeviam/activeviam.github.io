@@ -1,4 +1,4 @@
-import { requireNonNull } from "../utilities/util";
+import { requireNonNull } from "../../utilities/util";
 
 export class Dictionary<T> extends Map<T, number> {
   index(key: T): number {

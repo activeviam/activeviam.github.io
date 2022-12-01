@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { filterAndInverse } from "./filterAndInverse";
-import { AGraphObserver, multiDfs } from "../dataStructures/graph";
+import { AGraphObserver, multiDfs } from "../dataStructures/common/graph";
+import { AggregateRetrievalKind, ExternalRetrievalKind, VirtualRetrievalKind } from "../dataStructures/json/retrieval";
 
 const removeNoOps = queries => {
   return queries.map(query => {
@@ -9,9 +10,8 @@ const removeNoOps = queries => {
     return new Set(
       [...graph.getVertices()]
         .filter((vertex) => {
-          console.log(vertex);
-          const timingInfo = vertex.getMetadata().get("timingInfo");
-          return timingInfo && Object.entries(timingInfo).length > 0;
+          const timingInfo = vertex.getMetadata().timingInfo;
+          return timingInfo && Object.entries(timingInfo).filter(([_, value]) => value !== undefined).length !== 0;
         })
         .map((vertex) => vertex.getUUID())
     );
@@ -39,14 +39,14 @@ const filterByMeasures = ({
   const { filteredGraph, invGraph, virtualSource, virtualTarget } = filterAndInverse(graph, selection);
 
   const predicate = (vertex) => {
-    const kind = vertex.getMetadata().get("$kind");
+    const kind = vertex.getMetadata().$kind;
 
     switch (kind) {
-      case "Virtual":
+      case VirtualRetrievalKind:
         return false;
-      case "Retrieval":
+      case AggregateRetrievalKind:
         return _.intersection(measures, vertex.getMetadata().get("measures")).length > 0;
-      case "ExternalRetrieval":
+      case ExternalRetrievalKind:
         return _.intersection(measures, vertex.getMetadata().get("joinedMeasure")).length > 0;
       default:
         throw new Error(`Unsupported retrieval kind: ${kind}`);

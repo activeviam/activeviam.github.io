@@ -29,7 +29,7 @@ const placeRetrieval = (nodes, state, entry) => {
 
 const hasTimingInfo = (node) => {
   const metadata = node.getMetadata();
-  const timingInfo = metadata.get("timingInfo");
+  const timingInfo = metadata.timingInfo;
   return timingInfo && timingInfo.startTime && timingInfo.elapsedTime;
 };
 
@@ -38,7 +38,7 @@ const computeLines = ({ graph }) => {
   const result = nodes
     .filter(hasTimingInfo)
     .map(node => {
-        const timingInfo = node.getMetadata().get("timingInfo");
+        const timingInfo = node.getMetadata().timingInfo;
         return timingInfo.startTime.map((time, i) => ({
           id: node.getUUID(),
           partition: i,
@@ -193,9 +193,6 @@ class Timeline extends Component {
     const { selection, lines } = this.state;
     const { plan } = this.props;
 
-    const retrievalGraph = plan.graph;
-    console.log(retrievalGraph);
-
     return (
       <div className="timeline">
         <Rows
@@ -211,10 +208,10 @@ class Timeline extends Component {
               const node = plan.graph.getVertexByUUID(id);
 
               const metadata = node.getMetadata();
-              const kind = metadata.get("$kind");
-              const retrievalId = metadata.get("retrievalId");
-              const type = metadata.get("type");
-              const timingInfo = metadata.get("timingInfo");
+              const kind = metadata.$kind;
+              const retrievalId = metadata.retrievalId;
+              const type = metadata.type;
+              const timingInfo = metadata.timingInfo;
 
               return (
                 <Toast
@@ -229,7 +226,7 @@ class Timeline extends Component {
                   </Toast.Header>
                   <Toast.Body className="body">
                     {Details({
-                      metadata: metadata,
+                      metadata,
                       ...timingInfo,
                       partition
                     })}

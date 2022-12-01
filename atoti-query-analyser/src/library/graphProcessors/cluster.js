@@ -1,6 +1,6 @@
 import { filterAndInverse } from "./filterAndInverse";
-import { UnionFind } from "../dataStructures/unionFind";
-import { Dictionary } from "../dataStructures/dictionary";
+import { UnionFind } from "../dataStructures/common/unionFind";
+import { Dictionary } from "../dataStructures/common/dictionary";
 
 const addClustersToNodes = (query, info) => {
   const { invGraph, virtualSource } = filterAndInverse(query.graph, info.selection);

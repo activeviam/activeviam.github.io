@@ -1,6 +1,7 @@
 import React from "react";
 import "./Details.css";
 import { extractWords } from "../../library/utilities/textUtils";
+import * as PropTypes from "prop-types";
 
 const Values = ({ values, selected }) => {
   return (
@@ -19,7 +20,7 @@ const Values = ({ values, selected }) => {
   );
 };
 
-const LocationView = ({location}) => (
+const LocationView = ({ location }) => (
   <li>
     Location:
     <ul>
@@ -35,24 +36,45 @@ const LocationView = ({location}) => (
   </li>
 );
 
-const ListView = ({title, list}) => (
+const PlainView = ({ value }) => {
+  return <span className={isNullish(value) ? "nullish-content" : ""}>{`${value}`}</span>;
+};
+
+PlainView.propTypes = { value: PropTypes.any };
+
+const ListView = ({ title, list }) => (
   <li>
     {title}:
-    <ul>
-      {list.map(item => (<li key={`${item}`}>{`${item}`}</li>))}
-    </ul>
+    {
+      list.length === 0 ?
+        <span className="nullish-content"> (no items)</span> :
+        <ul>
+          {list.map(item => (<li key={`${item}`}><PlainView value={item} /></li>))}
+        </ul>
+    }
   </li>
 );
 
 const buildTitle = (text) => {
   const words = extractWords(text);
-  return words.map(word => word[0].toUpperCase() + word.slice(1)).join(' ');
+  return words.map(word => word[0].toUpperCase() + word.slice(1)).join(" ");
 };
 
 const BLACKLIST = new Set([
   "retrievalId",
   "timingInfo"
 ]);
+
+function isNullish(value) {
+  switch (typeof value) {
+    case "undefined":
+      return true;
+    case "object":
+      return value === null || Object.keys(value).length === 0;
+    default:
+      return false;
+  }
+}
 
 const Details = ({
                    startTime,
@@ -78,18 +100,17 @@ const Details = ({
       <li key="startTimeElts">Start: {startTimeElts}</li>
       <li key="elapsedTimeElts">Elapsed: {elapsedTimeElts}</li>
       {
-        [...metadata]
+        Object.entries(metadata)
           .map(([key, value]) => ({ key, value }))
-          .filter(({key}) => !BLACKLIST.has(key))
+          .filter(({ key }) => !BLACKLIST.has(key))
           .sort((lhs, rhs) => lhs.key.localeCompare(rhs.key))
-          .map(({key, value}) => {
-            console.log(key);
+          .map(({ key, value }) => {
             if (key === "location") {
-              return <LocationView location={value} key={key}/>;
+              return <LocationView location={value} key={key} />;
             } else if (Array.isArray(value)) {
-              return <ListView list={value} title={buildTitle(key)} key={key}/>
+              return <ListView list={value} title={buildTitle(key)} key={key} />;
             } else {
-              return <li key={key}>{buildTitle(key)}: {`${value}`}</li>
+              return <li key={key}>{buildTitle(key)}: <PlainView value={value} /></li>;
             }
           })
       }

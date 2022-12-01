@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { Dictionary } from "../dataStructures/common/dictionary";
 
 const RETRIEVAL = /(\w*Retrieval) #(\d+): ([\w_]+)( \(see)?/;
 const PROPERTY_EXPR = /\s*([\w\-_ ()]+)= (.+)\s*/;
@@ -103,9 +104,9 @@ const parseContext = (state, line) => {
 };
 
 const PROP_MAPPING = {
-  Continuous: "continuous",
+  Continuous: "isContinuous",
   "Range sharing": "rangeSharing",
-  "Missed prefectches": "missedPrefetchBehavior",
+  "Missed prefetches": "missedPrefetchBehavior",
   Cache: "aggregatesCache"
 };
 const parseProps = (state, line) => {
@@ -113,6 +114,8 @@ const parseProps = (state, line) => {
   const newProp = PROP_MAPPING[prop];
   if (newProp) {
     state.info[newProp] = value;
+  } else {
+    state.info.$parseErrors[prop] = value;
   }
 };
 
@@ -178,7 +181,8 @@ const parseV1 = (input, tickCallback) => {
     const accumulator = {
       info: {
         contextValues: {},
-        globalTimings: {}
+        globalTimings: {},
+        $parseErrors: {}
       },
       root: {
         dependencies: []
@@ -330,28 +334,24 @@ const parseTimings = (type, props) => {
 
 const GLOBAL_FILTER = "Global query filter";
 const createFilterMap = v1Structure => {
-  const filters = Object.values(v1Structure.retrievals).reduce(
-    (acc, retrieval) => {
-      const filter = retrieval.properties.Filter;
-      if (filter && !acc.has(filter)) {
-        acc.set(filter, acc.size);
-      }
-      return acc;
-    },
-    new Map([[GLOBAL_FILTER, 0]])
-  );
+  const filterDictionary = new Dictionary();
+  filterDictionary.index(GLOBAL_FILTER);
 
-  // Reverse the mapping
-  const result = {};
-  for (
-    let it = filters.entries(), entry = it.next();
-    !entry.done;
-    entry = it.next()
-  ) {
-    const [filter, idx] = entry.value;
-    result[idx] = filter === GLOBAL_FILTER ? v1Structure.rootFilter : filter;
-  }
-  return result;
+  Object.values(v1Structure.retrievals)
+    .map(retrieval => retrieval.properties.Filter)
+    .filter(filter => filter !== undefined)
+    .forEach(
+      (filter) => {
+        filterDictionary.index(filter);
+      });
+
+  const filterList = Array
+    .from(filterDictionary.entries())
+    .map(([description, id]) => ({ id, description }))
+    .sort((lhs, rhs) => lhs.id - rhs.id);
+
+  filterList[filterDictionary.get(GLOBAL_FILTER)].description = v1Structure.rootFilter;
+  return filterList;
 };
 
 const findFilter = (filters, needle) => {
@@ -363,9 +363,11 @@ const findFilter = (filters, needle) => {
   return entries[i][0];
 };
 
+// TODO data-safe
 const mapAggregateRetrieval = (retrieval, filters) => {
   return {
     retrievalId: parseSourceId(retrieval).retrievalId,
+    partialProviderName: "N/A", // TODO investigate V1 format
     type: retrieval.type,
     location: parseLocation(retrieval.properties.Location),
     measures: parseMeasures(retrieval.properties.Measures),
@@ -383,11 +385,11 @@ const mapExternalRetrieval = (retrieval, filters) => {
     retrievalId: parseSourceId(retrieval).retrievalId,
     type: retrieval.type, // This is not provided in V2 json, but we fix it in buildGraph.ts
     store: retrieval.properties.store,
-    fields : parseFields(retrieval.properties.fields),
+    fields: parseFields(retrieval.properties.fields),
     joinedMeasure: parseMeasures(retrieval.properties.JoinedMeasures),
     condition: retrieval.properties.Condition,
     resultSizes: [],
-    timingInfo: parseTimings("", retrieval.properties),
+    timingInfo: parseTimings("", retrieval.properties)
   };
 };
 
@@ -447,9 +449,16 @@ const createSummary = (aggregateRetrievals, externalRetrievals) => {
     partitioningCountByType,
     resultSizeByPartitioning: {}, // ???
     partialProviders: [], // ???
-    totalExternalResultSize: 0, // ???
+    totalExternalResultSize: 0 // ???
   };
 };
+
+function createPlanInfo(info) {
+  return {
+    branch: "N/A",
+    ...info
+  };
+}
 
 const convertToV2 = v1Structure => {
   const queryFilters = createFilterMap(v1Structure);
@@ -457,10 +466,11 @@ const convertToV2 = v1Structure => {
   const { dependencies, externalDependencies } = createDependencyList(v1Structure);
   const needFillTimingInfo = aggregateRetrievals.find(r => r.retrievalId === 0).timingInfo.startTime === undefined;
   const querySummary = createSummary(aggregateRetrievals, externalRetrievals);
+  const planInfo = createPlanInfo(v1Structure.info);
 
   return [
     {
-      planInfo: v1Structure.info,
+      planInfo,
       queryFilters,
       aggregateRetrievals,
       externalRetrievals,

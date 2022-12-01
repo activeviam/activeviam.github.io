@@ -55,6 +55,7 @@ class Menu extends Component {
 
   render() {
     const { measures, selectedMeasures, onSelectedMeasure } = this.props;
+    console.log(measures, selectedMeasures );
     const listing =
       selectedMeasures.length > 0
         ? selectedMeasures.map(measure => (
@@ -70,7 +71,7 @@ class Menu extends Component {
             </li>
           ))
         : [
-            ...measures.slice(0, 5).map(m => (
+            ...Array.from(measures).slice(0, 5).map(m => (
               <li key={m} className="sample">
                 {m}
               </li>

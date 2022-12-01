@@ -43,8 +43,8 @@ class Node extends Component {
       elapsedTimes,
       metadata
     } = details;
-    const type = metadata.get("type");
-    const fullName = metadata.get("$kind") + "#" + metadata.get("retrievalId");
+    const type = metadata.type;
+    const fullName = metadata.$kind + "#" + metadata.retrievalId;
     const label = node.name;
 
     const popover = (

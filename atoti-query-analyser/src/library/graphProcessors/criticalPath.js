@@ -1,9 +1,12 @@
-import { applyOnDAG } from "../dataStructures/graph";
+import { applyOnDAG } from "../dataStructures/common/graph";
 
 const findTime = (vertex) => {
-  const timingInfo = vertex.getMetadata().get("timingInfo");
+  const timingInfo = vertex.getMetadata().timingInfo;
   if (timingInfo === undefined) {
     return 0;
+  }
+  if (timingInfo.elapsedTime === undefined) {
+    console.log(vertex);
   }
   return Math.max(...timingInfo.elapsedTime);
 };
@@ -13,8 +16,6 @@ const criticalPath = (query, info) => {
   const { selection } = info;
   const virtualSource = graph.getVertexByLabel("virtualSource");
   const filteredGraph = graph.filterVertices((vertex) => selection.has(vertex.getUUID()));
-
-  console.log(filteredGraph);
 
   // We define criticalScore(node) as elapsedTime(node) + max([criticalScore(dependency) for dependency in graph.getOutgoingEdges(node)])
 
@@ -39,7 +40,6 @@ const criticalPath = (query, info) => {
   };
 
   const criticalScore = applyOnDAG(filteredGraph, virtualSource, criticalScoreCalculator);
-  console.log(criticalScore);
 
   // Recreate path going up from the node with worst critical and collect link ids
   let maxNode = criticalScore.get(virtualSource).parent;

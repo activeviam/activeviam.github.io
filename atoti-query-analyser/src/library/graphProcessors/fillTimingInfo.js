@@ -1,15 +1,6 @@
-import { applyOnDAG } from "../dataStructures/graph";
+import { applyOnDAG } from "../dataStructures/common/graph";
 import { filterAndInverse } from "./filterAndInverse";
-
-const setTimeToUnit = (query, graphInfo) => {
-  return [...query.graph.getVertices()]
-    .map(vertex => vertex.getUUID())
-    .filter(vertexId => graphInfo.selection.has(vertexId))
-    .reduce((acc, vertexId) => {
-      acc.set(vertexId, 0);
-      return acc;
-    }, new Map());
-};
+import { VirtualRetrievalKind } from "../dataStructures/json/retrieval";
 
 const nodeDepths = (query, selection) => {
   const { filteredGraph, virtualSource, virtualTarget } = filterAndInverse(query.graph, selection);
@@ -23,25 +14,6 @@ const nodeDepths = (query, selection) => {
 };
 
 // Set timing info to UnitTime for whole json object
-const fillTimingInfo = (data, graphInfo) => {
-  data.forEach((query, i) => {
-    const info = graphInfo[i];
-    if (info.selection.size > 0) {
-      const starts = setTimeToUnit(query, info);
-
-      const depthMap = nodeDepths(query, info.selection);
-      [...query.graph.getVertices()]
-        .map(vertex => vertex.getUUID())
-        .filter(vertexId => info.selection.has(vertexId))
-        .forEach(vertexId => {
-          starts.set(vertexId, depthMap.get(vertexId) - 1);
-        });
-
-      info.starts = starts;
-    }
-  });
-};
-
 const setSimulatedTimingInfo = (graph) => {
   const virtualSource = graph.getVertexByLabel("virtualSource");
   const virtualTarget = graph.getVertexByLabel("virtualTarget");
@@ -59,14 +31,14 @@ const setSimulatedTimingInfo = (graph) => {
     });
 
   startTimeMap.forEach((startTime, node) => {
-    if (node.getMetadata().get("$kind") === "Virtual") {
+    if (node.getMetadata().$kind === VirtualRetrievalKind) {
       return;
     }
-    node.getMetadata().set("timingInfo", {
+    node.getMetadata().timingInfo = {
       startTime: [startTime],
       elapsedTime: [elapsedTime]
-    });
+    };
   });
 };
 
-export { fillTimingInfo, setTimeToUnit, nodeDepths, setSimulatedTimingInfo };
+export { nodeDepths, setSimulatedTimingInfo };

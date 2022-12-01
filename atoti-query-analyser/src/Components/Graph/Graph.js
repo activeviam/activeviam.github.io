@@ -104,7 +104,6 @@ class Graph extends Component {
 
     const { nodes, links } = buildD3(query, selectedRetrievals || selection);
 
-    console.log(nodes, links);
 
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
@@ -112,7 +111,6 @@ class Graph extends Component {
       .attr("height", window.innerHeight - 56);
 
     const clusters = _(nodes).map(n => n.clusterId);
-    console.log(clusters);
     const minC = clusters.min();
     const maxC = clusters.max();
     const viewCenter = window.innerWidth / 2;

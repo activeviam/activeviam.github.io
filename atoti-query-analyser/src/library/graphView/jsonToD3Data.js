@@ -1,7 +1,8 @@
-import { fillTimingInfo, nodeDepths } from "../graphProcessors/fillTimingInfo";
+import { nodeDepths } from "../graphProcessors/fillTimingInfo";
 import criticalPath from "../graphProcessors/criticalPath";
 import addClustersToNodes from "../graphProcessors/cluster";
 import { abbreviation } from "../utilities/textUtils";
+import { AggregateRetrievalKind, VirtualRetrievalKind } from "../dataStructures/json/retrieval";
 
 /**
  * @param elapsed: the elapsed time of a node
@@ -15,7 +16,6 @@ const computeRadius = elapsed => {
 };
 
 const getNodes = (graph, info, depths) => {
-  console.log(depths);
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object.
 
@@ -26,14 +26,14 @@ const getNodes = (graph, info, depths) => {
   );
 
   return [...graph.getVertices()]
-    .filter(vertex => info.selection.has(vertex.getUUID()) && vertex.getMetadata().get("$kind") !== "Virtual")
+    .filter(vertex => info.selection.has(vertex.getUUID()) && vertex.getMetadata().$kind !== VirtualRetrievalKind)
     .map(vertex => {
       const metadata = vertex.getMetadata();
 
-      const childrenIds = metadata.get("childrenIds") || [];
-      const timingInfo = metadata.get("timingInfo");
-      const retrievalId = metadata.get("retrievalId");
-      const kind = metadata.get("$kind");
+      const childrenIds = metadata.childrenIds || [];
+      const timingInfo = metadata.timingInfo;
+      const retrievalId = metadata.retrievalId;
+      const kind = metadata.$kind;
 
       const { elapsedTime = [0], startTime = [0] } = timingInfo;
       const realStart = Math.min(...startTime);
@@ -44,7 +44,7 @@ const getNodes = (graph, info, depths) => {
 
       const radius = computeRadius(realElapsed);
       const yFixed = depths.get(vertex) * 150;
-      const name = kind === "Retrieval" ? `${retrievalId}` : `${abbreviation(kind)}#${retrievalId}`;
+      const name = kind === AggregateRetrievalKind ? `${retrievalId}` : `${abbreviation(kind)}#${retrievalId}`;
       return {
         id: vertex.getUUID(),
         name,
@@ -70,7 +70,7 @@ const getNodes = (graph, info, depths) => {
 };
 
 const getLinks = (graph, info) => {
-  const filteredGraph = graph.filterVertices(vertex => vertex.getMetadata().get("$kind") !== "Virtual" && info.selection.has(vertex.getUUID()));
+  const filteredGraph = graph.filterVertices(vertex => vertex.getMetadata().$kind !== VirtualRetrievalKind && info.selection.has(vertex.getUUID()));
 
   const links = [];
   [...filteredGraph.getVertices()]
@@ -93,16 +93,15 @@ const findChildrenAndParents = (res, queries) => {
   queries.forEach((query, queryId) => {
     const { graph } = query;
     [...graph.getVertices()].forEach(vertex => {
-      const underlyingDataNodes = vertex.getMetadata().get("underlyingDataNodes");
+      const underlyingDataNodes = vertex.getMetadata().underlyingDataNodes;
 
       if (underlyingDataNodes === undefined) {
         return;
       }
 
-      const childrenIds = underlyingDataNodes.map(
+      vertex.getMetadata().childrenIds = underlyingDataNodes.map(
         name => resIndexByName.get(name).id
       );
-      vertex.getMetadata().set("childrenIds", childrenIds);
 
       // give its children their parentId
       underlyingDataNodes.forEach(name => {
@@ -147,9 +146,6 @@ const buildD3 = (query, selection) => {
 };
 
 const parseJson = (data, selections) => {
-  const graphInfo = selections.map(selection => ({ selection }));
-  fillTimingInfo(data, graphInfo);
-
   const res = data.map((query, queryId) => {
     const { planInfo } = query;
     const { clusterMemberId, mdxPass } = planInfo;
