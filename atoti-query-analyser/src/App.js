@@ -4,13 +4,13 @@ import Graph from "./Components/Graph/Graph";
 import Timeline from "./Components/Timeline/Timeline";
 import Summary from "./Components/Summary/Summary";
 import NavBar from "./Components/NavBar/NavBar";
-import parseJson from "./library/graphView/jsonToD3Data";
 import { applySelection } from "./library/graphProcessors/selection";
 import { parseV1, convertToV2 } from "./library/inputProcessors/v1tov2";
 import { queryServer } from "./library/inputProcessors/server";
 import goParentQueryButton from "./Components/NavBar/GoBackToParentQueryButton";
 import passChooser from "./Components/NavBar/PassChooser";
 import { preprocessQueryPlan } from "./library/dataStructures/processing/queryPlan";
+import { parseJson } from "./library/graphView/parseJson";
 
 class App extends Component {
   constructor(props) {

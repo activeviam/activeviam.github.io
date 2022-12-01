@@ -6,7 +6,7 @@ In this folders are all the functions that allows us to manipulate the data of t
 
 We will explain here the purpose of each file.
 
-## jsonToD3Data.js
+## jsonToD3Data.ts
 
 We recieve a big object, JSON format, that contains a list of queries. For us, each query is a graph to display. We need to convert this data so the App can use it easily and so D3 can display it.
 
@@ -86,6 +86,6 @@ Written by ActiveViam, allows to convert ancient format data to the new format (
 
 Written by ActiveViam, allows to import data from server
 
-## graphHelpers.js
+## graphHelpers.ts
 
 Functions that tell D3 how nodes and links should be displayed (position, size, color

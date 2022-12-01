@@ -1,8 +1,10 @@
+import { BaseType, Selection } from "d3-selection";
+
 /**
  * @param d: a D3 node
  * Return the color of the border of the node according to its state
  */
-const outlineColor = d => {
+function outlineColor(d: any) {
   if (d.isSelected) {
     return "#2E2E2E";
   }
@@ -11,14 +13,14 @@ const outlineColor = d => {
   }
   // node has subqueries
   return "#E0281C";
-};
+}
 
 // Node color varies
 // yellow if node depends on no one
 // orange if is output
 // blue otherwise
 // Colors from https://observablehq.com/@d3/color-schemes
-const nodeColors = new Map([
+const NODE_COLOR_MAP = new Map([
   ["DistributedAggregatesRetrieval", "#549ce8"],
   ["DistributedPostProcessedRetrieval", "#f28e2c"],
   ["JITPrimitiveAggregatesRetrieval", "#e15759"],
@@ -31,30 +33,34 @@ const nodeColors = new Map([
   ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#bab0ab"]
 ]);
 
-const insideColor = d => nodeColors.get(d.details.metadata.type) || "grey";
+function insideColor(d: any) {
+  return NODE_COLOR_MAP.get(d.details.metadata.type) || "grey";
+}
 
 // enter functions are called when node or link is created
 // update functions allows to modify node or links graphic characteritics
 // updateGraph is called when D3 clock ticks, and unpdate nodes and links
 
-const enterLink = selection => {
+function enterLink(selection: Selection<any, any, any, any>) {
   selection
     .attr("stroke-width", 6)
     .style("stroke", d => (d.critical ? "#b30000" : "#1B1978"))
     .style("opacity", ".8");
-};
+}
 
-const updateLink = selection => {
+function updateLink(selection: Selection<BaseType, any, BaseType, any>) {
   selection
     .attr("x1", d => d.source.x)
     .attr("y1", d => d.source.y)
     .attr("x2", d => d.target.x)
     .attr("y2", d => d.target.y);
-};
+}
 
-const computeRadius = d => Math.max(Math.sqrt(d.radius) * 4, 10);
+function computeRadius(d: { radius: number; }) {
+  return Math.max(Math.sqrt(d.radius) * 4, 10);
+}
 
-const enterNode = selection => {
+function enterNode(selection: Selection<BaseType, any, HTMLElement, any>) {
   selection
     .select("circle")
     .attr("r", computeRadius)
@@ -78,9 +84,9 @@ const enterNode = selection => {
     .select("text")
     .attr("dy", ".35em")
     .attr("dx", "-0.65em");
-};
+}
 
-const updateNode = selection => {
+function updateNode(selection: Selection<BaseType, any, BaseType, unknown>) {
   selection
     .attr("transform", d => `translate(${d.x},${d.y})`)
     .select("circle")
@@ -92,11 +98,11 @@ const updateNode = selection => {
     .select("rect")
     .style("stroke-width", d => (d.isSelected ? 3 : 1))
     .style("stroke", d => outlineColor(d));
-};
+}
 
-const updateGraph = selection => {
+function updateGraph(selection: Selection<BaseType, unknown, HTMLElement, any>) {
   selection.selectAll(".node").call(updateNode);
   selection.selectAll(".link").call(updateLink);
-};
+}
 
 export { updateGraph, enterLink, updateLink, enterNode, updateNode };

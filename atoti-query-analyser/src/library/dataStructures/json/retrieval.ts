@@ -38,6 +38,7 @@ export type AggregateRetrieval = ARetrieval & {
   measureProvider: string,
   underlyingDataNodes: string[],
   resultSizes: number[],
+  childrenIds?: number[]
 };
 
 export type ExternalRetrieval = ARetrieval & {
