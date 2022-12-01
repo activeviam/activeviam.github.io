@@ -1,5 +1,5 @@
 // TODO replace with `as T`
-export function requireNonNull<T>(value: T | undefined): T {
+export function requireNonNull<T>(value: T | null | undefined): T {
   if (value === undefined || value === null) {
     throw new Error("Unexpected null or undefined");
   }

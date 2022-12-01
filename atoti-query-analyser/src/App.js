@@ -7,7 +7,7 @@ import NavBar from "./Components/NavBar/NavBar";
 import parseJson from "./library/graphView/jsonToD3Data";
 import { applySelection } from "./library/graphProcessors/selection";
 import { parseV1, convertToV2 } from "./library/inputProcessors/v1tov2";
-import queryServer from "./library/inputProcessors/server";
+import { queryServer } from "./library/inputProcessors/server";
 import goParentQueryButton from "./Components/NavBar/GoBackToParentQueryButton";
 import passChooser from "./Components/NavBar/PassChooser";
 import { preprocessQueryPlan } from "./library/dataStructures/processing/queryPlan";

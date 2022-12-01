@@ -6,21 +6,24 @@ const serverCache = new Map();
  *
  * This is mostly interesting for unit-tests, if any.
  */
-const clearCache = () => {
+export function clearCache() {
   serverCache.clear();
 };
 
-const cleanseUrl = url => {
+function cleanseUrl(url: string) {
   const match = /^(.+?)\/*$/.exec(url);
+  if (match === null) {
+    throw new Error(`Bad URL: ${url}`);
+  }
   return match[1];
-};
+}
 
 /**
  * Resolves the version of the API of the target server.
  * @param {String} url url of the target server
  * @returns {Promise<String>} promise with the URL to the pivot service
  */
-const resolveQueryEndpoint = userUrl => {
+function resolveQueryEndpoint(userUrl) {
   const url = cleanseUrl(userUrl);
   const cached = serverCache.get(url);
   if (cached) {
@@ -50,7 +53,7 @@ const resolveQueryEndpoint = userUrl => {
  * @param payload payload to send to the server
  * @returns the exported query plan for the provided query
  */
-const queryServer = async ({ url, credentials, query }) => {
+export async function queryServer({ url, credentials, query }) {
   const baseUrl = await resolveQueryEndpoint(url);
   const queryUrl = `${baseUrl}/cube/query/mdx/queryplan`;
   const body = {
@@ -69,7 +72,4 @@ const queryServer = async ({ url, credentials, query }) => {
   });
   const payload = await response.json();
   return payload.data;
-};
-
-export default queryServer;
-export { clearCache };
+}

@@ -78,11 +78,11 @@ Even with unlimited resources, we cannot be faster than the critical path.
 
 Each link belonging to the critical path is marked as so in this function.
 
-## v1tov2.js
+## v1tov2.ts
 
 Written by ActiveViam, allows to convert ancient format data to the new format (JSON)
 
-## server.js
+## server.ts
 
 Written by ActiveViam, allows to import data from server
 

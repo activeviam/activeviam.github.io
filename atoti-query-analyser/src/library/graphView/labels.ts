@@ -1,4 +1,4 @@
-const typeLabels = new Map([
+const TYPE_LABELS = new Map([
   ["DistributedAggregatesRetrieval", "Distributed Retrieval"],
   ["DistributedPostProcessedRetrieval", "PostProcessor"],
   ["JITPrimitiveAggregatesRetrieval", "JIT Retrieval"],
@@ -9,6 +9,7 @@ const typeLabels = new Map([
   ["RangeSharingPrimitiveAggregatesRetrieval", "RangeSharing"]
 ]);
 
-const type = value => typeLabels.get(value) || `<${value}>`;
+export function type(value: string) {
+  return TYPE_LABELS.get(value) || `<${value}>`;
+}
 
-export { type };
