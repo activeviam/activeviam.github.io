@@ -56,7 +56,7 @@ For each query of the input, the main function will compute this object:
 
 In odrer to return accurate data, the main function will use the other helpers
 
-## cluster.js
+## cluster.ts
 
 In some case, a graph can actually be multiple graphs, because some groups of nodes does not have dependencies with the others. In this case, we want the graphs to be displayed separately and not on top of each other
 
@@ -68,7 +68,7 @@ We define the concept of node depth, such as each node must be deeper than the n
 
 The functions computeDepth compute each node's depth
 
-## criticalPath.js
+## criticalPath.ts
 
 A path is a sequence of nodes, starting with a root, ending with a leaf, and where each node depends on the previous one.
 

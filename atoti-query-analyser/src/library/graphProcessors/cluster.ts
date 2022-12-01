@@ -1,14 +1,17 @@
 import { filterAndInverse } from "./filterAndInverse";
 import { UnionFind } from "../dataStructures/common/unionFind";
 import { Dictionary } from "../dataStructures/common/dictionary";
+import { QueryPlan } from "../dataStructures/processing/queryPlan";
+import { UUID } from "../utilities/uuid";
+import { VertexSelection } from "../dataStructures/processing/selection";
 
-const addClustersToNodes = (query, info) => {
-  const { invGraph, virtualSource } = filterAndInverse(query.graph, info.selection);
+export function addClustersToNodes(query: QueryPlan, selection: VertexSelection): Map<UUID, number> {
+  const { invGraph, virtualSource } = filterAndInverse(query.graph, selection);
   const unionFind = new UnionFind();
 
-  const vertices = [...invGraph.getVertices()].filter(vertex => vertex !== virtualSource);
+  const vertices = Array.from(invGraph.getVertices()).filter(vertex => vertex !== virtualSource);
   vertices
-    .forEach(vertex => [...invGraph.getOutgoingEdges(vertex)]
+    .forEach(vertex => invGraph.getOutgoingEdges(vertex)
       .forEach(edge => {
         unionFind.union(edge.getBegin(), edge.getEnd());
       }));
@@ -21,6 +24,4 @@ const addClustersToNodes = (query, info) => {
   });
 
   return result;
-};
-
-export default addClustersToNodes;
+}

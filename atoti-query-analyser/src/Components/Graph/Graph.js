@@ -104,7 +104,6 @@ class Graph extends Component {
 
     const { nodes, links } = buildD3(query, selectedRetrievals || selection);
 
-
     const d3Graph = d3
       .select(ReactDOM.findDOMNode(this))
       .attr("width", window.innerWidth)

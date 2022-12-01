@@ -1,6 +1,6 @@
 import { nodeDepths } from "../graphProcessors/fillTimingInfo";
-import criticalPath from "../graphProcessors/criticalPath";
-import addClustersToNodes from "../graphProcessors/cluster";
+import { criticalPath } from "../graphProcessors/criticalPath";
+import { addClustersToNodes } from "../graphProcessors/cluster";
 import { abbreviation } from "../utilities/textUtils";
 import { AggregateRetrievalKind, VirtualRetrievalKind } from "../dataStructures/json/retrieval";
 
@@ -130,14 +130,14 @@ const normalizeIds = ({ nodes, links }) => {
 const buildD3 = (query, selection) => {
   const info = { selection };
   const { graph } = query;
-  const depths = nodeDepths(query, info.selection);
+  const depths = nodeDepths(graph, selection);
   const nodes = getNodes(graph, info, depths);
   const links = getLinks(graph, info);
-  const criticalLinks = criticalPath(query, info);
+  const criticalLinks = criticalPath(graph, selection);
   links.forEach(link => {
     link.critical = criticalLinks.has(link.id);
   });
-  const clusters = addClustersToNodes(query, info);
+  const clusters = addClustersToNodes(query, info.selection);
   nodes.forEach(node => {
     node.clusterId = clusters.get(node.id);
   });

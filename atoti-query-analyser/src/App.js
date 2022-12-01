@@ -10,7 +10,7 @@ import { parseV1, convertToV2 } from "./library/inputProcessors/v1tov2";
 import queryServer from "./library/inputProcessors/server";
 import goParentQueryButton from "./Components/NavBar/GoBackToParentQueryButton";
 import passChooser from "./Components/NavBar/PassChooser";
-import { preprocessQueryPlan } from "./library/dataStructures/queryPlan";
+import { preprocessQueryPlan } from "./library/dataStructures/processing/queryPlan";
 
 class App extends Component {
   constructor(props) {
@@ -42,7 +42,7 @@ class App extends Component {
 
     const queryPlan = preprocessQueryPlan(json);
 
-    const selections = applySelection(queryPlan, type);
+    const selections = applySelection(queryPlan);
     const data = parseJson(queryPlan, selections);
 
     this.setState({

@@ -118,7 +118,7 @@ class AdjacencyListGraphBase<VertexMetadata, EdgeMetadata, Vertex extends IVerte
     this.vertexByLabel.set(label, requireNonNull(this.vertexByUUID.get(uuid)));
   }
 
-  getVertexByLabel(label: string): IVertex<VertexMetadata> {
+  getVertexByLabel(label: string): Vertex {
     return requireNonNull(this.vertexByLabel.get(label));
   }
 
@@ -337,22 +337,29 @@ class AcyclicGraphFunctionCalculator<VertexMetadata, EdgeMetadata, Vertex extend
   extends AGraphObserver<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph> {
 
   public readonly functionValues = new Map<Vertex, T>();
-  private readonly neighbours = new Map<Vertex, Set<Vertex>>();
+  private readonly children = new Map<Vertex, Set<Vertex>>();
 
-  constructor(private reducer: (vertex: Vertex, neighbours: Set<Vertex>, accumulator: Map<Vertex, U>) => T) {
+  constructor(private reducer: (vertex: Vertex, children: Set<Vertex>, childrenValues: (child: Vertex) => T) => T) {
     super();
   }
 
   onEdgeDiscover(edge: Edge) {
-    (this.neighbours.get(edge.getBegin()) as Set<Vertex>).add(edge.getEnd());
+    (this.children.get(edge.getBegin()) as Set<Vertex>).add(edge.getEnd());
   }
 
   onVertexDiscover(vertex: Vertex) {
-    this.neighbours.set(vertex, new Set());
+    this.children.set(vertex, new Set());
   }
 
   onVertexExit(vertex: Vertex) {
-    this.functionValues.set(vertex, this.reducer(vertex, this.neighbours.get(vertex) as Set<Vertex>, this.functionValues as Map<Vertex, U>));
+    const children = this.children.get(vertex) as Set<Vertex>;
+    const getter = (child: Vertex): T => {
+      if (!children.has(child)) {
+        throw new Error(`${child} is not a child of ${vertex}`);
+      }
+      return this.functionValues.get(child) as T;
+    };
+    this.functionValues.set(vertex, this.reducer(vertex, children, getter));
   }
 }
 
@@ -364,10 +371,10 @@ export function multiDfs<VertexMetadata, EdgeMetadata, Vertex extends IVertex<Ve
   new Dfs(graph, rootNodes, observer).run();
 }
 
-export function applyOnDAG<Vertex extends IVertex<unknown>, Graph extends IGraph<unknown, unknown, Vertex, IEdge<unknown, unknown, Vertex>>, T, U extends T>(
+export function applyOnDAG<Vertex extends IVertex<unknown>, Graph extends IGraph<unknown, unknown, Vertex, IEdge<unknown, unknown, Vertex>>, T>(
   graph: Graph,
   rootNode: Vertex,
-  reducer: (vertex: Vertex, neighbours: Set<Vertex>, accumulator: Map<Vertex, U>) => T
+  reducer: (vertex: Vertex, children: Set<Vertex>, childrenValues: (child: Vertex) => T) => T
 ): Map<Vertex, T> {
   const observer = new AcyclicGraphFunctionCalculator(reducer);
   dfs(graph, rootNode, observer);

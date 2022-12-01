@@ -27,7 +27,8 @@ function makeRetrievalConsumer(graph: RetrievalGraph) {
 function makeVirtualRetrieval({ retrievalId }: { retrievalId: number }): VirtualRetrieval {
   return {
     $kind: VirtualRetrievalKind,
-    retrievalId
+    retrievalId,
+    timingInfo: {}
   };
 }
 

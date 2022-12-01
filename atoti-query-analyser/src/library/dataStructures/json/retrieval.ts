@@ -1,4 +1,4 @@
-import { AdjacencyListGraph, Vertex } from "../common/graph";
+import { AdjacencyListGraph, AGraphObserver, Edge, Vertex } from "../common/graph";
 import { multiFieldValidate, validateInt, validateList, validateObject, validateString } from "./validatingUtils";
 import { CubeLocation, validateLocation } from "./cubeLocation";
 import { Measure, validateMeasure } from "./measure";
@@ -20,6 +20,7 @@ export type RetrievalKind =
 export interface ARetrieval {
   $kind: RetrievalKind,
   retrievalId: number,
+  timingInfo: TimingInfo,
 }
 
 export type VirtualRetrieval = ARetrieval & {
@@ -33,7 +34,6 @@ export type AggregateRetrieval = ARetrieval & {
   partitioning: string,
   location: CubeLocation[],
   measures: Measure[],
-  timingInfo: TimingInfo,
   filterId: number,
   measureProvider: string,
   underlyingDataNodes: string[],
@@ -48,13 +48,18 @@ export type ExternalRetrieval = ARetrieval & {
   joinedMeasure: Measure[],
   condition: string,
   resultSizes: number[],
-  timingInfo: TimingInfo,
 };
 
 export class RetrievalVertex extends Vertex<ARetrieval> {
 }
 
+export class RetrievalEdge extends Edge<ARetrieval, undefined, RetrievalVertex> {
+}
+
 export class RetrievalGraph extends AdjacencyListGraph<ARetrieval, undefined> {
+}
+
+export class ARetrievalGraphObserver extends AGraphObserver<ARetrieval, undefined, RetrievalVertex, RetrievalEdge, RetrievalGraph> {
 }
 
 export function validateAggregateRetrieval(rawRetrieval: any): AggregateRetrieval {

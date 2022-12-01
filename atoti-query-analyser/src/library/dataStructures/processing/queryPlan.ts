@@ -1,10 +1,10 @@
-import { RetrievalGraph } from "./json/retrieval";
-import { PlanInfo } from "./json/planInfo";
-import { Filter } from "./json/filter";
-import { QuerySummary } from "./json/querySummary";
-import { validateJsonQueryPlan } from "./json/jsonQueryPlan";
-import buildGraph from "../graphProcessors/buildGraph";
-import { setSimulatedTimingInfo } from "../graphProcessors/fillTimingInfo";
+import { RetrievalGraph } from "../json/retrieval";
+import { PlanInfo } from "../json/planInfo";
+import { Filter } from "../json/filter";
+import { QuerySummary } from "../json/querySummary";
+import { validateJsonQueryPlan } from "../json/jsonQueryPlan";
+import buildGraph from "../../graphProcessors/buildGraph";
+import { setSimulatedTimingInfo } from "../../graphProcessors/fillTimingInfo";
 
 export interface QueryPlan {
   planInfo: PlanInfo,
