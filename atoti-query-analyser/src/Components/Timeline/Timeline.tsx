@@ -10,6 +10,7 @@ import {
   RetrievalVertex,
 } from "../../library/dataStructures/json/retrieval";
 import { UUID } from "../../library/utilities/uuid";
+import "./Timeline.css";
 
 /* TODO how to dilate time not to have long boxes taking a lot of spaces
  * We must only dilate time for periods where all entries are in similar

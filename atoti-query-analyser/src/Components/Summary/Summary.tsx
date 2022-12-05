@@ -11,7 +11,7 @@ import { QuerySummary } from "../../library/dataStructures/json/querySummary";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { QueryPlanMetadata } from "../../library/graphView/parseJson";
 import { RetrievalGraph } from "../../library/dataStructures/json/retrieval";
-import { extractWords } from "../../library/utilities/textUtils";
+import { humanisticStringComparator } from "../../library/utilities/textUtils";
 
 const TIMING_LABELS = new Map([
   ["executionContextCreationTime", "Context creation time"],
@@ -45,15 +45,6 @@ function Timings({ info }: { info?: PlanInfo }) {
       <i>Timings are not available</i>
     </p>
   );
-}
-
-function humanisticStringComparator(lhs: string, rhs: string) {
-  const leftWords = extractWords(lhs);
-  const rightWords = extractWords(rhs);
-
-  const leftToken = leftWords.map((word) => word.toUpperCase()).join();
-  const rightToken = rightWords.map((word) => word.toUpperCase()).join();
-  return leftToken.localeCompare(rightToken);
 }
 
 function MeasureList({

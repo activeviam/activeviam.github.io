@@ -6,11 +6,11 @@ import _ from "lodash";
 import Button from "react-bootstrap/Button";
 import Link from "./Link";
 import Node from "./Node";
-import Menu from "./Menu";
 import { updateGraph } from "../../library/graphView/graphHelpers";
 import { buildD3 } from "../../library/graphView/jsonToD3Data";
 import { filterByMeasures } from "../../library/graphProcessors/selection";
 import "./Drawer.css";
+import { Menu } from "./Menu";
 
 class Graph extends Component {
   constructor(props) {

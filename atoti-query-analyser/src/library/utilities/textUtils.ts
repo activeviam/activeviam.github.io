@@ -29,3 +29,12 @@ export function abbreviation(text: string): string {
   const words = extractWords(text);
   return words.map((word) => word[0].toUpperCase()).join("");
 }
+
+export function humanisticStringComparator(lhs: string, rhs: string) {
+  const leftWords = extractWords(lhs);
+  const rightWords = extractWords(rhs);
+
+  const leftToken = leftWords.map((word) => word.toUpperCase()).join();
+  const rightToken = rightWords.map((word) => word.toUpperCase()).join();
+  return leftToken.localeCompare(rightToken);
+}
