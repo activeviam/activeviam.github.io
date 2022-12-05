@@ -2,8 +2,13 @@ import React from "react";
 import "./Details.css";
 import { extractWords } from "../../library/utilities/textUtils";
 import * as PropTypes from "prop-types";
+import { CubeLocation } from "../../library/dataStructures/json/cubeLocation";
+import { ARetrieval } from "../../library/dataStructures/json/retrieval";
 
-const Values = ({ values, selected }) => {
+const Values = ({ values, selected }: {
+  values: number[],
+  selected?: number
+}) => {
   return (
     <>
       [
@@ -20,7 +25,9 @@ const Values = ({ values, selected }) => {
   );
 };
 
-const LocationView = ({ location }) => (
+const LocationView = ({ location }: {
+  location: CubeLocation[]
+}) => (
   <li>
     Location:
     <ul>
@@ -36,13 +43,18 @@ const LocationView = ({ location }) => (
   </li>
 );
 
-const PlainView = ({ value }) => {
+const PlainView = ({ value }: {
+  value: any
+}) => {
   return <span className={isNullish(value) ? "nullish-content" : ""}>{`${value}`}</span>;
 };
 
 PlainView.propTypes = { value: PropTypes.any };
 
-const ListView = ({ title, list }) => (
+const ListView = ({ title, list }: {
+  title: string,
+  list: any[]
+}) => (
   <li>
     {title}:
     {
@@ -55,7 +67,7 @@ const ListView = ({ title, list }) => (
   </li>
 );
 
-const buildTitle = (text) => {
+const buildTitle = (text: string) => {
   const words = extractWords(text);
   return words.map(word => word[0].toUpperCase() + word.slice(1)).join(" ");
 };
@@ -65,7 +77,7 @@ const BLACKLIST = new Set([
   "timingInfo"
 ]);
 
-function isNullish(value) {
+function isNullish(value: any) {
   switch (typeof value) {
     case "undefined":
       return true;
@@ -76,12 +88,12 @@ function isNullish(value) {
   }
 }
 
-const Details = ({
-                   startTime,
-                   elapsedTime,
-                   metadata,
-                   partition
-                 }) => {
+const Details = ({ startTime, elapsedTime, metadata, partition }: {
+  startTime: number[],
+  elapsedTime: number[],
+  metadata: ARetrieval,
+  partition?: number
+}) => {
   const startTimeElts =
     partition === undefined ? (
       JSON.stringify(startTime)
