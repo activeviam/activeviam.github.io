@@ -210,7 +210,7 @@ class Graph extends Component {
         <Button
           ref={this.triggerRef}
           className={`drawer-trigger ${this.state.showDrawer ? "open" : ""}`}
-          variant="outline-dark"
+          variant="info"
           onClick={this.toggleDrawer}
         >
           Menu

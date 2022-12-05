@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Graph from "./Components/Graph/Graph";
-import Timeline from "./Components/Timeline/Timeline";
+import { Timeline } from "./Components/Timeline/Timeline";
 import Summary from "./Components/Summary/Summary";
 import NavBar from "./Components/NavBar/NavBar";
 import { applySelection } from "./library/graphProcessors/selection";

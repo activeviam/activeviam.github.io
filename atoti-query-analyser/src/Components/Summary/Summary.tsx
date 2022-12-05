@@ -11,6 +11,7 @@ import { QuerySummary } from "../../library/dataStructures/json/querySummary";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { QueryPlanMetadata } from "../../library/graphView/parseJson";
 import { RetrievalGraph } from "../../library/dataStructures/json/retrieval";
+import { extractWords } from "../../library/utilities/textUtils";
 
 const TIMING_LABELS = new Map([
   ["executionContextCreationTime", "Context creation time"],
@@ -46,6 +47,15 @@ function Timings({ info }: { info?: PlanInfo }) {
   );
 }
 
+function humanisticStringComparator(lhs: string, rhs: string) {
+  const leftWords = extractWords(lhs);
+  const rightWords = extractWords(rhs);
+
+  const leftToken = leftWords.map((word) => word.toUpperCase()).join();
+  const rightToken = rightWords.map((word) => word.toUpperCase()).join();
+  return leftToken.localeCompare(rightToken);
+}
+
 function MeasureList({
   measures,
   columns,
@@ -55,20 +65,20 @@ function MeasureList({
 }) {
   const [query, setQuery] = useState("");
 
-  const sortedMeasures = useMemo(() => {
-    return [...measures].sort();
-  }, [measures]);
-
   const filteredMeasures = useMemo(() => {
     const trimmedQuery = query.trim();
+    let result: Measure[];
     if (trimmedQuery === "") {
-      return sortedMeasures;
+      result = [...measures];
+    } else {
+      const searcher = new FuzzySearch(measures, undefined, {
+        caseSensitive: true,
+      });
+      result = searcher.search(trimmedQuery);
     }
-    const searcher = new FuzzySearch(sortedMeasures, undefined, {
-      caseSensitive: true,
-    });
-    return searcher.search(trimmedQuery).sort() as Measure[];
-  }, [query, sortedMeasures]);
+
+    return result.sort(humanisticStringComparator);
+  }, [query, measures]);
 
   const rows = useMemo(() => {
     return Math.ceil(filteredMeasures.length / columns);
@@ -130,15 +140,17 @@ function QuerySummaryView({
       <MeasureList measures={Array.from(summary.measures)} columns={3} />
       <h4>Retrievals per type</h4>
       <ul>
-        {Object.entries(summary.retrievalsCountByType).map(([type, count]) => (
-          <li key={type}>
-            <b>{type}</b>: {count}
-          </li>
-        ))}
+        {Array.from(summary.retrievalsCountByType.entries()).map(
+          ([type, count]) => (
+            <li key={type}>
+              <b>{type}</b>: {count}
+            </li>
+          )
+        )}
       </ul>
       <h4>Retrievals per partitioning</h4>
       <ul>
-        {Object.entries(summary.partitioningCountByType).map(
+        {Array.from(summary.partitioningCountByType.entries()).map(
           ([type, count]) => (
             <li key={type}>
               <b>{type}</b>: {count}
