@@ -7,6 +7,8 @@ import Overlay from "react-bootstrap/Overlay";
 import { nodeType } from "../../types";
 import { enterNode, updateNode } from "../../library/graphView/graphHelpers";
 import Details from "../Details/Details";
+import Button from "react-bootstrap/Button";
+import { FaTimes } from "react-icons/all";
 
 class Node extends Component {
   constructor(props) {
@@ -49,25 +51,27 @@ class Node extends Component {
 
     const popover = (
       <Popover style={{ maxWidth: "800px" }}>
-        <Popover.Title as="h3">
-          {`${type} (${fullName})`}
-          <button
-            type="button"
-            className="close"
-            aria-label="Close"
-            onClick={() => clickNode(null)}
-            value="&times;"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </Popover.Title>
-        <Popover.Content>
+        <Popover.Header>
+          <div className="d-flex">
+            <span>{`${type} (${fullName})`}</span>
+            <Button
+              variant="outline-danger"
+              className="ms-auto py-0"
+              size="sm"
+              aria-label="Close"
+              onClick={() => clickNode(null)}
+            >
+              <FaTimes fontSize="small" />
+            </Button>
+          </div>
+        </Popover.Header>
+        <Popover.Body>
           <Details
             startTime={startTimes}
             elapsedTime={elapsedTimes}
             metadata={metadata}
           />
-          {childrenIds.map(childId => (
+          {childrenIds ? childrenIds.map(childId => (
             <>
               <button
                 key={childId}
@@ -76,10 +80,11 @@ class Node extends Component {
                 onClick={() => changeGraph(childId)}
               >
                 Enter sub-query {childId}.
-              </button>{" "}
+              </button>
+              {" "}
             </>
-          ))}
-        </Popover.Content>
+          )) : null}
+        </Popover.Body>
       </Popover>
     );
 

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Input from "./Components/Input/Input";
 import Graph from "./Components/Graph/Graph";
 import Timeline from "./Components/Timeline/Timeline";
 import Summary from "./Components/Summary/Summary";
@@ -11,6 +10,8 @@ import goParentQueryButton from "./Components/NavBar/GoBackToParentQueryButton";
 import passChooser from "./Components/NavBar/PassChooser";
 import { preprocessQueryPlan } from "./library/dataStructures/processing/queryPlan";
 import { parseJson } from "./library/graphView/parseJson";
+import Input from "./Components/Input/Input";
+import { NotificationWrapper } from "./Components/Notification/NotificationWrapper";
 
 class App extends Component {
   constructor(props) {
@@ -132,7 +133,7 @@ class App extends Component {
     allQueries[currentQueryId] || {};
 
     return (
-      <>
+      <NotificationWrapper>
         <NavBar
           navigate={dir => this.setState({ router: dir })}
           dataIsEmpty
@@ -147,7 +148,7 @@ class App extends Component {
           {router === "graph" && !restartGraph && this.renderGraph()}
           {router === "timeline" && this.renderTimeline()}
         </main>
-      </>
+      </NotificationWrapper>
     );
   }
 }

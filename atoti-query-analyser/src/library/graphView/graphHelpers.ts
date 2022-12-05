@@ -8,7 +8,7 @@ function outlineColor(d: any) {
   if (d.isSelected) {
     return "#2E2E2E";
   }
-  if (d.childrenIds.length === 0) {
+  if ((d.childrenIds || []).length === 0) {
     return "#BFBFBF";
   }
   // node has subqueries
