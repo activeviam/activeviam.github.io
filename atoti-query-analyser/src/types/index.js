@@ -9,13 +9,13 @@ export const nodeType = shape({
   isSelected: bool.isRequired,
   radius: number.isRequired,
   yFixed: number.isRequired,
-  status: oneOf([null, "root", "leaf"])
+  status: oneOf([null, "root", "leaf"]),
 });
 
 export const linkType = shape({
   source: oneOfType([number, nodeType]).isRequired,
   target: oneOfType([number, nodeType]).isRequired,
-  id: string.isRequired
+  id: string.isRequired,
 });
 
 export const detailsType = shape({
@@ -23,5 +23,5 @@ export const detailsType = shape({
   retrievalId: number.isRequired,
   measureProvider: string.isRequired,
   measures: arrayOf(string).isRequired,
-  partitioning: string.isRequired
+  partitioning: string.isRequired,
 });

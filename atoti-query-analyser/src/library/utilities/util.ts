@@ -6,7 +6,11 @@ export function requireNonNull<T>(value: T | null | undefined): T {
   return value;
 }
 
-export function computeIfAbsent<K, V>(map: Map<K, V>, key: K, valueSupplier: (key: K) => V): V {
+export function computeIfAbsent<K, V>(
+  map: Map<K, V>,
+  key: K,
+  valueSupplier: (key: K) => V
+): V {
   if (map.has(key)) {
     return requireNonNull(map.get(key));
   }
@@ -14,4 +18,3 @@ export function computeIfAbsent<K, V>(map: Map<K, V>, key: K, valueSupplier: (ke
   map.set(key, value);
   return value;
 }
-

@@ -1,10 +1,14 @@
-import { validateList, validateObject, validateString } from "./validatingUtils";
+import {
+  validateList,
+  validateObject,
+  validateString,
+} from "./validatingUtils";
 
 export interface CubeLocation {
-  dimension: string,
-  hierarchy: string,
-  level: string[],
-  path: string[]
+  dimension: string;
+  hierarchy: string;
+  level: string[];
+  path: string[];
 }
 
 export function validateLocation(rawLocation: any): CubeLocation {
@@ -14,6 +18,6 @@ export function validateLocation(rawLocation: any): CubeLocation {
     dimension: validateString(rawLocation.dimension),
     hierarchy: validateString(rawLocation.hierarchy),
     level: validateList(rawLocation.level, validateString),
-    path: validateList(rawLocation.path, validateString)
+    path: validateList(rawLocation.path, validateString),
   };
 }

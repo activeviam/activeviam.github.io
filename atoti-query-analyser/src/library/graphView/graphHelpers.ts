@@ -30,7 +30,7 @@ const NODE_COLOR_MAP = new Map([
   ["PrimitiveResultsMerger", "#af7aa1"],
   ["RangeSharingPrimitiveAggregatesRetrieval", "#ff9da7"],
   ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#9c755f"],
-  ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#bab0ab"]
+  ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#bab0ab"],
 ]);
 
 function insideColor(d: any) {
@@ -44,19 +44,19 @@ function insideColor(d: any) {
 function enterLink(selection: Selection<any, any, any, any>) {
   selection
     .attr("stroke-width", 6)
-    .style("stroke", d => (d.critical ? "#b30000" : "#1B1978"))
+    .style("stroke", (d) => (d.critical ? "#b30000" : "#1B1978"))
     .style("opacity", ".8");
 }
 
 function updateLink(selection: Selection<BaseType, any, BaseType, any>) {
   selection
-    .attr("x1", d => d.source.x)
-    .attr("y1", d => d.source.y)
-    .attr("x2", d => d.target.x)
-    .attr("y2", d => d.target.y);
+    .attr("x1", (d) => d.source.x)
+    .attr("y1", (d) => d.source.y)
+    .attr("x2", (d) => d.target.x)
+    .attr("y2", (d) => d.target.y);
 }
 
-function computeRadius(d: { radius: number; }) {
+function computeRadius(d: { radius: number }) {
   return Math.max(Math.sqrt(d.radius) * 4, 10);
 }
 
@@ -64,43 +64,42 @@ function enterNode(selection: Selection<BaseType, any, HTMLElement, any>) {
   selection
     .select("circle")
     .attr("r", computeRadius)
-    .style("fill", d => insideColor(d))
-    .style("stroke-width", d => (d.isSelected ? 3 : 1))
-    .style("stroke", d => outlineColor(d));
+    .style("fill", (d) => insideColor(d))
+    .style("stroke-width", (d) => (d.isSelected ? 3 : 1))
+    .style("stroke", (d) => outlineColor(d));
   selection
     .select("rect")
-    .attr("width", d => 2 * computeRadius(d))
-    .attr("height", d => 2 * computeRadius(d))
+    .attr("width", (d) => 2 * computeRadius(d))
+    .attr("height", (d) => 2 * computeRadius(d))
     .attr("rx", "3")
-    .style("fill", d => insideColor(d))
-    .style("stroke-width", d => (d.isSelected ? 3 : 1))
-    .style("stroke", d => outlineColor(d))
-    .style("transform", d => {
+    .style("fill", (d) => insideColor(d))
+    .style("stroke-width", (d) => (d.isSelected ? 3 : 1))
+    .style("stroke", (d) => outlineColor(d))
+    .style("transform", (d) => {
       const r = computeRadius(d);
       return `translate(-${r}px, -${r}px)`;
     });
 
-  selection
-    .select("text")
-    .attr("dy", ".35em")
-    .attr("dx", "-0.65em");
+  selection.select("text").attr("dy", ".35em").attr("dx", "-0.65em");
 }
 
 function updateNode(selection: Selection<BaseType, any, BaseType, unknown>) {
   selection
-    .attr("transform", d => `translate(${d.x},${d.y})`)
+    .attr("transform", (d) => `translate(${d.x},${d.y})`)
     .select("circle")
-    .style("stroke-width", d => (d.isSelected ? 3 : 1))
-    .style("stroke", d => outlineColor(d));
+    .style("stroke-width", (d) => (d.isSelected ? 3 : 1))
+    .style("stroke", (d) => outlineColor(d));
 
   selection
-    .attr("transform", d => `translate(${d.x},${d.y})`)
+    .attr("transform", (d) => `translate(${d.x},${d.y})`)
     .select("rect")
-    .style("stroke-width", d => (d.isSelected ? 3 : 1))
-    .style("stroke", d => outlineColor(d));
+    .style("stroke-width", (d) => (d.isSelected ? 3 : 1))
+    .style("stroke", (d) => outlineColor(d));
 }
 
-function updateGraph(selection: Selection<BaseType, unknown, HTMLElement, any>) {
+function updateGraph(
+  selection: Selection<BaseType, unknown, HTMLElement, any>
+) {
   selection.selectAll(".node").call(updateNode);
   selection.selectAll(".link").call(updateLink);
 }

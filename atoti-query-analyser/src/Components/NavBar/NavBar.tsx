@@ -2,10 +2,14 @@ import React from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
-const NavBar = ({ navigate, goBackButton, passChooser }: {
-  navigate: (to: string) => void,
-  goBackButton?: JSX.Element,
-  passChooser?: JSX.Element
+const NavBar = ({
+  navigate,
+  goBackButton,
+  passChooser,
+}: {
+  navigate: (to: string) => void;
+  goBackButton?: JSX.Element;
+  passChooser?: JSX.Element;
 }) => {
   return (
     <Navbar bg="dark" variant="dark">

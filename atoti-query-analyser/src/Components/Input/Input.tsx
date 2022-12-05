@@ -3,112 +3,134 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { useErrorMessage } from "../Notification/notificationHooks";
 
 export enum InputMode {
-  JSON, URL, V1,
+  JSON,
+  URL,
+  V1,
 }
 
 export enum InputType {
-  CLASSIC, DEVELOPER,
+  CLASSIC,
+  DEVELOPER,
 }
 
-export type OnInput = (mode: InputMode | string, type: InputType, input: string | {}) => Promise<void>;
-
-function URLInput({ url, setUrl, username, setUsername, password, setPassword }: {
-  url: string,
-  setUrl: (newUrl: string) => void,
-  username: string,
-  setUsername: (newUsername: string) => void,
-  password: string,
-  setPassword: (newPassword: string) => void,
-}) {
-  return <Row className={"mt-1"}>
-    <Col md={6} lg={6}>
-      <Form.Control
-        placeholder="Server URL"
-        value={url}
-        onChange={e => setUrl(e.target.value)}
-      />
-    </Col>
-    <Col>
-      <Form.Control
-        placeholder="Username"
-        defaultValue={username}
-        onChange={e => setUsername(e.target.value)}
-      />
-    </Col>
-    <Col>
-      <Form.Control
-        placeholder="Password"
-        type="password"
-        defaultValue={password}
-        onChange={e => setPassword(e.target.value)}
-      />
-    </Col>
-  </Row>;
-}
-
-function TypeInput({ type, setType }: {
+export type OnInput = (
+  mode: InputMode | string,
   type: InputType,
-  setType: (newType: InputType) => void
+  input: string | {}
+) => Promise<void>;
+
+function URLInput({
+  url,
+  setUrl,
+  username,
+  setUsername,
+  password,
+  setPassword,
+}: {
+  url: string;
+  setUrl: (newUrl: string) => void;
+  username: string;
+  setUsername: (newUsername: string) => void;
+  password: string;
+  setPassword: (newPassword: string) => void;
+}) {
+  return (
+    <Row className={"mt-1"}>
+      <Col md={6} lg={6}>
+        <Form.Control
+          placeholder="Server URL"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+        />
+      </Col>
+      <Col>
+        <Form.Control
+          placeholder="Username"
+          defaultValue={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </Col>
+      <Col>
+        <Form.Control
+          placeholder="Password"
+          type="password"
+          defaultValue={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </Col>
+    </Row>
+  );
+}
+
+function TypeInput({
+  type,
+  setType,
+}: {
+  type: InputType;
+  setType: (newType: InputType) => void;
 }) {
   const makeLabel = (inputType: InputType): string => {
     const inCodeLabel = InputType[inputType];
-    return inCodeLabel[0].toUpperCase() + inCodeLabel.substring(1).toLowerCase();
+    return (
+      inCodeLabel[0].toUpperCase() + inCodeLabel.substring(1).toLowerCase()
+    );
   };
 
-  return <div key="inline-radio" className="mb-3">
-    {
-      Object.values(InputType)
-        .map((inputType: InputType | string) => {
-          if (typeof inputType !== "number") {
-            return null;
-          }
+  return (
+    <div key="inline-radio" className="mb-3">
+      {Object.values(InputType).map((inputType: InputType | string) => {
+        if (typeof inputType !== "number") {
+          return null;
+        }
 
-          return <Form.Check
+        return (
+          <Form.Check
             inline
             label={makeLabel(inputType)}
             type="radio"
             onChange={() => setType(inputType)}
             checked={type === inputType}
-          />;
-        })
-    }
-  </div>;
+          />
+        );
+      })}
+    </div>
+  );
 }
 
-function Buttons({ urlMode, onSubmit }: {
-  urlMode: boolean,
-  onSubmit: (mode: InputMode) => void
+function Buttons({
+  urlMode,
+  onSubmit,
+}: {
+  urlMode: boolean;
+  onSubmit: (mode: InputMode) => void;
 }) {
-  return <>
-    <Button
-      variant="primary"
-      onClick={() => onSubmit(InputMode.JSON)}
-    >
-      Import from Json
-    </Button>
-    {" "}
-    <Button
-      variant="primary"
-      onClick={() => onSubmit(InputMode.V1)}
-    >
-      Import from V1
-    </Button>
-    {" "}
-    <Button
-      variant={urlMode ? "primary" : "secondary"}
-      onClick={() => onSubmit(InputMode.URL)}
-    >
-      Import from Server
-    </Button>
-  </>;
+  return (
+    <>
+      <Button variant="primary" onClick={() => onSubmit(InputMode.JSON)}>
+        Import from Json
+      </Button>{" "}
+      <Button variant="primary" onClick={() => onSubmit(InputMode.V1)}>
+        Import from V1
+      </Button>{" "}
+      <Button
+        variant={urlMode ? "primary" : "secondary"}
+        onClick={() => onSubmit(InputMode.URL)}
+      >
+        Import from Server
+      </Button>
+    </>
+  );
 }
 
-function DevButtons({ input, visible, setInput }: {
-  input: string,
-  visible: boolean,
-  setInput: (value: string) => void
+function DevButtons({
+  input,
+  visible,
+  setInput,
+}: {
+  input: string;
+  visible: boolean;
+  setInput: (value: string) => void;
 }) {
-
   if (!visible) {
     return null;
   }
@@ -123,25 +145,23 @@ function DevButtons({ input, visible, setInput }: {
     setInput(window.localStorage.getItem("dev.input") || "");
   };
 
-  return <>
-    {" "}
-    <Button
-      variant="outline-primary"
-      onClick={saveToLocalStorage}
-    >
-      Save to LocalStorage
-    </Button>
-    {" "}
-    <Button
-      variant="outline-primary"
-      onClick={loadFromLocalStorage}
-    >
-      Load from LocalStorage
-    </Button>
-  </>;
+  return (
+    <>
+      {" "}
+      <Button variant="outline-primary" onClick={saveToLocalStorage}>
+        Save to LocalStorage
+      </Button>{" "}
+      <Button variant="outline-primary" onClick={loadFromLocalStorage}>
+        Load from LocalStorage
+      </Button>
+    </>
+  );
 }
 
-export default function Input({ passInput, lastInput }: {
+export default function Input({
+  passInput,
+  lastInput,
+}: {
   passInput: OnInput;
   lastInput: string;
 }) {
@@ -166,8 +186,10 @@ export default function Input({ passInput, lastInput }: {
     passInput("url", type, {
       url,
       query: input,
-      credentials: `Basic ${credentials}`
-    }).then(() => setUrlMode(false)).catch(showError);
+      credentials: `Basic ${credentials}`,
+    })
+      .then(() => setUrlMode(false))
+      .catch(showError);
   };
 
   const dispatchSubmit = (mode: InputMode) => {
@@ -190,25 +212,29 @@ export default function Input({ passInput, lastInput }: {
     }
   };
 
-  return <Form className="m-4">
-    <Form.Group controlId="query-input">
-      <Form.Control
-        as="textarea"
-        rows={10}
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-    </Form.Group>
-    {urlMode
-      ? <URLInput
-        url={url} setUrl={setUrl}
-        username={username} setUsername={setUsername}
-        password={password} setPassword={setPassword}
-      />
-      : null
-    }
-    <TypeInput type={type} setType={setType} />
-    <Buttons urlMode={urlMode} onSubmit={dispatchSubmit} />
-    <DevButtons visible={devMode} input={input} setInput={setInput} />
-  </Form>;
+  return (
+    <Form className="m-4">
+      <Form.Group controlId="query-input">
+        <Form.Control
+          as="textarea"
+          rows={10}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+      </Form.Group>
+      {urlMode ? (
+        <URLInput
+          url={url}
+          setUrl={setUrl}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+        />
+      ) : null}
+      <TypeInput type={type} setType={setType} />
+      <Buttons urlMode={urlMode} onSubmit={dispatchSubmit} />
+      <DevButtons visible={devMode} input={input} setInput={setInput} />
+    </Form>
+  );
 }

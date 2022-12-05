@@ -5,7 +5,7 @@ export interface D3NodeDetails {
   metadata: ARetrieval;
   startTime: number;
   elapsedTime: number;
-  startTimes: number[]
+  startTimes: number[];
 }
 
 export interface D3Node {

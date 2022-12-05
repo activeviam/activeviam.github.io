@@ -6,7 +6,7 @@ import {
   AggregateRetrievalKind,
   RetrievalGraph,
   RetrievalVertex,
-  VirtualRetrievalKind
+  VirtualRetrievalKind,
 } from "../dataStructures/json/retrieval";
 import { QueryPlan } from "../dataStructures/processing/queryPlan";
 import { VertexSelection } from "../dataStructures/processing/selection";
@@ -28,21 +28,38 @@ function computeRadius(elapsed: number): number {
 }
 
 type IntermediateD3Node = Omit<D3Node, "id"> & { id: UUID };
-type IntermediateD3Link = Omit<Omit<D3Link, "source">, "target"> & { source: UUID, target: UUID };
+type IntermediateD3Link = Omit<Omit<D3Link, "source">, "target"> & {
+  source: UUID;
+  target: UUID;
+};
 
-function getNodes(graph: RetrievalGraph, info: { selection: VertexSelection }, depths: Map<RetrievalVertex, number>): IntermediateD3Node[] {
+function getNodes(
+  graph: RetrievalGraph,
+  info: { selection: VertexSelection },
+  depths: Map<RetrievalVertex, number>
+): IntermediateD3Node[] {
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object.
 
   const virtualSource = graph.getVertexByLabel("virtualSource");
-  const leaves = new Set(Array.from(graph.getOutgoingEdges(virtualSource)).map(edge => edge.getEnd()));
+  const leaves = new Set(
+    Array.from(graph.getOutgoingEdges(virtualSource)).map((edge) =>
+      edge.getEnd()
+    )
+  );
   const roots = new Set(
-    Array.from(graph.getVertices()).filter(vertex => Array.from(graph.getOutgoingEdges(vertex)).length === 0)
+    Array.from(graph.getVertices()).filter(
+      (vertex) => Array.from(graph.getOutgoingEdges(vertex)).length === 0
+    )
   );
 
   return Array.from(graph.getVertices())
-    .filter(vertex => info.selection.has(vertex.getUUID()) && vertex.getMetadata().$kind !== VirtualRetrievalKind)
-    .map(vertex => {
+    .filter(
+      (vertex) =>
+        info.selection.has(vertex.getUUID()) &&
+        vertex.getMetadata().$kind !== VirtualRetrievalKind
+    )
+    .map((vertex) => {
       const metadata = vertex.getMetadata();
 
       // const childrenIds = [];
@@ -59,7 +76,10 @@ function getNodes(graph: RetrievalGraph, info: { selection: VertexSelection }, d
 
       const radius = computeRadius(realElapsed);
       const yFixed = requireNonNull(depths.get(vertex)) * 150;
-      const name = kind === AggregateRetrievalKind ? `${retrievalId}` : `${abbreviation(kind)}#${retrievalId}`;
+      const name =
+        kind === AggregateRetrievalKind
+          ? `${retrievalId}`
+          : `${abbreviation(kind)}#${retrievalId}`;
       return {
         id: vertex.getUUID(),
         name,
@@ -70,54 +90,60 @@ function getNodes(graph: RetrievalGraph, info: { selection: VertexSelection }, d
           elapsedTime: realElapsed,
           startTimes: startTime,
           elapsedTimes: elapsedTime,
-          metadata
+          metadata,
         },
         clusterId: -1, // Set later when computing clusters
         radius,
         yFixed,
-        status: leaves.has(vertex)
-          ? "leaf"
-          : roots.has(vertex)
-            ? "root"
-            : null
+        status: leaves.has(vertex) ? "leaf" : roots.has(vertex) ? "root" : null,
       };
     });
 }
 
-function getLinks(graph: RetrievalGraph, info: { selection: VertexSelection }): IntermediateD3Link[] {
-  const filteredGraph = graph.filterVertices(vertex => vertex.getMetadata().$kind !== VirtualRetrievalKind && info.selection.has(vertex.getUUID()));
+function getLinks(
+  graph: RetrievalGraph,
+  info: { selection: VertexSelection }
+): IntermediateD3Link[] {
+  const filteredGraph = graph.filterVertices(
+    (vertex) =>
+      vertex.getMetadata().$kind !== VirtualRetrievalKind &&
+      info.selection.has(vertex.getUUID())
+  );
 
   const links: IntermediateD3Link[] = [];
-  filteredGraph.getVertices()
-    .forEach((source) => filteredGraph.getOutgoingEdges(source)
-      .forEach(edge => {
-        const target = edge.getEnd();
-        links.push({
-          source: source.getUUID(),
-          target: target.getUUID(),
-          id: `${source.getUUID()}#${target.getUUID()}`,
-          critical: false // Set later when computing the critical path
-        });
-      }));
+  filteredGraph.getVertices().forEach((source) =>
+    filteredGraph.getOutgoingEdges(source).forEach((edge) => {
+      const target = edge.getEnd();
+      links.push({
+        source: source.getUUID(),
+        target: target.getUUID(),
+        id: `${source.getUUID()}#${target.getUUID()}`,
+        critical: false, // Set later when computing the critical path
+      });
+    })
+  );
   return links;
 }
 
-function normalizeIds(nodes: IntermediateD3Node[], links: IntermediateD3Link[]): D3Graph {
-  const idMap = new Map(nodes.map((node, index) => ([node.id, index])));
+function normalizeIds(
+  nodes: IntermediateD3Node[],
+  links: IntermediateD3Link[]
+): D3Graph {
+  const idMap = new Map(nodes.map((node, index) => [node.id, index]));
 
   const normalizedNodes: D3Node[] = nodes.map((node, index) => ({
     ...node,
-    id: index
+    id: index,
   }));
 
-  const normalizedLinks: D3Link[] = links.map(link => {
+  const normalizedLinks: D3Link[] = links.map((link) => {
     const source = requireNonNull(idMap.get(link.source));
     const target = requireNonNull(idMap.get(link.target));
     return {
       ...link,
       source,
       target,
-      id: `${source}-${target}`
+      id: `${source}-${target}`,
     };
   });
 
@@ -131,14 +157,13 @@ export function buildD3(query: QueryPlan, selection: VertexSelection) {
   const nodes = getNodes(graph, info, depths);
   const links = getLinks(graph, info);
   const criticalLinks = criticalPath(graph, selection);
-  links.forEach(link => {
+  links.forEach((link) => {
     link.critical = criticalLinks.has(link.id);
   });
   const clusters = addClustersToNodes(query, info.selection);
-  nodes.forEach(node => {
+  nodes.forEach((node) => {
     node.clusterId = requireNonNull(clusters.get(node.id));
   });
 
   return normalizeIds(nodes, links);
 }
-

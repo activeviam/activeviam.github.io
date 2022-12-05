@@ -13,7 +13,8 @@
  * ```
  * */
 export function extractWords(text: string): Array<string> {
-  const re = /(\d+)|([A-Z]+(?=([A-Z][a-z]+)|$|[^a-zA-Z]))|((?<=[^a-zA-Z]|^)[a-z]+)|([A-Z][a-z]+)/gm;
+  const re =
+    /(\d+)|([A-Z]+(?=([A-Z][a-z]+)|$|[^a-zA-Z]))|((?<=[^a-zA-Z]|^)[a-z]+)|([A-Z][a-z]+)/gm;
   const words = [];
 
   let match;
@@ -26,5 +27,5 @@ export function extractWords(text: string): Array<string> {
 
 export function abbreviation(text: string): string {
   const words = extractWords(text);
-  return words.map(word => word[0].toUpperCase()).join('');
+  return words.map((word) => word[0].toUpperCase()).join("");
 }

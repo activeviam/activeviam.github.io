@@ -34,13 +34,12 @@ export function parseFuzzyTimer({ exactDuration }: FuzzyTimer): string {
   }
   const minutes = seconds / 60;
   if (minutes < 60) {
-    return `${Math.floor(minutes)} minute${minutes < 2 ? '' : 's'} ago`;
+    return `${Math.floor(minutes)} minute${minutes < 2 ? "" : "s"} ago`;
   }
   const hours = minutes / 60;
   if (hours < 24) {
-    return `${Math.floor(hours)} hour${hours < 2 ? '' : 's'} ago`;
+    return `${Math.floor(hours)} hour${hours < 2 ? "" : "s"} ago`;
   }
   const days = hours / 24;
-  return `${Math.floor(days)} day${days < 2 ? '' : 's'} ago`;
+  return `${Math.floor(days)} day${days < 2 ? "" : "s"} ago`;
 }
-

@@ -3,7 +3,7 @@ import {
   RetrievalGraph,
   RetrievalVertex,
   VirtualRetrieval,
-  VirtualRetrievalKind
+  VirtualRetrievalKind,
 } from "../dataStructures/json/retrieval";
 
 function makeRetrievalConsumer(graph: RetrievalGraph) {
@@ -24,28 +24,36 @@ function makeRetrievalConsumer(graph: RetrievalGraph) {
   };
 }
 
-function makeVirtualRetrieval({ retrievalId }: { retrievalId: number }): VirtualRetrieval {
+function makeVirtualRetrieval({
+  retrievalId,
+}: {
+  retrievalId: number;
+}): VirtualRetrieval {
   return {
     $kind: VirtualRetrievalKind,
     retrievalId,
-    timingInfo: {}
+    timingInfo: {},
   };
 }
 
 export default function buildGraph(
   aggregateRetrievals: Array<any>,
   externalRetrievals: Array<any>,
-  dependencies: Map<number, Set<number>>,
+  aggregateDependencies: Map<number, Set<number>>,
   externalDependencies: Map<number, Set<number>>
 ): RetrievalGraph {
   const graph = new RetrievalGraph();
 
   const retrievalConsumer = makeRetrievalConsumer(graph);
 
-  const virtualSource = new RetrievalVertex(makeVirtualRetrieval({ retrievalId: -1 }));
+  const virtualSource = new RetrievalVertex(
+    makeVirtualRetrieval({ retrievalId: -1 })
+  );
   graph.addVertex(virtualSource);
   graph.labelVertex(virtualSource.getUUID(), "virtualSource");
-  const virtualTarget = new RetrievalVertex(makeVirtualRetrieval({ retrievalId: -2 }));
+  const virtualTarget = new RetrievalVertex(
+    makeVirtualRetrieval({ retrievalId: -2 })
+  );
   graph.addVertex(virtualTarget);
   graph.labelVertex(virtualTarget.getUUID(), "virtualTarget");
 
@@ -53,29 +61,38 @@ export default function buildGraph(
   const externalRetrievalVertices = retrievalConsumer(externalRetrievals);
 
   [
-    { dependencies: dependencies, depVertices: aggregateRetrievalVertices },
-    { dependencies: externalDependencies, depVertices: externalRetrievalVertices }
+    {
+      dependencies: aggregateDependencies,
+      depVertices: aggregateRetrievalVertices,
+    },
+    {
+      dependencies: externalDependencies,
+      depVertices: externalRetrievalVertices,
+    },
   ].forEach(({ dependencies, depVertices }) => {
     dependencies.forEach((deps, key) => {
       deps.forEach((dep) => {
-        graph.createEdge(key < 0 ? virtualSource.getUUID() : aggregateRetrievalVertices[key], depVertices[dep], undefined);
+        graph.createEdge(
+          key < 0 ? virtualSource.getUUID() : aggregateRetrievalVertices[key],
+          depVertices[dep],
+          undefined
+        );
       });
     });
   });
 
-  graph.getVertices()
-    .forEach((vertex) => {
-      if (vertex === virtualTarget) {
-        return;
-      }
+  graph.getVertices().forEach((vertex) => {
+    if (vertex === virtualTarget) {
+      return;
+    }
 
-      const edges = graph.getOutgoingEdges(vertex);
-      if (edges.size > 0) {
-        return;
-      }
+    const edges = graph.getOutgoingEdges(vertex);
+    if (edges.size > 0) {
+      return;
+    }
 
-      graph.createEdge(vertex.getUUID(), virtualTarget.getUUID(), undefined);
-    });
+    graph.createEdge(vertex.getUUID(), virtualTarget.getUUID(), undefined);
+  });
 
   return graph;
-};
+}

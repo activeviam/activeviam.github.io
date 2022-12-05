@@ -1,7 +1,10 @@
 import React from "react";
 
 // callback will be changeGraph()
-function goBackToParentQueryButton(currentParentId: number, callback: (id: number) => void) {
+function goBackToParentQueryButton(
+  currentParentId: number,
+  callback: (id: number) => void
+) {
   if (currentParentId !== null) {
     return (
       <input
@@ -13,6 +16,6 @@ function goBackToParentQueryButton(currentParentId: number, callback: (id: numbe
     );
   }
   return <></>;
-};
+}
 
 export default goBackToParentQueryButton;

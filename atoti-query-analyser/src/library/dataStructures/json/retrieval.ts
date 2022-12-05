@@ -1,69 +1,89 @@
-import { AdjacencyListGraph, AGraphObserver, Edge, Vertex } from "../common/graph";
-import { multiFieldValidate, validateInt, validateList, validateObject, validateString } from "./validatingUtils";
+import {
+  AdjacencyListGraph,
+  AGraphObserver,
+  Edge,
+  Vertex,
+} from "../common/graph";
+import {
+  multiFieldValidate,
+  validateInt,
+  validateList,
+  validateObject,
+  validateString,
+} from "./validatingUtils";
 import { CubeLocation, validateLocation } from "./cubeLocation";
 import { Measure, validateMeasure } from "./measure";
 import { TimingInfo, validateTimingInfo } from "./timingInfo";
 
 export const VirtualRetrievalKind: "VirtualRetrieval" = "VirtualRetrieval";
-export const AggregateRetrievalKind: "AggregateRetrieval" = "AggregateRetrieval";
+export const AggregateRetrievalKind: "AggregateRetrieval" =
+  "AggregateRetrieval";
 export const ExternalRetrievalKind: "ExternalRetrieval" = "ExternalRetrieval";
 
-export type VirtualRetrievalKind = typeof VirtualRetrievalKind;
-export type AggregateRetrievalKind = typeof AggregateRetrievalKind;
-export type ExternalRetrievalKind = typeof ExternalRetrievalKind;
+type TVirtualRetrievalKind = typeof VirtualRetrievalKind;
+type TAggregateRetrievalKind = typeof AggregateRetrievalKind;
+type TExternalRetrievalKind = typeof ExternalRetrievalKind;
 
-export type RetrievalKind =
-  | VirtualRetrievalKind
-  | ExternalRetrievalKind
-  | AggregateRetrievalKind;
+type RetrievalKind =
+  | TVirtualRetrievalKind
+  | TExternalRetrievalKind
+  | TAggregateRetrievalKind;
 
 export interface ARetrieval {
-  $kind: RetrievalKind,
-  retrievalId: number,
-  timingInfo: TimingInfo,
+  $kind: RetrievalKind;
+  retrievalId: number;
+  timingInfo: TimingInfo;
 }
 
 export type VirtualRetrieval = ARetrieval & {
-  $kind: VirtualRetrievalKind,
+  $kind: TVirtualRetrievalKind;
 };
 
 export type AggregateRetrieval = ARetrieval & {
-  $kind: AggregateRetrievalKind,
-  partialProviderName: string,
-  type: string,
-  partitioning: string,
-  location: CubeLocation[],
-  measures: Measure[],
-  filterId: number,
-  measureProvider: string,
-  underlyingDataNodes: string[],
-  resultSizes: number[],
-  childrenIds?: number[]
+  $kind: TAggregateRetrievalKind;
+  partialProviderName: string;
+  type: string;
+  partitioning: string;
+  location: CubeLocation[];
+  measures: Measure[];
+  filterId: number;
+  measureProvider: string;
+  underlyingDataNodes: string[];
+  resultSizes: number[];
+  childrenIds?: number[];
 };
 
 export type ExternalRetrieval = ARetrieval & {
-  $kind: ExternalRetrievalKind,
-  type: string,
-  store: string,
-  fields: string[],
-  joinedMeasure: Measure[],
-  condition: string,
-  resultSizes: number[],
+  $kind: TExternalRetrievalKind;
+  type: string;
+  store: string;
+  fields: string[];
+  joinedMeasure: Measure[];
+  condition: string;
+  resultSizes: number[];
 };
 
-export class RetrievalVertex extends Vertex<ARetrieval> {
-}
+export class RetrievalVertex extends Vertex<ARetrieval> {}
 
-export class RetrievalEdge extends Edge<ARetrieval, undefined, RetrievalVertex> {
-}
+export class RetrievalEdge extends Edge<
+  ARetrieval,
+  undefined,
+  RetrievalVertex
+> {}
 
-export class RetrievalGraph extends AdjacencyListGraph<ARetrieval, undefined> {
-}
+export class RetrievalGraph extends AdjacencyListGraph<ARetrieval, undefined> {}
 
-export class ARetrievalGraphObserver extends AGraphObserver<ARetrieval, undefined, RetrievalVertex, RetrievalEdge, RetrievalGraph> {
-}
+export class ARetrievalGraphObserver extends AGraphObserver<
+  ARetrieval,
+  undefined,
+  RetrievalVertex,
+  RetrievalEdge,
+  RetrievalGraph
+> {}
 
-export function validateAggregateRetrieval(rawRetrieval: any): AggregateRetrieval {
+export function validateAggregateRetrieval(
+  rawRetrieval: any
+): AggregateRetrieval {
   validateObject(rawRetrieval);
 
   return {
@@ -75,14 +95,23 @@ export function validateAggregateRetrieval(rawRetrieval: any): AggregateRetrieva
     partialProviderName: validateString(rawRetrieval.partialProviderName),
     partitioning: validateString(rawRetrieval.partitioning),
     resultSizes: validateList(rawRetrieval.resultSizes, validateInt),
-    retrievalId: multiFieldValidate(validateInt, rawRetrieval.retrievalId, rawRetrieval.retrId),
+    retrievalId: multiFieldValidate(
+      validateInt,
+      rawRetrieval.retrievalId,
+      rawRetrieval.retrId
+    ),
     timingInfo: validateTimingInfo(rawRetrieval.timingInfo),
     type: validateString(rawRetrieval.type),
-    underlyingDataNodes: validateList(rawRetrieval.underlyingDataNodes, validateString)
+    underlyingDataNodes: validateList(
+      rawRetrieval.underlyingDataNodes,
+      validateString
+    ),
   };
 }
 
-export function validateExternalRetrieval(rawRetrieval: any): ExternalRetrieval {
+export function validateExternalRetrieval(
+  rawRetrieval: any
+): ExternalRetrieval {
   validateObject(rawRetrieval);
 
   return {
@@ -91,9 +120,13 @@ export function validateExternalRetrieval(rawRetrieval: any): ExternalRetrieval 
     fields: validateList(rawRetrieval.fields, validateString),
     joinedMeasure: validateList(rawRetrieval.joinedMeasure, validateMeasure),
     resultSizes: validateList(rawRetrieval.resultSizes, validateInt),
-    retrievalId: multiFieldValidate(validateInt, rawRetrieval.retrievalId, rawRetrieval.retrId),
+    retrievalId: multiFieldValidate(
+      validateInt,
+      rawRetrieval.retrievalId,
+      rawRetrieval.retrId
+    ),
     store: validateString(rawRetrieval.store),
     timingInfo: validateTimingInfo(rawRetrieval.timingInfo),
-    type: validateString(rawRetrieval.type || "ExternalDatabaseRetrieval")
+    type: validateString(rawRetrieval.type || "ExternalDatabaseRetrieval"),
   };
 }

@@ -4,11 +4,11 @@ import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import Popover from "react-bootstrap/Popover";
 import Overlay from "react-bootstrap/Overlay";
+import Button from "react-bootstrap/Button";
+import { FaTimes } from "react-icons/fa";
 import { nodeType } from "../../types";
 import { enterNode, updateNode } from "../../library/graphView/graphHelpers";
 import Details from "../Details/Details";
-import Button from "react-bootstrap/Button";
-import { FaTimes } from "react-icons/all";
 
 class Node extends Component {
   constructor(props) {
@@ -32,7 +32,7 @@ class Node extends Component {
   handle = () => {
     const {
       node: { id: nodeId },
-      clickNode
+      clickNode,
     } = this.props;
     clickNode(nodeId);
   };
@@ -40,13 +40,9 @@ class Node extends Component {
   render() {
     const { node, changeGraph, clickNode } = this.props;
     const { details, childrenIds, isSelected, status } = node;
-    const {
-      startTimes,
-      elapsedTimes,
-      metadata
-    } = details;
-    const type = metadata.type;
-    const fullName = metadata.$kind + "#" + metadata.retrievalId;
+    const { startTimes, elapsedTimes, metadata } = details;
+    const { type } = metadata;
+    const fullName = `${metadata.$kind}#${metadata.retrievalId}`;
     const label = node.name;
 
     const popover = (
@@ -71,19 +67,20 @@ class Node extends Component {
             elapsedTime={elapsedTimes}
             metadata={metadata}
           />
-          {childrenIds ? childrenIds.map(childId => (
-            <>
-              <button
-                key={childId}
-                type="button"
-                className="btn btn-primary"
-                onClick={() => changeGraph(childId)}
-              >
-                Enter sub-query {childId}.
-              </button>
-              {" "}
-            </>
-          )) : null}
+          {childrenIds
+            ? childrenIds.map((childId) => (
+                <>
+                  <button
+                    key={childId}
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => changeGraph(childId)}
+                  >
+                    Enter sub-query {childId}.
+                  </button>{" "}
+                </>
+              ))
+            : null}
         </Popover.Body>
       </Popover>
     );
@@ -94,7 +91,7 @@ class Node extends Component {
         <g className="node">
           {React.createElement(nodeElem, {
             ref: this.myRef,
-            onClick: this.handle.bind(this)
+            onClick: this.handle.bind(this),
           })}
           <text onClick={this.handle}>{label}</text>
         </g>
@@ -109,7 +106,7 @@ class Node extends Component {
 Node.propTypes = {
   node: nodeType.isRequired,
   clickNode: PropTypes.func.isRequired,
-  changeGraph: PropTypes.func.isRequired
+  changeGraph: PropTypes.func.isRequired,
 };
 
 export default Node;

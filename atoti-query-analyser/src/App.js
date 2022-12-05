@@ -25,7 +25,7 @@ class App extends Component {
       currentQueryId: 0,
       currentPassId: 0,
       restartGraph: false,
-      lastInput: ""
+      lastInput: "",
     };
   }
 
@@ -36,37 +36,36 @@ class App extends Component {
     } else if (mode === "url") {
       json = await queryServer(input);
     } else if (mode === "v1") {
-      const v1Structure = await parseV1(input, () => {
-      });
+      const v1Structure = await parseV1(input, () => {});
       json = convertToV2(v1Structure);
     }
 
     const queryPlan = preprocessQueryPlan(json);
 
     const selections = applySelection(queryPlan);
-    const data = parseJson(queryPlan, selections);
+    const data = parseJson(queryPlan);
 
     this.setState({
       selections,
       allQueries: data,
       currentQueryId: data
-        .filter(query => query.pass === 0)
-        .find(query => query.parentId === null).id,
+        .filter((query) => query.pass === 0)
+        .find((query) => query.parentId === null).id,
       router: "summary",
       json: queryPlan,
-      lastInput: input
+      lastInput: input,
     });
   };
 
-  changeGraph = childId => {
+  changeGraph = (childId) => {
     this.setState({ currentQueryId: childId, restartGraph: true });
   };
 
-  changePass = passId => {
+  changePass = (passId) => {
     const { allQueries } = this.state;
     const newQueryId = allQueries
-      .filter(query => query.pass === passId)
-      .find(query => query.parentId === null).id;
+      .filter((query) => query.pass === passId)
+      .find((query) => query.parentId === null).id;
     this.changeGraph(newQueryId);
     this.setState({ currentPassId: passId });
   };
@@ -122,20 +121,15 @@ class App extends Component {
   }
 
   render() {
-    const {
-      allQueries,
-      currentQueryId,
-      restartGraph,
-      router,
-      lastInput
-    } = this.state;
+    const { allQueries, currentQueryId, restartGraph, router, lastInput } =
+      this.state;
     const { parentId: currentParentId = null } =
-    allQueries[currentQueryId] || {};
+      allQueries[currentQueryId] || {};
 
     return (
       <NotificationWrapper>
         <NavBar
-          navigate={dir => this.setState({ router: dir })}
+          navigate={(dir) => this.setState({ router: dir })}
           dataIsEmpty
           goBackButton={goParentQueryButton(currentParentId, this.changeGraph)}
           passChooser={this.renderPassChooser()}

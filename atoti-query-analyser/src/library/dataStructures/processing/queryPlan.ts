@@ -7,10 +7,10 @@ import buildGraph from "../../graphProcessors/buildGraph";
 import { setSimulatedTimingInfo } from "../../graphProcessors/fillTimingInfo";
 
 export interface QueryPlan {
-  planInfo: PlanInfo,
-  graph: RetrievalGraph
-  queryFilters: Filter[],
-  querySummary: QuerySummary,
+  planInfo: PlanInfo;
+  graph: RetrievalGraph;
+  queryFilters: Filter[];
+  querySummary: QuerySummary;
 }
 
 export function preprocessQueryPlan(json: any): QueryPlan[] {
@@ -20,27 +20,33 @@ export function preprocessQueryPlan(json: any): QueryPlan[] {
 
   return json
     .map(validateJsonQueryPlan)
-    .map(({
-            planInfo,
-            querySummary,
-            queryFilters,
-            dependencies,
-            externalRetrievals,
-            externalDependencies,
-            aggregateRetrievals,
-            needFillTimingInfo
-          }) => {
-
-      const graph = buildGraph(aggregateRetrievals, externalRetrievals, dependencies, externalDependencies);
-      if (needFillTimingInfo) {
-        setSimulatedTimingInfo(graph);
-      }
-
-      return {
+    .map(
+      ({
         planInfo,
         querySummary,
         queryFilters,
-        graph
-      };
-    });
+        dependencies,
+        externalRetrievals,
+        externalDependencies,
+        aggregateRetrievals,
+        needFillTimingInfo,
+      }) => {
+        const graph = buildGraph(
+          aggregateRetrievals,
+          externalRetrievals,
+          dependencies,
+          externalDependencies
+        );
+        if (needFillTimingInfo) {
+          setSimulatedTimingInfo(graph);
+        }
+
+        return {
+          planInfo,
+          querySummary,
+          queryFilters,
+          graph,
+        };
+      }
+    );
 }

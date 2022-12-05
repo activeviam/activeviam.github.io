@@ -10,20 +10,21 @@ class Menu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      matchingMeasures: null
+      matchingMeasures: null,
     };
   }
 
-  searchMeasures = event => {
+  searchMeasures = (event) => {
     const needle = event.target.value.trim();
     if (needle === "") {
       this.setState({ matchingMeasures: null });
     } else {
       const searcher = new FuzzySearch(
+        // eslint-disable-next-line react/prop-types
         _.difference(this.props.measures, this.props.selectedMeasures),
         undefined,
         {
-          caseSensitive: false
+          caseSensitive: false,
         }
       );
       const result = searcher.search(needle);
@@ -34,10 +35,11 @@ class Menu extends Component {
   renderMatchingMeasures() {
     if (this.state.matchingMeasures === null) return null;
 
+    // eslint-disable-next-line react/prop-types
     const { onSelectedMeasure } = this.props;
     return (
       <ul className="measures">
-        {this.state.matchingMeasures.map(measure => (
+        {this.state.matchingMeasures.map((measure) => (
           <li key={measure}>
             <Button
               variant="outline-success"
@@ -54,11 +56,13 @@ class Menu extends Component {
   }
 
   render() {
+    // eslint-disable-next-line react/prop-types
     const { measures, selectedMeasures, onSelectedMeasure } = this.props;
-    console.log(measures, selectedMeasures );
     const listing =
+      // eslint-disable-next-line react/prop-types
       selectedMeasures.length > 0
-        ? selectedMeasures.map(measure => (
+        ? // eslint-disable-next-line react/prop-types
+          selectedMeasures.map((measure) => (
             <li key={measure}>
               <Button
                 variant="outline-danger"
@@ -71,14 +75,16 @@ class Menu extends Component {
             </li>
           ))
         : [
-            ...Array.from(measures).slice(0, 5).map(m => (
-              <li key={m} className="sample">
-                {m}
-              </li>
-            )),
+            ...Array.from(measures)
+              .slice(0, 5)
+              .map((m) => (
+                <li key={m} className="sample">
+                  {m}
+                </li>
+              )),
             <li key="__sample__" className="sample">
               ...
-            </li>
+            </li>,
           ];
     return (
       <div className="contextual-menu">

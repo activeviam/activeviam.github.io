@@ -8,5 +8,4 @@ export class Dictionary<T> extends Map<T, number> {
 
     return requireNonNull(this.get(key));
   }
-
 }

@@ -22,7 +22,7 @@ class Link extends Component {
 }
 
 Link.propTypes = {
-  link: linkType.isRequired
+  link: linkType.isRequired,
 };
 
 export default Link;

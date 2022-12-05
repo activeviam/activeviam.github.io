@@ -14,7 +14,9 @@ export function validateBoolean(rawBoolean: any): boolean {
       } else if (rawBoolean === "false") {
         return false;
       } else {
-        throw new Error(`Cannot cast string ${JSON.stringify(rawBoolean)} to boolean`);
+        throw new Error(
+          `Cannot cast string ${JSON.stringify(rawBoolean)} to boolean`
+        );
       }
     }
     throw new Error(`Expected boolean, got ${typeof rawBoolean}`);
@@ -39,15 +41,24 @@ export function validateObject(rawObject: any): object {
   return rawObject;
 }
 
-export function validateObjectAsMap<K, V>(rawObject: any, keyValidator: (key: any) => K, valueValidator: (value: any) => V): Map<K, V> {
+export function validateObjectAsMap<K, V>(
+  rawObject: any,
+  keyValidator: (key: any) => K,
+  valueValidator: (value: any) => V
+): Map<K, V> {
   validateObject(rawObject);
   return new Map(
-    Object
-      .entries(rawObject)
-      .map(([key, value]) => ([keyValidator(key), valueValidator(value)])));
+    Object.entries(rawObject).map(([key, value]) => [
+      keyValidator(key),
+      valueValidator(value),
+    ])
+  );
 }
 
-export function validateList<T>(rawList: any, validateItem: (item: any) => T): T[] {
+export function validateList<T>(
+  rawList: any,
+  validateItem: (item: any) => T
+): T[] {
   if (!Array.isArray(rawList)) {
     throw new Error("rawList must be a list");
   }
@@ -55,11 +66,17 @@ export function validateList<T>(rawList: any, validateItem: (item: any) => T): T
   return rawList.map(validateItem);
 }
 
-export function validateListAsSet<T>(rawList: any, validateItem: (item: any) => T): Set<T> {
+export function validateListAsSet<T>(
+  rawList: any,
+  validateItem: (item: any) => T
+): Set<T> {
   return new Set(validateList(rawList, validateItem));
 }
 
-export function optional<T>(rawValue: any, validator: (value: any) => T): T | undefined {
+export function optional<T>(
+  rawValue: any,
+  validator: (value: any) => T
+): T | undefined {
   try {
     return validator(rawValue);
   } catch (_) {
@@ -67,15 +84,20 @@ export function optional<T>(rawValue: any, validator: (value: any) => T): T | un
   }
 }
 
-export function multiFieldValidate<T>(validator: (value: any) => T, ...rawValues: any[]): T {
+export function multiFieldValidate<T>(
+  validator: (value: any) => T,
+  ...rawValues: any[]
+): T {
   const errors = [];
   for (const rawValue of rawValues) {
     try {
       return validator(rawValue);
     } catch (err) {
-        errors.push(err);
+      errors.push(err);
     }
   }
   errors.forEach((err) => console.log(err));
-  throw new Error("None of suggested fields passed validation", { cause: errors });
+  throw new Error("None of suggested fields passed validation", {
+    cause: errors,
+  });
 }

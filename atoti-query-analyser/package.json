@@ -4,10 +4,17 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
+    "@testing-library/dom": "^8.19.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
+    "@babel/core": "^7.18.6",
+    "@babel/plugin-syntax-flow": "^7.18.6",
+    "@babel/plugin-transform-react-jsx": "^7.18.6",
+    "@popperjs/core": "^2.11.6",
     "@types/d3": "^7.4.0",
+    "@types/fuzzy-search": "^2.1.2",
+    "@types/uuid": "^8.3.4",
     "bootstrap": "5.2.3",
     "d3": "^5.15.0",
     "d3-drag": "^1.2.5",
@@ -15,7 +22,6 @@
     "d3-hierarchy": "^1.1.9",
     "d3-selection": "^1.4.1",
     "d3-zoom": "^1.8.3",
-    "eslint": "^6.8.0",
     "fuzzy-search": "^3.2.1",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
@@ -23,7 +29,7 @@
     "react-bootstrap": "2.6.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
-    "react-scripts": "3.4.1",
+    "react-scripts": "5.0.1",
     "typescript": "^4.9.3"
   },
   "scripts": {
@@ -51,15 +57,21 @@
     ]
   },
   "devDependencies": {
-    "@types/uuid": "^8.3.4",
     "cypress": "^4.5.0",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-config-prettier": "^6.9.0",
-    "eslint-plugin-import": "^2.20.0",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.2",
-    "eslint-plugin-react": "^7.17.0",
-    "eslint-plugin-react-hooks": "^1.7.0",
-    "prettier": "^1.19.1"
+    "eslint": "^8.29.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-react-app": "^7.0.1",
+    "eslint-import-resolver-typescript": "^3.5.2",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^2.8.0"
+  },
+  "resolutions": {
+    "**/@typescript-eslint/eslint-plugin": "^5.26.0",
+    "**/@typescript-eslint/parser": "^5.26.0"
   }
 }

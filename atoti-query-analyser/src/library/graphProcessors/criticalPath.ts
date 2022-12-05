@@ -1,5 +1,8 @@
 import { applyOnDAG } from "../dataStructures/common/graph";
-import { RetrievalGraph, RetrievalVertex } from "../dataStructures/json/retrieval";
+import {
+  RetrievalGraph,
+  RetrievalVertex,
+} from "../dataStructures/json/retrieval";
 import { VertexSelection } from "../dataStructures/processing/selection";
 import { requireNonNull } from "../utilities/util";
 
@@ -15,17 +18,26 @@ function findElapsedTime(node: RetrievalVertex): number {
 }
 
 interface CriticalScore {
-  criticalScore: number,
-  parent: RetrievalVertex | null
+  criticalScore: number;
+  parent: RetrievalVertex | null;
 }
 
-export function criticalPath(graph: RetrievalGraph, selection: VertexSelection) {
+export function criticalPath(
+  graph: RetrievalGraph,
+  selection: VertexSelection
+) {
   const virtualSource = graph.getVertexByLabel("virtualSource");
-  const filteredGraph = graph.filterVertices((vertex) => selection.has(vertex.getUUID()));
+  const filteredGraph = graph.filterVertices((vertex) =>
+    selection.has(vertex.getUUID())
+  );
 
   // We define criticalScore(node) as elapsedTime(node) + max([criticalScore(dependency) for dependency in graph.getOutgoingEdges(node)])
 
-  const criticalScoreCalculator = (node: RetrievalVertex, children: Set<RetrievalVertex>, childrenValues: (child: RetrievalVertex) => CriticalScore): CriticalScore => {
+  const criticalScoreCalculator = (
+    node: RetrievalVertex,
+    children: Set<RetrievalVertex>,
+    childrenValues: (child: RetrievalVertex) => CriticalScore
+  ): CriticalScore => {
     const elapsed = findElapsedTime(node);
 
     let maxParentCritical = 0;
@@ -41,17 +53,25 @@ export function criticalPath(graph: RetrievalGraph, selection: VertexSelection) 
 
     return {
       criticalScore: maxParentCritical + elapsed,
-      parent
+      parent,
     };
   };
 
-  const criticalScore = applyOnDAG(filteredGraph, virtualSource, criticalScoreCalculator);
+  const criticalScore = applyOnDAG(
+    filteredGraph,
+    virtualSource,
+    criticalScoreCalculator
+  );
 
   // Recreate path going up from the node with worst critical and collect link ids
   let maxNode = requireNonNull(criticalScore.get(virtualSource)).parent;
   const criticalLinks = new Set<string>();
-  while (maxNode && requireNonNull(criticalScore.get(maxNode)).parent !== null) {
-    const source = requireNonNull(criticalScore.get(maxNode)).parent as RetrievalVertex;
+  while (
+    maxNode &&
+    requireNonNull(criticalScore.get(maxNode)).parent !== null
+  ) {
+    const source = requireNonNull(criticalScore.get(maxNode))
+      .parent as RetrievalVertex;
     const target = maxNode;
     criticalLinks.add(`${target.getUUID()}#${source.getUUID()}`);
     maxNode = source;

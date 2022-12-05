@@ -5,24 +5,24 @@ import {
   validateInt,
   validateObject,
   validateObjectAsMap,
-  validateString
+  validateString,
 } from "./validatingUtils";
 
 export interface PlanInfo {
-  pivotType: string,
-  pivotId: string,
-  epoch: string,
-  branch: string,
-  retrieverType: string,
-  mdxPass?: string,
-  clusterMemberId?: string,
-  contextValues: Map<string, string>,
-  isContinuous: boolean,
-  rangeSharing: number,
-  missedPrefetchBehavior: string,
-  aggregatesCache: string,
-  globalTimings: Map<string, number>,
-  isEmpty: boolean,
+  pivotType: string;
+  pivotId: string;
+  epoch: string;
+  branch: string;
+  retrieverType: string;
+  mdxPass?: string;
+  clusterMemberId?: string;
+  contextValues: Map<string, string>;
+  isContinuous: boolean;
+  rangeSharing: number;
+  missedPrefetchBehavior: string;
+  aggregatesCache: string;
+  globalTimings: Map<string, number>;
+  isEmpty: boolean;
 }
 
 export function validatePlanInfo(rawPlanInfo: any): PlanInfo {
@@ -41,7 +41,7 @@ export function validatePlanInfo(rawPlanInfo: any): PlanInfo {
       mdxPass: rawPlanInfo.mdxPass,
       missedPrefetchBehavior: "",
       rangeSharing: 0,
-      retrieverType: ""
+      retrieverType: "",
     };
   }
 
@@ -49,16 +49,28 @@ export function validatePlanInfo(rawPlanInfo: any): PlanInfo {
     aggregatesCache: validateString(rawPlanInfo.aggregatesCache),
     branch: validateString(rawPlanInfo.branch),
     clusterMemberId: optional(rawPlanInfo.clusterMemberId, validateString),
-    contextValues: validateObjectAsMap(rawPlanInfo.contextValues, validateString, validateString),
+    contextValues: validateObjectAsMap(
+      rawPlanInfo.contextValues,
+      validateString,
+      validateString
+    ),
     epoch: validateString(rawPlanInfo.epoch),
-    globalTimings: validateObjectAsMap(rawPlanInfo.globalTimings, validateString, validateInt),
-    isContinuous: multiFieldValidate(validateBoolean, rawPlanInfo.isContinuous, rawPlanInfo.continuous),
+    globalTimings: validateObjectAsMap(
+      rawPlanInfo.globalTimings,
+      validateString,
+      validateInt
+    ),
+    isContinuous: multiFieldValidate(
+      validateBoolean,
+      rawPlanInfo.isContinuous,
+      rawPlanInfo.continuous
+    ),
     isEmpty: false,
     mdxPass: optional(rawPlanInfo.mdxPass, validateString),
     missedPrefetchBehavior: validateString(rawPlanInfo.missedPrefetchBehavior),
     pivotId: validateString(rawPlanInfo.pivotId),
     pivotType: validateString(rawPlanInfo.pivotType),
     rangeSharing: validateInt(rawPlanInfo.rangeSharing),
-    retrieverType: validateString(rawPlanInfo.retrieverType)
+    retrieverType: validateString(rawPlanInfo.retrieverType),
   };
 }

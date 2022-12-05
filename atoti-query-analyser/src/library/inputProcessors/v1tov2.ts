@@ -6,7 +6,7 @@ import {
   AggregateRetrieval,
   AggregateRetrievalKind,
   ExternalRetrieval,
-  ExternalRetrievalKind
+  ExternalRetrievalKind,
 } from "../dataStructures/json/retrieval";
 
 const RETRIEVAL = /(\w*Retrieval) #(\d+): ([\w_]+)( \(see)?/;
@@ -21,7 +21,11 @@ function last<T>(array: T[]): T | undefined {
   return array.length > 0 ? array[array.length - 1] : undefined;
 }
 
-function parseNewRetrieval(state: V1Structure, _line: string, match: RegExpMatchArray): V1Retrieval {
+function parseNewRetrieval(
+  state: V1Structure,
+  _line: string,
+  match: RegExpMatchArray
+): V1Retrieval {
   const sourceId = `${match[1]}#${match[2]}`;
   if (!state.retrievalIndex.has(sourceId)) {
     state.retrievalIndex.set(sourceId, state.retrievalIndex.size);
@@ -35,18 +39,22 @@ function parseNewRetrieval(state: V1Structure, _line: string, match: RegExpMatch
     ref: match[4] !== undefined,
     dependencies: [],
     parents: [],
-    properties: {}
+    properties: {},
   };
 }
 
 function parseProperty(_line: string, match: RegExpMatchArray) {
   return {
     key: match[1],
-    value: match[2]
+    value: match[2],
   };
 }
 
-function matchLine(state: V1Structure, line: string, matchClauses: Map<RegExp, OnRegExpMatchAction>) {
+function matchLine(
+  state: V1Structure,
+  line: string,
+  matchClauses: Map<RegExp, OnRegExpMatchAction>
+) {
   const entries = matchClauses.entries();
   for (let entry = entries.next(); !entry.done; entry = entries.next()) {
     const [expr, action] = entry.value;
@@ -58,39 +66,55 @@ function matchLine(state: V1Structure, line: string, matchClauses: Map<RegExp, O
   }
 }
 
-type OnRegExpMatchAction = (state: V1Structure, match: RegExpMatchArray, line: string) => void;
+type OnRegExpMatchAction = (
+  state: V1Structure,
+  match: RegExpMatchArray,
+  line: string
+) => void;
 
 const RETRIEVAL_CLAUSES = new Map<RegExp, OnRegExpMatchAction>([
-  [RETRIEVAL, (state, match, line) => {
-    const retrieval = parseNewRetrieval(state, line, match);
-    if (retrieval.ref) {
-      state.current = state.retrievals[retrieval.id];
-    } else {
-      state.current = retrieval;
-      state.retrievals[retrieval.id] = retrieval;
-    }
+  [
+    RETRIEVAL,
+    (state, match, line) => {
+      const retrieval = parseNewRetrieval(state, line, match);
+      if (retrieval.ref) {
+        state.current = state.retrievals[retrieval.id];
+      } else {
+        state.current = retrieval;
+        state.retrievals[retrieval.id] = retrieval;
+      }
 
-    const parent = last(state.parents);
-    if (parent) {
-      parent.dependencies.push(retrieval.id);
-    }
-  }],
-  [PARTITION_RESULT, (state, match) => {
-    // Before properties as results contain '=' and more
-    const partitionId = match[1];
-    const result = match[2];
-    if (result !== "EMPTY") {
-      const partitions = requireNonNull(state.current).partitions || [];
-      partitions.push(partitionId);
-      requireNonNull(state.current).partitions = partitions;
-    }
-  }],
-  [PROPERTY_EXPR, (state, match, line) => {
-    const property = parseProperty(line, match);
-    requireNonNull(state.current).properties[property.key] = property.value;
-  }],
-  [DEPENDENCY_START, (state) => state.parents.push(requireNonNull(state.current))],
-  [DEPENDENCY_END, (state) => state.parents.pop()]
+      const parent = last(state.parents);
+      if (parent) {
+        parent.dependencies.push(retrieval.id);
+      }
+    },
+  ],
+  [
+    PARTITION_RESULT,
+    (state, match) => {
+      // Before properties as results contain '=' and more
+      const partitionId = match[1];
+      const result = match[2];
+      if (result !== "EMPTY") {
+        const partitions = requireNonNull(state.current).partitions || [];
+        partitions.push(partitionId);
+        requireNonNull(state.current).partitions = partitions;
+      }
+    },
+  ],
+  [
+    PROPERTY_EXPR,
+    (state, match, line) => {
+      const property = parseProperty(line, match);
+      requireNonNull(state.current).properties[property.key] = property.value;
+    },
+  ],
+  [
+    DEPENDENCY_START,
+    (state) => state.parents.push(requireNonNull(state.current)),
+  ],
+  [DEPENDENCY_END, (state) => state.parents.pop()],
 ]);
 
 function parseLine(state: V1Structure, line: string) {
@@ -122,7 +146,7 @@ const PROP_MAPPING: { [key: string]: V1InfoKeyType } = {
   Continuous: "isContinuous",
   "Range sharing": "rangeSharing",
   "Missed prefetches": "missedPrefetchBehavior",
-  Cache: "aggregatesCache"
+  Cache: "aggregatesCache",
 };
 
 function parseProps(state: V1Structure, line: string) {
@@ -135,12 +159,16 @@ function parseProps(state: V1Structure, line: string) {
   }
 }
 
-type V1GlobalTimingsKeyType = "PLANNING" | "CONTEXT" | "FINALIZATION" | "EXECUTION";
+type V1GlobalTimingsKeyType =
+  | "PLANNING"
+  | "CONTEXT"
+  | "FINALIZATION"
+  | "EXECUTION";
 
 const TIME_PROP_MAPPING: { [key: string]: V1GlobalTimingsKeyType } = {
   "Planning time": "PLANNING",
   "Execution context creation time": "CONTEXT",
-  "Planning finalization time": "FINALIZATION"
+  "Planning finalization time": "FINALIZATION",
 };
 
 function parseTotalTime(state: V1Structure, line: string) {
@@ -158,15 +186,16 @@ function parseExecution(state: V1Structure, line: string) {
   }
 }
 
-const SECTION_MAPPING: { [sectionName: string]: (state: V1Structure, line: string) => void } = {
+const SECTION_MAPPING: {
+  [sectionName: string]: (state: V1Structure, line: string) => void;
+} = {
   "General information:": parseGeneral,
   "Context values:": parseContext,
   "Additional properties:": parseProps,
   "Planning:": parseTotalTime,
   "Execution:": parseExecution,
   "Query plan:": parseLine,
-  "Query Plan Summary:": () => {
-  } // No-op
+  "Query Plan Summary:": () => {}, // No-op
 };
 
 function parseDefault(state: V1Structure, line: string): boolean {
@@ -182,7 +211,12 @@ function parseDefault(state: V1Structure, line: string): boolean {
   return state.phase !== undefined;
 }
 
-function parseLines(state: V1Structure, lines: string[], from: number, to: number) {
+function parseLines(
+  state: V1Structure,
+  lines: string[],
+  from: number,
+  to: number
+) {
   for (let i = from; i < to; i += 1) {
     const line = lines[i].trim();
     if (!/^\s*$/.test(line)) {
@@ -196,14 +230,14 @@ function parseLines(state: V1Structure, lines: string[], from: number, to: numbe
 }
 
 interface V1Retrieval {
-  id: number,
-  sourceId: string,
-  type: string,
-  ref: boolean,
-  parents: number[],
-  properties: { [key: string]: string },
-  partitions?: string[],
-  dependencies: number[],
+  id: number;
+  sourceId: string;
+  type: string;
+  ref: boolean;
+  parents: number[];
+  properties: { [key: string]: string };
+  partitions?: string[];
+  dependencies: number[];
 }
 
 type V1InfoKeyType =
@@ -217,32 +251,35 @@ type V1InfoKeyType =
   | "aggregatesCache";
 
 type V1Info = {
-  contextValues: { [key: string]: string },
-  globalTimings: { [key in V1GlobalTimingsKeyType]?: number },
-  $parseErrors: { [key: string]: string },
+  contextValues: { [key: string]: string };
+  globalTimings: { [key in V1GlobalTimingsKeyType]?: number };
+  $parseErrors: { [key: string]: string };
 } & {
-  [key in V1InfoKeyType]?: string
+  [key in V1InfoKeyType]?: string;
 };
 
 interface V1Structure {
   phase?: string;
   last?: string;
-  info: V1Info,
-  root: V1Retrieval,
-  retrievals: V1Retrieval[],
-  current: V1Retrieval | null,
-  retrievalIndex: Map<string, number>,
-  parents: V1Retrieval[],
-  rootFilter?: string,
+  info: V1Info;
+  root: V1Retrieval;
+  retrievals: V1Retrieval[];
+  current: V1Retrieval | null;
+  retrievalIndex: Map<string, number>;
+  parents: V1Retrieval[];
+  rootFilter?: string;
 }
 
-async function parseV1(input: string, tickCallback: (currentLine: number, lineCount: number) => void): Promise<V1Structure> {
-  let result = await new Promise<V1Structure>(resolve => {
+async function parseV1(
+  input: string,
+  tickCallback: (currentLine: number, lineCount: number) => void
+): Promise<V1Structure> {
+  let result = await new Promise<V1Structure>((resolve) => {
     const accumulator: V1Structure = {
       info: {
         contextValues: {},
         globalTimings: {},
-        $parseErrors: {}
+        $parseErrors: {},
       },
       root: {
         id: NaN,
@@ -251,12 +288,12 @@ async function parseV1(input: string, tickCallback: (currentLine: number, lineCo
         ref: false,
         parents: [],
         properties: {},
-        dependencies: []
+        dependencies: [],
       },
       retrievals: [],
       current: null,
       retrievalIndex: new Map(),
-      parents: []
+      parents: [],
     };
     accumulator.parents.push(accumulator.root);
 
@@ -276,7 +313,7 @@ async function parseV1(input: string, tickCallback: (currentLine: number, lineCo
     })();
   });
   result.retrievals.forEach((retrieval, rId) => {
-    retrieval.dependencies.forEach(dId => {
+    retrieval.dependencies.forEach((dId) => {
       const dependency = result.retrievals[dId];
       dependency.parents.push(rId);
     });
@@ -303,10 +340,10 @@ function computeIfAbsent<V>(dic: { [key: string]: V }, key: string, value: V) {
 function createDependencyList(v1Structure: V1Structure) {
   const result = {
     dependencies: {},
-    externalDependencies: {}
+    externalDependencies: {},
   };
 
-  Object.values(v1Structure.retrievals).forEach(retrieval => {
+  Object.values(v1Structure.retrievals).forEach((retrieval) => {
     const { kind, retrievalId } = parseSourceId(retrieval);
 
     let mapToInsert: { [key: string]: number[] };
@@ -324,12 +361,14 @@ function createDependencyList(v1Structure: V1Structure) {
     if (retrieval.parents.length === 0) {
       computeIfAbsent(mapToInsert, "-1", []).push(retrievalId);
     } else {
-      retrieval.parents.forEach(parentId => {
+      retrieval.parents.forEach((parentId) => {
         const parentInfo = parseSourceId(v1Structure.retrievals[parentId]);
         if (parentInfo.kind !== "Retrieval") {
           throw new Error("Only aggregate retrievals can have dependencies");
         }
-        computeIfAbsent(mapToInsert, `${parentInfo.retrievalId}`, []).push(retrievalId);
+        computeIfAbsent(mapToInsert, `${parentInfo.retrievalId}`, []).push(
+          retrievalId
+        );
       });
     }
   });
@@ -344,19 +383,19 @@ function parseLocation(location: string) {
     return [];
   }
 
-  return location.split(/\s*,\s*/).map(part => {
+  return location.split(/\s*,\s*/).map((part) => {
     const match = requireNonNull(DIMENSION_EXPR.exec(part));
     const level = match[3].split(/\\/);
     const path = match[4]
       .split(/\\/)
-      .map(member =>
+      .map((member) =>
         member[0] === "[" ? member.substring(1, member.length - 1) : member
       );
     return {
       dimension: match[1],
       hierarchy: match[2],
       level,
-      path
+      path,
     };
   });
 }
@@ -389,7 +428,7 @@ function parseTimings(type: string, props: { [key: string]: string }) {
   if (starts && elapsed) {
     return {
       startTime: JSON.parse(starts),
-      elapsedTime: JSON.parse(elapsed)
+      elapsedTime: JSON.parse(elapsed),
     };
   }
   return {};
@@ -402,24 +441,26 @@ function createFilterMap(v1Structure: V1Structure) {
   filterDictionary.index(GLOBAL_FILTER);
 
   Object.values(v1Structure.retrievals)
-    .map(retrieval => retrieval.properties.Filter)
-    .filter(filter => filter !== undefined)
-    .forEach(
-      (filter) => {
-        filterDictionary.index(filter);
-      });
+    .map((retrieval) => retrieval.properties.Filter)
+    .filter((filter) => filter !== undefined)
+    .forEach((filter) => {
+      filterDictionary.index(filter);
+    });
 
-  const filterList: Filter[] = Array
-    .from(filterDictionary.entries())
+  const filterList: Filter[] = Array.from(filterDictionary.entries())
     .map(([description, id]) => ({ id, description }))
     .sort((lhs, rhs) => lhs.id - rhs.id);
 
-  filterList[filterDictionary.index(GLOBAL_FILTER)].description = requireNonNull(v1Structure.rootFilter);
+  filterList[filterDictionary.index(GLOBAL_FILTER)].description =
+    requireNonNull(v1Structure.rootFilter);
   return { filterList, filterDictionary };
 }
 
 // TODO data-safe
-function mapAggregateRetrieval(retrieval: V1Retrieval, filterDictionary: Dictionary<string>): AggregateRetrieval {
+function mapAggregateRetrieval(
+  retrieval: V1Retrieval,
+  filterDictionary: Dictionary<string>
+): AggregateRetrieval {
   return {
     $kind: AggregateRetrievalKind,
     retrievalId: parseSourceId(retrieval).retrievalId,
@@ -432,7 +473,7 @@ function mapAggregateRetrieval(retrieval: V1Retrieval, filterDictionary: Diction
     filterId: requireNonNull(filterDictionary.get(retrieval.properties.Filter)),
     measureProvider: retrieval.properties["Measures provider"],
     underlyingDataNodes: [], // Not supported in previous versions
-    resultSizes: []
+    resultSizes: [],
   };
 }
 
@@ -446,25 +487,37 @@ function mapExternalRetrieval(retrieval: V1Retrieval): ExternalRetrieval {
     joinedMeasure: parseMeasures(retrieval.properties.JoinedMeasures),
     condition: retrieval.properties.Condition,
     resultSizes: [],
-    timingInfo: parseTimings("", retrieval.properties)
+    timingInfo: parseTimings("", retrieval.properties),
   };
 }
 
-function createRetrievalMap(v1Structure: V1Structure, filterDictionary: Dictionary<string>) {
+function createRetrievalMap(
+  v1Structure: V1Structure,
+  filterDictionary: Dictionary<string>
+) {
   const aggregateRetrievals: AggregateRetrieval[] = [];
   const externalRetrievals: ExternalRetrieval[] = [];
 
-  Object
-    .values(v1Structure.retrievals)
+  Object.values(v1Structure.retrievals)
     .sort((lhs, rhs) => lhs.sourceId.localeCompare(rhs.sourceId))
-    .forEach(retrieval => {
+    .forEach((retrieval) => {
       const { kind, retrievalId } = parseSourceId(retrieval);
 
-      const tryPush = <T>(arrayToInsert: T[], mapper: (retrieval: V1Retrieval, filterDictionary: Dictionary<string>) => T) => {
+      const tryPush = <T>(
+        arrayToInsert: T[],
+        mapper: (
+          retrieval: V1Retrieval,
+          filterDictionary: Dictionary<string>
+        ) => T
+      ) => {
         const mappedRetrieval = mapper(retrieval, filterDictionary);
 
         if (retrievalId !== arrayToInsert.length) {
-          throw new Error(`Cannot insert ${retrieval.sourceId} because ${kind}#${retrievalId - 1} not found`);
+          throw new Error(
+            `Cannot insert ${retrieval.sourceId} because ${kind}#${
+              retrievalId - 1
+            } not found`
+          );
         }
 
         arrayToInsert.push(mappedRetrieval);
@@ -480,22 +533,27 @@ function createRetrievalMap(v1Structure: V1Structure, filterDictionary: Dictiona
         default:
           throw new Error(`Unexpected retrieval kind: ${kind}`);
       }
-
     });
 
   return { aggregateRetrievals, externalRetrievals };
 }
 
-function createSummary(aggregateRetrievals: AggregateRetrieval[], externalRetrievals: ExternalRetrieval[]) {
+function createSummary(
+  aggregateRetrievals: AggregateRetrieval[],
+  externalRetrievals: ExternalRetrieval[]
+) {
   // TODO Add externalRetrievals info
   const measures = _(aggregateRetrievals)
-    .flatMap(r => r.measures)
+    .flatMap((r) => r.measures)
     .uniq()
     .value();
 
-  const retrievalsCountByType = _.countBy(aggregateRetrievals, r => r.type);
-  retrievalsCountByType["ExternalDatabaseRetrieval"] = _.size(externalRetrievals);
-  const partitioningCountByType = _.countBy(aggregateRetrievals, r => r.partitioning);
+  const retrievalsCountByType = _.countBy(aggregateRetrievals, (r) => r.type);
+  retrievalsCountByType.ExternalDatabaseRetrieval = _.size(externalRetrievals);
+  const partitioningCountByType = _.countBy(
+    aggregateRetrievals,
+    (r) => r.partitioning
+  );
 
   return {
     measures,
@@ -504,22 +562,28 @@ function createSummary(aggregateRetrievals: AggregateRetrieval[], externalRetrie
     partitioningCountByType,
     resultSizeByPartitioning: {}, // ???
     partialProviders: [], // ???
-    totalExternalResultSize: 0 // ???
+    totalExternalResultSize: 0, // ???
   };
 }
 
 function createPlanInfo(info: V1Info) {
   return {
     branch: "N/A",
-    ...info
+    ...info,
   };
 }
 
 export function convertToV2(v1Structure: V1Structure) {
   const { filterList, filterDictionary } = createFilterMap(v1Structure);
-  const { aggregateRetrievals, externalRetrievals } = createRetrievalMap(v1Structure, filterDictionary);
-  const { dependencies, externalDependencies } = createDependencyList(v1Structure);
-  const needFillTimingInfo = requireNonNull(aggregateRetrievals.find(r => r.retrievalId === 0)).timingInfo.startTime === undefined;
+  const { aggregateRetrievals, externalRetrievals } = createRetrievalMap(
+    v1Structure,
+    filterDictionary
+  );
+  const { dependencies, externalDependencies } =
+    createDependencyList(v1Structure);
+  const needFillTimingInfo =
+    requireNonNull(aggregateRetrievals.find((r) => r.retrievalId === 0))
+      .timingInfo.startTime === undefined;
   const querySummary = createSummary(aggregateRetrievals, externalRetrievals);
   const planInfo = createPlanInfo(v1Structure.info);
 
@@ -532,8 +596,8 @@ export function convertToV2(v1Structure: V1Structure) {
       querySummary,
       dependencies,
       externalDependencies,
-      needFillTimingInfo
-    }
+      needFillTimingInfo,
+    },
   ];
 }
 

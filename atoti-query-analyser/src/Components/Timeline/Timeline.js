@@ -11,7 +11,7 @@ import * as labels from "../../library/graphView/labels";
 const placeRetrieval = (nodes, state, entry) => {
   const { lines, last } = state;
   // Find the first one whose last is before entry start
-  const candidates = last.filter(t => t <= entry.start);
+  const candidates = last.filter((t) => t <= entry.start);
   const idx =
     candidates.length > 0
       ? last.indexOf(Math.max(...candidates))
@@ -37,23 +37,22 @@ const computeLines = ({ graph }) => {
   const nodes = [...graph.getVertices()];
   const result = nodes
     .filter(hasTimingInfo)
-    .map(node => {
-        const timingInfo = node.getMetadata().timingInfo;
-        return timingInfo.startTime.map((time, i) => ({
-          id: node.getUUID(),
-          partition: i,
-          start: time,
-          end: timingInfo.elapsedTime[i] + time
-        }));
-      }
-    )
+    .map((node) => {
+      const timingInfo = node.getMetadata().timingInfo;
+      return timingInfo.startTime.map((time, i) => ({
+        id: node.getUUID(),
+        partition: i,
+        start: time,
+        end: timingInfo.elapsedTime[i] + time,
+      }));
+    })
     .flat()
     .sort((a, b) => {
       return a.start - b.start;
     })
     .reduce(placeRetrieval.bind(null, nodes), {
       lines: [],
-      last: []
+      last: [],
     });
 
   result.lines.sort((a, b) => a[a.length - 1].end - b[b.length - 1].end);
@@ -69,9 +68,7 @@ const widthFactor = 5;
 const Box = ({ rowIdx, entry, node, selection, onSelect }) => {
   if (node === undefined || entry.id !== node.getUUID()) {
     throw new Error(
-      `Inconsistent state: ${JSON.stringify(entry)} / ${JSON.stringify(
-        node
-      )}`
+      `Inconsistent state: ${JSON.stringify(entry)} / ${JSON.stringify(node)}`
     );
   }
   const selected = selection.some(
@@ -109,13 +106,13 @@ const Box = ({ rowIdx, entry, node, selection, onSelect }) => {
 };
 
 const Row = ({ row, idx, graph, selection, onSelect }) => {
-  const boxes = row.map(entry =>
+  const boxes = row.map((entry) =>
     Box({
       rowIdx: idx,
       entry,
       node: graph.getVertexByUUID(entry.id),
       selection,
-      onSelect
+      onSelect,
     })
   );
   return (
@@ -130,13 +127,13 @@ const Rows = ({ rows, graph, selection, onSelect }) => {
   const width =
     2 * margin +
     widthFactor *
-    Math.max(...rows.map(row => row[row.length - 1]).map(entry => entry.end));
+      Math.max(
+        ...rows.map((row) => row[row.length - 1]).map((entry) => entry.end)
+      );
   return (
     <div className="timeline-rows">
       <svg width={width} height={height}>
-        {rows.map((row, idx) =>
-          Row({ row, idx, graph, selection, onSelect })
-        )}
+        {rows.map((row, idx) => Row({ row, idx, graph, selection, onSelect }))}
       </svg>
     </div>
   );
@@ -148,7 +145,7 @@ class Timeline extends Component {
 
     this.state = {
       lines: [],
-      selection: []
+      selection: [],
     };
   }
 
@@ -160,7 +157,7 @@ class Timeline extends Component {
     return { lines: computeLines(newProps.plan) };
   }
 
-  selectBox = entry => {
+  selectBox = (entry) => {
     this.setState(({ selection }) => {
       const changed = [...selection];
       const idx = selection.findIndex(
@@ -203,7 +200,7 @@ class Timeline extends Component {
         />
         <div className="timeline-details">
           <div style={{ width: selection.length * 355 }}>
-            {selection.map(key => {
+            {selection.map((key) => {
               const [id, partition] = key;
               const node = plan.graph.getVertexByUUID(id);
 
@@ -228,7 +225,7 @@ class Timeline extends Component {
                     {Details({
                       metadata,
                       ...timingInfo,
-                      partition
+                      partition,
                     })}
                   </Toast.Body>
                 </Toast>

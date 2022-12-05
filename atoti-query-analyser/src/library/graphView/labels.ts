@@ -6,10 +6,9 @@ const TYPE_LABELS = new Map([
   ["PostProcessedAggregatesRetrieval", "PostProcessor"],
   ["PostProcessedResultsMerger", "Merger"],
   ["PrimitiveResultsMerger", "Merger"],
-  ["RangeSharingPrimitiveAggregatesRetrieval", "RangeSharing"]
+  ["RangeSharingPrimitiveAggregatesRetrieval", "RangeSharing"],
 ]);
 
 export function type(value: string) {
   return TYPE_LABELS.get(value) || `<${value}>`;
 }
-
