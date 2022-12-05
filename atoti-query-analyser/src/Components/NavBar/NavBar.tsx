@@ -1,13 +1,16 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
-const NavBar = ({ navigate, goBackButton, passChooser }) => {
+const NavBar = ({ navigate, goBackButton, passChooser }: {
+  navigate: (to: string) => void,
+  goBackButton?: JSX.Element,
+  passChooser?: JSX.Element
+}) => {
   return (
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand href="">QueryViz</Navbar.Brand>
-      <Nav className="mr-auto">
+      <Nav className="me-auto">
         <Nav.Link href="" onClick={() => navigate("input")}>
           Input
         </Nav.Link>
@@ -21,18 +24,12 @@ const NavBar = ({ navigate, goBackButton, passChooser }) => {
           Timeline
         </Nav.Link>
       </Nav>
-      <Nav className="ml-auto">
+      <Nav className="ms-auto">
         {passChooser}
         {goBackButton}
       </Nav>
     </Navbar>
   );
-};
-
-NavBar.propTypes = {
-  navigate: PropTypes.func.isRequired,
-  goBackButton: PropTypes.element.isRequired,
-  passChooser: PropTypes.element.isRequired
 };
 
 export default NavBar;

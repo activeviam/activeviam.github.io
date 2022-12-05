@@ -1,11 +1,13 @@
 import { NavDropdown } from "react-bootstrap";
 import React from "react";
 
-const passLabel = ({ pass: passId, passType }) => `[${passId}] - ${passType}`;
+function passLabel({ pass: passId, passType }: { pass: number, passType: string }) {
+  return `[${passId}] - ${passType}`;
+}
 
 // callback will be changePass()
 // Passes are executed from higher to lower
-const passChooser = (allQueries, currentPassId, callback) => {
+function passChooser(allQueries: { parentId?: number, pass: number, passType: string }[], currentPassId: number, callback: (id: number) => void) {
   const allPassIds = allQueries
     .filter(query => query.parentId === null)
     .sort((a, b) => b.pass - a.pass);
@@ -13,7 +15,7 @@ const passChooser = (allQueries, currentPassId, callback) => {
     const activePass = allPassIds.find(p => p.pass === currentPassId);
     const dropName = activePass ? passLabel(activePass) : "Query pass";
     return (
-      <NavDropdown title={dropName} id="basic-nav-dropdown" alignRight>
+      <NavDropdown title={dropName} id="basic-nav-dropdown" align="end">
         {allPassIds.map(pass => (
           <NavDropdown.Item
             key={pass.pass}
@@ -28,6 +30,6 @@ const passChooser = (allQueries, currentPassId, callback) => {
     );
   }
   return <></>;
-};
+}
 
 export default passChooser;

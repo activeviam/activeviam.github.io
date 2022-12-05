@@ -1,7 +1,7 @@
 import React from "react";
 
 // callback will be changeGraph()
-const goBackToParentQueryButton = (currentParentId, callback) => {
+function goBackToParentQueryButton(currentParentId: number, callback: (id: number) => void) {
   if (currentParentId !== null) {
     return (
       <input
