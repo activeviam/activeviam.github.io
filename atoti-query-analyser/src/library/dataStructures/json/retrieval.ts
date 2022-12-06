@@ -31,6 +31,7 @@ type RetrievalKind =
 
 export interface ARetrieval {
   $kind: RetrievalKind;
+  type: string;
   retrievalId: number;
   timingInfo: TimingInfo;
 }
@@ -42,7 +43,6 @@ export type VirtualRetrieval = ARetrieval & {
 export type AggregateRetrieval = ARetrieval & {
   $kind: TAggregateRetrievalKind;
   partialProviderName: string;
-  type: string;
   partitioning: string;
   location: CubeLocation[];
   measures: Measure[];
@@ -55,7 +55,6 @@ export type AggregateRetrieval = ARetrieval & {
 
 export type ExternalRetrieval = ARetrieval & {
   $kind: TExternalRetrievalKind;
-  type: string;
   store: string;
   fields: string[];
   joinedMeasure: Measure[];
@@ -92,9 +91,11 @@ export function validateAggregateRetrieval(
     location: validateList(rawRetrieval.location, validateLocation),
     measureProvider: validateString(rawRetrieval.measureProvider || "N/A"),
     measures: validateList(rawRetrieval.measures, validateMeasure),
-    partialProviderName: validateString(rawRetrieval.partialProviderName),
+    partialProviderName: validateString(
+      rawRetrieval.partialProviderName || "N/A"
+    ),
     partitioning: validateString(rawRetrieval.partitioning),
-    resultSizes: validateList(rawRetrieval.resultSizes, validateInt),
+    resultSizes: validateList(rawRetrieval.resultSizes || [], validateInt),
     retrievalId: multiFieldValidate(
       validateInt,
       rawRetrieval.retrievalId,

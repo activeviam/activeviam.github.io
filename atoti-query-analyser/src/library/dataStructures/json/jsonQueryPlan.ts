@@ -62,7 +62,7 @@ function validateJsonQueryPlanV2(rawQueryPlan: any): JsonQueryPlanV2 {
   }
   const planInfo = validatePlanInfo(rawQueryPlan.planInfo);
   const aggregateRetrievals = validateList(
-    rawQueryPlan.aggregateRetrievals,
+    rawQueryPlan.aggregateRetrievals || rawQueryPlan.retrievals,
     validateAggregateRetrieval
   );
   const dependencies = validateDependencyMap(rawQueryPlan.dependencies);

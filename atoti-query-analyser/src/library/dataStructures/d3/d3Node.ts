@@ -1,4 +1,5 @@
 import { ARetrieval } from "../json/retrieval";
+import { SimulationNodeDatum } from "d3-force";
 
 export interface D3NodeDetails {
   elapsedTimes: number[];
@@ -8,10 +9,9 @@ export interface D3NodeDetails {
   startTimes: number[];
 }
 
-export interface D3Node {
+export interface D3Node extends SimulationNodeDatum {
   id: number;
   name: string;
-  isSelected: boolean;
   details: D3NodeDetails;
   clusterId: number;
   radius: number;

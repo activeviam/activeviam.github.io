@@ -26,11 +26,14 @@ function makeRetrievalConsumer(graph: RetrievalGraph) {
 
 function makeVirtualRetrieval({
   retrievalId,
+  type,
 }: {
   retrievalId: number;
+  type: string;
 }): VirtualRetrieval {
   return {
     $kind: VirtualRetrievalKind,
+    type,
     retrievalId,
     timingInfo: {},
   };
@@ -47,12 +50,12 @@ export default function buildGraph(
   const retrievalConsumer = makeRetrievalConsumer(graph);
 
   const virtualSource = new RetrievalVertex(
-    makeVirtualRetrieval({ retrievalId: -1 })
+    makeVirtualRetrieval({ type: "VirtualSource", retrievalId: -1 })
   );
   graph.addVertex(virtualSource);
   graph.labelVertex(virtualSource.getUUID(), "virtualSource");
   const virtualTarget = new RetrievalVertex(
-    makeVirtualRetrieval({ retrievalId: -2 })
+    makeVirtualRetrieval({ type: "VirtualTarget", retrievalId: -2 })
   );
   graph.addVertex(virtualTarget);
   graph.labelVertex(virtualTarget.getUUID(), "virtualTarget");

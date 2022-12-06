@@ -1,14 +1,20 @@
 import { BaseType, Selection } from "d3-selection";
+import { D3Node } from "../dataStructures/d3/d3Node";
+import { D3Link } from "../dataStructures/d3/d3Link";
+
+function getChildrenIds(d: D3Node): number[] {
+  if ("childrenIds" in d.details.metadata) {
+    return (d.details.metadata.childrenIds || []) as number[];
+  }
+  return [];
+}
 
 /**
  * @param d: a D3 node
  * Return the color of the border of the node according to its state
  */
-function outlineColor(d: any) {
-  if (d.isSelected) {
-    return "#2E2E2E";
-  }
-  if ((d.childrenIds || []).length === 0) {
+function outlineColor(d: D3Node) {
+  if (getChildrenIds(d).length === 0) {
     return "#BFBFBF";
   }
   // node has subqueries
@@ -33,7 +39,7 @@ const NODE_COLOR_MAP = new Map([
   ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#bab0ab"],
 ]);
 
-function insideColor(d: any) {
+function insideColor(d: D3Node) {
   return NODE_COLOR_MAP.get(d.details.metadata.type) || "grey";
 }
 
@@ -41,67 +47,79 @@ function insideColor(d: any) {
 // update functions allows to modify node or links graphic characteritics
 // updateGraph is called when D3 clock ticks, and unpdate nodes and links
 
-function enterLink(selection: Selection<any, any, any, any>) {
+function enterLink(
+  selection: Selection<SVGLineElement, D3Link, null | BaseType, unknown>
+) {
   selection
     .attr("stroke-width", 6)
     .style("stroke", (d) => (d.critical ? "#b30000" : "#1B1978"))
     .style("opacity", ".8");
 }
 
-function updateLink(selection: Selection<BaseType, any, BaseType, any>) {
+function updateLink(
+  selection: Selection<SVGLineElement, D3Link, null | BaseType, unknown>
+) {
   selection
-    .attr("x1", (d) => d.source.x)
-    .attr("y1", (d) => d.source.y)
-    .attr("x2", (d) => d.target.x)
-    .attr("y2", (d) => d.target.y);
+    .attr("x1", (d) => `${d.source.x || 0}`)
+    .attr("y1", (d) => `${d.source.y || 0}`)
+    .attr("x2", (d) => `${d.target.x || 0}`)
+    .attr("y2", (d) => `${d.target.y || 0}`);
 }
 
-function computeRadius(d: { radius: number }) {
+function computeRadius(d: D3Node) {
   return Math.max(Math.sqrt(d.radius) * 4, 10);
 }
 
-function enterNode(selection: Selection<BaseType, any, HTMLElement, any>) {
+function enterNode(
+  selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>
+) {
   selection
-    .select("circle")
+    .select<SVGCircleElement>("circle")
     .attr("r", computeRadius)
     .style("fill", (d) => insideColor(d))
-    .style("stroke-width", (d) => (d.isSelected ? 3 : 1))
-    .style("stroke", (d) => outlineColor(d));
+    .style("--node-stroke", (d) => outlineColor(d));
   selection
-    .select("rect")
+    .select<SVGRectElement>("rect")
     .attr("width", (d) => 2 * computeRadius(d))
     .attr("height", (d) => 2 * computeRadius(d))
     .attr("rx", "3")
     .style("fill", (d) => insideColor(d))
-    .style("stroke-width", (d) => (d.isSelected ? 3 : 1))
-    .style("stroke", (d) => outlineColor(d))
-    .style("transform", (d) => {
-      const r = computeRadius(d);
-      return `translate(-${r}px, -${r}px)`;
-    });
+    .style("--node-stroke", (d) => outlineColor(d));
 
-  selection.select("text").attr("dy", ".35em").attr("dx", "-0.65em");
+  selection
+    .select<SVGTextElement>("text")
+    .attr("dy", ".35em")
+    .attr("dx", "-0.65em");
 }
 
-function updateNode(selection: Selection<BaseType, any, BaseType, unknown>) {
+function rectTranslate(d: D3Node) {
+  const r = computeRadius(d);
+  return `translate(${(d.x || 0) - r} ${(d.y || 0) - r})`;
+}
+
+function updateNode(
+  selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>
+) {
   selection
-    .attr("transform", (d) => `translate(${d.x},${d.y})`)
-    .select("circle")
-    .style("stroke-width", (d) => (d.isSelected ? 3 : 1))
-    .style("stroke", (d) => outlineColor(d));
+    .select<SVGCircleElement>("circle")
+    .attr("transform", (d) => `translate(${d.x || 0} ${d.y || 0})`)
+    .style("--node-stroke", (d) => outlineColor(d));
 
   selection
-    .attr("transform", (d) => `translate(${d.x},${d.y})`)
-    .select("rect")
-    .style("stroke-width", (d) => (d.isSelected ? 3 : 1))
-    .style("stroke", (d) => outlineColor(d));
+    .select<SVGRectElement>("rect")
+    .attr("transform", rectTranslate)
+    .style("--node-stroke", (d) => outlineColor(d));
+
+  selection
+    .select<SVGTextElement>("text")
+    .attr("transform", (d) => `translate(${d.x || 0} ${d.y || 0})`);
 }
 
 function updateGraph(
-  selection: Selection<BaseType, unknown, HTMLElement, any>
+  selection: Selection<SVGSVGElement, undefined, null, undefined>
 ) {
-  selection.selectAll(".node").call(updateNode);
-  selection.selectAll(".link").call(updateLink);
+  selection.selectAll<SVGGElement, D3Node>(".node").call(updateNode);
+  selection.selectAll<SVGLineElement, D3Link>(".link").call(updateLink);
 }
 
 export { updateGraph, enterLink, updateLink, enterNode, updateNode };

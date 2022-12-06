@@ -115,6 +115,42 @@ function MeasureList({
   );
 }
 
+function SetView<T>({ title, set }: { title: string; set: Set<T> }) {
+  return (
+    <>
+      <h4>{title}</h4>
+      {set.size === 0 ? (
+        <i>No items</i>
+      ) : (
+        <ul>
+          {Array.from(set).map((value) => (
+            <li key={`${value}`}>{`${value}`}</li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+}
+
+function MapView<K, V>({ title, map }: { title: string; map: Map<K, V> }) {
+  return (
+    <>
+      <h4>{title}</h4>
+      {map.size === 0 ? (
+        <i>No items</i>
+      ) : (
+        <ul>
+          {Array.from(map.entries()).map(([key, value]) => (
+            <li key={`${key}`}>
+              <b>{`${key}`}</b>: {`${value}`}
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+}
+
 function QuerySummaryView({
   querySummary: summary,
   planInfo: info,
@@ -125,30 +161,27 @@ function QuerySummaryView({
   return (
     <div>
       <p>Total number of retrievals: {summary.totalRetrievals}</p>
+      <p>
+        Total size of external retrieval results:{" "}
+        {summary.totalExternalResultSize}
+      </p>
       <h4>Query timings</h4>
       <Timings info={info} />
       <h4>Measures</h4>
       <MeasureList measures={Array.from(summary.measures)} columns={3} />
-      <h4>Retrievals per type</h4>
-      <ul>
-        {Array.from(summary.retrievalsCountByType.entries()).map(
-          ([type, count]) => (
-            <li key={type}>
-              <b>{type}</b>: {count}
-            </li>
-          )
-        )}
-      </ul>
-      <h4>Retrievals per partitioning</h4>
-      <ul>
-        {Array.from(summary.partitioningCountByType.entries()).map(
-          ([type, count]) => (
-            <li key={type}>
-              <b>{type}</b>: {count}
-            </li>
-          )
-        )}
-      </ul>
+      <MapView
+        title="Retrievals per type"
+        map={summary.retrievalsCountByType}
+      />
+      <MapView
+        title="Retrievals per partitioning"
+        map={summary.partitioningCountByType}
+      />
+      <MapView
+        title={"Result size per partitioning scheme"}
+        map={summary.resultSizeByPartitioning}
+      />
+      <SetView title={"Partial providers"} set={summary.partialProviders} />
     </div>
   );
 }
@@ -176,6 +209,35 @@ function MultiPivotSummary({
   );
 }
 
+function mergeSets<T>(sets: Set<T>[]): Set<T> {
+  return sets.reduce(
+    (acc, set) =>
+      Array.from(set).reduce(
+        (store: Set<T>, element) => store.add(element),
+        acc
+      ),
+    new Set<T>()
+  );
+}
+
+function mergeMaps<K, V>(
+  maps: Map<K, V>[],
+  reducer: (oldValue: V, newValue: V) => V
+): Map<K, V> {
+  return maps.reduce(
+    (acc, map) =>
+      Array.from(map).reduce((store, [key, value]) => {
+        if (store.has(key)) {
+          store.set(key, reducer(store.get(key) as V, value));
+        } else {
+          store.set(key, value);
+        }
+        return store;
+      }, acc),
+    new Map<K, V>()
+  );
+}
+
 function computeGlobalSummary(
   queries: QueryPlan[],
   rootInfo: QueryPlanMetadata,
@@ -184,45 +246,39 @@ function computeGlobalSummary(
   const summaries = [rootInfo, ...underlyingInfos].map(
     (info) => queries[info.id].querySummary
   );
-  const measures = summaries.reduce(
-    (acc, summary) =>
-      Array.from(summary.measures).reduce(
-        (store, measure) => store.add(measure),
-        acc
-      ),
-    new Set<Measure>()
-  );
+  const measures = mergeSets(summaries.map((summary) => summary.measures));
   const totalRetrievals = summaries.reduce(
     (acc, summary) => acc + summary.totalRetrievals,
     0
   );
-  const retrievalsCountByType = summaries.reduce(
-    (acc, summary) =>
-      Object.entries(summary.retrievalsCountByType).reduce(
-        (res, [type, count]: [string, number]) => {
-          res.set(type, (res.get(type) || 0) + count);
-          return res;
-        },
-        acc
-      ),
-    new Map<string, number>()
+
+  const retrievalsCountByType = mergeMaps(
+    summaries.map((summary) => summary.retrievalsCountByType),
+    (a, b) => a + b
   );
-  const partitioningCountByType = summaries.reduce(
-    (acc, summary) =>
-      Object.entries(summary.partitioningCountByType).reduce(
-        (res, [type, count]: [string, number]) => {
-          res.set(type, (res.get(type) || 0) + count);
-          return res;
-        },
-        acc
-      ),
-    new Map<string, number>()
+  const partitioningCountByType = mergeMaps(
+    summaries.map((summary) => summary.partitioningCountByType),
+    (a, b) => a + b
   );
+  const partialProviders = mergeSets(
+    summaries.map((summary) => summary.partialProviders)
+  );
+
+  const resultSizeByPartitioning = mergeMaps(
+    summaries.map((summary) => summary.resultSizeByPartitioning),
+    (a, b) => a + b
+  );
+
+  const totalExternalResultSize = summaries.reduce(
+    (acc, summary) => acc + summary.totalExternalResultSize,
+    0
+  );
+
   return {
     measures,
-    partialProviders: new Set(), // TODO
-    resultSizeByPartitioning: new Map(), // TODO
-    totalExternalResultSize: 0, // TODO
+    partialProviders,
+    resultSizeByPartitioning,
+    totalExternalResultSize,
     totalRetrievals,
     retrievalsCountByType,
     partitioningCountByType,

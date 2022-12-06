@@ -84,7 +84,6 @@ function getNodes(
         id: vertex.getUUID(),
         name,
         // childrenIds,
-        isSelected: false,
         details: {
           startTime: realStart,
           elapsedTime: realElapsed,
@@ -136,13 +135,13 @@ function normalizeIds(
     id: index,
   }));
 
-  const normalizedLinks: D3Link[] = links.map((link) => {
+  const normalizedLinks: D3Link[] = links.map((link): D3Link => {
     const source = requireNonNull(idMap.get(link.source));
     const target = requireNonNull(idMap.get(link.target));
     return {
       ...link,
-      source,
-      target,
+      source: normalizedNodes[source],
+      target: normalizedNodes[target],
       id: `${source}-${target}`,
     };
   });

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer } from "react";
 import ToastContainer from "react-bootstrap/ToastContainer";
 import { Toast, ToastProps } from "react-bootstrap";
 import { parseFuzzyTimer, useFuzzyTimer } from "../../hooks/fuzzyTimer";
+import "./NotificationWrapper.css";
 
 export interface Message {
   creationTime: number;
@@ -77,7 +78,12 @@ function MessageToast({
         <strong className="me-auto">{message.title}</strong>
         <small>{parseFuzzyTimer(fuzzyTimer)}</small>
       </Toast.Header>
-      <Toast.Body>{message.body}</Toast.Body>
+      <Toast.Body>
+        {message.body
+          .split("\n")
+          .map((line) => [line, <br key={line} />])
+          .flat()}
+      </Toast.Body>
     </Toast>
   );
 }
@@ -87,7 +93,7 @@ let messageCount = 0;
 export function NotificationWrapper({
   children,
 }: {
-  children: React.ReactChildren;
+  children: React.ReactNode;
 }) {
   const [mgr, updateMgr] = useReducer(
     reduceNotificationManager,
@@ -113,8 +119,17 @@ export function NotificationWrapper({
   return (
     <ctx.Provider value={{ newMessage }}>
       {children}
-      <div className="position-relative">
-        <ToastContainer position="top-end" className="p-3">
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          pointerEvents: "none",
+        }}
+      >
+        <ToastContainer position="bottom-end" className="p-3">
           {mgr.getMessages().map((message) => (
             <MessageToast
               message={message}

@@ -18,6 +18,18 @@ export interface QuerySummary {
 }
 
 export function validateQuerySummary(rawQuerySummary: any): QuerySummary {
+  if (rawQuerySummary === undefined) {
+    return {
+      measures: new Set(),
+      partialProviders: new Set(),
+      partitioningCountByType: new Map(),
+      resultSizeByPartitioning: new Map(),
+      retrievalsCountByType: new Map(),
+      totalExternalResultSize: 0,
+      totalRetrievals: 0,
+    };
+  }
+
   validateObject(rawQuerySummary);
 
   return {
@@ -32,7 +44,7 @@ export function validateQuerySummary(rawQuerySummary: any): QuerySummary {
       validateInt
     ),
     resultSizeByPartitioning: validateObjectAsMap(
-      rawQuerySummary.resultSizeByPartitioning,
+      rawQuerySummary.resultSizeByPartitioning || {},
       validateString,
       validateInt
     ),
@@ -42,7 +54,7 @@ export function validateQuerySummary(rawQuerySummary: any): QuerySummary {
       validateInt
     ),
     totalExternalResultSize: validateInt(
-      rawQuerySummary.totalExternalResultSize
+      rawQuerySummary.totalExternalResultSize || 0
     ),
     totalRetrievals: validateInt(rawQuerySummary.totalRetrievals),
   };

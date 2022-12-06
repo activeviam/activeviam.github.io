@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import Graph from "./Components/Graph/Graph";
+import React, { Component, useLayoutEffect } from "react";
 import { Timeline } from "./Components/Timeline/Timeline";
 import Summary from "./Components/Summary/Summary";
 import NavBar from "./Components/NavBar/NavBar";
@@ -12,6 +11,35 @@ import { preprocessQueryPlan } from "./library/dataStructures/processing/queryPl
 import { parseJson } from "./library/graphView/parseJson";
 import Input from "./Components/Input/Input";
 import { NotificationWrapper } from "./Components/Notification/NotificationWrapper";
+import { OverlayContainer } from "./hooks/overlayContainer";
+import { GraphV2 } from "./Components/Graph/GraphV2";
+import { useErrorMessage } from "./Components/Notification/notificationHooks";
+import { Button } from "react-bootstrap";
+
+function Fallback({ error, resetError }) {
+  const { showError } = useErrorMessage();
+  useLayoutEffect(() => {
+    showError(error, true);
+  }, []);
+  return (
+    <div>
+      <h1>Oops!</h1>
+      <br />
+      <h2>{error.message}</h2>
+      <ul>
+        {error.stack
+          .toString()
+          .split("\n")
+          .map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+      </ul>
+      <Button variant="primary" onClick={resetError}>
+        Reset
+      </Button>
+    </div>
+  );
+}
 
 class App extends Component {
   constructor(props) {
@@ -24,9 +52,13 @@ class App extends Component {
       allQueries: [],
       currentQueryId: 0,
       currentPassId: 0,
-      restartGraph: false,
       lastInput: "",
+      error: null,
     };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { error };
   }
 
   passInput = async (mode, type, input) => {
@@ -58,7 +90,7 @@ class App extends Component {
   };
 
   changeGraph = (childId) => {
-    this.setState({ currentQueryId: childId, restartGraph: true });
+    this.setState({ currentQueryId: childId });
   };
 
   changePass = (passId) => {
@@ -91,12 +123,11 @@ class App extends Component {
     const query = this.state.json[currentQueryId];
 
     return (
-      <Graph
+      <GraphV2
         className="my-0"
         selection={selections[currentQueryId]}
         query={query}
         details={allQueries[currentQueryId]}
-        restart={() => this.setState({ restartGraph: false })}
         changeGraph={this.changeGraph}
       />
     );
@@ -114,35 +145,46 @@ class App extends Component {
 
   renderPassChooser() {
     const { allQueries, currentPassId, router } = this.state;
-    if (router === "graph" || router === "timeline") {
+    if (router !== "input") {
       return passChooser(allQueries, currentPassId, this.changePass);
     }
     return null;
   }
 
   render() {
-    const { allQueries, currentQueryId, restartGraph, router, lastInput } =
-      this.state;
+    const { allQueries, currentQueryId, router, lastInput, error } = this.state;
     const { parentId: currentParentId = null } =
       allQueries[currentQueryId] || {};
 
     return (
-      <NotificationWrapper>
-        <NavBar
-          navigate={(dir) => this.setState({ router: dir })}
-          dataIsEmpty
-          goBackButton={goParentQueryButton(currentParentId, this.changeGraph)}
-          passChooser={this.renderPassChooser()}
-        />
-        <main role="main" className="container-fluid px-0">
-          {router === "input" && (
-            <Input passInput={this.passInput} lastInput={lastInput} />
+      <OverlayContainer>
+        <NotificationWrapper>
+          <NavBar
+            navigate={(dir) => this.setState({ router: dir })}
+            dataIsEmpty
+            goBackButton={goParentQueryButton(
+              currentParentId,
+              this.changeGraph
+            )}
+            passChooser={this.renderPassChooser()}
+          />
+          {error ? (
+            <Fallback
+              error={error instanceof Error ? error : new Error(`${error}`)}
+              resetError={() => this.setState({ error: null })}
+            />
+          ) : (
+            <main role="main" className="container-fluid px-0">
+              {router === "input" && (
+                <Input passInput={this.passInput} lastInput={lastInput} />
+              )}
+              {router === "summary" && this.renderSummary()}
+              {router === "graph" && this.renderGraph()}
+              {router === "timeline" && this.renderTimeline()}
+            </main>
           )}
-          {router === "summary" && this.renderSummary()}
-          {router === "graph" && !restartGraph && this.renderGraph()}
-          {router === "timeline" && this.renderTimeline()}
-        </main>
-      </NotificationWrapper>
+        </NotificationWrapper>
+      </OverlayContainer>
     );
   }
 }

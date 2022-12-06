@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useEffect, useState } from "react";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { Toast } from "react-bootstrap";
@@ -202,11 +202,13 @@ function Rows({
 }
 
 export function Timeline({ plan }: { plan: QueryPlan }) {
-  const [lines, setLines] = useState<TimeRange[][]>([]);
+  const lines = useMemo(() => {
+    return computeLines(plan);
+  }, [plan]);
   const [selection, setSelection] = useState<RetrievalCursor[]>([]);
 
   useEffect(() => {
-    setLines(computeLines(plan));
+    setSelection([]);
   }, [plan]);
 
   const selectBox = (entry: TimeRange) => {
@@ -245,7 +247,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
         onSelect={selectBox}
       />
       <div className="timeline-details">
-        <div style={{ width: selection.length * 355 }}>
+        <div className="d-flex">
           {selection.map((key) => {
             const { id, partition } = key;
             const node = plan.graph.getVertexByUUID(id);

@@ -122,6 +122,20 @@ function Buttons({
   );
 }
 
+function ErrorButton() {
+  const [error, setError] = useState(false);
+
+  return (
+    <Button variant="outline-secondary" onClick={() => setError(true)}>
+      {error
+        ? (() => {
+            throw new Error("Cuckoo!");
+          })()
+        : "Throw error"}
+    </Button>
+  );
+}
+
 function DevButtons({
   input,
   visible,
@@ -153,7 +167,8 @@ function DevButtons({
       </Button>{" "}
       <Button variant="outline-primary" onClick={loadFromLocalStorage}>
         Load from LocalStorage
-      </Button>
+      </Button>{" "}
+      <ErrorButton />
     </>
   );
 }
