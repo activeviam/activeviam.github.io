@@ -15,7 +15,7 @@ export function useFuzzyTimer(initialTimestamp: number) {
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer(calculateFuzzyTimer(initialTimestamp));
-    }, 1000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [initialTimestamp]);
   return timer;

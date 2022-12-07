@@ -41,7 +41,7 @@ function addVirtualVertices(query: QueryPlan, selection: VertexSelection) {
 }
 
 // Remove nodes without timing info
-export function applySelection(queries: QueryPlan[]) {
+export function buildDefaultSelection(queries: QueryPlan[]) {
   const selections = removeNoOps(queries);
 
   queries.forEach((query, idx) => {

@@ -43,7 +43,7 @@ function findChildrenAndParents(
   });
 }
 
-export function parseJson(data: QueryPlan[]): QueryPlanMetadata[] {
+export function extractMetadata(data: QueryPlan[]): QueryPlanMetadata[] {
   const res = data.map((query, queryId) => {
     const { planInfo } = query;
     const { clusterMemberId, mdxPass } = planInfo;

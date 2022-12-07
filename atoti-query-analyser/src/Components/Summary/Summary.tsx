@@ -9,7 +9,7 @@ import { PlanInfo } from "../../library/dataStructures/json/planInfo";
 import { Measure } from "../../library/dataStructures/json/measure";
 import { QuerySummary } from "../../library/dataStructures/json/querySummary";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
-import { QueryPlanMetadata } from "../../library/graphView/parseJson";
+import { QueryPlanMetadata } from "../../library/graphView/extractMetadata";
 import { RetrievalGraph } from "../../library/dataStructures/json/retrieval";
 import { humanisticStringComparator } from "../../library/utilities/textUtils";
 

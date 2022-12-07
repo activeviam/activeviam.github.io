@@ -12,8 +12,11 @@ import {
   preprocessQueryPlan,
   QueryPlan,
 } from "./library/dataStructures/processing/queryPlan";
-import { parseJson, QueryPlanMetadata } from "./library/graphView/parseJson";
-import { applySelection } from "./library/graphProcessors/selection";
+import {
+  extractMetadata,
+  QueryPlanMetadata,
+} from "./library/graphView/extractMetadata";
+import { buildDefaultSelection } from "./library/graphProcessors/selection";
 import passChooser from "./Components/NavBar/PassChooser";
 import Summary from "./Components/Summary/Summary";
 import { Graph } from "./Components/Graph/Graph";
@@ -22,17 +25,17 @@ import { Timeline } from "./Components/Timeline/Timeline";
 export function App() {
   const [route, setRoute] = useState("input");
   const [selections, setSelections] = useState<VertexSelection[]>([]);
-  const [allQueries, setAllQueries] = useState<QueryPlanMetadata[]>([]);
+  const [queryMetadata, setQueryMetadata] = useState<QueryPlanMetadata[]>([]);
   const [currentQueryId, setCurrentQueryId] = useState(0);
   const [currentPassId, setCurrentPassId] = useState(0);
   const [lastInput, setLastInput] = useState("");
-  const [json, setJson] = useState<QueryPlan[]>();
+  const [queryPlans, setQueryPlans] = useState<QueryPlan[]>();
 
   const findRootQuery = (
-    queryMetadata: QueryPlanMetadata[],
+    metadata: QueryPlanMetadata[],
     passId: number
   ): number | undefined => {
-    return queryMetadata
+    return metadata
       .filter((q) => q.pass === passId)
       ?.find((q) => q.parentId === null)?.id;
   };
@@ -49,14 +52,14 @@ export function App() {
 
     const queryPlan = preprocessQueryPlan(rawJson);
 
-    const defaultSelections = applySelection(queryPlan);
-    const metadata = parseJson(queryPlan);
+    const defaultSelections = buildDefaultSelection(queryPlan);
+    const metadata = extractMetadata(queryPlan);
 
     setSelections(defaultSelections);
-    setAllQueries(metadata);
+    setQueryMetadata(metadata);
     setCurrentQueryId(findRootQuery(metadata, 0) || 0);
     setRoute("summary");
-    setJson(queryPlan);
+    setQueryPlans(queryPlan);
     setLastInput(input);
   };
 
@@ -65,14 +68,14 @@ export function App() {
   };
 
   const changePass = (passId: number) => {
-    const newQueryId = findRootQuery(allQueries, passId) || 0;
+    const newQueryId = findRootQuery(queryMetadata, passId) || 0;
     changeGraph(newQueryId);
     setCurrentPassId(passId);
   };
 
   const renderPassChooser = () => {
     if (route !== "input") {
-      return passChooser(allQueries, currentPassId, changePass);
+      return passChooser(queryMetadata, currentPassId, changePass);
     }
     return null;
   };
@@ -84,16 +87,20 @@ export function App() {
   const renderStub = () => <h1>Load a query plan first!</h1>;
 
   const renderSummary = () =>
-    json ? (
-      <Summary queries={json} currentQuery={currentQueryId} info={allQueries} />
+    queryPlans ? (
+      <Summary
+        queries={queryPlans}
+        currentQuery={currentQueryId}
+        info={queryMetadata}
+      />
     ) : (
       renderStub()
     );
 
   const renderGraph = () =>
-    json ? (
+    queryPlans ? (
       <Graph
-        query={json[currentQueryId]}
+        query={queryPlans[currentQueryId]}
         selection={selections[currentQueryId]}
         changeGraph={changeGraph}
       />
@@ -102,7 +109,7 @@ export function App() {
     );
 
   const renderTimeline = () =>
-    json ? <Timeline plan={json[currentQueryId]} /> : renderStub();
+    queryPlans ? <Timeline plan={queryPlans[currentQueryId]} /> : renderStub();
 
   return (
     <OverlayContainer>
@@ -110,7 +117,7 @@ export function App() {
         <NavBar
           navigate={(dir) => setRoute(dir)}
           goBackButton={goParentQueryButton(
-            allQueries[currentQueryId]?.parentId || null,
+            queryMetadata[currentQueryId]?.parentId || null,
             changeGraph
           )}
           passChooser={renderPassChooser()}
