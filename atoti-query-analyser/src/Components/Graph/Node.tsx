@@ -13,7 +13,7 @@ import { enterNode, updateNode } from "../../library/graphView/graphHelpers";
 import * as d3 from "d3";
 import Overlay from "react-bootstrap/Overlay";
 import { useOverlayContainer } from "../../hooks/overlayContainer";
-import "./NodeV2.css";
+import "./Node.css";
 
 const POPOVER_BACKGROUND_COLOR = "#DDDDDD";
 
@@ -112,7 +112,7 @@ function computeClasses(classNames: (string | null)[]) {
   return classNames.filter((className) => className !== null).join(" ");
 }
 
-export function NodeV2({
+export function Node({
   node,
   changeGraph,
   clickNode,

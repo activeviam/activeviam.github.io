@@ -3,7 +3,7 @@ import React, { useLayoutEffect, useRef } from "react";
 import { enterLink, updateLink } from "../../library/graphView/graphHelpers";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
 
-export function LinkV2({ link }: { link: D3Link }) {
+export function Link({ link }: { link: D3Link }) {
   const ref = useRef<SVGLineElement>(null);
 
   useLayoutEffect(() => {

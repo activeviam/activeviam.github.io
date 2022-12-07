@@ -16,10 +16,10 @@ import { parseJson, QueryPlanMetadata } from "./library/graphView/parseJson";
 import { applySelection } from "./library/graphProcessors/selection";
 import passChooser from "./Components/NavBar/PassChooser";
 import Summary from "./Components/Summary/Summary";
-import { GraphV2 } from "./Components/Graph/GraphV2";
+import { Graph } from "./Components/Graph/Graph";
 import { Timeline } from "./Components/Timeline/Timeline";
 
-export function AppV2() {
+export function App() {
   const [route, setRoute] = useState("input");
   const [selections, setSelections] = useState<VertexSelection[]>([]);
   const [allQueries, setAllQueries] = useState<QueryPlanMetadata[]>([]);
@@ -92,7 +92,7 @@ export function AppV2() {
 
   const renderGraph = () =>
     json ? (
-      <GraphV2
+      <Graph
         query={json[currentQueryId]}
         selection={selections[currentQueryId]}
         changeGraph={changeGraph}

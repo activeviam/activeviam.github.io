@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
 import "./Drawer.css";
-import { LinkV2 } from "./LinkV2";
-import { NodeV2 } from "./NodeV2";
+import { Link } from "./Link";
+import { Node } from "./Node";
 import Button from "react-bootstrap/Button";
 import Overlay from "react-bootstrap/Overlay";
 import { Menu } from "./Menu";
@@ -19,7 +19,7 @@ import { useWindowSize } from "../../hooks/windowSize";
 import { updateGraph } from "../../library/graphView/graphHelpers";
 import { D3DragEvent, D3ZoomEvent } from "d3";
 
-export function GraphV2({
+export function Graph({
   query,
   selection,
   changeGraph: changeGraph0,
@@ -214,10 +214,10 @@ export function GraphV2({
       >
         <g key={`e${epoch}`}>
           {links.map((link) => (
-            <LinkV2 link={link} key={link.id} />
+            <Link link={link} key={link.id} />
           ))}
           {nodes.map((node) => (
-            <NodeV2
+            <Node
               node={node}
               changeGraph={changeGraph}
               clickNode={clickNode}
