@@ -1,4 +1,4 @@
-import React, { createContext, ReactChildren, useContext, useRef } from "react";
+import React, { createContext, useContext, useRef } from "react";
 import { requireNonNull } from "../library/utilities/util";
 
 interface OverlayContainerContext {
@@ -15,7 +15,7 @@ export function useOverlayContainer() {
   return requireNonNull(useOverlayContainerContext()).getContainer();
 }
 
-export function OverlayContainer({ children }: { children: ReactChildren }) {
+export function OverlayContainer({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
 
   return (

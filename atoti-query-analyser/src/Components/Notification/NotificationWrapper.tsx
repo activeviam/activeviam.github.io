@@ -78,7 +78,7 @@ function MessageToast({
         <strong className="me-auto">{message.title}</strong>
         <small>{parseFuzzyTimer(fuzzyTimer)}</small>
       </Toast.Header>
-      <Toast.Body>
+      <Toast.Body style={{ overflow: "auto", maxHeight: "400px" }}>
         {message.body
           .split("\n")
           .map((line) => [line, <br key={line} />])

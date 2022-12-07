@@ -1,15 +1,9 @@
-import { useNotificationContext } from "./NotificationWrapper";
-import { StackTraceParser } from "../../library/devTools/stackTraceParser";
+import { useNotificationContext } from "../Components/Notification/NotificationWrapper";
+import { StackTraceParser } from "../library/devTools/stackTraceParser";
+import { asError } from "../library/utilities/util";
 
 export function useErrorMessage() {
   const notificationContext = useNotificationContext();
-
-  const asError = (catched: any): Error => {
-    if (catched instanceof Error) {
-      return catched;
-    }
-    return new Error(`${catched}`);
-  };
 
   const showErrorMessage = (message: string) => {
     if (!notificationContext) {
@@ -61,5 +55,5 @@ export function useErrorMessage() {
     })();
   };
 
-  return { showError, asError };
+  return { showError };
 }

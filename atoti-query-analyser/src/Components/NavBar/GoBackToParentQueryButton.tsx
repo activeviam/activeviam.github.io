@@ -2,7 +2,7 @@ import React from "react";
 
 // callback will be changeGraph()
 function goBackToParentQueryButton(
-  currentParentId: number,
+  currentParentId: number | null,
   callback: (id: number) => void
 ) {
   if (currentParentId !== null) {

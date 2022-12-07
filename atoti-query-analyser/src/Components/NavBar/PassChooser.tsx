@@ -1,5 +1,6 @@
 import { NavDropdown } from "react-bootstrap";
 import React from "react";
+import { QueryPlanMetadata } from "../../library/graphView/parseJson";
 
 function passLabel({
   pass: passId,
@@ -14,7 +15,7 @@ function passLabel({
 // callback will be changePass()
 // Passes are executed from higher to lower
 function passChooser(
-  allQueries: { parentId?: number; pass: number; passType: string }[],
+  allQueries: QueryPlanMetadata[],
   currentPassId: number,
   callback: (id: number) => void
 ) {

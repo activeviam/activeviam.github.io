@@ -8,8 +8,8 @@ const NavBar = ({
   passChooser,
 }: {
   navigate: (to: string) => void;
-  goBackButton?: JSX.Element;
-  passChooser?: JSX.Element;
+  goBackButton?: React.ReactNode;
+  passChooser?: React.ReactNode;
 }) => {
   return (
     <Navbar bg="dark" variant="dark">

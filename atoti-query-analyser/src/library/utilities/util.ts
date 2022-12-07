@@ -18,3 +18,10 @@ export function computeIfAbsent<K, V>(
   map.set(key, value);
   return value;
 }
+
+export function asError(caught: unknown): Error {
+  if (caught instanceof Error) {
+    return caught;
+  }
+  return new Error(`${caught}`);
+}

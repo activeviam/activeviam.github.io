@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
-import { useErrorMessage } from "../Notification/notificationHooks";
+import { useErrorMessage } from "../../hooks/notification";
 
 export enum InputMode {
   JSON,
@@ -14,7 +14,7 @@ export enum InputType {
 }
 
 export type OnInput = (
-  mode: InputMode | string,
+  mode: InputMode,
   type: InputType,
   input: string | {}
 ) => Promise<void>;
@@ -198,7 +198,7 @@ export default function Input({
 
   const submitQuery = () => {
     const credentials = btoa(`${username}:${password}`);
-    passInput("url", type, {
+    passInput(InputMode.URL, type, {
       url,
       query: input,
       credentials: `Basic ${credentials}`,
@@ -210,7 +210,7 @@ export default function Input({
   const dispatchSubmit = (mode: InputMode) => {
     switch (mode) {
       case InputMode.JSON:
-        passInput("json", type, input).catch(showError);
+        passInput(InputMode.JSON, type, input).catch(showError);
         break;
       case InputMode.URL:
         if (urlMode) {
@@ -220,7 +220,7 @@ export default function Input({
         }
         break;
       case InputMode.V1:
-        passInput("v1", type, input).catch(showError);
+        passInput(InputMode.V1, type, input).catch(showError);
         break;
       default:
         throw new Error(`Unexpected input mode: ${mode} ${InputMode[mode]}`);
