@@ -12,6 +12,7 @@ import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { QueryPlanMetadata } from "../../library/graphView/extractMetadata";
 import { RetrievalGraph } from "../../library/dataStructures/json/retrieval";
 import { humanisticStringComparator } from "../../library/utilities/textUtils";
+import { mergeMaps, mergeSets } from "../../library/utilities/merge";
 
 const TIMING_LABELS = new Map([
   ["executionContextCreationTime", "Context creation time"],
@@ -206,35 +207,6 @@ function MultiPivotSummary({
         ))}
       </Tabs>
     </>
-  );
-}
-
-function mergeSets<T>(sets: Set<T>[]): Set<T> {
-  return sets.reduce(
-    (acc, set) =>
-      Array.from(set).reduce(
-        (store: Set<T>, element) => store.add(element),
-        acc
-      ),
-    new Set<T>()
-  );
-}
-
-function mergeMaps<K, V>(
-  maps: Map<K, V>[],
-  reducer: (oldValue: V, newValue: V) => V
-): Map<K, V> {
-  return maps.reduce(
-    (acc, map) =>
-      Array.from(map).reduce((store, [key, value]) => {
-        if (store.has(key)) {
-          store.set(key, reducer(store.get(key) as V, value));
-        } else {
-          store.set(key, value);
-        }
-        return store;
-      }, acc),
-    new Map<K, V>()
   );
 }
 

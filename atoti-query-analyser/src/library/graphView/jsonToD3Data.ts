@@ -1,11 +1,9 @@
-import { nodeDepths } from "../graphProcessors/fillTimingInfo";
 import { criticalPath } from "../graphProcessors/criticalPath";
 import { addClustersToNodes } from "../graphProcessors/cluster";
 import { abbreviation } from "../utilities/textUtils";
 import {
   AggregateRetrievalKind,
   RetrievalGraph,
-  RetrievalVertex,
   VirtualRetrievalKind,
 } from "../dataStructures/json/retrieval";
 import { QueryPlan } from "../dataStructures/processing/queryPlan";
@@ -15,6 +13,10 @@ import { D3Node } from "../dataStructures/d3/d3Node";
 import { D3Link } from "../dataStructures/d3/d3Link";
 import { UUID } from "../utilities/uuid";
 import { D3Graph } from "../dataStructures/d3/d3Graph";
+import {
+  GraphLayout,
+  GraphLayoutBuilder,
+} from "../graphProcessors/graphLayout";
 
 /**
  * @param elapsed: the elapsed time of a node
@@ -36,7 +38,7 @@ type IntermediateD3Link = Omit<Omit<D3Link, "source">, "target"> & {
 function getNodes(
   graph: RetrievalGraph,
   info: { selection: VertexSelection },
-  depths: Map<RetrievalVertex, number>
+  graphLayout: GraphLayout
 ): IntermediateD3Node[] {
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object.
@@ -75,7 +77,9 @@ function getNodes(
       const realElapsed = realEnd - realStart;
 
       const radius = computeRadius(realElapsed);
-      const yFixed = requireNonNull(depths.get(vertex)) * 150;
+      const { x, y } = requireNonNull(
+        graphLayout.vertexCoordinates.get(vertex.getUUID())
+      );
       const name =
         kind === AggregateRetrievalKind
           ? `${retrievalId}`
@@ -93,7 +97,8 @@ function getNodes(
         },
         clusterId: -1, // Set later when computing clusters
         radius,
-        yFixed,
+        yFixed: y,
+        x,
         status: leaves.has(vertex) ? "leaf" : roots.has(vertex) ? "root" : null,
       };
     });
@@ -101,7 +106,8 @@ function getNodes(
 
 function getLinks(
   graph: RetrievalGraph,
-  info: { selection: VertexSelection }
+  info: { selection: VertexSelection },
+  graphLayout: GraphLayout
 ): IntermediateD3Link[] {
   const filteredGraph = graph.filterVertices(
     (vertex) =>
@@ -118,6 +124,7 @@ function getLinks(
         target: target.getUUID(),
         id: `${source.getUUID()}#${target.getUUID()}`,
         critical: false, // Set later when computing the critical path
+        anchors: graphLayout.edgeAnchorPoints.get(edge.getUUID()),
       });
     })
   );
@@ -152,9 +159,19 @@ function normalizeIds(
 export function buildD3(query: QueryPlan, selection: VertexSelection) {
   const info = { selection };
   const { graph } = query;
-  const depths = nodeDepths(graph, selection);
-  const nodes = getNodes(graph, info, depths);
-  const links = getLinks(graph, info);
+
+  const graphLayout = new GraphLayoutBuilder(graph, {
+    crossMinimizerSettings: {
+      maxIterations: 1000,
+    },
+    layerHeight: 150,
+    maxWidthMultiplier: 3,
+    minVertexWidth: 100,
+    recommendedLayerMaxWidth: 20,
+  }).build();
+
+  const nodes = getNodes(graph, info, graphLayout);
+  const links = getLinks(graph, info, graphLayout);
   const criticalLinks = criticalPath(graph, selection);
   links.forEach((link) => {
     link.critical = criticalLinks.has(link.id);
