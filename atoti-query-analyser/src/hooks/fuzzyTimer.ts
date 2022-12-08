@@ -21,7 +21,7 @@ export function useFuzzyTimer(initialTimestamp: number) {
   return timer;
 }
 
-export function parseFuzzyTimer({ exactDuration }: FuzzyTimer): string {
+export function stringifyFuzzyTimer({ exactDuration }: FuzzyTimer): string {
   const seconds = exactDuration / 1000;
   if (seconds < 0) {
     return "somewhere in future...";

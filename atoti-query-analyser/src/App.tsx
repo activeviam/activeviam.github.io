@@ -15,7 +15,7 @@ import {
 import {
   extractMetadata,
   QueryPlanMetadata,
-} from "./library/graphView/extractMetadata";
+} from "./library/graphProcessors/extractMetadata";
 import { buildDefaultSelection } from "./library/graphProcessors/selection";
 import passChooser from "./Components/NavBar/PassChooser";
 import Summary from "./Components/Summary/Summary";

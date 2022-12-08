@@ -9,7 +9,7 @@ import { PlanInfo } from "../../library/dataStructures/json/planInfo";
 import { Measure } from "../../library/dataStructures/json/measure";
 import { QuerySummary } from "../../library/dataStructures/json/querySummary";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
-import { QueryPlanMetadata } from "../../library/graphView/extractMetadata";
+import { QueryPlanMetadata } from "../../library/graphProcessors/extractMetadata";
 import { RetrievalGraph } from "../../library/dataStructures/json/retrieval";
 import { humanisticStringComparator } from "../../library/utilities/textUtils";
 
@@ -305,7 +305,9 @@ export default function Summary({
   const rootInfo = findRootInfo(info, currentQuery);
   const rootId = rootInfo.id;
   const rootQuery = queries[rootId];
-  const underlyingQueries = info.filter((inf) => inf.parentId === rootId);
+  const underlyingQueries = info.filter(
+    (inf) => inf.pass === rootInfo.pass && inf.parentId !== null
+  );
 
   let summary;
   if (rootQuery.graph.getVertexCount() <= 1) {

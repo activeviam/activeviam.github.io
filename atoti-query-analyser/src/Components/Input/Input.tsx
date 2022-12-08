@@ -131,7 +131,7 @@ function ErrorButton() {
         ? (() => {
             throw new Error("Cuckoo!");
           })()
-        : "Throw error"}
+        : "Throw an error"}
     </Button>
   );
 }
@@ -188,7 +188,7 @@ export default function Input({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [url, setUrl] = useState("");
-  const devMode = location.search.includes("dev");
+  const devMode = location.search.includes("dev"); // Backward compatibility
 
   const { showError } = useErrorMessage();
 
@@ -249,7 +249,11 @@ export default function Input({
       ) : null}
       <TypeInput type={type} setType={setType} />
       <Buttons urlMode={urlMode} onSubmit={dispatchSubmit} />
-      <DevButtons visible={devMode} input={input} setInput={setInput} />
+      <DevButtons
+        visible={devMode || type === InputType.DEVELOPER}
+        input={input}
+        setInput={setInput}
+      />
     </Form>
   );
 }

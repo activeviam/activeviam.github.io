@@ -4,11 +4,13 @@
     "react-app/jest",
     "airbnb-typescript",
     "plugin:jsx-a11y/recommended",
-    "prettier"
+    "prettier",
+    "plugin:jsdoc/recommended"
   ],
   "plugins": [
     "jsx-a11y",
-    "prettier"
+    "prettier",
+    "jsdoc"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

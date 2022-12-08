@@ -1,6 +1,6 @@
 import { NavDropdown } from "react-bootstrap";
 import React from "react";
-import { QueryPlanMetadata } from "../../library/graphView/extractMetadata";
+import { QueryPlanMetadata } from "../../library/graphProcessors/extractMetadata";
 
 function passLabel({
   pass: passId,

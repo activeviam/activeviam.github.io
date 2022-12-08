@@ -1,0 +1,37 @@
+digraph PassInfo {
+fontname = "Helvetica,Arial,sans-serif"
+node [fontname = "Helvetica,Arial,sans-serif",shape = box]
+edge [fontname = "Helvetica,Arial,sans-serif"]
+subgraph cluster_pass_0 {
+style = filled
+label = "Pass 0"
+color = lightgrey
+q0 [label = "id: 0\nparentId: null\npassType: \"SelectPass\"\npass: 0\nname: \"Local-AllData-QUERY0\""]
+q1 [label = "id: 1\nparentId: 0\npassType: \"SelectPass\"\npass: 0\nname: \"Local-Recommendation-master-DATA6\""]
+q0 -> q1
+}
+subgraph cluster_pass_1 {
+style = filled
+label = "Pass 1"
+color = lightgrey
+q2 [label = "id: 2\nparentId: null\npassType: \"SubSelectPass\"\npass: 1\nname: \"Local-AllData-QUERY0\""]
+q3 [label = "id: 3\nparentId: 2\npassType: \"SubSelectPass\"\npass: 1\nname: \"Local-CompetitorPrice-master-DATA2\""]
+q2 -> q3
+q4 [label = "id: 4\nparentId: 2\npassType: \"SubSelectPass\"\npass: 1\nname: \"Local-SellingPrice-master-DATA7\""]
+q2 -> q4
+}
+subgraph cluster_pass_2 {
+style = filled
+label ="Pass 2"
+color = lightgrey
+q5 [label = "id: 5\nparentId: null\npassType: \"SubSelectPass\"\npass: 2\nname: undefined"]
+}
+subgraph cluster_pass_3 {
+style = filled
+label = "Pass 3"
+color = lightgrey
+q6 [label ="id: 6\nparentId: null\npassType: \"SubSelectPass\"\npass: 3\nname: \"Local-AllData-QUERY0\""]
+q7 [label = "id: 7\nparentId: 6\npassType: \"SubSelectPass\"\npass: 3\nname: \"Local-Sale-master-DATA1\""]
+q6 -> q7
+}
+}

@@ -3,7 +3,7 @@ import {
   AggregateRetrieval,
   AggregateRetrievalKind,
 } from "../dataStructures/json/retrieval";
-import { requireNonNull } from "../utilities/util";
+import { computeIfAbsent, requireNonNull } from "../utilities/util";
 
 export interface QueryPlanMetadata {
   passType: string;
@@ -43,8 +43,47 @@ function findChildrenAndParents(
   });
 }
 
+function dumpMetadata(metadata: QueryPlanMetadata[]) {
+  const queriesByPass = new Map<number, Set<number>>();
+  metadata.forEach((query) => {
+    computeIfAbsent(queriesByPass, query.pass, () => new Set()).add(query.id);
+  });
+
+  const lines: string[] = [];
+  lines.push("digraph PassInfo {");
+  lines.push(
+    'fontname="Helvetica,Arial,sans-serif"\n' +
+      '\tnode [fontname="Helvetica,Arial,sans-serif",shape=box]\n' +
+      '\tedge [fontname="Helvetica,Arial,sans-serif"]'
+  );
+
+  queriesByPass.forEach((queries, pass) => {
+    lines.push(`subgraph cluster_pass_${pass} {`);
+    lines.push("style=filled");
+    lines.push("label=" + JSON.stringify(`Pass ${pass}`));
+    lines.push("color=lightgrey");
+
+    Array.from(queries).forEach((queryId) => {
+      const queryMetadata = metadata[queryId];
+
+      const label = Object.entries(queryMetadata)
+        .map(([k, v]) => `${k}: ${JSON.stringify(v)}`)
+        .join("\n");
+      lines.push(`q${queryId} [label=${JSON.stringify(label)}]`);
+      if (queryMetadata.parentId !== null) {
+        lines.push(`q${queryMetadata.parentId} -> q${queryId}`);
+      }
+    });
+
+    lines.push(`}`);
+  });
+
+  lines.push("}");
+  console.log(lines.join("\n"));
+}
+
 export function extractMetadata(data: QueryPlan[]): QueryPlanMetadata[] {
-  const res = data.map((query, queryId) => {
+  const res: QueryPlanMetadata[] = data.map((query, queryId) => {
     const { planInfo } = query;
     const { clusterMemberId, mdxPass } = planInfo;
 
@@ -60,5 +99,6 @@ export function extractMetadata(data: QueryPlan[]): QueryPlanMetadata[] {
   });
 
   findChildrenAndParents(res, data);
+  dumpMetadata(res);
   return res;
 }

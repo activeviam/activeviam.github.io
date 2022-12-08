@@ -10,7 +10,7 @@ import { PlanInfo, validatePlanInfo } from "./planInfo";
 import { Filter, validateFilter } from "./filter";
 import { QuerySummary, validateQuerySummary } from "./querySummary";
 
-interface JsonQueryPlanV1 {
+interface JsonQueryPlanOldFormat {
   planInfo: PlanInfo;
   retrievals: AggregateRetrieval[];
   dependencies: DependencyMap;
@@ -19,7 +19,7 @@ interface JsonQueryPlanV1 {
   needFillTimingInfo?: boolean;
 }
 
-interface JsonQueryPlanV2 {
+interface JsonQueryPlanModernFormat {
   planInfo: PlanInfo;
   aggregateRetrievals: AggregateRetrieval[];
   dependencies: DependencyMap;
@@ -30,7 +30,9 @@ interface JsonQueryPlanV2 {
   needFillTimingInfo?: boolean;
 }
 
-function validateJsonQueryPlanV1(rawQueryPlan: any): JsonQueryPlanV1 {
+function validateJsonQueryPlanOldFormat(
+  rawQueryPlan: any
+): JsonQueryPlanOldFormat {
   if (typeof rawQueryPlan !== "object" || rawQueryPlan === null) {
     throw new Error("queryPlan is not an object");
   }
@@ -56,7 +58,9 @@ function validateJsonQueryPlanV1(rawQueryPlan: any): JsonQueryPlanV1 {
   };
 }
 
-function validateJsonQueryPlanV2(rawQueryPlan: any): JsonQueryPlanV2 {
+function validateJsonQueryPlanModernFormat(
+  rawQueryPlan: any
+): JsonQueryPlanModernFormat {
   if (typeof rawQueryPlan !== "object" || rawQueryPlan === null) {
     throw new Error("queryPlan is not an object");
   }
@@ -91,7 +95,7 @@ function validateJsonQueryPlanV2(rawQueryPlan: any): JsonQueryPlanV2 {
   };
 }
 
-function convertToV2(plan: JsonQueryPlanV1): JsonQueryPlanV2 {
+function convertToV2(plan: JsonQueryPlanOldFormat): JsonQueryPlanModernFormat {
   const {
     planInfo,
     retrievals,
@@ -112,14 +116,14 @@ function convertToV2(plan: JsonQueryPlanV1): JsonQueryPlanV2 {
   };
 }
 
-export type JsonQueryPlan = JsonQueryPlanV2;
+export type JsonQueryPlan = JsonQueryPlanModernFormat;
 
 export function validateJsonQueryPlan(rawQueryPlan: any): JsonQueryPlan {
   try {
-    return validateJsonQueryPlanV2(rawQueryPlan);
+    return validateJsonQueryPlanModernFormat(rawQueryPlan);
   } catch (errV2) {
     try {
-      return convertToV2(validateJsonQueryPlanV1(rawQueryPlan));
+      return convertToV2(validateJsonQueryPlanOldFormat(rawQueryPlan));
     } catch (errV1) {
       console.log(errV2);
       console.log(errV1);

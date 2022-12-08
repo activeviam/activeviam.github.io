@@ -90,7 +90,6 @@ const BOX_HEIGHT = 25;
 const BOX_MARGIN = 5;
 const WIDTH_FACTOR = 5;
 
-// Logic for a factor of 5
 function Box({
   rowIdx,
   entry,

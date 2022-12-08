@@ -11,7 +11,7 @@
  * extractWords('___Foo_bar_HTMLEntity   QwertyUiop foo_bar_quux') =>
  * [ 'Foo', 'bar', 'HTML', 'Entity', 'Qwerty', 'Uiop', 'foo', 'bar', 'quux' ]
  * ```
- * */
+ */
 export function extractWords(text: string): Array<string> {
   const re =
     /(\d+)|([A-Z]+(?=([A-Z][a-z]+)|$|[^a-zA-Z]))|((?<=[^a-zA-Z]|^)[a-z]+)|([A-Z][a-z]+)/gm;

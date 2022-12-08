@@ -13,7 +13,8 @@ function Fallback({
   const { showError } = useErrorMessage();
   useLayoutEffect(() => {
     showError(error, true);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // The line above is not an error, we really need "launch once" logic.
 
   return (
     <div>

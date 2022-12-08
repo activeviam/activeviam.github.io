@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useReducer } from "react";
 import ToastContainer from "react-bootstrap/ToastContainer";
 import { Toast, ToastProps } from "react-bootstrap";
-import { parseFuzzyTimer, useFuzzyTimer } from "../../hooks/fuzzyTimer";
+import { stringifyFuzzyTimer, useFuzzyTimer } from "../../hooks/fuzzyTimer";
 import "./NotificationWrapper.css";
 
-export interface Message {
+interface Message {
   creationTime: number;
   body: string;
   title: string;
@@ -76,7 +76,7 @@ function MessageToast({
     >
       <Toast.Header>
         <strong className="me-auto">{message.title}</strong>
-        <small>{parseFuzzyTimer(fuzzyTimer)}</small>
+        <small>{stringifyFuzzyTimer(fuzzyTimer)}</small>
       </Toast.Header>
       <Toast.Body style={{ overflow: "auto", maxHeight: "400px" }}>
         {message.body
