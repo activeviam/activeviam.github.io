@@ -1,3 +1,3 @@
-## API Reference
+<!-- ## API Reference
 
-Available [here](api/index.html). 
+Available [here](api/index.html). -->
