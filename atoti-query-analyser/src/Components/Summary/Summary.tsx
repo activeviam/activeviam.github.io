@@ -293,6 +293,10 @@ function findRootInfo(info: QueryPlanMetadata[], currentQuery: number) {
   return query;
 }
 
+/**
+ * This React component is responsible for showing query statistics for each
+ * query and for all queries within one pass.
+ */
 export default function Summary({
   queries,
   currentQuery,

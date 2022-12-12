@@ -1,7 +1,7 @@
 /**
  * This function tries to parse camelCase, PascalCase and snake_case identifiers.
  *
- * Examples:
+ * @example
  * ```
  * extractWords('fooBarHTML') => [ 'foo', 'Bar', 'HTML' ]
  *
@@ -25,11 +25,19 @@ export function extractWords(text: string): Array<string> {
   return words;
 }
 
+/**
+ * Given an identifier in camelCase, PascalCase or snake_case, extract words,
+ * take first letters, convert them to upper case and return the resulting
+ * abbreviation.
+ */
 export function abbreviation(text: string): string {
   const words = extractWords(text);
   return words.map((word) => word[0].toUpperCase()).join("");
 }
 
+/**
+ * Compare two identifiers as lists of case-insensitive words.
+ */
 export function humanisticStringComparator(lhs: string, rhs: string) {
   const leftWords = extractWords(lhs);
   const rightWords = extractWords(rhs);

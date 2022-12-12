@@ -82,6 +82,11 @@ function dumpMetadata(metadata: QueryPlanMetadata[]) {
   console.log(lines.join("\n"));
 }
 
+/**
+ * Given an array of
+ * {@link "library/dataStructures/processing/queryPlan"!QueryPlan `QueryPlan[]`},
+ * extract information about passes and query dependencies tree.
+ */
 export function extractMetadata(data: QueryPlan[]): QueryPlanMetadata[] {
   const res: QueryPlanMetadata[] = data.map((query, queryId) => {
     const { planInfo } = query;

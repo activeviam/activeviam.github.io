@@ -5,7 +5,7 @@ import NavBar from "./Components/NavBar/NavBar";
 import { ErrorBoundary } from "./Components/ErrorBoundary/ErrorBoundary";
 import Input, { InputMode, InputType } from "./Components/Input/Input";
 import { VertexSelection } from "./library/dataStructures/processing/selection";
-import { queryServer } from "./library/inputProcessors/server";
+import { queryServer, ServerInput } from "./library/inputProcessors/server";
 import goParentQueryButton from "./Components/NavBar/GoBackToParentQueryButton";
 import { convertToV2, parseV1 } from "./library/inputProcessors/v1tov2";
 import {
@@ -21,8 +21,12 @@ import passChooser from "./Components/NavBar/PassChooser";
 import Summary from "./Components/Summary/Summary";
 import { Graph } from "./Components/Graph/Graph";
 import { Timeline } from "./Components/Timeline/Timeline";
+import { validateString } from "./library/dataStructures/json/validatingUtils";
 
-export function App() {
+/**
+ * The root React component.
+ * */
+export function App(): JSX.Element {
   const [route, setRoute] = useState("input");
   const [selections, setSelections] = useState<VertexSelection[]>([]);
   const [queryMetadata, setQueryMetadata] = useState<QueryPlanMetadata[]>([]);
@@ -40,14 +44,23 @@ export function App() {
       ?.find((q) => q.parentId === null)?.id;
   };
 
-  const processInput = async (mode: InputMode, type: InputType, input: any) => {
-    let rawJson: any;
+  const processInput = async (
+    mode: InputMode,
+    type: InputType,
+    input: string | ServerInput
+  ) => {
+    let rawJson: unknown;
     if (mode === InputMode.JSON) {
-      rawJson = JSON.parse(input).data;
+      rawJson = JSON.parse(validateString(input)).data;
     } else if (mode === InputMode.URL) {
+      if (typeof input !== "object") {
+        throw new Error(
+          `Bad arguments: ${JSON.stringify({ mode, type, input })}`
+        );
+      }
       rawJson = await queryServer(input);
     } else if (mode === InputMode.V1) {
-      rawJson = convertToV2(await parseV1(input, () => {}));
+      rawJson = convertToV2(await parseV1(validateString(input), () => {}));
     }
 
     const queryPlan = preprocessQueryPlan(rawJson);
@@ -60,7 +73,7 @@ export function App() {
     setCurrentQueryId(findRootQuery(metadata, 0) || 0);
     setRoute("summary");
     setQueryPlans(queryPlan);
-    setLastInput(input);
+    setLastInput(typeof input === "string" ? input : input.query);
   };
 
   const changeGraph = (childId: number) => {

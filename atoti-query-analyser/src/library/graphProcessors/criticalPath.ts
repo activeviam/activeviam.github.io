@@ -22,6 +22,17 @@ interface CriticalScore {
   parent: RetrievalVertex | null;
 }
 
+/**
+ * Find a critical path in the graph.
+ *
+ * We define critical path as follows. First, we select a retrieval that has
+ * maximal end time among all selected retrievals. Next, we take all its
+ * selected dependencies and take the last computed retrieval. We continue this
+ * process until current retrieval has dependencies.
+ *
+ * The resulting sequence of retrievals shows which retrievals have the most
+ * significant effect on computation time.
+ */
 export function criticalPath(
   graph: RetrievalGraph,
   selection: VertexSelection

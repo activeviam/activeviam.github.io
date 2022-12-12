@@ -1,5 +1,4 @@
 # src/Components/ErrorBoundary/ErrorBoundary.tsx
-
 This is a helper component used to handle rendering errors.
 
 Tasks:
@@ -15,7 +14,6 @@ Tasks:
 
 
 ## src/Components/ErrorBoundary/ErrorBoundary.tsx <a id="__autogen_16__"></a>
-
 This is a helper component used to handle rendering errors.
 
 Tasks:

@@ -8,7 +8,6 @@
 
 
 ## Data Model <a id="__autogen_2__"></a>
-
 The data coming into the program is a list of related _queries_.
 
 Data enters the program either in the form of logs (denoted as V1 format) or in the form of JSON. In addition, data can

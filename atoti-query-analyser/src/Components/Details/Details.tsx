@@ -86,7 +86,11 @@ const buildTitle = (text: string) => {
 
 const BLACKLIST = new Set(["retrievalId", "timingInfo"]);
 
-function Details({
+/**
+ * This React component is responsible for showing detailed info about
+ * retrieval.
+ * */
+export function Details({
   startTime,
   elapsedTime,
   metadata,
@@ -138,6 +142,3 @@ function Details({
 Details.defaultProps = {
   partition: undefined,
 };
-
-export default Details;
-export { Values };

@@ -14,6 +14,12 @@ export interface TimingInfo {
   aggregationProcedureTime?: number[];
 }
 
+// Reason: `validate...()` function
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/**
+ * Deep validation of JSON parse result, expected to be {@link TimingInfo}.
+ */
 export function validateTimingInfo(rawTimingInfo: any): TimingInfo {
   validateObject(rawTimingInfo);
   const validator = (value: any) =>

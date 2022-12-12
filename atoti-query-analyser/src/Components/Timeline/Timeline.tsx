@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { useEffect, useState } from "react";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { Toast } from "react-bootstrap";
-import Details from "../Details/Details";
+import { Details } from "../Details/Details";
 import { requireNonNull } from "../../library/utilities/util";
 import * as labels from "../../library/graphView/labels";
 import {
@@ -200,6 +200,10 @@ function Rows({
   );
 }
 
+/**
+ * This React component is responsible for drawing a timeline with retrievals on
+ * it.
+ */
 export function Timeline({ plan }: { plan: QueryPlan }) {
   const lines = useMemo(() => {
     return computeLines(plan);

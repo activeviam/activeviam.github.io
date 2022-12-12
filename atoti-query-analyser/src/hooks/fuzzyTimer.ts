@@ -10,6 +10,12 @@ function calculateFuzzyTimer(initialTimestamp: number): FuzzyTimer {
   return { exactDuration };
 }
 
+/**
+ * This hook returns a reactive variable that is roughly equal to the time
+ * difference between the current time moment and the initial time moment passed
+ * as an argument to this hook. The value is updated by `setInterval()`, and
+ * this produces a time lag.
+ */
 export function useFuzzyTimer(initialTimestamp: number) {
   const [timer, setTimer] = useState(calculateFuzzyTimer(initialTimestamp));
   useEffect(() => {
@@ -21,6 +27,10 @@ export function useFuzzyTimer(initialTimestamp: number) {
   return timer;
 }
 
+/**
+ * Build textual representation of {@link FuzzyTimer}. Useful for notifications,
+ * messages etc.
+ */
 export function stringifyFuzzyTimer({ exactDuration }: FuzzyTimer): string {
   const seconds = exactDuration / 1000;
   if (seconds < 0) {

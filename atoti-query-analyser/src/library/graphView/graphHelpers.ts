@@ -10,8 +10,8 @@ function getChildrenIds(d: D3Node): number[] {
 }
 
 /**
- * @param d: a D3 node
- * Return the color of the border of the node according to its state
+ * @param d - a D3 node
+ * @returns the color of the border of the node according to its state
  */
 function outlineColor(d: D3Node) {
   if (getChildrenIds(d).length === 0) {
@@ -44,9 +44,12 @@ function insideColor(d: D3Node) {
 }
 
 // enter functions are called when node or link is created
-// update functions allows to modify node or links graphic characteritics
-// updateGraph is called when D3 clock ticks, and unpdate nodes and links
+// update functions allows to modify node or links graphic characteristics
+// updateGraph is called when D3 clock ticks, and update nodes and links
 
+/**
+ * Setup properties of the SVG element corresponding to the graph edge.
+ * */
 function enterLink(
   selection: Selection<SVGLineElement, D3Link, null | BaseType, unknown>
 ) {
@@ -56,6 +59,9 @@ function enterLink(
     .style("opacity", ".8");
 }
 
+/**
+ * Update properties of the SVG element corresponding to the graph edge.
+ * */
 function updateLink(
   selection: Selection<SVGLineElement, D3Link, null | BaseType, unknown>
 ) {
@@ -70,6 +76,9 @@ function computeRadius(d: D3Node) {
   return Math.max(Math.sqrt(d.radius) * 4, 10);
 }
 
+/**
+ * Setup properties of the SVG element corresponding to the graph vertex.
+ * */
 function enterNode(
   selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>
 ) {
@@ -97,6 +106,9 @@ function rectTranslate(d: D3Node) {
   return `translate(${(d.x || 0) - r} ${(d.y || 0) - r})`;
 }
 
+/**
+ * Update properties of the SVG element corresponding to the graph vertex.
+ * */
 function updateNode(
   selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>
 ) {
@@ -115,6 +127,9 @@ function updateNode(
     .attr("transform", (d) => `translate(${d.x || 0} ${d.y || 0})`);
 }
 
+/**
+ * Update properties of SVG elements representing the graph.
+ * */
 function updateGraph(
   selection: Selection<SVGSVGElement, undefined, null, undefined>
 ) {

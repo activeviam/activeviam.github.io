@@ -1,7 +1,10 @@
 import React from "react";
 
 // callback will be changeGraph()
-function goBackToParentQueryButton(
+/**
+ * This React component shows a button to go to the parent query if exists.
+ * */
+function GoBackToParentQueryButton(
   currentParentId: number | null,
   callback: (id: number) => void
 ) {
@@ -18,4 +21,4 @@ function goBackToParentQueryButton(
   return <></>;
 }
 
-export default goBackToParentQueryButton;
+export default GoBackToParentQueryButton;

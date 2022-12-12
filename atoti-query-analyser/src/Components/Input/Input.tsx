@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useErrorMessage } from "../../hooks/notification";
+import { ServerInput } from "../../library/inputProcessors/server";
 
 export enum InputMode {
   JSON,
@@ -16,7 +17,7 @@ export enum InputType {
 export type OnInput = (
   mode: InputMode,
   type: InputType,
-  input: string | {}
+  input: string | ServerInput
 ) => Promise<void>;
 
 function URLInput({
@@ -173,6 +174,9 @@ function DevButtons({
   );
 }
 
+/**
+ * This React component is responsible for getting user input.
+ */
 export default function Input({
   passInput,
   lastInput,

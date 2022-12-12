@@ -11,7 +11,6 @@
 
 
 ## src/App.tsx <a id="__autogen_3__"></a>
-
 This component is the root for the application.
 
 Tasks:

@@ -1,5 +1,4 @@
 # src/Components/Summary/Summary.tsx
-
 This component is responsible for displaying query statistics.
 
 Tasks:
@@ -23,7 +22,6 @@ Tasks:
 
 
 ## src/Components/Summary/Summary.tsx <a id="__autogen_26__"></a>
-
 This component is responsible for displaying query statistics.
 
 Tasks:

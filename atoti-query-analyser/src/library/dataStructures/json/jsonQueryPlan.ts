@@ -19,7 +19,7 @@ interface JsonQueryPlanOldFormat {
   needFillTimingInfo?: boolean;
 }
 
-interface JsonQueryPlanModernFormat {
+export interface JsonQueryPlanModernFormat {
   planInfo: PlanInfo;
   aggregateRetrievals: AggregateRetrieval[];
   dependencies: DependencyMap;
@@ -30,6 +30,8 @@ interface JsonQueryPlanModernFormat {
   needFillTimingInfo?: boolean;
 }
 
+// Reason: `validate...()` function
+/* eslint-disable @typescript-eslint/no-explicit-any */
 function validateJsonQueryPlanOldFormat(
   rawQueryPlan: any
 ): JsonQueryPlanOldFormat {
@@ -95,6 +97,8 @@ function validateJsonQueryPlanModernFormat(
   };
 }
 
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 function convertToV2(plan: JsonQueryPlanOldFormat): JsonQueryPlanModernFormat {
   const {
     planInfo,
@@ -118,6 +122,12 @@ function convertToV2(plan: JsonQueryPlanOldFormat): JsonQueryPlanModernFormat {
 
 export type JsonQueryPlan = JsonQueryPlanModernFormat;
 
+// Reason: `validate...()` function
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/**
+ * Deep validation of JSON parse result, expected to be {@link JsonQueryPlan}.
+ */
 export function validateJsonQueryPlan(rawQueryPlan: any): JsonQueryPlan {
   try {
     return validateJsonQueryPlanModernFormat(rawQueryPlan);
@@ -128,7 +138,7 @@ export function validateJsonQueryPlan(rawQueryPlan: any): JsonQueryPlan {
       console.log(errV2);
       console.log(errV1);
       throw new Error("Failed to validate query plan", {
-        cause: { errV2, errV1 },
+        cause: [errV2, errV1],
       });
     }
   }

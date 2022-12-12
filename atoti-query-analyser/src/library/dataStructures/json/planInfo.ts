@@ -25,6 +25,12 @@ export interface PlanInfo {
   isEmpty: boolean;
 }
 
+// Reason: `validate...()` function
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/**
+ * Deep validation of JSON parse result, expected to be {@link PlanInfo}.
+ */
 export function validatePlanInfo(rawPlanInfo: any): PlanInfo {
   validateObject(rawPlanInfo);
   if (Object.keys(rawPlanInfo).length === 1 && "mdxPass" in rawPlanInfo) {

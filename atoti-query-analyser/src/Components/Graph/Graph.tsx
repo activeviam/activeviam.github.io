@@ -19,6 +19,9 @@ import { useWindowSize } from "../../hooks/windowSize";
 import { updateGraph } from "../../library/graphView/graphHelpers";
 import { D3DragEvent, D3ZoomEvent } from "d3";
 
+/**
+ * This Reach component is responsible for retrieval graph visualization.
+ */
 export function Graph({
   query,
   selection,

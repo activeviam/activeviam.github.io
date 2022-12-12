@@ -89,6 +89,9 @@ function SamplePlaceholder({ values }: { values: string[] }) {
   );
 }
 
+/**
+ * This React component is responsible for measure search and selection.
+ */
 export function Menu({
   measures,
   selectedMeasures,

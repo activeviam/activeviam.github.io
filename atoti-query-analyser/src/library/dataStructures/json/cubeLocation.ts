@@ -11,6 +11,12 @@ export interface CubeLocation {
   path: string[];
 }
 
+// Reason: `validate...()` function
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/**
+ * Deep validation of JSON parse result, expected to be {@link CubeLocation}.
+ */
 export function validateLocation(rawLocation: any): CubeLocation {
   validateObject(rawLocation);
 

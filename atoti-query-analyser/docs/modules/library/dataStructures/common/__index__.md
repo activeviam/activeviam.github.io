@@ -10,16 +10,13 @@
 
 
 ## src/library/dataStructures/common/dictionary.ts <a id="__autogen_42__"></a>
-
 The `Dictionary` class is an extension of the `Map` class. This class is designed to assign unique ordinal numbers to
 possibly repeating elements from some sequence. `Dictionary` values are integers.
 
 ## src/library/dataStructures/common/graph.ts <a id="__autogen_43__"></a>
-
 This module contains the `AdjacencyListGraph` class for working with graphs and functions for graph traversal.
 
 ## src/library/dataStructures/common/unionFind.ts <a id="__autogen_44__"></a>
-
 This module contains the `UnionFind<T>` class.
 
 The UnionFind data structure is a system of disjoint sets. At the initial moment of time, each possible value of

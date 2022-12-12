@@ -17,6 +17,12 @@ export interface QuerySummary {
   totalExternalResultSize: number;
 }
 
+// Reason: `validate...()` function
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/**
+ * Deep validation of JSON parse result, expected to be {@link QuerySummary}.
+ */
 export function validateQuerySummary(rawQuerySummary: any): QuerySummary {
   if (rawQuerySummary === undefined) {
     return {

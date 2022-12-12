@@ -11,10 +11,18 @@ function useOverlayContainerContext() {
   return useContext(ctx);
 }
 
+/**
+ * This hook is used for providing a target for react-bootstrap Overlay
+ * component. It is useful when Overlay is inside an SVG.
+ */
 export function useOverlayContainer() {
   return requireNonNull(useOverlayContainerContext()).getContainer();
 }
 
+/**
+ * This React component is used as a wrapper. It provides a target for
+ * react-bootstrap Overlay component.
+ */
 export function OverlayContainer({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
 

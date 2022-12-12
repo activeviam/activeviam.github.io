@@ -3,7 +3,7 @@ import { PlanInfo } from "../json/planInfo";
 import { Filter } from "../json/filter";
 import { QuerySummary } from "../json/querySummary";
 import { validateJsonQueryPlan } from "../json/jsonQueryPlan";
-import buildGraph from "../../graphProcessors/buildGraph";
+import { buildGraph } from "../../graphProcessors/buildGraph";
 import { setSimulatedTimingInfo } from "../../graphProcessors/fillTimingInfo";
 
 export interface QueryPlan {
@@ -13,6 +13,11 @@ export interface QueryPlan {
   querySummary: QuerySummary;
 }
 
+/**
+ * Given an output of `JSON.parse()`, convert it into
+ * {@link "library/dataStructures/json/jsonQueryPlan"!JsonQueryPlan}, and then
+ * build retrieval graph and return {@link QueryPlan}.
+ */
 export function preprocessQueryPlan(json: any): QueryPlan[] {
   if (!Array.isArray(json)) {
     throw new Error("data must be an array");

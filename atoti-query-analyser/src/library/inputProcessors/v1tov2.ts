@@ -270,11 +270,14 @@ interface V1Structure {
   rootFilter?: string;
 }
 
+/**
+ * Parse logs
+ */
 async function parseV1(
   input: string,
   tickCallback: (currentLine: number, lineCount: number) => void
 ): Promise<V1Structure> {
-  let result = await new Promise<V1Structure>((resolve) => {
+  const result = await new Promise<V1Structure>((resolve) => {
     const accumulator: V1Structure = {
       info: {
         contextValues: {},
@@ -404,7 +407,7 @@ function parseFields(fields: string) {
   const regex = /`(([^`]|`\/`)*)`/gm;
 
   let match;
-  let result = [];
+  const result = [];
   while ((match = regex.exec(fields)) !== null) {
     result.push(match[1].split("`/`").join("/"));
   }
@@ -573,6 +576,10 @@ function createPlanInfo(info: V1Info) {
   };
 }
 
+/**
+ * Convert the result of {@link parseV1 parseV1()} call to
+ * {@link "library/dataStructures/json/jsonQueryPlan"!JsonQueryPlan JsonQueryPlan}.
+ */
 export function convertToV2(v1Structure: V1Structure) {
   const { filterList, filterDictionary } = createFilterMap(v1Structure);
   const { aggregateRetrievals, externalRetrievals } = createRetrievalMap(

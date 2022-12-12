@@ -16,7 +16,6 @@
 
 ## Details <a id="__autogen_7__"></a>
 # src/Components/Details/Details.tsx
-
 This component is responsible for displaying data about retrieval.
 
 Tasks:
@@ -29,7 +28,6 @@ Tasks:
 
 ## ErrorBoundary <a id="__autogen_8__"></a>
 # src/Components/ErrorBoundary/ErrorBoundary.tsx
-
 This is a helper component used to handle rendering errors.
 
 Tasks:
@@ -48,7 +46,6 @@ _No summary provided!_
 
 ## Input <a id="__autogen_10__"></a>
 # src/Components/Input/Input.tsx
-
 This component is designed to enter user data.
 
 Tasks:
@@ -68,7 +65,6 @@ _No summary provided!_
 
 ## Notification <a id="__autogen_12__"></a>
 # src/Components/Notification/NotificationWrapper.tsx
-
 This component is responsible for rendering notifications.
 
 Tasks:
@@ -81,7 +77,6 @@ Tasks:
 
 ## Summary <a id="__autogen_13__"></a>
 # src/Components/Summary/Summary.tsx
-
 This component is responsible for displaying query statistics.
 
 Tasks:
@@ -102,7 +97,6 @@ Tasks:
 
 ## Timeline <a id="__autogen_14__"></a>
 # src/Components/Timeline/Timeline.tsx
-
 This component is responsible for presenting data on the execution of a request in the form of a timing diagram.
 
 Tasks:

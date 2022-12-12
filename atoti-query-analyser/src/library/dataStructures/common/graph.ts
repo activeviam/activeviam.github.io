@@ -439,6 +439,10 @@ class AcyclicGraphFunctionCalculator<
   }
 }
 
+/**
+ * Run depth-first search from each of the `rootNodes`, signalling steps to the
+ * provided observer.
+ */
 export function multiDfs<
   VertexMetadata,
   EdgeMetadata,
@@ -453,6 +457,10 @@ export function multiDfs<
   new Dfs(graph, rootNodes, observer).run();
 }
 
+/**
+ * Run depth-first search from the `rootNode`, signalling steps to the provided
+ * observer.
+ */
 export function dfs<
   VertexMetadata,
   EdgeMetadata,
@@ -471,6 +479,13 @@ export function dfs<
   );
 }
 
+/**
+ * Given a direct acyclic graph (DAG), a vertex int it and a function, do the
+ * following:
+ * 1. Run recursively from all children of the vertex;
+ * 2. Compute function in the vertex, providing already computed values of this
+ * function in children vertices.
+ */
 export function applyOnDAG<
   Vertex extends IVertex<unknown>,
   Graph extends IGraph<

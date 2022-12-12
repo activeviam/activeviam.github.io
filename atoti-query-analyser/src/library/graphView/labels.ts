@@ -9,6 +9,9 @@ const TYPE_LABELS = new Map([
   ["RangeSharingPrimitiveAggregatesRetrieval", "RangeSharing"],
 ]);
 
+/**
+ * Given retrieval class name, return a human-readable label.
+ */
 export function type(value: string) {
   return TYPE_LABELS.get(value) || `<${value}>`;
 }

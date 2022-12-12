@@ -1,5 +1,4 @@
 # src/Components/Input/Input.tsx
-
 This component is designed to enter user data.
 
 Tasks:
@@ -16,7 +15,6 @@ Tasks:
 
 
 ## src/Components/Input/Input.tsx <a id="__autogen_21__"></a>
-
 This component is designed to enter user data.
 
 Tasks:

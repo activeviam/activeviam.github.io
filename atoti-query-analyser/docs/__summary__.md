@@ -24,6 +24,8 @@ Relations between queries (tree structure and pass info) are stored in `queryMet
 
 Each query has a set of retrievals. Some of them depend on others. Graph of retrievals is stored as `RetrievalGraph`.
 
+<!-- include __api_link__.md -->
+
 ## Project structure
 
 * `cypress`: testing stuff,

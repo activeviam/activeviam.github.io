@@ -1,5 +1,4 @@
 # src/Components/Notification/NotificationWrapper.tsx
-
 This component is responsible for rendering notifications.
 
 Tasks:
@@ -15,7 +14,6 @@ Tasks:
 
 
 ## src/Components/Notification/NotificationWrapper.tsx <a id="__autogen_25__"></a>
-
 This component is responsible for rendering notifications.
 
 Tasks:

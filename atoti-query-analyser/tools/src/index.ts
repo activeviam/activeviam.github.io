@@ -3,7 +3,7 @@ import path from "path";
 import { escape } from "lodash";
 import fs from "fs";
 
-const BLACKLIST_DIRS = new Set(["assets"]);
+const BLACKLIST_DIRS = new Set(["assets", "api"]);
 
 function verifyExistence() {
   const sources = makeFSSnapshot("../src");
@@ -58,26 +58,78 @@ const makeLink = (function () {
   };
 })();
 
+function splitCmd(cmd: string): string[] {
+  const regex = /([^\s"]+)|("([^"\\]|\\"|\\\\)*")/gm;
+
+  const args: string[] = [];
+
+  let m;
+  while ((m = regex.exec(cmd)) !== null) {
+    if (m.index === regex.lastIndex) {
+      regex.lastIndex++;
+    }
+
+    let token = m[0];
+    if (token[0] === '"') {
+      token = JSON.parse(token);
+    }
+
+    args.push(token);
+  }
+
+  return args;
+}
+
 function loadContents(filename: string, sectionIndent: number = 0): string[] {
-  const data = fs.readFileSync(filename, "utf8").split("\n");
+  let data: string[] = fs.readFileSync(filename, "utf8").split("\n");
 
-  for (let i = 1; i < data.length; ++i) {
-    if (data[i] === "===") {
-      data[i - 1] = "# " + data[i - 1];
-      data[i] = "";
-    } else if (data[i] === "---") {
-      data[i - 1] = "## " + data[i - 1];
-      data[i] = "";
-    }
-  }
+  return data
+    .reduce((acc: string[], line) => {
+      // Normalize headers
+      if (line === "===") {
+        acc.push("# " + acc.pop());
+      } else if (line === "---") {
+        acc.push("## " + acc.pop());
+      } else {
+        acc.push(line);
+      }
+      return acc;
+    }, [])
+    .reduce((acc: string[], line) => {
+      // Preprocess
+      acc.push(line);
 
-  for (let i = 0; i < data.length; ++i) {
-    if (data[i].startsWith("#")) {
-      data[i] = Array(sectionIndent + 1).join("#") + data[i];
-    }
-  }
+      if (!line.startsWith("<!-- ") || !line.endsWith(" -->")) {
+        return acc;
+      }
 
-  return data;
+      const cmd = line
+        .substring("<!--".length, line.length - "-->".length)
+        .trim();
+      const args = splitCmd(cmd);
+
+      if (args.length > 0) {
+        switch (args[0]) {
+          case "include":
+            args.slice(1).forEach((arg) => {
+              const nextFile = path.join(path.dirname(filename), arg);
+              acc.push(...loadContents(nextFile));
+            });
+            break;
+        }
+      }
+
+      return acc;
+    }, [])
+    .reduce((acc: string[], line) => {
+      // Header indentation
+      if (line.startsWith("#")) {
+        acc.push(Array(sectionIndent + 1).join("#") + line);
+      } else {
+        acc.push(line);
+      }
+      return acc;
+    }, []);
 }
 
 function buildIndex() {
@@ -86,6 +138,9 @@ function buildIndex() {
 
   docs.walk({
     onDir(dir: string) {
+      if (dir.split("/").some((token) => BLACKLIST_DIRS.has(token))) {
+        return;
+      }
       const realPath = DOCS_ROOT + dir;
       const children = docs.listDir(dir) || [];
 

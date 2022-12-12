@@ -5,12 +5,14 @@
     "airbnb-typescript",
     "plugin:jsx-a11y/recommended",
     "prettier",
-    "plugin:jsdoc/recommended"
+    "plugin:@typescript-eslint/recommended"
   ],
   "plugins": [
     "jsx-a11y",
     "prettier",
-    "jsdoc"
+    "jsdoc",
+    "@typescript-eslint/eslint-plugin",
+    "eslint-plugin-tsdoc"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -28,6 +30,13 @@
     //     "allowExpressions": true
     //   }
     // ],
+    "jsdoc/require-jsdoc": [
+      "error",
+      {
+        "publicOnly": true
+      }
+    ],
+    "tsdoc/syntax": "warn",
     "import/extensions": [
       "error",
       "ignorePackages",

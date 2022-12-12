@@ -5,6 +5,10 @@ import { QueryPlan } from "../dataStructures/processing/queryPlan";
 import { UUID } from "../utilities/uuid";
 import { VertexSelection } from "../dataStructures/processing/selection";
 
+/**
+ * Find connectivity components and mark each node with component id.
+ * @returns Map from vertex id to component id.
+ * */
 export function addClustersToNodes(
   query: QueryPlan,
   selection: VertexSelection

@@ -11,7 +11,6 @@
 
 
 ## src/Components/Graph/Graph.tsx <a id="__autogen_17__"></a>
-
 This component is responsible for representing the query execution plan in the form of a graph.
 
 Tasks:
@@ -22,11 +21,9 @@ Tasks:
 
 ## src/Components/Graph/Link.tsx <a id="__autogen_18__"></a>
 
-
 This component is responsible for representing the edge of the graph as an SVG element.
 
 ## src/Components/Graph/Menu.tsx <a id="__autogen_19__"></a>
-
 
 This component is responsible for the filter selection menu.
 
@@ -36,7 +33,6 @@ Tasks:
 * Search form among the available measures.
 
 ## src/Components/Graph/Node.tsx <a id="__autogen_20__"></a>
-
 This component is responsible for the graphical representation of a vertex of the graph.
 
 Tasks:

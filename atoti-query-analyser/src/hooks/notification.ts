@@ -2,6 +2,12 @@ import { useNotificationContext } from "../Components/Notification/NotificationW
 import { StackTraceParser } from "../library/devTools/stackTraceParser";
 import { asError } from "../library/utilities/util";
 
+/**
+ * This hook is a wrapper around
+ * {@link "Components/Notification/NotificationWrapper"!useNotificationContext useNotificationContext()}.
+ * It provides `showError()` callback that forms a default-styled message about
+ * the error.
+ */
 export function useErrorMessage() {
   const notificationContext = useNotificationContext();
 
@@ -33,7 +39,7 @@ export function useErrorMessage() {
     );
   };
 
-  const showError = (e: Error, tryUnbundle: boolean = true) => {
+  const showError = (e: Error, tryUnbundle = true) => {
     if (!tryUnbundle) {
       return showErrorWithoutProcessing(e);
     }

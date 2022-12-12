@@ -13,11 +13,15 @@ interface Message {
 }
 
 export interface NotificationContext {
+  /** Send new message to the notification service. */
   newMessage(title: string, body: string, props?: ToastProps): void;
 }
 
 const ctx = createContext<NotificationContext | null>(null);
 
+/**
+ * This hook provides access to the notification service.
+ * */
 export function useNotificationContext() {
   return useContext(ctx);
 }
@@ -90,6 +94,9 @@ function MessageToast({
 
 let messageCount = 0;
 
+/**
+ * This React component is a wrapper that provides notifications service.
+ */
 export function NotificationWrapper({
   children,
 }: {

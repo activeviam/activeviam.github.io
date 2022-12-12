@@ -15,10 +15,9 @@ import { CubeLocation, validateLocation } from "./cubeLocation";
 import { Measure, validateMeasure } from "./measure";
 import { TimingInfo, validateTimingInfo } from "./timingInfo";
 
-export const VirtualRetrievalKind: "VirtualRetrieval" = "VirtualRetrieval";
-export const AggregateRetrievalKind: "AggregateRetrieval" =
-  "AggregateRetrieval";
-export const ExternalRetrievalKind: "ExternalRetrieval" = "ExternalRetrieval";
+export const VirtualRetrievalKind = "VirtualRetrieval" as const;
+export const AggregateRetrievalKind = "AggregateRetrieval" as const;
+export const ExternalRetrievalKind = "ExternalRetrieval" as const;
 
 type TVirtualRetrievalKind = typeof VirtualRetrievalKind;
 type TAggregateRetrievalKind = typeof AggregateRetrievalKind;
@@ -80,6 +79,12 @@ export class ARetrievalGraphObserver extends AGraphObserver<
   RetrievalGraph
 > {}
 
+// Reason: `validate...()` function
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/**
+ * Deep validation of JSON parse result, expected to be {@link AggregateRetrieval}.
+ */
 export function validateAggregateRetrieval(
   rawRetrieval: any
 ): AggregateRetrieval {
@@ -110,6 +115,9 @@ export function validateAggregateRetrieval(
   };
 }
 
+/**
+ * Deep validation of JSON parse result, expected to be {@link ExternalRetrieval}.
+ */
 export function validateExternalRetrieval(
   rawRetrieval: any
 ): ExternalRetrieval {

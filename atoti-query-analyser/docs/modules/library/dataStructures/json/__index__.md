@@ -21,43 +21,33 @@ example, an array in a `Set`, or an object in a `Map`).
 
 
 ## src/library/dataStructures/json/cubeLocation.ts <a id="__autogen_48__"></a>
-
 This module contains the `CubeLocation` interface for storing information about `Location` from ActivePivot.
 
 ## src/library/dataStructures/json/dependencyMap.ts <a id="__autogen_49__"></a>
-
 This module contains the `DependencyMap` interface for storing dependencies between retrievals.
 
 ## src/library/dataStructures/json/filter.ts <a id="__autogen_50__"></a>
-
 This module contains the `Filter` interface corresponding to `com.quartetfs.biz.pivot.context.subcube.ICubeFilter` from ActivePivot.
 
 ## src/library/dataStructures/json/jsonQueryPlan.ts <a id="__autogen_51__"></a>
-
 This module exports the `JsonQueryPlan` interface corresponding to user data in JSON format.
 
 ## src/library/dataStructures/json/measure.ts <a id="__autogen_52__"></a>
-
 This module contains the `Measure` interface.
 
 ## src/library/dataStructures/json/planInfo.ts <a id="__autogen_53__"></a>
-
 This module contains `PlanInfo` interface.
 
 ## src/library/dataStructures/json/querySummary.ts <a id="__autogen_54__"></a>
-
 This module contains `QuerySummary` interface.
 
 ## src/library/dataStructures/json/retrieval.ts <a id="__autogen_55__"></a>
-
 This module contains interfaces corresponding to different types of retrievals, as well as classes for working with the
 retrievals graph.
 
 ## src/library/dataStructures/json/timingInfo.ts <a id="__autogen_56__"></a>
-
 This module contains `TimingInfo` interface.
 
 ## src/library/dataStructures/json/validatingUtils.ts <a id="__autogen_57__"></a>
-
 
 This module contains helper functions for validation.

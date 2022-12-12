@@ -48,20 +48,18 @@ function resolveQueryEndpoint(userUrl: string) {
   return resolution;
 }
 
+export interface ServerInput {
+  url: string;
+  credentials: string;
+  query: string;
+}
+
 /**
  * Queries the server for the query plan of a given request.
  * @param payload payload to send to the server
  * @returns the exported query plan for the provided query
  */
-export async function queryServer({
-  url,
-  credentials,
-  query,
-}: {
-  url: string;
-  credentials: string;
-  query: string;
-}) {
+export async function queryServer({ url, credentials, query }: ServerInput) {
   const baseUrl = await resolveQueryEndpoint(url);
   const queryUrl = `${baseUrl}/cube/query/mdx/queryplan`;
   const body = {

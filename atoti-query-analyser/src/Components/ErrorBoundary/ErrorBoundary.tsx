@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { ReactNode, useLayoutEffect } from "react";
 import { asError } from "../../library/utilities/util";
 import { Button } from "react-bootstrap";
 import { useErrorMessage } from "../../hooks/notification";
@@ -37,12 +37,21 @@ function Fallback({
   );
 }
 
-interface ErrorBoundaryProps {}
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
 
 interface ErrorBoundaryState {
   error?: Error;
 }
 
+/**
+ * This React component is a wrapper that catches rendering errors. If an error
+ * is caught, the subcomponent tree is replaced with an error message.
+ * Additionally, if ErrorBoundary is wrapped with a
+ * {@link "Components/Notification/NotificationWrapper"!NotificationWrapper NotificationWrapper},
+ * an error notification will be shown.
+ * */
 export class ErrorBoundary extends React.Component<
   ErrorBoundaryProps,
   ErrorBoundaryState

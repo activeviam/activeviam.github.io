@@ -1,5 +1,5 @@
 {
-  "name": "paris-internship-queryviz",
+  "name": "atoti-query-analyser",
   "version": "0.1.0",
   "private": true,
   "homepage": "./",
@@ -39,8 +39,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "cypress": "cypress",
-    "eslint": "eslint --ignore-path .gitignore --max-warnings 0 --report-unused-disable-directives \"./**/*.{js,ts,tsx}\"",
-    "format-prettier": "prettier --ignore-path .gitignore \"./**/*.{css,js,json,md,ts,tsx,yml}\""
+    "eslint": "eslint --ignore-path .gitignore --max-warnings 0 --report-unused-disable-directives \"src/**/*.{js,ts,tsx}\"",
+    "format-prettier": "prettier --ignore-path .gitignore \"src/**/*.{css,js,json,md,ts,tsx,yml}\"",
+    "typedoc": "typedoc",
+    "typedoc:dev": "nodemon --watch './src/*' -e ts,tsx --exec yarn typedoc"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -70,7 +72,11 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "prettier": "^2.8.0"
+    "eslint-plugin-tsdoc": "^0.2.17",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.8.0",
+    "typedoc": "^0.23.22",
+    "typedoc-theme-hierarchy": "^3.0.0"
   },
   "resolutions": {
     "**/@typescript-eslint/eslint-plugin": "^5.26.0",

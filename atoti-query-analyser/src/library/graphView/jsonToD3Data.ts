@@ -149,6 +149,9 @@ function normalizeIds(
   return { nodes: normalizedNodes, links: normalizedLinks };
 }
 
+/**
+ * Given a query plan, build data for d3js.
+ */
 export function buildD3(query: QueryPlan, selection: VertexSelection) {
   const info = { selection };
   const { graph } = query;

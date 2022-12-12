@@ -1,12 +1,14 @@
 import {
+  AggregateRetrieval,
   ARetrieval,
+  ExternalRetrieval,
   RetrievalGraph,
   RetrievalVertex,
   VirtualRetrieval,
   VirtualRetrievalKind,
 } from "../dataStructures/json/retrieval";
 
-function makeRetrievalConsumer(graph: RetrievalGraph) {
+function makeRetrievalVertexBuilder(graph: RetrievalGraph) {
   return (retrievals: ARetrieval[]) => {
     return retrievals
       .sort((lhs, rhs) => lhs.retrievalId - rhs.retrievalId)
@@ -39,15 +41,18 @@ function makeVirtualRetrieval({
   };
 }
 
-export default function buildGraph(
-  aggregateRetrievals: Array<any>,
-  externalRetrievals: Array<any>,
+/**
+ * Takes raw retrieval info from JSON and builds a graph of retrievals.
+ */
+export function buildGraph(
+  aggregateRetrievals: AggregateRetrieval[],
+  externalRetrievals: ExternalRetrieval[],
   aggregateDependencies: Map<number, Set<number>>,
   externalDependencies: Map<number, Set<number>>
 ): RetrievalGraph {
   const graph = new RetrievalGraph();
 
-  const retrievalConsumer = makeRetrievalConsumer(graph);
+  const retrievalVertexBuilder = makeRetrievalVertexBuilder(graph);
 
   const virtualSource = new RetrievalVertex(
     makeVirtualRetrieval({ type: "VirtualSource", retrievalId: -1 })
@@ -60,8 +65,9 @@ export default function buildGraph(
   graph.addVertex(virtualTarget);
   graph.labelVertex(virtualTarget.getUUID(), "virtualTarget");
 
-  const aggregateRetrievalVertices = retrievalConsumer(aggregateRetrievals);
-  const externalRetrievalVertices = retrievalConsumer(externalRetrievals);
+  const aggregateRetrievalVertices =
+    retrievalVertexBuilder(aggregateRetrievals);
+  const externalRetrievalVertices = retrievalVertexBuilder(externalRetrievals);
 
   [
     {

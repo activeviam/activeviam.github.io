@@ -41,6 +41,10 @@ function addVirtualVertices(query: QueryPlan, selection: VertexSelection) {
 }
 
 // Remove nodes without timing info
+/**
+ * For each query plan, build default vertex selection, which includes all
+ * retrievals except for no-ops.
+ */
 export function buildDefaultSelection(queries: QueryPlan[]) {
   const selections = removeNoOps(queries);
 
@@ -50,6 +54,12 @@ export function buildDefaultSelection(queries: QueryPlan[]) {
   return selections;
 }
 
+/**
+ * Given an array of measures, build a subselection of graph vertices. A vertex
+ * included into the resulting selection either if the corresponding retrieval
+ * has at least one of the specified measures, or if one of its
+ * successors/predecessors does so.
+ */
 export function filterByMeasures({
   graph,
   measures,

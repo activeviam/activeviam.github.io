@@ -1,5 +1,4 @@
 # src/Components/Details/Details.tsx
-
 This component is responsible for displaying data about retrieval.
 
 Tasks:
@@ -15,7 +14,6 @@ Tasks:
 
 
 ## src/Components/Details/Details.tsx <a id="__autogen_15__"></a>
-
 This component is responsible for displaying data about retrieval.
 
 Tasks:

@@ -8,7 +8,7 @@ import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { Popover } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import { FaTimes } from "react-icons/fa";
-import Details from "../Details/Details";
+import { Details } from "../Details/Details";
 import { enterNode, updateNode } from "../../library/graphView/graphHelpers";
 import * as d3 from "d3";
 import Overlay from "react-bootstrap/Overlay";
@@ -112,6 +112,9 @@ function computeClasses(classNames: (string | null)[]) {
   return classNames.filter((className) => className !== null).join(" ");
 }
 
+/**
+ * This React component is responsible for graph vertex visualization.
+ */
 export function Node({
   node,
   changeGraph,
