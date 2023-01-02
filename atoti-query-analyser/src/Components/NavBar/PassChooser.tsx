@@ -17,7 +17,7 @@ function passLabel({
 /**
  * This React component is used for pass selection.
  */
-function PassChooser(
+export function PassChooser(
   allQueries: QueryPlanMetadata[],
   currentPassId: number,
   callback: (id: number) => void
@@ -45,5 +45,3 @@ function PassChooser(
   }
   return <></>;
 }
-
-export default PassChooser;

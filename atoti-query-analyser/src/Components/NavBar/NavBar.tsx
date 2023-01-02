@@ -2,7 +2,7 @@ import React from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
-const NavBar = ({
+export function NavBar({
   navigate,
   goBackButton,
   passChooser,
@@ -10,7 +10,7 @@ const NavBar = ({
   navigate: (to: string) => void;
   goBackButton?: React.ReactNode;
   passChooser?: React.ReactNode;
-}) => {
+}) {
   return (
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand href="">QueryViz</Navbar.Brand>
@@ -34,6 +34,4 @@ const NavBar = ({
       </Nav>
     </Navbar>
   );
-};
-
-export default NavBar;
+}

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { OverlayContainer } from "./hooks/overlayContainer";
 import { NotificationWrapper } from "./Components/Notification/NotificationWrapper";
-import NavBar from "./Components/NavBar/NavBar";
+import { NavBar } from "./Components/NavBar/NavBar";
 import { ErrorBoundary } from "./Components/ErrorBoundary/ErrorBoundary";
-import Input, { InputMode, InputType } from "./Components/Input/Input";
+import { Input, InputMode, InputType } from "./Components/Input/Input";
 import { VertexSelection } from "./library/dataStructures/processing/selection";
 import { queryServer, ServerInput } from "./library/inputProcessors/server";
-import goParentQueryButton from "./Components/NavBar/GoBackToParentQueryButton";
+import { GoBackToParentQueryButton } from "./Components/NavBar/GoBackToParentQueryButton";
 import { convertToV2, parseV1 } from "./library/inputProcessors/v1tov2";
 import {
   preprocessQueryPlan,
@@ -17,8 +17,8 @@ import {
   QueryPlanMetadata,
 } from "./library/graphProcessors/extractMetadata";
 import { buildDefaultSelection } from "./library/graphProcessors/selection";
-import passChooser from "./Components/NavBar/PassChooser";
-import Summary from "./Components/Summary/Summary";
+import { PassChooser } from "./Components/NavBar/PassChooser";
+import { Summary } from "./Components/Summary/Summary";
 import { Graph } from "./Components/Graph/Graph";
 import { Timeline } from "./Components/Timeline/Timeline";
 import { validateString } from "./library/dataStructures/json/validatingUtils";
@@ -88,7 +88,7 @@ export function App(): JSX.Element {
 
   const renderPassChooser = () => {
     if (route !== "input") {
-      return passChooser(queryMetadata, currentPassId, changePass);
+      return PassChooser(queryMetadata, currentPassId, changePass);
     }
     return null;
   };
@@ -129,7 +129,7 @@ export function App(): JSX.Element {
       <NotificationWrapper>
         <NavBar
           navigate={(dir) => setRoute(dir)}
-          goBackButton={goParentQueryButton(
+          goBackButton={GoBackToParentQueryButton(
             queryMetadata[currentQueryId]?.parentId || null,
             changeGraph
           )}

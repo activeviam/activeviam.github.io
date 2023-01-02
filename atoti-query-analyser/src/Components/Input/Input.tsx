@@ -177,7 +177,7 @@ function DevButtons({
 /**
  * This React component is responsible for getting user input.
  */
-export default function Input({
+export function Input({
   passInput,
   lastInput,
 }: {

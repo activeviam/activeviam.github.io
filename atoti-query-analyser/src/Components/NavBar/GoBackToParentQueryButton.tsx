@@ -4,7 +4,7 @@ import React from "react";
 /**
  * This React component shows a button to go to the parent query if exists.
  * */
-function GoBackToParentQueryButton(
+export function GoBackToParentQueryButton(
   currentParentId: number | null,
   callback: (id: number) => void
 ) {
@@ -20,5 +20,3 @@ function GoBackToParentQueryButton(
   }
   return <></>;
 }
-
-export default GoBackToParentQueryButton;
