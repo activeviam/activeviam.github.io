@@ -44,9 +44,6 @@
     "typedoc": "typedoc",
     "typedoc:dev": "nodemon --watch './src/*' -e ts,tsx --exec yarn typedoc"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "browserslist": {
     "production": [
       ">0.2%",

@@ -1,7 +1,6 @@
 {
   "extends": [
     "react-app",
-    "react-app/jest",
     "airbnb-typescript",
     "plugin:jsx-a11y/recommended",
     "prettier",
@@ -24,12 +23,6 @@
     "project": "./tsconfig.json"
   },
   "rules": {
-    // "@typescript-eslint/explicit-function-return-type": [
-    //   "error",
-    //   {
-    //     "allowExpressions": true
-    //   }
-    // ],
     "jsdoc/require-jsdoc": [
       "error",
       {
