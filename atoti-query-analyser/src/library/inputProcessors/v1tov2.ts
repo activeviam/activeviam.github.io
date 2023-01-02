@@ -502,7 +502,10 @@ function createRetrievalMap(
   const externalRetrievals: ExternalRetrieval[] = [];
 
   Object.values(v1Structure.retrievals)
-    .sort((lhs, rhs) => lhs.sourceId.localeCompare(rhs.sourceId))
+    .sort(
+      (lhs, rhs) =>
+        parseSourceId(lhs).retrievalId - parseSourceId(rhs).retrievalId
+    )
     .forEach((retrieval) => {
       const { kind, retrievalId } = parseSourceId(retrieval);
 
