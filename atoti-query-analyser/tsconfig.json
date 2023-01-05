@@ -7,6 +7,8 @@
       "esnext"
     ],
     "allowJs": true,
+    "baseUrl": "./src",
+    "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -26,13 +28,12 @@
     "entryPoints": [
       "src/"
     ],
+    "exclude": "**/*.{js,jsx}",
     "entryPointStrategy": "expand",
-    "plugin": [
-      "typedoc-theme-hierarchy"
-    ],
     "theme": "hierarchy",
     "out": "docs/api",
-    "readme": "tsdoc.readme.md",
+    "favicon": "public/favicon.ico",
+    "media": "media",
     "includes": "docs"
   }
 }

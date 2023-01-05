@@ -33,6 +33,9 @@ type IntermediateD3Link = Omit<Omit<D3Link, "source">, "target"> & {
   target: UUID;
 };
 
+/**
+ * Builds d3js representation of graph nodes.
+ * */
 function getNodes(
   graph: RetrievalGraph,
   info: { selection: VertexSelection },
@@ -49,7 +52,10 @@ function getNodes(
   );
   const roots = new Set(
     Array.from(graph.getVertices()).filter(
-      (vertex) => Array.from(graph.getOutgoingEdges(vertex)).length === 0
+      (vertex) =>
+        Array.from(graph.getOutgoingEdges(vertex)).filter(
+          (edge) => edge.getEnd().getMetadata().$kind !== VirtualRetrievalKind
+        ).length === 0
     )
   );
 
@@ -99,6 +105,9 @@ function getNodes(
     });
 }
 
+/**
+ * Builds d3js representation of graph edges.
+ * */
 function getLinks(
   graph: RetrievalGraph,
   info: { selection: VertexSelection }
@@ -124,6 +133,9 @@ function getLinks(
   return links;
 }
 
+/**
+ * Replaces UUIDs with numeric ids.
+ * */
 function normalizeIds(
   nodes: IntermediateD3Node[],
   links: IntermediateD3Link[]

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
+import { PassGraph } from "./components/PassGraph/PassGraph";
 import { OverlayContainer } from "./hooks/overlayContainer";
-import { NotificationWrapper } from "./Components/Notification/NotificationWrapper";
-import { NavBar } from "./Components/NavBar/NavBar";
-import { ErrorBoundary } from "./Components/ErrorBoundary/ErrorBoundary";
-import { Input, InputMode, InputType } from "./Components/Input/Input";
+import { NotificationWrapper } from "./components/Notification/NotificationWrapper";
+import { NavBar } from "./components/NavBar/NavBar";
+import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
+import { Input, InputMode, InputType } from "./components/Input/Input";
 import { VertexSelection } from "./library/dataStructures/processing/selection";
 import { queryServer, ServerInput } from "./library/inputProcessors/server";
-import { GoBackToParentQueryButton } from "./Components/NavBar/GoBackToParentQueryButton";
+import { GoBackToParentQueryButton } from "./components/NavBar/GoBackToParentQueryButton";
 import { convertToV2, parseV1 } from "./library/inputProcessors/v1tov2";
 import {
   preprocessQueryPlan,
@@ -17,14 +18,19 @@ import {
   QueryPlanMetadata,
 } from "./library/graphProcessors/extractMetadata";
 import { buildDefaultSelection } from "./library/graphProcessors/selection";
-import { PassChooser } from "./Components/NavBar/PassChooser";
-import { Summary } from "./Components/Summary/Summary";
-import { Graph } from "./Components/Graph/Graph";
-import { Timeline } from "./Components/Timeline/Timeline";
+import { PassChooser } from "./components/NavBar/PassChooser";
+import { Summary } from "./components/Summary/Summary";
+import { Graph } from "./components/Graph/Graph";
+import { Timeline } from "./components/Timeline/Timeline";
 import { validateString } from "./library/dataStructures/json/validatingUtils";
 
 /**
  * The root React component.
+ * <br/>
+ * Tasks:
+ * * Manage sections of the application (Input, Summary, Graph, Timeline);
+ * * Application data storage;
+ * * Manage the selection of the current pass and of the request within that pass.
  * */
 export function App(): JSX.Element {
   const [route, setRoute] = useState("input");
@@ -88,7 +94,13 @@ export function App(): JSX.Element {
 
   const renderPassChooser = () => {
     if (route !== "input") {
-      return PassChooser(queryMetadata, currentPassId, changePass);
+      return (
+        <PassChooser
+          allQueries={queryMetadata}
+          currentPassId={currentPassId}
+          callback={changePass}
+        />
+      );
     }
     return null;
   };
@@ -98,6 +110,9 @@ export function App(): JSX.Element {
   );
 
   const renderStub = () => <h1>Load a query plan first!</h1>;
+
+  const renderPassGraph = () =>
+    queryPlans ? <PassGraph metadata={queryMetadata} /> : renderStub();
 
   const renderSummary = () =>
     queryPlans ? (
@@ -138,6 +153,7 @@ export function App(): JSX.Element {
         <ErrorBoundary>
           <main role="main" className="container-fluid px-0">
             {route === "input" && renderInput()}
+            {route === "passGraph" && renderPassGraph()}
             {route === "summary" && renderSummary()}
             {route === "graph" && renderGraph()}
             {route === "timeline" && renderTimeline()}

@@ -83,6 +83,11 @@ export interface IGraph<
   getVertexCount(): number;
 }
 
+/**
+ * This class is abstract base for {@link AdjacencyListGraph}. Such trick allows
+ * to reduce size of template arguments for those parts of code where we don't
+ * need to create new vertices or edges.
+ * */
 class AdjacencyListGraphBase<
   VertexMetadata,
   EdgeMetadata,
@@ -149,6 +154,7 @@ class AdjacencyListGraphBase<
     return edge.getUUID();
   }
 
+  /** Export graph in DOT format. */
   dumps(): string {
     const result = [];
     const mangle = (text: string) =>
@@ -183,6 +189,10 @@ class AdjacencyListGraphBase<
   }
 }
 
+/**
+ * This implementation of {@link IGraph} stores its edges indexed by their
+ * origin vertex (see {@link https://en.wikipedia.org/wiki/Adjacency_list}).
+ * */
 export class AdjacencyListGraph<
   VertexMetadata,
   EdgeMetadata
@@ -200,6 +210,10 @@ export class AdjacencyListGraph<
     return this.addEdge(edge);
   }
 
+  /**
+   * Build an {@link https://en.wikipedia.org/wiki/Induced_subgraph induced subgraph}
+   * which contains those and only those vertices that match the predicate.
+   * */
   filterVertices(
     predicate: (vertex: Vertex<VertexMetadata>) => boolean
   ): AdjacencyListGraph<VertexMetadata, EdgeMetadata> {
@@ -230,6 +244,9 @@ export class AdjacencyListGraph<
     return result;
   }
 
+  /**
+   * Build a graph with the same set of vertices and reversed edges.
+   * */
   inverse(): AdjacencyListGraph<VertexMetadata, EdgeMetadata> {
     const result = new AdjacencyListGraph<VertexMetadata, EdgeMetadata>();
 
@@ -250,6 +267,9 @@ export class AdjacencyListGraph<
   }
 }
 
+/**
+ * This interface allows to track events during graph traversal (DFS, BFS, etc).
+ * */
 export interface IGraphObserver<
   VertexMetadata,
   EdgeMetadata,
@@ -257,19 +277,26 @@ export interface IGraphObserver<
   Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>,
   Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>
 > {
+  /** This callback is called before traversal start. */
   onBeginSearch(graph: Graph): void;
 
+  /** This callback is called after traversal finish. */
   onEndSearch(): void;
 
+  /** This callback is called when traversal algorithm meets the vertex for the first time. */
   onVertexDiscover(vertex: Vertex): void;
 
+  /** This callback is called when traversal algorithm meets the edge for the first time. */
   onEdgeDiscover(edge: Edge): void;
 
+  /** This callback is called when traversal algorithm selects the vertex as currently active. */
   onVertexEnter(vertex: Vertex): void;
 
+  /** This callback is called when the vertex stops being active. */
   onVertexExit(vertex: Vertex): void;
 }
 
+// Reason: abstract class with default no-op methods
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export class AGraphObserver<
   VertexMetadata,
@@ -397,6 +424,9 @@ class Dfs<
   }
 }
 
+/**
+ * Helper class that encapsulates logic of {@link applyOnDAG}.
+ * */
 class AcyclicGraphFunctionCalculator<
   VertexMetadata,
   EdgeMetadata,

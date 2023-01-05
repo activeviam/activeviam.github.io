@@ -5,6 +5,8 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { App } from "./App";
 
 ReactDOM.render(
+  // Reason: application entry point
+  // eslint-disable-next-line react/jsx-filename-extension
   <React.StrictMode>
     <App />
   </React.StrictMode>,

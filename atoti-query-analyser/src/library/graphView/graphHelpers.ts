@@ -2,6 +2,9 @@ import { BaseType, Selection } from "d3-selection";
 import { D3Node } from "../dataStructures/d3/d3Node";
 import { D3Link } from "../dataStructures/d3/d3Link";
 
+/**
+ * Gets list of query children ids.
+ * */
 function getChildrenIds(d: D3Node): number[] {
   if ("childrenIds" in d.details.metadata) {
     return (d.details.metadata.childrenIds || []) as number[];
@@ -10,6 +13,7 @@ function getChildrenIds(d: D3Node): number[] {
 }
 
 /**
+ * Node outline color.
  * @param d - a D3 node
  * @returns the color of the border of the node according to its state
  */
@@ -39,7 +43,10 @@ const NODE_COLOR_MAP = new Map([
   ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#bab0ab"],
 ]);
 
-function insideColor(d: D3Node) {
+/**
+ * Node background color.
+ * */
+function backgroundColor(d: D3Node) {
   return NODE_COLOR_MAP.get(d.details.metadata.type) || "grey";
 }
 
@@ -85,14 +92,14 @@ function enterNode(
   selection
     .select<SVGCircleElement>("circle")
     .attr("r", computeRadius)
-    .style("fill", (d) => insideColor(d))
+    .style("fill", (d) => backgroundColor(d))
     .style("--node-stroke", (d) => outlineColor(d));
   selection
     .select<SVGRectElement>("rect")
     .attr("width", (d) => 2 * computeRadius(d))
     .attr("height", (d) => 2 * computeRadius(d))
     .attr("rx", "3")
-    .style("fill", (d) => insideColor(d))
+    .style("fill", (d) => backgroundColor(d))
     .style("--node-stroke", (d) => outlineColor(d));
 
   selection

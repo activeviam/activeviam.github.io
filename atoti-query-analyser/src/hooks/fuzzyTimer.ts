@@ -40,7 +40,7 @@ export function stringifyFuzzyTimer({ exactDuration }: FuzzyTimer): string {
     return "now";
   }
   if (seconds < 60) {
-    return `${Math.floor(seconds)} seconds ago`;
+    return `${Math.floor(seconds / 5) * 5} seconds ago`;
   }
   const minutes = seconds / 60;
   if (minutes < 60) {

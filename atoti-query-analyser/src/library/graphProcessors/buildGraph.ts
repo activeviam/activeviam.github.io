@@ -8,22 +8,27 @@ import {
   VirtualRetrievalKind,
 } from "../dataStructures/json/retrieval";
 
-function makeRetrievalVertexBuilder(graph: RetrievalGraph) {
-  return (retrievals: ARetrieval[]) => {
-    return retrievals
-      .sort((lhs, rhs) => lhs.retrievalId - rhs.retrievalId)
-      .map((retrieval, index) => {
-        const { retrievalId, $kind } = retrieval;
+/**
+ * Takes array of retrievals, verifies index consistency (no gaps, no repeats),
+ * creates vertices for each retrieval and returns array of vertex UUIDs.
+ * */
+function processArrayOfRetrievals(
+  graph: RetrievalGraph,
+  retrievals: ARetrieval[]
+) {
+  return retrievals
+    .sort((lhs, rhs) => lhs.retrievalId - rhs.retrievalId)
+    .map((retrieval, index) => {
+      const { retrievalId, $kind } = retrieval;
 
-        if (retrievalId !== index) {
-          throw new Error(`Missing retrieval ${$kind}#${retrievalId - 1}`);
-        }
+      if (retrievalId !== index) {
+        throw new Error(`Missing retrieval ${$kind}#${retrievalId - 1}`);
+      }
 
-        const vertex = new RetrievalVertex(retrieval);
-        graph.addVertex(vertex);
-        return vertex.getUUID();
-      });
-  };
+      const vertex = new RetrievalVertex(retrieval);
+      graph.addVertex(vertex);
+      return vertex.getUUID();
+    });
 }
 
 function makeVirtualRetrieval({
@@ -52,8 +57,6 @@ export function buildGraph(
 ): RetrievalGraph {
   const graph = new RetrievalGraph();
 
-  const retrievalVertexBuilder = makeRetrievalVertexBuilder(graph);
-
   const virtualSource = new RetrievalVertex(
     makeVirtualRetrieval({ type: "VirtualSource", retrievalId: -1 })
   );
@@ -65,9 +68,14 @@ export function buildGraph(
   graph.addVertex(virtualTarget);
   graph.labelVertex(virtualTarget.getUUID(), "virtualTarget");
 
-  const aggregateRetrievalVertices =
-    retrievalVertexBuilder(aggregateRetrievals);
-  const externalRetrievalVertices = retrievalVertexBuilder(externalRetrievals);
+  const aggregateRetrievalVertices = processArrayOfRetrievals(
+    graph,
+    aggregateRetrievals
+  );
+  const externalRetrievalVertices = processArrayOfRetrievals(
+    graph,
+    externalRetrievals
+  );
 
   [
     {

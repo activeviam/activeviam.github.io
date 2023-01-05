@@ -7,6 +7,9 @@ interface OverlayContainerContext {
 
 const ctx = createContext<OverlayContainerContext | null>(null);
 
+/**
+ * This hook is for internal use. It provides access to the context of OverlayContainer.
+ * */
 function useOverlayContainerContext() {
   return useContext(ctx);
 }

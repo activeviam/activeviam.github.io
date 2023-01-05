@@ -1,10 +1,10 @@
-import { useNotificationContext } from "../Components/Notification/NotificationWrapper";
+import { useNotificationContext } from "../components/Notification/NotificationWrapper";
 import { StackTraceParser } from "../library/devTools/stackTraceParser";
 import { asError } from "../library/utilities/util";
 
 /**
  * This hook is a wrapper around
- * {@link "Components/Notification/NotificationWrapper"!useNotificationContext useNotificationContext()}.
+ * {@link "components/Notification/NotificationWrapper"!useNotificationContext useNotificationContext()}.
  * It provides `showError()` callback that forms a default-styled message about
  * the error.
  */

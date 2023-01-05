@@ -4,6 +4,7 @@ import {
   AggregateRetrievalKind,
 } from "../dataStructures/json/retrieval";
 import { computeIfAbsent, requireNonNull } from "../utilities/util";
+import PropTypes from "prop-types";
 
 export interface QueryPlanMetadata {
   passType: string;
@@ -13,6 +14,18 @@ export interface QueryPlanMetadata {
   parentId: number | null;
 }
 
+export const QueryPlanMetadataPropType = PropTypes.shape({
+  passType: PropTypes.string.isRequired,
+  pass: PropTypes.number.isRequired,
+  name: PropTypes.string,
+  id: PropTypes.number.isRequired,
+  parentId: PropTypes.number,
+});
+
+/**
+ * For each query, finds list of subqueries and save it to `res[i].childrenIds`.
+ * Then, for each query sets its parent id.
+ * */
 function findChildrenAndParents(
   res: QueryPlanMetadata[],
   queries: QueryPlan[]
@@ -43,7 +56,10 @@ function findChildrenAndParents(
   });
 }
 
-function dumpMetadata(metadata: QueryPlanMetadata[]) {
+/**
+ * Exports queries metadata info in DOT format
+ * */
+export function dumpMetadata(metadata: QueryPlanMetadata[]) {
   const queriesByPass = new Map<number, Set<number>>();
   metadata.forEach((query) => {
     computeIfAbsent(queriesByPass, query.pass, () => new Set()).add(query.id);
@@ -79,7 +95,7 @@ function dumpMetadata(metadata: QueryPlanMetadata[]) {
   });
 
   lines.push("}");
-  console.log(lines.join("\n"));
+  return lines.join("\n");
 }
 
 /**
@@ -104,6 +120,6 @@ export function extractMetadata(data: QueryPlan[]): QueryPlanMetadata[] {
   });
 
   findChildrenAndParents(res, data);
-  dumpMetadata(res);
+  console.log(dumpMetadata(res));
   return res;
 }

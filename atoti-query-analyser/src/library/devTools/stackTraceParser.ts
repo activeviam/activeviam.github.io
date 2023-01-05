@@ -20,6 +20,14 @@ function mappingEntryComparator(lhs: MappingEntry, rhs: MappingEntry): number {
   return lhs.column - rhs.column;
 }
 
+/**
+ * This class is responsible for fetching source maps from the remote host and
+ * parsing them. The purpose is to process stack trace of bundled code and map
+ * its locations into original code.
+ * <br/>
+ * This code is based on the following article:
+ * {@link https://www.bugsnag.com/blog/source-maps}.
+ * */
 export class StackTraceParser {
   private static readonly instance = new StackTraceParser();
 

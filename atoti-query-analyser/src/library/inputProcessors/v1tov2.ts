@@ -17,6 +17,7 @@ const PARTITION_RESULT = /(?:^|\s+)Result for (\d+)\s*: (EMPTY|.*)/;
 const DEPENDENCY_START = /which depends on \{/;
 const DEPENDENCY_END = /^\s*}\s*$/;
 
+/** Gets last element of array or `undefined` if it is empty. */
 function last<T>(array: T[]): T | undefined {
   return array.length > 0 ? array[array.length - 1] : undefined;
 }

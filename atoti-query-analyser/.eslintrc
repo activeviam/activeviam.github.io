@@ -3,15 +3,18 @@
     "react-app",
     "airbnb-typescript",
     "plugin:jsx-a11y/recommended",
-    "prettier",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:prettier/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended"
   ],
   "plugins": [
+    "react",
     "jsx-a11y",
     "prettier",
     "jsdoc",
     "@typescript-eslint/eslint-plugin",
-    "eslint-plugin-tsdoc"
+    "import",
+    "tsdoc"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -30,30 +33,18 @@
       }
     ],
     "tsdoc/syntax": "warn",
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "js": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ],
-    "semi": 0,
+    "semi": "error",
     "no-param-reassign": [
-      2,
+      "error",
       {
         "props": false
       }
     ],
-    "react/destructuring-assignment": "off",
-    "react/no-find-dom-node": "off",
-    "no-nested-ternary": "off",
+    "react/destructuring-assignment": "error",
     "react/jsx-filename-extension": [
-      1,
+      "error",
       {
         "extensions": [
-          ".js",
           ".jsx",
           ".tsx"
         ]
