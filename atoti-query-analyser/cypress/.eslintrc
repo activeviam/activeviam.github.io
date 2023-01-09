@@ -1,0 +1,10 @@
+{
+  "root": true,
+  "extends": [
+    "plugin:cypress/recommended"
+  ],
+  "parser": "espree",
+  "rules": {
+    "semi": "error"
+  }
+}

@@ -1,4 +1,10 @@
-import React, { CSSProperties, useLayoutEffect, useRef } from "react";
+import React, {
+  CSSProperties,
+  ForwardedRef,
+  forwardRef,
+  useLayoutEffect,
+  useRef,
+} from "react";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { Popover, Button, Overlay } from "react-bootstrap";
 import { FaTimes } from "react-icons/fa";
@@ -21,17 +27,20 @@ const POPOVER_BACKGROUND_COLOR = "#DDDDDD";
  * @param props.nodeRef - Reference to the SVG DOM element; needed for
  * window positioning
  * */
-const NodePopover = ({
-  node,
-  clickNode,
-  nodeRef,
-  changeGraph,
-}: {
-  node: D3Node;
-  changeGraph: (childId: number) => void;
-  clickNode: (id: number | null) => void;
-  nodeRef: SVGElement | null;
-}) => {
+const NodePopover = forwardRef(function NodePopover(
+  {
+    node,
+    clickNode,
+    nodeRef,
+    changeGraph,
+  }: {
+    node: D3Node;
+    changeGraph: (childId: number) => void;
+    clickNode: (id: number | null) => void;
+    nodeRef: SVGElement | null;
+  },
+  ref: ForwardedRef<HTMLDivElement>
+) {
   const { details } = node;
   const { startTimes, elapsedTimes, metadata } = details;
   const { type } = metadata;
@@ -48,6 +57,7 @@ const NodePopover = ({
 
   return (
     <Popover
+      ref={ref}
       style={{
         maxWidth: "800px",
         pointerEvents: "auto",
@@ -109,7 +119,7 @@ const NodePopover = ({
       </Popover.Body>
     </Popover>
   );
-};
+});
 
 /**
  * Filter out `null` values and join class names using space as a delimiter.
