@@ -53,7 +53,8 @@ export function App(): JSX.Element {
   const processInput = async (
     mode: InputMode,
     type: InputType,
-    input: string | ServerInput
+    input: string | ServerInput,
+    showError: (error: Error) => void
   ) => {
     let rawJson: unknown;
     if (mode === InputMode.JSON) {
@@ -66,7 +67,11 @@ export function App(): JSX.Element {
       }
       rawJson = await queryServer(input);
     } else if (mode === InputMode.V1) {
-      rawJson = convertToV2(await parseV1(validateString(input), () => {}));
+      const { errors, result } = convertToV2(
+        await parseV1(validateString(input), () => {})
+      );
+      rawJson = [result];
+      errors.forEach(showError);
     }
 
     const queryPlan = preprocessQueryPlan(rawJson);

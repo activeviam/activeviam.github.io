@@ -57,8 +57,15 @@ function LocationView({ location }: { location: CubeLocation[] }) {
       <ul>
         {location.map((l) => (
           <li key={`${l.dimension}@${l.hierarchy}`}>
-            {l.dimension}@{l.hierarchy}
-            {l.level.map((lev, i) => `:${lev}=${l.path[i]}`)}
+            {l.dimension}: {l.hierarchy}
+            <ul>
+              {l.level.map((lev, i) => (
+                <li key={lev}>
+                  <b>{lev + ": "}</b>
+                  {l.path[i]}
+                </li>
+              ))}
+            </ul>
           </li>
         ))}
       </ul>
@@ -160,7 +167,7 @@ export function Details({
       <li key="elapsedTimeElts">Elapsed: {elapsedTimeElts}</li>
       {Object.entries(metadata)
         .map(([key, value]) => ({ key, value }))
-        .filter(({ key }) => !BLACKLIST.has(key))
+        .filter(({ key, value }) => !BLACKLIST.has(key) && !isNullish(value))
         .sort((lhs, rhs) => lhs.key.localeCompare(rhs.key))
         .map(({ key, value }) => {
           if (key === "location") {

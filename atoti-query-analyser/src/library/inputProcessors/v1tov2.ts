@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { Dictionary } from "../dataStructures/common/dictionary";
-import { requireNonNull } from "../utilities/util";
+import { CubeLocation } from "../dataStructures/json/cubeLocation";
 import { Filter } from "../dataStructures/json/filter";
 import {
   AggregateRetrieval,
@@ -8,6 +8,7 @@ import {
   ExternalRetrieval,
   ExternalRetrievalKind,
 } from "../dataStructures/json/retrieval";
+import { asError, requireNonNull } from "../utilities/util";
 
 const RETRIEVAL = /(\w*Retrieval) #(\d+): ([\w_]+)( \(see)?/;
 const PROPERTY_EXPR = /\s*([\w\-_ ()]+)= (.+)\s*/;
@@ -380,28 +381,196 @@ function createDependencyList(v1Structure: V1Structure) {
   return result;
 }
 
-const DIMENSION_EXPR = /([\w\s]+)@([\w\s]+):([\w\s\\]+)=(.+)/;
+class LocationParser {
+  private pos = 0;
 
-function parseLocation(location: string) {
+  private result: CubeLocation[] = [];
+
+  private readonly listeners: Set<(char: string) => void> = new Set();
+
+  constructor(private text: string) {
+    this.reset();
+  }
+
+  reset() {
+    this.pos = 0;
+    this.result = [];
+    this.listeners.clear();
+  }
+
+  parse(): CubeLocation[] {
+    this.reset();
+    while (this.peek() !== null) {
+      this.result.push(this.parseLocationChunk());
+      this.consume(",", null);
+    }
+    return this.result;
+  }
+
+  private addListener(listener: (char: string) => void) {
+    this.listeners.add(listener);
+  }
+
+  private removeListener(listener: (char: string) => void) {
+    this.listeners.delete(listener);
+  }
+
+  private peek(): string | null {
+    return this.pos < this.text.length ? this.text.charAt(this.pos) : null;
+  }
+
+  private next(): string | null {
+    if (this.pos >= this.text.length) {
+      return null;
+    }
+    const char = this.text.charAt(this.pos++);
+    this.listeners.forEach((listener) => listener(char));
+    return char;
+  }
+
+  private consume(...chars: (string | null)[]) {
+    const nextChar = this.peek();
+    if (chars.includes(nextChar)) {
+      this.next();
+    } else {
+      throw new Error(
+        `Expected ${chars
+          .map((ch) => JSON.stringify(ch))
+          .join(" or ")}, got ${JSON.stringify(nextChar)}`
+      );
+    }
+  }
+
+  private readUntil(...chars: (string | null)[]) {
+    const failureMessage = `, expected ${chars
+      .map((ch) => JSON.stringify(ch))
+      .join(" or ")}`;
+    const predicate = (char: string | null) => chars.includes(char);
+    return this.readUntilPredicate(predicate, failureMessage);
+  }
+
+  private readUntilPredicate(
+    predicate: (char: string | null) => boolean,
+    failureMessage?: string | (() => string)
+  ) {
+    const beginPos = this.pos;
+
+    while (true) {
+      const nextChar = this.peek();
+      if (predicate(nextChar)) {
+        break;
+      }
+      if (nextChar === null) {
+        let msg = "Unexpected end of line";
+        if (typeof failureMessage === "string") {
+          msg += ": " + failureMessage;
+        } else if (typeof failureMessage === "function") {
+          msg += ": " + failureMessage();
+        }
+        throw new Error(msg);
+      }
+      this.next();
+    }
+
+    return this.text.substring(beginPos, this.pos);
+  }
+
+  private parseLocationChunk(): CubeLocation {
+    const dimension = this.parseDimension();
+    this.consume("@");
+
+    const hierarchy = this.parseHierarchy();
+    this.consume(":");
+
+    const levels = this.parseLevels();
+    this.consume("=");
+
+    const members = this.parseMembers();
+
+    return {
+      dimension,
+      hierarchy,
+      level: levels,
+      path: members,
+    };
+  }
+
+  private parseDimension(): string {
+    return this.readUntil("@");
+  }
+
+  private parseHierarchy(): string {
+    return this.readUntil(":");
+  }
+
+  private parseLevels(): string[] {
+    const levels = [];
+    while (true) {
+      levels.push(this.readUntil("=", "\\"));
+      if (this.peek() === "\\") {
+        this.next();
+      } else {
+        break;
+      }
+    }
+    return levels;
+  }
+
+  private parseMembers(): string[] {
+    const members = [];
+
+    while (true) {
+      let bracketBalance = 0;
+
+      const onCharObserver = (char: string) => {
+        if (char === "[") {
+          ++bracketBalance;
+        } else if (char === "]") {
+          --bracketBalance;
+        }
+      };
+
+      const predicate = (char: string | null) =>
+        bracketBalance === 0 &&
+        (char === "\\" || char === "," || char === null);
+
+      try {
+        this.addListener(onCharObserver);
+        members.push(
+          this.readUntilPredicate(
+            predicate,
+            () => `missing ${bracketBalance} closing braces`
+          )
+        );
+      } finally {
+        this.removeListener(onCharObserver);
+      }
+
+      if (this.peek() === "\\") {
+        this.next();
+      } else {
+        break;
+      }
+    }
+
+    return members;
+  }
+}
+
+function parseLocation(
+  location: string,
+  onRecoverableError: (error: Error) => void
+): CubeLocation[] {
   if (location === undefined || location === "GRAND TOTAL") {
     return [];
   }
 
-  return location.split(/\s*,\s*/).map((part) => {
-    const match = requireNonNull(DIMENSION_EXPR.exec(part));
-    const level = match[3].split(/\\/);
-    const path = match[4]
-      .split(/\\/)
-      .map((member) =>
-        member[0] === "[" ? member.substring(1, member.length - 1) : member
-      );
-    return {
-      dimension: match[1],
-      hierarchy: match[2],
-      level,
-      path,
-    };
-  });
+  try {
+    return new LocationParser(location).parse();
+  } catch (error) {
+    onRecoverableError(asError(error));
+    return [];
+  }
 }
 
 function parseFields(fields: string) {
@@ -460,21 +629,23 @@ function createFilterMap(v1Structure: V1Structure) {
   return { filterList, filterDictionary };
 }
 
-// TODO data-safe
 function mapAggregateRetrieval(
   retrieval: V1Retrieval,
-  filterDictionary: Dictionary<string>
+  filterDictionary: Dictionary<string>,
+  onRecoverableError: (error: Error) => void
 ): AggregateRetrieval {
   return {
     $kind: AggregateRetrievalKind,
     retrievalId: parseSourceId(retrieval).retrievalId,
-    partialProviderName: "N/A", // TODO investigate V1 format
+    partialProviderName: "N/A",
     type: retrieval.type,
-    location: parseLocation(retrieval.properties.Location),
+    location: parseLocation(retrieval.properties.Location, onRecoverableError),
     measures: parseMeasures(retrieval.properties.Measures),
     timingInfo: parseTimings(retrieval.type, retrieval.properties),
     partitioning: retrieval.properties.Partitioning,
-    filterId: requireNonNull(filterDictionary.get(retrieval.properties.Filter)),
+    filterId: requireNonNull(
+      filterDictionary.get(retrieval.properties.Filter || GLOBAL_FILTER)
+    ),
     measureProvider: retrieval.properties["Measures provider"],
     underlyingDataNodes: [], // Not supported in previous versions
     resultSizes: [],
@@ -497,52 +668,66 @@ function mapExternalRetrieval(retrieval: V1Retrieval): ExternalRetrieval {
 
 function createRetrievalMap(
   v1Structure: V1Structure,
-  filterDictionary: Dictionary<string>
+  filterDictionary: Dictionary<string>,
+  onRecoverableError: (error: Error) => void
 ) {
-  const aggregateRetrievals: AggregateRetrieval[] = [];
-  const externalRetrievals: ExternalRetrieval[] = [];
-
-  Object.values(v1Structure.retrievals)
+  return Object.values(v1Structure.retrievals)
     .sort(
       (lhs, rhs) =>
         parseSourceId(lhs).retrievalId - parseSourceId(rhs).retrievalId
     )
-    .forEach((retrieval) => {
-      const { kind, retrievalId } = parseSourceId(retrieval);
-
-      const tryPush = <T>(
-        arrayToInsert: T[],
-        mapper: (
-          retrieval: V1Retrieval,
-          filterDictionary: Dictionary<string>
-        ) => T
+    .reduce(
+      (
+        {
+          aggregateRetrievals,
+          externalRetrievals,
+        }: {
+          aggregateRetrievals: AggregateRetrieval[];
+          externalRetrievals: ExternalRetrieval[];
+        },
+        retrieval
       ) => {
-        const mappedRetrieval = mapper(retrieval, filterDictionary);
+        const { kind, retrievalId } = parseSourceId(retrieval);
 
-        if (retrievalId !== arrayToInsert.length) {
-          throw new Error(
-            `Cannot insert ${retrieval.sourceId} because ${kind}#${
-              retrievalId - 1
-            } not found`
+        const tryPush = <T>(
+          arrayToInsert: T[],
+          mapper: (
+            retrieval: V1Retrieval,
+            filterDictionary: Dictionary<string>,
+            onRecoverableError: (error: Error) => void
+          ) => T
+        ) => {
+          const mappedRetrieval = mapper(
+            retrieval,
+            filterDictionary,
+            onRecoverableError
           );
+
+          if (retrievalId !== arrayToInsert.length) {
+            throw new Error(
+              `Cannot insert ${retrieval.sourceId} because ${kind}#${
+                retrievalId - 1
+              } not found`
+            );
+          }
+
+          arrayToInsert.push(mappedRetrieval);
+        };
+
+        switch (kind) {
+          case "Retrieval":
+            tryPush(aggregateRetrievals, mapAggregateRetrieval);
+            break;
+          case "ExternalRetrieval":
+            tryPush(externalRetrievals, mapExternalRetrieval);
+            break;
+          default:
+            throw new Error(`Unexpected retrieval kind: ${kind}`);
         }
-
-        arrayToInsert.push(mappedRetrieval);
-      };
-
-      switch (kind) {
-        case "Retrieval":
-          tryPush(aggregateRetrievals, mapAggregateRetrieval);
-          break;
-        case "ExternalRetrieval":
-          tryPush(externalRetrievals, mapExternalRetrieval);
-          break;
-        default:
-          throw new Error(`Unexpected retrieval kind: ${kind}`);
-      }
-    });
-
-  return { aggregateRetrievals, externalRetrievals };
+        return { aggregateRetrievals, externalRetrievals };
+      },
+      { aggregateRetrievals: [], externalRetrievals: [] }
+    );
 }
 
 function createSummary(
@@ -567,9 +752,9 @@ function createSummary(
     totalRetrievals: _.size(aggregateRetrievals) + _.size(externalRetrievals),
     retrievalsCountByType,
     partitioningCountByType,
-    resultSizeByPartitioning: {}, // ???
-    partialProviders: [], // ???
-    totalExternalResultSize: 0, // ???
+    resultSizeByPartitioning: {}, // N/A
+    partialProviders: [], // N/A
+    totalExternalResultSize: 0, // N/A
   };
 }
 
@@ -584,11 +769,19 @@ function createPlanInfo(info: V1Info) {
  * Convert the result of {@link parseV1 parseV1()} call to
  * {@link "library/dataStructures/json/jsonQueryPlan"!JsonQueryPlan JsonQueryPlan}.
  */
-export function convertToV2(v1Structure: V1Structure) {
+export function convertToV2(v1Structure: V1Structure): {
+  errors: Error[];
+  result: unknown;
+} {
+  const recoverableErrors: Error[] = [];
+
+  const onRecoverableError = (error: Error) => recoverableErrors.push(error);
+
   const { filterList, filterDictionary } = createFilterMap(v1Structure);
   const { aggregateRetrievals, externalRetrievals } = createRetrievalMap(
     v1Structure,
-    filterDictionary
+    filterDictionary,
+    onRecoverableError
   );
   const { dependencies, externalDependencies } =
     createDependencyList(v1Structure);
@@ -598,8 +791,9 @@ export function convertToV2(v1Structure: V1Structure) {
   const querySummary = createSummary(aggregateRetrievals, externalRetrievals);
   const planInfo = createPlanInfo(v1Structure.info);
 
-  return [
-    {
+  return {
+    errors: recoverableErrors,
+    result: {
       planInfo,
       queryFilters: filterList,
       aggregateRetrievals,
@@ -609,7 +803,7 @@ export function convertToV2(v1Structure: V1Structure) {
       externalDependencies,
       needFillTimingInfo,
     },
-  ];
+  };
 }
 
 export { parseV1 };

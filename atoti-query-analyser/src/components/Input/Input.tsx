@@ -32,7 +32,8 @@ export enum InputType {
 export type OnInput = (
   mode: InputMode,
   type: InputType,
-  input: string | ServerInput
+  input: string | ServerInput,
+  showError: (error: Error) => void
 ) => Promise<void>;
 
 /**
@@ -259,11 +260,16 @@ export function Input({
   const submitQuery = async () => {
     const credentials = btoa(`${username}:${password}`);
     try {
-      await passInput(InputMode.URL, type, {
-        url,
-        query: input,
-        credentials: `Basic ${credentials}`,
-      });
+      await passInput(
+        InputMode.URL,
+        type,
+        {
+          url,
+          query: input,
+          credentials: `Basic ${credentials}`,
+        },
+        showError
+      );
     } catch (err) {
       showError(asError(err));
     } finally {
@@ -274,7 +280,7 @@ export function Input({
   const dispatchSubmit = (mode: InputMode) => {
     switch (mode) {
       case InputMode.JSON:
-        passInput(InputMode.JSON, type, input).catch(showError);
+        passInput(InputMode.JSON, type, input, showError).catch(showError);
         break;
       case InputMode.URL:
         if (urlMode) {
@@ -284,7 +290,7 @@ export function Input({
         }
         break;
       case InputMode.V1:
-        passInput(InputMode.V1, type, input).catch(showError);
+        passInput(InputMode.V1, type, input, showError).catch(showError);
         break;
       default:
         throw new Error(`Unexpected input mode: ${mode} ${InputMode[mode]}`);

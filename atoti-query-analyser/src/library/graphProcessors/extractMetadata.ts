@@ -120,6 +120,5 @@ export function extractMetadata(data: QueryPlan[]): QueryPlanMetadata[] {
   });
 
   findChildrenAndParents(res, data);
-  console.log(dumpMetadata(res));
   return res;
 }
