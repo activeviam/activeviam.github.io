@@ -239,6 +239,7 @@ interface V1Retrieval {
   parents: number[];
   properties: { [key: string]: string };
   partitions?: string[];
+  resultSizes?: string[];
   dependencies: number[];
 }
 
@@ -607,6 +608,15 @@ function parseTimings(type: string, props: { [key: string]: string }) {
   return {};
 }
 
+function parseResultSize(props: { [key: string]: string }): number[] {
+  const resultSizeRaw = props["Result size (in points)"];
+  if (!resultSizeRaw) {
+    return [];
+  }
+
+  return JSON.parse(resultSizeRaw);
+}
+
 const GLOBAL_FILTER = "Global query filter";
 
 function createFilterMap(v1Structure: V1Structure) {
@@ -637,7 +647,7 @@ function mapAggregateRetrieval(
   return {
     $kind: AggregateRetrievalKind,
     retrievalId: parseSourceId(retrieval).retrievalId,
-    partialProviderName: "N/A",
+    partialProviderName: retrieval.properties["Partial provider"],
     type: retrieval.type,
     location: parseLocation(retrieval.properties.Location, onRecoverableError),
     measures: parseMeasures(retrieval.properties.Measures),
@@ -648,7 +658,7 @@ function mapAggregateRetrieval(
     ),
     measureProvider: retrieval.properties["Measures provider"],
     underlyingDataNodes: [], // Not supported in previous versions
-    resultSizes: [],
+    resultSizes: parseResultSize(retrieval.properties),
   };
 }
 
@@ -661,7 +671,7 @@ function mapExternalRetrieval(retrieval: V1Retrieval): ExternalRetrieval {
     fields: parseFields(retrieval.properties.fields),
     joinedMeasure: parseMeasures(retrieval.properties.JoinedMeasures),
     condition: retrieval.properties.Condition,
-    resultSizes: [],
+    resultSizes: parseResultSize(retrieval.properties),
     timingInfo: parseTimings("", retrieval.properties),
   };
 }
@@ -730,6 +740,12 @@ function createRetrievalMap(
     );
 }
 
+function resultSizeSum(retrievals: (AggregateRetrieval | ExternalRetrieval)[]) {
+  return _(retrievals)
+    .flatMap((r) => r.resultSizes)
+    .sum();
+}
+
 function createSummary(
   aggregateRetrievals: AggregateRetrieval[],
   externalRetrievals: ExternalRetrieval[]
@@ -741,20 +757,37 @@ function createSummary(
     .value();
 
   const retrievalsCountByType = _.countBy(aggregateRetrievals, (r) => r.type);
-  retrievalsCountByType.ExternalDatabaseRetrieval = _.size(externalRetrievals);
+
+  const externalRetrievalCount = _.size(externalRetrievals);
+  if (externalRetrievalCount !== 0) {
+    retrievalsCountByType.ExternalDatabaseRetrieval = externalRetrievalCount;
+  }
   const partitioningCountByType = _.countBy(
     aggregateRetrievals,
     (r) => r.partitioning
   );
+
+  const resultSizeByPartitioning = _(aggregateRetrievals)
+    .groupBy((r) => r.partitioning)
+    .mapValues(resultSizeSum)
+    .value();
+
+  const partialProviders = _(aggregateRetrievals)
+    .map((r) => r.partialProviderName)
+    .filter((name) => name !== undefined)
+    .uniq()
+    .value();
+
+  const totalExternalResultSize = resultSizeSum(externalRetrievals);
 
   return {
     measures,
     totalRetrievals: _.size(aggregateRetrievals) + _.size(externalRetrievals),
     retrievalsCountByType,
     partitioningCountByType,
-    resultSizeByPartitioning: {}, // N/A
-    partialProviders: [], // N/A
-    totalExternalResultSize: 0, // N/A
+    resultSizeByPartitioning,
+    partialProviders,
+    totalExternalResultSize,
   };
 }
 

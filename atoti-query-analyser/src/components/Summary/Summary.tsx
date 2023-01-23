@@ -14,9 +14,13 @@ import { RetrievalGraph } from "../../library/dataStructures/json/retrieval";
 import { humanisticStringComparator } from "../../library/utilities/textUtils";
 
 const TIMING_LABELS = new Map([
+  ["CONTEXT", "Context creation time"],
   ["executionContextCreationTime", "Context creation time"],
+  ["FINALIZATION", "Query preparation"],
   ["finalizationTime", "Query preparation"],
+  ["PLANNING", "Planning duration"],
   ["planningTime", "Planning duration"],
+  ["EXECUTION", "Execution duration"],
   ["queryExecutionTime", "Execution duration"],
 ]);
 
@@ -24,7 +28,7 @@ const TIMING_LABELS = new Map([
  * Maps timing field names to human-readable versions.
  * */
 function timingLabel(name: string) {
-  return TIMING_LABELS.get(name) || "<unknown>";
+  return TIMING_LABELS.get(name) || `<${name}>`;
 }
 
 /**
