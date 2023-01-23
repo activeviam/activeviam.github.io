@@ -172,6 +172,7 @@ function Buttons({
               inline
               label={mode}
               key={mode}
+              value={mode}
               type="radio"
               onChange={() => setInputMode(mode)}
               checked={mode === inputMode}

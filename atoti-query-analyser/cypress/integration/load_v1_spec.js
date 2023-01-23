@@ -6,7 +6,7 @@ describe("Load v1 inputs", () => {
     "v1-no-space.txt",
     "v1-sample-1.txt",
     "v1-sample-2.txt",
-    // "v1-large-plan.txt",
+    "v1-large-plan.txt",
     "v1-external-retrievals.txt"
   ].forEach(file => {
     it(`process ${file}`, () => {
@@ -14,7 +14,9 @@ describe("Load v1 inputs", () => {
 
       cy.loadTextInput(file);
 
-      cy.contains("Import from V1").click();
+      cy.get('[type="radio"][value="V1"]').click();
+      cy.get('[type="button"]').contains("Process").click();
+
       cy.contains("MDX pass Select");
 
       cy.contains("Graph").click();

@@ -11,7 +11,8 @@ describe("Works with JSON inputs", () => {
 
       cy.loadJsonInput(file);
 
-      cy.contains("Import from Json").click();
+      cy.get('[type="radio"][value="JSON"]').click();
+      cy.get('[type="button"]').contains("Process").click();
 
       cy.contains("MDX pass Select");
     });
