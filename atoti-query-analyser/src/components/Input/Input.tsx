@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
 import { useErrorMessage } from "../../hooks/notification";
 import { ServerInput } from "../../library/inputProcessors/server";
 import { asError } from "../../library/utilities/util";
@@ -9,11 +9,11 @@ import { asError } from "../../library/utilities/util";
  * */
 export enum InputMode {
   /** Input is a text in JSON format */
-  JSON,
+  JSON = "JSON",
   /** Input is server credentials (URL, username and password) */
-  URL,
+  URL = "URL",
   /** Input is a text from ActivePivot logs */
-  V1,
+  V1 = "V1",
 }
 
 /**
@@ -147,20 +147,47 @@ function Buttons({
   urlMode: boolean;
   onSubmit: (mode: InputMode) => void;
 }) {
+  const [inputMode, setInputMode] = useState(InputMode.JSON);
+
+  useEffect(() => {
+    const oldInputMode = window.localStorage.getItem("inputMode");
+    if (oldInputMode === null) {
+      return;
+    }
+    if (oldInputMode in InputMode) {
+      setInputMode(oldInputMode as InputMode);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("inputMode", inputMode);
+  }, [inputMode]);
+
   return (
     <>
-      <Button variant="primary" onClick={() => onSubmit(InputMode.JSON)}>
-        Import from Json
-      </Button>{" "}
-      <Button variant="primary" onClick={() => onSubmit(InputMode.V1)}>
-        Import from V1
-      </Button>{" "}
-      <Button
-        variant={urlMode ? "primary" : "secondary"}
-        onClick={() => onSubmit(InputMode.URL)}
-      >
-        Import from Server
-      </Button>
+      <div key="inline-radio" className="mb-3">
+        {[InputMode.JSON, InputMode.V1].map((mode) => {
+          return (
+            <Form.Check
+              inline
+              label={mode}
+              key={mode}
+              type="radio"
+              onChange={() => setInputMode(mode)}
+              checked={mode === inputMode}
+            />
+          );
+        })}
+        <Button variant="primary" onClick={() => onSubmit(inputMode)}>
+          Process
+        </Button>{" "}
+        <Button
+          variant={urlMode ? "primary" : "secondary"}
+          onClick={() => onSubmit(InputMode.URL)}
+        >
+          Import from Server
+        </Button>
+      </div>
     </>
   );
 }
@@ -214,8 +241,7 @@ function DevButtons({
   };
 
   return (
-    <>
-      {" "}
+    <div key="inline-radio" className="mb-3">
       <Button variant="outline-primary" onClick={saveToLocalStorage}>
         Save to LocalStorage
       </Button>{" "}
@@ -223,7 +249,7 @@ function DevButtons({
         Load from LocalStorage
       </Button>{" "}
       <ErrorButton />
-    </>
+    </div>
   );
 }
 
@@ -251,6 +277,8 @@ export function Input({
   const [url, setUrl] = useState("");
   const devMode = location.search.includes("dev"); // Backward compatibility
 
+  const [prosessing, setProcessing] = useState(false);
+
   const { showError } = useErrorMessage();
 
   const prepareImport = () => {
@@ -258,6 +286,7 @@ export function Input({
   };
 
   const submitQuery = async () => {
+    setProcessing(true);
     const credentials = btoa(`${username}:${password}`);
     try {
       await passInput(
@@ -273,14 +302,26 @@ export function Input({
     } catch (err) {
       showError(asError(err));
     } finally {
+      setProcessing(false);
       setUrlMode(false);
+    }
+  };
+
+  const doPassInput = async (mode: InputMode) => {
+    setProcessing(true);
+    try {
+      await passInput(mode, type, input, showError);
+    } catch (err) {
+      showError(asError(err));
+    } finally {
+      setProcessing(false);
     }
   };
 
   const dispatchSubmit = (mode: InputMode) => {
     switch (mode) {
       case InputMode.JSON:
-        passInput(InputMode.JSON, type, input, showError).catch(showError);
+        doPassInput(InputMode.JSON);
         break;
       case InputMode.URL:
         if (urlMode) {
@@ -290,7 +331,7 @@ export function Input({
         }
         break;
       case InputMode.V1:
-        passInput(InputMode.V1, type, input, showError).catch(showError);
+        doPassInput(InputMode.V1);
         break;
       default:
         throw new Error(`Unexpected input mode: ${mode} ${InputMode[mode]}`);
@@ -324,6 +365,7 @@ export function Input({
         input={input}
         setInput={setInput}
       />
+      {prosessing && <Spinner animation="border" variant="primary" />}
     </Form>
   );
 }
