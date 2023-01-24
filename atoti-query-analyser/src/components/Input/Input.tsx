@@ -147,16 +147,21 @@ function Buttons({
   urlMode: boolean;
   onSubmit: (mode: InputMode) => void;
 }) {
-  const [inputMode, setInputMode] = useState(InputMode.JSON);
-
-  useEffect(() => {
+  const restoreInputMode = () => {
     const oldInputMode = window.localStorage.getItem("inputMode");
     if (oldInputMode === null) {
-      return;
+      return InputMode.JSON;
     }
     if (oldInputMode in InputMode) {
-      setInputMode(oldInputMode as InputMode);
+      return oldInputMode as InputMode;
     }
+    return InputMode.JSON;
+  };
+
+  const [inputMode, setInputMode] = useState(restoreInputMode());
+
+  useEffect(() => {
+    setInputMode(restoreInputMode());
   }, []);
 
   useEffect(() => {

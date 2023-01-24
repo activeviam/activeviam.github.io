@@ -768,6 +768,7 @@ function createSummary(
   );
 
   const resultSizeByPartitioning = _(aggregateRetrievals)
+    .filter((r) => r.resultSizes.length > 0)
     .groupBy((r) => r.partitioning)
     .mapValues(resultSizeSum)
     .value();

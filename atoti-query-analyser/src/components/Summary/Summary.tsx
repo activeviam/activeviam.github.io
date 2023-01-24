@@ -135,7 +135,19 @@ function MeasureList({
 /**
  * This React component is responsible for displaying a set of elements.
  * */
-function SetView<T>({ title, set }: { title: string; set: Set<T> }) {
+function SetView<T>({
+  title,
+  set,
+  hideIfEmpty,
+}: {
+  title: string;
+  set: Set<T>;
+  hideIfEmpty?: boolean;
+}) {
+  if (hideIfEmpty && set.size === 0) {
+    return <></>;
+  }
+
   return (
     <>
       <h4>{title}</h4>
@@ -155,7 +167,19 @@ function SetView<T>({ title, set }: { title: string; set: Set<T> }) {
 /**
  * This React component is responsible for displaying key-value container.
  * */
-function MapView<K, V>({ title, map }: { title: string; map: Map<K, V> }) {
+function MapView<K, V>({
+  title,
+  map,
+  hideIfEmpty,
+}: {
+  title: string;
+  map: Map<K, V>;
+  hideIfEmpty?: boolean;
+}) {
+  if (hideIfEmpty && map.size === 0) {
+    return <></>;
+  }
+
   return (
     <>
       <h4>{title}</h4>
@@ -204,10 +228,15 @@ function QuerySummaryView({
         map={summary.partitioningCountByType}
       />
       <MapView
+        hideIfEmpty
         title={"Result size per partitioning scheme"}
         map={summary.resultSizeByPartitioning}
       />
-      <SetView title={"Partial providers"} set={summary.partialProviders} />
+      <SetView
+        hideIfEmpty
+        title={"Partial providers"}
+        set={summary.partialProviders}
+      />
     </div>
   );
 }
