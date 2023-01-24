@@ -6,7 +6,9 @@ describe("Summary view", () => {
 
     cy.loadTextInput('small-plan-v1.txt');
 
-    cy.contains("Import from V1").click();
+    cy.get('[type="radio"][value="V1"]').click();
+    cy.get('[type="button"]').contains("Process").click();
+
     cy.contains("MDX pass Select");
 
     cy.contains('ChunkSize.SUM');

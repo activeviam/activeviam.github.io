@@ -1,26 +1,63 @@
 {
   "extends": [
     "react-app",
-    "airbnb",
+    "airbnb-typescript",
     "plugin:jsx-a11y/recommended",
-    "prettier",
-    "prettier/react"
+    "plugin:prettier/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended"
   ],
   "plugins": [
+    "react",
     "jsx-a11y",
-    "prettier"
+    "prettier",
+    "jsdoc",
+    "@typescript-eslint/eslint-plugin",
+    "import"
   ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
   "rules": {
-    "semi": 0,
-    "no-param-reassign": [2, {"props": false}],
-    "react/destructuring-assignment": "off",
-    "react/no-find-dom-node": "off",
-    "no-nested-ternary": "off",
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "jsdoc/require-jsdoc": [
+      "error",
+      {
+        "publicOnly": true
+      }
+    ],
+    "semi": "error",
+    "no-param-reassign": [
+      "error",
+      {
+        "props": false
+      }
+    ],
+    "react/destructuring-assignment": "error",
+    "react/jsx-filename-extension": [
+      "error",
+      {
+        "extensions": [
+          ".jsx",
+          ".tsx"
+        ]
+      }
+    ],
     "prettier/prettier": [
-      "error", {
+      "error",
+      {
         "semi": true
       }
     ]
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
   }
 }

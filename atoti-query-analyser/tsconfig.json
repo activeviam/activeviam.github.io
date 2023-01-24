@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "baseUrl": "./src",
+    "declaration": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react"
+  },
+  "include": [
+    "src"
+  ],
+  "typedocOptions": {
+    "entryPoints": [
+      "src/"
+    ],
+    "exclude": "**/*.{js,jsx}",
+    "entryPointStrategy": "expand",
+    "theme": "hierarchy",
+    "out": "docs/api",
+    "favicon": "public/favicon.ico",
+    "media": "media",
+    "includes": "docs"
+  }
+}

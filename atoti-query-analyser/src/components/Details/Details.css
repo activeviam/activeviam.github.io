@@ -1,0 +1,9 @@
+.selected-partition {
+  color: red;
+  font-weight: bold;
+}
+
+.nullish-content {
+  color: gray;
+  font-style: italic;
+}
