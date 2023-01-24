@@ -7,7 +7,7 @@ import { ARetrieval } from "library/dataStructures/json/retrieval";
 /**
  * Checks whether `value` is `null`, `undefined` or an empty object.
  * */
-function isNullish(value: any) {
+function isNullish(value: unknown) {
   switch (typeof value) {
     case "undefined":
       return true;
@@ -78,7 +78,7 @@ function LocationView({ location }: { location: CubeLocation[] }) {
  * @param attributes - React JSX attributes
  * @param attributes.value - Value to be displayed
  * */
-function PlainView({ value }: { value: any }) {
+function PlainView({ value }: { value: unknown }) {
   return (
     <span
       className={isNullish(value) ? "nullish-content" : ""}
@@ -92,7 +92,7 @@ function PlainView({ value }: { value: any }) {
  * @param attributes.list - Array to be displayed
  * @param attributes.title - List title
  * */
-function ListView({ title, list }: { title: string; list: any[] }) {
+function ListView({ title, list }: { title: string; list: unknown[] }) {
   return (
     <li>
       {title}:

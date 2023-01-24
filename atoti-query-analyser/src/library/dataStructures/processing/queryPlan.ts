@@ -18,7 +18,7 @@ export interface QueryPlan {
  * {@link "library/dataStructures/json/jsonQueryPlan"!JsonQueryPlan}, and then
  * build retrieval graph and return {@link QueryPlan}.
  */
-export function preprocessQueryPlan(json: any): QueryPlan[] {
+export function preprocessQueryPlan(json: unknown): QueryPlan[] {
   if (!Array.isArray(json)) {
     throw new Error("data must be an array");
   }

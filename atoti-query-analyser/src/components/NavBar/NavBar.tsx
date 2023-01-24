@@ -30,8 +30,7 @@ export function NavBar({
       </Navbar.Brand>
       <Nav
         className="me-auto"
-        onSelect={(selectedKey: any) => {
-          // Problems with moduleResolution
+        onSelect={(selectedKey: string | null) => {
           if (selectedKey) {
             navigate(selectedKey);
           }
