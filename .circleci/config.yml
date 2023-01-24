@@ -39,7 +39,7 @@ jobs:
           command: yarn global add gh-pages@2.2.0 --prefix "$HOME"
       - add_ssh_keys:
           fingerprints:
-            - "49:50:e1:58:16:87:29:fc:b0:79:97:b4:ee:af:33:c3"
+            - "bf:66:81:20:29:0d:57:42:bf:6b:78:7b:07:6f:69:6a"
       - run:
           name: Deploy applications to master
           command: |
