@@ -118,11 +118,14 @@ function SamplePlaceholder({ values }: { values: string[] }) {
  * @param attributes.selectedMeasures - List of selected measures
  * @param attributes.onSelectedMeasure - Callback which is called when user adds
  * or removes measures from the selection
+ * @param attributes.exportAsDOTCallback - Callback on pressing "Export as DOT"
+ * button
  */
 export function Menu({
   measures,
   selectedMeasures,
   onSelectedMeasure,
+  exportAsDOTCallback,
 }: {
   measures: Set<Measure>;
   selectedMeasures: Measure[];
@@ -133,6 +136,7 @@ export function Menu({
     measure: Measure;
     selected: boolean;
   }) => void;
+  exportAsDOTCallback: () => void;
 }) {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -157,6 +161,7 @@ export function Menu({
 
   return (
     <div className="contextualMenu">
+      <Button onClick={() => exportAsDOTCallback()}>Export as DOT</Button>
       <h5>Selected measures</h5>
       <Form>
         <Form.Group>

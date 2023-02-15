@@ -181,3 +181,42 @@ export function buildD3(query: QueryPlan, selection: VertexSelection) {
 
   return normalizeIds(nodes, links);
 }
+
+function buildHumanReadableLabel(node: D3Node) {
+  const { metadata } = node.details;
+  const { type } = metadata;
+  const fullName = `${metadata.$kind}#${metadata.retrievalId}`;
+  return `${type} (${fullName})`;
+}
+
+/**
+ * Given a d3 graph, generate its description in DOT format.
+ */
+export function dumpInDOTFormat(graph: D3Graph) {
+  const lines = [];
+
+  lines.push("digraph G {");
+  lines.push(
+    '    fontname="Helvetica,Arial,sans-serif"',
+    '    node [fontname="Helvetica,Arial,sans-serif",shape=box]',
+    '    edge [fontname="Helvetica,Arial,sans-serif"]',
+    "    "
+  );
+
+  graph.nodes.forEach((node) => {
+    const label = buildHumanReadableLabel(node);
+    const line = `    n${node.id} [label=${JSON.stringify(label)}];`;
+    lines.push(line);
+  });
+
+  lines.push("    ");
+
+  graph.links.forEach((link) => {
+    const line = `    n${link.source.id} -> n${link.target.id};`;
+    lines.push(line);
+  });
+
+  lines.push("}");
+
+  return lines.join("\n");
+}

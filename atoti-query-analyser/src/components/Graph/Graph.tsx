@@ -1,4 +1,6 @@
+import FileSaver from "file-saver";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { D3Graph } from "../../library/dataStructures/d3/d3Graph";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
 import "./Drawer.css";
@@ -10,7 +12,7 @@ import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { VertexSelection } from "../../library/dataStructures/processing/selection";
 import { Measure } from "../../library/dataStructures/json/measure";
 import { filterByMeasures } from "../../library/graphProcessors/selection";
-import { buildD3 } from "../../library/graphView/jsonToD3Data";
+import { buildD3, dumpInDOTFormat } from "../../library/graphView/jsonToD3Data";
 import * as d3 from "d3";
 import _ from "lodash";
 import { requireNonNull } from "../../library/utilities/util";
@@ -213,6 +215,13 @@ export function Graph({
     setEpoch((e) => e + 1);
   }, [query, selectedRetrievals, selection]);
 
+  const exportAsDOTCallback = () => {
+    const d3Graph: D3Graph = { nodes, links };
+    const text = dumpInDOTFormat(d3Graph);
+    const blob = new Blob([text], { type: "text/plain;charset=utf8" });
+    FileSaver.saveAs(blob, "graph.dot");
+  };
+
   return (
     <>
       <svg
@@ -252,6 +261,7 @@ export function Graph({
             measures={query.querySummary.measures}
             selectedMeasures={selectedMeasures}
             onSelectedMeasure={selectMeasure}
+            exportAsDOTCallback={exportAsDOTCallback}
           />
         </div>
       </Overlay>
