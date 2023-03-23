@@ -58,7 +58,7 @@ export function App(): JSX.Element {
   ) => {
     let rawJson: unknown;
     if (mode === InputMode.JSON) {
-      var parsedJson = JSON.parse(validateString(input));
+      let parsedJson = JSON.parse(validateString(input));
       rawJson = parsedJson.hasOwnProperty('data') ? parsedJson.data : parsedJson;
     } else if (mode === InputMode.URL) {
       if (typeof input !== "object") {
