@@ -33,7 +33,8 @@ export type OnInput = (
   mode: InputMode,
   type: InputType,
   input: string | ServerInput,
-  showError: (error: Error) => void
+  showError: (error: Error) => void,
+  statusLine: (message: string) => void
 ) => Promise<void>;
 
 /**
@@ -282,8 +283,9 @@ export function Input({
   const [password, setPassword] = useState("");
   const [url, setUrl] = useState("");
   const devMode = location.search.includes("dev"); // Backward compatibility
+  const [statusLine, setStatusLine] = useState("");
 
-  const [prosessing, setProcessing] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
   const { showError } = useErrorMessage();
 
@@ -303,7 +305,8 @@ export function Input({
           query: input,
           credentials: `Basic ${credentials}`,
         },
-        showError
+        showError,
+        setStatusLine
       );
     } catch (err) {
       showError(asError(err));
@@ -316,7 +319,7 @@ export function Input({
   const doPassInput = async (mode: InputMode) => {
     setProcessing(true);
     try {
-      await passInput(mode, type, input, showError);
+      await passInput(mode, type, input, showError, setStatusLine);
     } catch (err) {
       showError(asError(err));
     } finally {
@@ -371,7 +374,12 @@ export function Input({
         input={input}
         setInput={setInput}
       />
-      {prosessing && <Spinner animation="border" variant="primary" />}
+      {processing && (
+        <div>
+          <Spinner animation="border" variant="primary" />
+          <span>{statusLine}</span>
+        </div>
+      )}
     </Form>
   );
 }

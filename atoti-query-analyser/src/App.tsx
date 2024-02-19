@@ -54,7 +54,8 @@ export function App(): JSX.Element {
     mode: InputMode,
     type: InputType,
     input: string | ServerInput,
-    showError: (error: Error) => void
+    showError: (error: Error) => void,
+    statusLine?: (message: string) => void
   ) => {
     let rawJson: unknown;
     if (mode === InputMode.JSON) {
@@ -68,7 +69,11 @@ export function App(): JSX.Element {
       rawJson = await queryServer(input);
     } else if (mode === InputMode.V1) {
       const { errors, result } = convertToV2(
-        await parseV1(validateString(input), () => {})
+        await parseV1(validateString(input), (currentLine, lineCount) => {
+          if (statusLine) {
+            statusLine(`Processed ${currentLine} lines out of ${lineCount}`);
+          }
+        })
       );
       rawJson = [result];
       errors.forEach(showError);
