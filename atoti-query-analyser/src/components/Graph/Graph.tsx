@@ -3,7 +3,10 @@ import { untangle } from "../../library/dataStructures/d3/d3Graph";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
 import "./Drawer.css";
-import { selectCriticalSubgraph } from "../../library/graphProcessors/criticalPath";
+import {
+  computeEdgeCriticalScore,
+  selectCriticalSubgraph,
+} from "../../library/graphProcessors/criticalPath";
 import { UUID } from "../../library/utilities/uuid";
 import { useNotificationContext } from "../Notification/NotificationWrapper";
 import {
@@ -86,7 +89,7 @@ export function Graph({
       selection = fastRetrievalDrillthough;
     } else if (condenseFastRetrievalsFlag) {
       graph = condenseFastRetrievals(graph, fastRetrievalMaxElapsedTimeMs);
-      // computeEdgeCriticalScore(graph);
+      computeEdgeCriticalScore(graph);
       selection = buildDefaultSelection([graph])[0];
     }
 
@@ -123,20 +126,26 @@ export function Graph({
   const triggerRef = useRef(null);
   const notificationContext = useNotificationContext();
 
+  const [autoCriticalScoreFilterNotified, setAutoCriticalScoreFilterNotified] =
+    useState(false);
   useEffect(() => {
-    if (effectiveData.graph.getVertexCount() >= 100) {
+    if (
+      effectiveData.graph.getVertexCount() >= 100 &&
+      !autoCriticalScoreFilterNotified
+    ) {
       setSelectCriticalSubgraphFlag(true);
+      setAutoCriticalScoreFilterNotified(true);
       notificationContext?.newMessage(
         "Graph filter",
         "Since the retrieval graph is big, the critical score filter is applied. You can configure it in the menu.",
         { bg: "info" }
       );
     }
-  }, [effectiveData, notificationContext]);
+  }, [effectiveData, notificationContext, autoCriticalScoreFilterNotified]);
 
   const selectedRetrievals = useMemo(() => {
     if (selectCriticalSubgraphFlag) {
-      return selectCriticalSubgraph(query.graph, minCriticalScore);
+      return selectCriticalSubgraph(effectiveData.graph, minCriticalScore);
     }
     if (selectedMeasures.length === 0) {
       return null;
@@ -145,7 +154,12 @@ export function Graph({
       ...effectiveData,
       measures: selectedMeasures,
     });
-  }, [effectiveData, selectedMeasures, selectCriticalSubgraphFlag, minCriticalScore]);
+  }, [
+    effectiveData,
+    selectedMeasures,
+    selectCriticalSubgraphFlag,
+    minCriticalScore,
+  ]);
 
   const edgeSelection: EdgeSelection = useMemo(() => {
     return Array.from(effectiveData.graph.getVertices())
@@ -385,31 +399,6 @@ export function Graph({
             onSelectedMeasure={selectMeasure}
           >
             <Button onClick={onUntangle}>Untangle</Button>
-            <h5>Critical score filter</h5>
-            <Form>
-              <Form.Check
-                type="switch"
-                checked={selectCriticalSubgraphFlag}
-                onChange={(e) =>
-                  setSelectCriticalSubgraphFlag(e.target.checked)
-                }
-                label="Enable filter"
-              />
-              {selectCriticalSubgraphFlag && (
-                <>
-                  <Form.Label>
-                    Minimal score: {minCriticalScore.toFixed(3)}
-                  </Form.Label>
-                  <Form.Range
-                    min={0}
-                    max={1}
-                    step="any"
-                    value={minCriticalScore}
-                    onChange={(e) => setMinCriticalScore(+e.target.value)}
-                  ></Form.Range>
-                </>
-              )}
-            </Form>
             <h5>Fast retrieval condensation</h5>
             <Form>
               <Form.Check
@@ -436,6 +425,31 @@ export function Graph({
                 <Button onClick={() => setFastRetrievalDrillthough(undefined)}>
                   Zoom out
                 </Button>
+              )}
+            </Form>
+            <h5>Critical score filter</h5>
+            <Form>
+              <Form.Check
+                type="switch"
+                checked={selectCriticalSubgraphFlag}
+                onChange={(e) =>
+                  setSelectCriticalSubgraphFlag(e.target.checked)
+                }
+                label="Enable filter"
+              />
+              {selectCriticalSubgraphFlag && (
+                <>
+                  <Form.Label>
+                    Minimal score: {minCriticalScore.toFixed(3)}
+                  </Form.Label>
+                  <Form.Range
+                    min={0}
+                    max={1}
+                    step="any"
+                    value={minCriticalScore}
+                    onChange={(e) => setMinCriticalScore(+e.target.value)}
+                  ></Form.Range>
+                </>
               )}
             </Form>
           </Menu>
