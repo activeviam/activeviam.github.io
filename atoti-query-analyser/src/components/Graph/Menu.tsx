@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { PropsWithChildren, useMemo, useState } from "react";
 import { Measure } from "../../library/dataStructures/json/measure";
 import FuzzySearch from "fuzzy-search";
 import _ from "lodash";
@@ -123,7 +123,8 @@ export function Menu({
   measures,
   selectedMeasures,
   onSelectedMeasure,
-}: {
+  children,
+}: PropsWithChildren<{
   measures: Set<Measure>;
   selectedMeasures: Measure[];
   onSelectedMeasure: ({
@@ -133,7 +134,7 @@ export function Menu({
     measure: Measure;
     selected: boolean;
   }) => void;
-}) {
+}>) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const matchingMeasures = useMemo(() => {
@@ -157,6 +158,7 @@ export function Menu({
 
   return (
     <div className="contextualMenu">
+      {children}
       <h5>Selected measures</h5>
       <Form>
         <Form.Group>

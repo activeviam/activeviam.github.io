@@ -1,7 +1,7 @@
+import { RetrievalGraph } from "../dataStructures/json/retrieval";
 import { filterAndInverse } from "./filterAndInverse";
 import { UnionFind } from "../dataStructures/common/unionFind";
 import { Dictionary } from "../dataStructures/common/dictionary";
-import { QueryPlan } from "../dataStructures/processing/queryPlan";
 import { UUID } from "../utilities/uuid";
 import { VertexSelection } from "../dataStructures/processing/selection";
 
@@ -10,10 +10,10 @@ import { VertexSelection } from "../dataStructures/processing/selection";
  * @returns Map from vertex id to component id.
  * */
 export function addClustersToNodes(
-  query: QueryPlan,
+  graph: RetrievalGraph,
   selection: VertexSelection
 ): Map<UUID, number> {
-  const { invGraph, virtualSource } = filterAndInverse(query.graph, selection);
+  const { invGraph, virtualSource } = filterAndInverse(graph, selection);
   const unionFind = new UnionFind();
 
   const vertices = Array.from(invGraph.getVertices()).filter(

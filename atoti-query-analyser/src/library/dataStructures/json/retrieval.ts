@@ -18,15 +18,18 @@ import { TimingInfo, validateTimingInfo } from "./timingInfo";
 export const VirtualRetrievalKind = "VirtualRetrieval" as const;
 export const AggregateRetrievalKind = "AggregateRetrieval" as const;
 export const ExternalRetrievalKind = "ExternalRetrieval" as const;
+export const CondensedRetrievalKind = "CondensedRetrieval" as const;
 
 type TVirtualRetrievalKind = typeof VirtualRetrievalKind;
 type TAggregateRetrievalKind = typeof AggregateRetrievalKind;
 type TExternalRetrievalKind = typeof ExternalRetrievalKind;
+type TCondensedRetrievalKind = typeof CondensedRetrievalKind;
 
 type RetrievalKind =
   | TVirtualRetrievalKind
   | TExternalRetrievalKind
-  | TAggregateRetrievalKind;
+  | TAggregateRetrievalKind
+  | TCondensedRetrievalKind;
 
 export interface ARetrieval {
   $kind: RetrievalKind;
@@ -59,6 +62,11 @@ export type ExternalRetrieval = ARetrieval & {
   joinedMeasure: Measure[];
   condition: string;
   resultSizes: number[];
+};
+
+export type CondensedRetrieval = ARetrieval & {
+  $kind: TCondensedRetrievalKind;
+  underlyingRetrievals: ARetrieval[];
 };
 
 export class RetrievalVertex extends Vertex<ARetrieval> {}

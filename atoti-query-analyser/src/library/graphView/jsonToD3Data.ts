@@ -8,7 +8,6 @@ import {
   RetrievalVertex,
   VirtualRetrievalKind,
 } from "../dataStructures/json/retrieval";
-import { QueryPlan } from "../dataStructures/processing/queryPlan";
 import { VertexSelection } from "../dataStructures/processing/selection";
 import { requireNonNull } from "../utilities/util";
 import { D3Node } from "../dataStructures/d3/d3Node";
@@ -164,9 +163,8 @@ function normalizeIds(
 /**
  * Given a query plan, build data for d3js.
  */
-export function buildD3(query: QueryPlan, selection: VertexSelection) {
+export function buildD3(graph: RetrievalGraph, selection: VertexSelection) {
   const info = { selection };
-  const { graph } = query;
   const depths = nodeDepths(graph, selection);
   const nodes = getNodes(graph, info, depths);
   const links = getLinks(graph, info);
@@ -174,7 +172,7 @@ export function buildD3(query: QueryPlan, selection: VertexSelection) {
   links.forEach((link) => {
     link.critical = criticalLinks.has(link.id);
   });
-  const clusters = addClustersToNodes(query, info.selection);
+  const clusters = addClustersToNodes(graph, info.selection);
   nodes.forEach((node) => {
     node.clusterId = requireNonNull(clusters.get(node.id));
   });

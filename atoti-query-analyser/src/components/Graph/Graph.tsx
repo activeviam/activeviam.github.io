@@ -2,14 +2,22 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
 import "./Drawer.css";
+import {
+  CondensedRetrieval,
+  RetrievalGraph,
+} from "../../library/dataStructures/json/retrieval";
+import { condenseFastRetrievals } from "../../library/graphProcessors/condenseFastRetrievals";
 import { Link } from "./Link";
 import { Node } from "./Node";
-import { Button, Overlay } from "react-bootstrap";
+import { Button, Form, Overlay } from "react-bootstrap";
 import { Menu } from "./Menu";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { VertexSelection } from "../../library/dataStructures/processing/selection";
 import { Measure } from "../../library/dataStructures/json/measure";
-import { filterByMeasures } from "../../library/graphProcessors/selection";
+import {
+  buildDefaultSelection,
+  filterByMeasures,
+} from "../../library/graphProcessors/selection";
 import { buildD3 } from "../../library/graphView/jsonToD3Data";
 import * as d3 from "d3";
 import _ from "lodash";
@@ -17,6 +25,11 @@ import { requireNonNull } from "../../library/utilities/util";
 import { useWindowSize } from "../../hooks/windowSize";
 import { updateGraph } from "../../library/graphView/graphHelpers";
 import { D3DragEvent, D3ZoomEvent } from "d3";
+
+interface DataModel {
+  graph: RetrievalGraph;
+  selection: VertexSelection;
+}
 
 /**
  * This Reach component is responsible for retrieval graph visualization.
@@ -32,7 +45,7 @@ import { D3DragEvent, D3ZoomEvent } from "d3";
  */
 export function Graph({
   query,
-  selection,
+  selection: selection0,
   changeGraph: changeGraph0,
 }: {
   query: QueryPlan;
@@ -46,6 +59,54 @@ export function Graph({
   const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
   const [epoch, setEpoch] = useState(0);
 
+  const [condenseFastRetrievalsFlag, setCondenseFastRetrievalsFlag] =
+    useState(false);
+  const [fastRetrievalMaxElapsedTimeMs, setFastRetrievalMaxElapsedTimeMs] =
+    useState(1);
+  const [fastRetrievalDrillthough, setFastRetrievalDrillthough] =
+    useState<VertexSelection>();
+  const originalData = useMemo<DataModel>(
+    () => ({
+      graph: query.graph,
+      selection: selection0,
+    }),
+    [query, selection0]
+  );
+  const effectiveData = useMemo(() => {
+    let { graph, selection } = originalData;
+
+    if (fastRetrievalDrillthough !== undefined) {
+      selection = fastRetrievalDrillthough;
+    } else if (condenseFastRetrievalsFlag) {
+      graph = condenseFastRetrievals(graph, fastRetrievalMaxElapsedTimeMs);
+      // computeEdgeCriticalScore(graph);
+      selection = buildDefaultSelection([graph])[0];
+    }
+
+    return { graph, selection };
+  }, [
+    originalData,
+    condenseFastRetrievalsFlag,
+    fastRetrievalMaxElapsedTimeMs,
+    fastRetrievalDrillthough,
+  ]);
+  const onCondensedRetrievalDrillthrough = (retrieval: CondensedRetrieval) => {
+    const uuidMap = new Map(
+      Array.from(originalData.graph.getVertices()).map((vertex) => [
+        vertex.getMetadata(),
+        vertex.getUUID(),
+      ])
+    );
+
+    setFastRetrievalDrillthough(
+      new Set(
+        retrieval.underlyingRetrievals.map((underlying) =>
+          requireNonNull(uuidMap.get(underlying))
+        )
+      )
+    );
+  };
+
   const windowSize = useWindowSize();
   const svgRef = useRef<SVGSVGElement | null>(null);
   const triggerRef = useRef(null);
@@ -55,15 +116,14 @@ export function Graph({
       return null;
     }
     return filterByMeasures({
-      graph: query.graph,
+      ...effectiveData,
       measures: selectedMeasures,
-      selection,
     });
-  }, [query, selectedMeasures, selection]);
+  }, [effectiveData, selectedMeasures]);
 
   useEffect(() => {
     setSelectedMeasures([]);
-  }, [query]);
+  }, [effectiveData]);
 
   const addMeasure = (measure: Measure) => {
     if (selectedMeasures.includes(measure)) {
@@ -206,12 +266,16 @@ export function Graph({
       return;
     }
 
-    const d3data = buildD3(query, selectedRetrievals || selection);
+    const d3data = buildD3(
+      effectiveData.graph,
+      selectedRetrievals || effectiveData.selection
+    );
 
     setNodes(d3data.nodes);
     setLinks(d3data.links);
     setEpoch((e) => e + 1);
-  }, [query, selectedRetrievals, selection]);
+    clickNode(null);
+  }, [effectiveData, selectedRetrievals]);
 
   return (
     <>
@@ -234,6 +298,9 @@ export function Graph({
               clickNode={clickNode}
               key={node.id}
               selected={selectedNodeId === node.id}
+              onCondensedRetrievalDrillthrough={
+                onCondensedRetrievalDrillthrough
+              }
             />
           ))}
         </g>
@@ -252,7 +319,36 @@ export function Graph({
             measures={query.querySummary.measures}
             selectedMeasures={selectedMeasures}
             onSelectedMeasure={selectMeasure}
-          />
+          >
+            <h5>Fast retrieval condensation</h5>
+            <Form>
+              <Form.Check
+                type="switch"
+                checked={condenseFastRetrievalsFlag}
+                onChange={(e) =>
+                  setCondenseFastRetrievalsFlag(e.target.checked)
+                }
+                label="Apply condensation"
+              />
+              <Form.Label>
+                Max elapsed time: {fastRetrievalMaxElapsedTimeMs}&nbsp;ms
+              </Form.Label>
+              <Form.Range
+                min={0}
+                max={20}
+                step={1}
+                value={fastRetrievalMaxElapsedTimeMs}
+                onChange={(e) =>
+                  setFastRetrievalMaxElapsedTimeMs(+e.target.value)
+                }
+              />
+              {fastRetrievalDrillthough && (
+                <Button onClick={() => setFastRetrievalDrillthough(undefined)}>
+                  Zoom out
+                </Button>
+              )}
+            </Form>
+          </Menu>
         </div>
       </Overlay>
     </>

@@ -2,6 +2,7 @@ import { applyOnDAG } from "../dataStructures/common/graph";
 import {
   RetrievalGraph,
   RetrievalVertex,
+  VirtualRetrievalKind,
 } from "../dataStructures/json/retrieval";
 import { VertexSelection } from "../dataStructures/processing/selection";
 import { requireNonNull } from "../utilities/util";
@@ -38,8 +39,10 @@ export function criticalPath(
   selection: VertexSelection
 ) {
   const virtualSource = graph.getVertexByLabel("virtualSource");
-  const filteredGraph = graph.filterVertices((vertex) =>
-    selection.has(vertex.getUUID())
+  const filteredGraph = graph.filterVertices(
+    (vertex) =>
+      vertex.getMetadata().$kind === VirtualRetrievalKind ||
+      selection.has(vertex.getUUID())
   );
 
   // We define criticalScore(node) as elapsedTime(node) + max([criticalScore(dependency) for dependency in graph.getOutgoingEdges(node)])

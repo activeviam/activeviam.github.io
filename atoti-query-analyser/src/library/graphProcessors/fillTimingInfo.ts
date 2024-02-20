@@ -1,6 +1,7 @@
 import { applyOnDAG } from "../dataStructures/common/graph";
 import { filterAndInverse } from "./filterAndInverse";
 import {
+  CondensedRetrievalKind,
   RetrievalGraph,
   RetrievalVertex,
   VirtualRetrievalKind,
@@ -65,7 +66,10 @@ export function setSimulatedTimingInfo(graph: RetrievalGraph) {
   );
 
   startTimeMap.forEach((startTime, node) => {
-    if (node.getMetadata().$kind === VirtualRetrievalKind) {
+    if (
+      node.getMetadata().$kind === VirtualRetrievalKind ||
+      node.getMetadata().$kind === CondensedRetrievalKind
+    ) {
       return;
     }
     node.getMetadata().timingInfo = {

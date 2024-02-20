@@ -41,6 +41,7 @@ const NODE_COLOR_MAP = new Map([
   ["RangeSharingPrimitiveAggregatesRetrieval", "#ff9da7"],
   ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#9c755f"],
   ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#bab0ab"],
+  ["CondensedRetrieval", "#ffff00"],
 ]);
 
 /**

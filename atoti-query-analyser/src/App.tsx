@@ -76,7 +76,9 @@ export function App(): JSX.Element {
 
     const queryPlan = preprocessQueryPlan(rawJson);
 
-    const defaultSelections = buildDefaultSelection(queryPlan);
+    const defaultSelections = buildDefaultSelection(
+      queryPlan.map((query) => query.graph)
+    );
     const metadata = extractMetadata(queryPlan);
 
     setSelections(defaultSelections);

@@ -93,6 +93,7 @@ function PlainView({ value }: { value: unknown }) {
  * @param attributes.title - List title
  * */
 function ListView({ title, list }: { title: string; list: unknown[] }) {
+  const MAX_ELEMENTS = 10;
   return (
     <li>
       {title}:
@@ -100,11 +101,20 @@ function ListView({ title, list }: { title: string; list: unknown[] }) {
         <span className="nullish-content"> (no items)</span>
       ) : (
         <ul>
-          {list.map((item) => (
-            <li key={`${item}`}>
-              <PlainView value={item} />
+          {list
+            .filter((_, idx) => idx < MAX_ELEMENTS)
+            .map((item) => (
+              <li key={`__element__${item}`}>
+                <PlainView value={item} />
+              </li>
+            ))}
+          {list.length > MAX_ELEMENTS && (
+            <li key="__ETC__">
+              <span className="nullish-content">
+                And {list.length - MAX_ELEMENTS} more items
+              </span>
             </li>
-          ))}
+          )}
         </ul>
       )}
     </li>
@@ -172,6 +182,17 @@ export function Details({
         .map(({ key, value }) => {
           if (key === "location") {
             return <LocationView location={value} key={key} />;
+          }
+          if (key === "underlyingRetrievals") {
+            return (
+              <ListView
+                key={key}
+                title={buildTitle(key)}
+                list={(value as ARetrieval[]).map(
+                  (retrieval) => `${retrieval.$kind} #${retrieval.retrievalId}`
+                )}
+              />
+            );
           }
           if (Array.isArray(value)) {
             return <ListView list={value} title={buildTitle(key)} key={key} />;

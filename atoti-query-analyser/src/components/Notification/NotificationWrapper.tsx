@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from "react";
+import React, { createContext, useContext, useReducer, useState } from "react";
 import ToastContainer from "react-bootstrap/ToastContainer";
 import { Toast, ToastProps } from "react-bootstrap";
 import { stringifyFuzzyTimer, useFuzzyTimer } from "../../hooks/fuzzyTimer";
@@ -164,8 +164,10 @@ export function NotificationWrapper({
     updateServiceState({ $action: "deleteMessage", params: { id } });
   };
 
+  const [service] = useState({ newMessage });
+
   return (
-    <ctx.Provider value={{ newMessage }}>
+    <ctx.Provider value={service}>
       {children}
       <div
         style={{
