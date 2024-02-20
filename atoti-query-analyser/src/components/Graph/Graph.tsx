@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { untangle } from "../../library/dataStructures/d3/d3Graph";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
 import "./Drawer.css";
@@ -101,6 +102,8 @@ export function Graph({
     changeGraph0(id);
   };
 
+  const forceRef = useRef<d3.Simulation<D3Node, undefined>>();
+
   useEffect(() => {
     if (svgRef.current === null) {
       return;
@@ -190,6 +193,7 @@ export function Graph({
 
     const force = setupForceSimulation();
     setupDragging(force);
+    forceRef.current = force;
 
     d3Graph.call(
       d3
@@ -199,6 +203,11 @@ export function Graph({
           d3Graph.select("g").attr("transform", event.transform.toString());
         })
     );
+
+    return () => {
+      forceRef.current = undefined;
+      force.stop();
+    };
   }, [epoch, nodes, links]);
 
   useEffect(() => {
@@ -212,6 +221,13 @@ export function Graph({
     setLinks(d3data.links);
     setEpoch((e) => e + 1);
   }, [query, selectedRetrievals, selection]);
+
+  const onUntangle = () => {
+    untangle({ nodes, links });
+    if (forceRef.current !== undefined) {
+      forceRef.current.alphaTarget(0.3).restart();
+    }
+  };
 
   return (
     <>
@@ -252,7 +268,9 @@ export function Graph({
             measures={query.querySummary.measures}
             selectedMeasures={selectedMeasures}
             onSelectedMeasure={selectMeasure}
-          />
+          >
+            <Button onClick={onUntangle}>Untangle</Button>
+          </Menu>
         </div>
       </Overlay>
     </>

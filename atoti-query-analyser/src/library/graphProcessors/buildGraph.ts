@@ -31,7 +31,10 @@ function processArrayOfRetrievals(
     });
 }
 
-function makeVirtualRetrieval({
+/**
+ * Creates a virtual retrieval.
+ */
+export function makeVirtualRetrieval({
   retrievalId,
   type,
 }: {
