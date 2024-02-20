@@ -47,10 +47,14 @@ export function filterAndInverse(
     gr.labelVertex(virtualTarget.getUUID(), "virtualTarget");
 
     sources.forEach((vertex) =>
-      gr.createEdge(virtualSource.getUUID(), vertex.getUUID(), undefined)
+      gr.createEdge(virtualSource.getUUID(), vertex.getUUID(), {
+        criticalScore: 1,
+      })
     );
     sinks.forEach((vertex) =>
-      gr.createEdge(vertex.getUUID(), virtualTarget.getUUID(), undefined)
+      gr.createEdge(vertex.getUUID(), virtualTarget.getUUID(), {
+        criticalScore: 1,
+      })
     );
   });
 
