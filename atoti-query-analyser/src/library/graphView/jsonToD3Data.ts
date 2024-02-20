@@ -8,7 +8,6 @@ import {
   RetrievalVertex,
   VirtualRetrievalKind,
 } from "../dataStructures/json/retrieval";
-import { QueryPlan } from "../dataStructures/processing/queryPlan";
 import {
   EdgeSelection,
   VertexSelection,
@@ -187,16 +186,15 @@ function normalizeIds(
  * Given a query plan, build data for d3js.
  */
 export function buildD3(
-  query: QueryPlan,
+  graph: RetrievalGraph,
   vertexSelection: VertexSelection,
   edgeSelection: EdgeSelection
 ) {
   const info = { vertexSelection, edgeSelection };
-  const { graph } = query;
   const depths = nodeDepths(graph, vertexSelection);
   const nodes = getNodes(graph, info, depths);
   const links = getLinks(graph, info);
-  const clusters = addClustersToNodes(query, vertexSelection);
+  const clusters = addClustersToNodes(graph, vertexSelection);
   nodes.forEach((node) => {
     node.clusterId = requireNonNull(clusters.get(node.id));
   });

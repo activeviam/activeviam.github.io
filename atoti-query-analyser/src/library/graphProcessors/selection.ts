@@ -5,23 +5,24 @@ import {
   AggregateRetrieval,
   AggregateRetrievalKind,
   ARetrievalGraphObserver,
+  CondensedRetrievalKind,
   ExternalRetrieval,
   ExternalRetrievalKind,
   RetrievalGraph,
   RetrievalVertex,
   VirtualRetrievalKind,
 } from "../dataStructures/json/retrieval";
-import { QueryPlan } from "../dataStructures/processing/queryPlan";
 import { Measure } from "../dataStructures/json/measure";
 import { VertexSelection } from "../dataStructures/processing/selection";
 
-function removeNoOps(queries: QueryPlan[]) {
-  return queries.map((query) => {
-    const { graph } = query;
-
+function removeNoOps(graphs: RetrievalGraph[]) {
+  return graphs.map((graph) => {
     return new Set(
       Array.from(graph.getVertices())
         .filter((vertex) => {
+          if (vertex.getMetadata().$kind === CondensedRetrievalKind) {
+            return true;
+          }
           const timingInfo = vertex.getMetadata().timingInfo;
           return (
             timingInfo &&
@@ -35,9 +36,9 @@ function removeNoOps(queries: QueryPlan[]) {
   });
 }
 
-function addVirtualVertices(query: QueryPlan, selection: VertexSelection) {
-  selection.add(query.graph.getVertexByLabel("virtualSource").getUUID());
-  selection.add(query.graph.getVertexByLabel("virtualTarget").getUUID());
+function addVirtualVertices(graph: RetrievalGraph, selection: VertexSelection) {
+  selection.add(graph.getVertexByLabel("virtualSource").getUUID());
+  selection.add(graph.getVertexByLabel("virtualTarget").getUUID());
 }
 
 // Remove nodes without timing info
@@ -45,11 +46,11 @@ function addVirtualVertices(query: QueryPlan, selection: VertexSelection) {
  * For each query plan, build default vertex selection, which includes all
  * retrievals except for no-ops.
  */
-export function buildDefaultSelection(queries: QueryPlan[]) {
-  const selections = removeNoOps(queries);
+export function buildDefaultSelection(graphs: RetrievalGraph[]) {
+  const selections = removeNoOps(graphs);
 
-  queries.forEach((query, idx) => {
-    addVirtualVertices(query, selections[idx]);
+  graphs.forEach((graph, idx) => {
+    addVirtualVertices(graph, selections[idx]);
   });
   return selections;
 }
