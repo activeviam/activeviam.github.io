@@ -2,12 +2,18 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
 import "./Drawer.css";
+import { selectCriticalSubgraph } from "../../library/graphProcessors/criticalPath";
+import { UUID } from "../../library/utilities/uuid";
+import { useNotificationContext } from "../Notification/NotificationWrapper";
 import { Link } from "./Link";
 import { Node } from "./Node";
-import { Button, Overlay } from "react-bootstrap";
+import { Button, Form, Overlay } from "react-bootstrap";
 import { Menu } from "./Menu";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
-import { VertexSelection } from "../../library/dataStructures/processing/selection";
+import {
+  EdgeSelection,
+  VertexSelection,
+} from "../../library/dataStructures/processing/selection";
 import { Measure } from "../../library/dataStructures/json/measure";
 import { filterByMeasures } from "../../library/graphProcessors/selection";
 import { buildD3 } from "../../library/graphView/jsonToD3Data";
@@ -46,11 +52,30 @@ export function Graph({
   const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
   const [epoch, setEpoch] = useState(0);
 
+  const [minCriticalScore, setMinCriticalScore] = useState(0.7);
+  const [selectCriticalSubgraphFlag, setSelectCriticalSubgraphFlag] =
+    useState(false);
+
   const windowSize = useWindowSize();
   const svgRef = useRef<SVGSVGElement | null>(null);
   const triggerRef = useRef(null);
+  const notificationContext = useNotificationContext();
+
+  useEffect(() => {
+    if (query.graph.getVertexCount() >= 100) {
+      setSelectCriticalSubgraphFlag(true);
+      notificationContext?.newMessage(
+        "Graph filter",
+        "Since the retrieval graph is big, the critical score filter is applied. You can configure it in the menu.",
+        { bg: "info" }
+      );
+    }
+  }, [query, notificationContext]);
 
   const selectedRetrievals = useMemo(() => {
+    if (selectCriticalSubgraphFlag) {
+      return selectCriticalSubgraph(query.graph, minCriticalScore);
+    }
     if (selectedMeasures.length === 0) {
       return null;
     }
@@ -59,7 +84,29 @@ export function Graph({
       measures: selectedMeasures,
       selection,
     });
-  }, [query, selectedMeasures, selection]);
+  }, [
+    query,
+    selectedMeasures,
+    selection,
+    selectCriticalSubgraphFlag,
+    minCriticalScore,
+  ]);
+
+  const edgeSelection: EdgeSelection = useMemo(() => {
+    return Array.from(query.graph.getVertices())
+      .flatMap((v) => Array.from(query.graph.getOutgoingEdges(v)))
+      .reduce((set, edge) => {
+        const sourceUUID = edge.getBegin().getUUID();
+        const targetUUID = edge.getEnd().getUUID();
+        if (
+          !selectCriticalSubgraphFlag ||
+          edge.getMetadata().criticalScore >= minCriticalScore
+        ) {
+          set.add({ source: sourceUUID, target: targetUUID });
+        }
+        return set;
+      }, new Set<{ source: UUID; target: UUID }>());
+  }, [query, selectCriticalSubgraphFlag, minCriticalScore]);
 
   useEffect(() => {
     setSelectedMeasures([]);
@@ -100,6 +147,8 @@ export function Graph({
     clickNode(null);
     changeGraph0(id);
   };
+
+  const forceRef = useRef<d3.Simulation<D3Node, undefined>>();
 
   useEffect(() => {
     if (svgRef.current === null) {
@@ -190,6 +239,7 @@ export function Graph({
 
     const force = setupForceSimulation();
     setupDragging(force);
+    forceRef.current = force;
 
     d3Graph.call(
       d3
@@ -199,6 +249,13 @@ export function Graph({
           d3Graph.select("g").attr("transform", event.transform.toString());
         })
     );
+
+    return () => {
+      if (force) {
+        forceRef.current = undefined;
+        force.stop();
+      }
+    };
   }, [epoch, nodes, links]);
 
   useEffect(() => {
@@ -206,12 +263,16 @@ export function Graph({
       return;
     }
 
-    const d3data = buildD3(query, selectedRetrievals || selection);
+    const d3data = buildD3(
+      query,
+      selectedRetrievals || selection,
+      edgeSelection
+    );
 
     setNodes(d3data.nodes);
     setLinks(d3data.links);
     setEpoch((e) => e + 1);
-  }, [query, selectedRetrievals, selection]);
+  }, [query, selectedRetrievals, selection, edgeSelection]);
 
   return (
     <>
@@ -225,7 +286,13 @@ export function Graph({
       >
         <g key={`e${epoch}`}>
           {links.map((link) => (
-            <Link link={link} key={link.id} />
+            <Link
+              link={link}
+              key={link.id}
+              minCriticalScore={
+                selectCriticalSubgraphFlag ? minCriticalScore : 0
+              }
+            />
           ))}
           {nodes.map((node) => (
             <Node
@@ -252,7 +319,33 @@ export function Graph({
             measures={query.querySummary.measures}
             selectedMeasures={selectedMeasures}
             onSelectedMeasure={selectMeasure}
-          />
+          >
+            <h5>Critical score filter</h5>
+            <Form>
+              <Form.Check
+                type="switch"
+                checked={selectCriticalSubgraphFlag}
+                onChange={(e) =>
+                  setSelectCriticalSubgraphFlag(e.target.checked)
+                }
+                label="Enable filter"
+              />
+              {selectCriticalSubgraphFlag && (
+                <>
+                  <Form.Label>
+                    Minimal score: {minCriticalScore.toFixed(3)}
+                  </Form.Label>
+                  <Form.Range
+                    min={0}
+                    max={1}
+                    step="any"
+                    value={minCriticalScore}
+                    onChange={(e) => setMinCriticalScore(+e.target.value)}
+                  ></Form.Range>
+                </>
+              )}
+            </Form>
+          </Menu>
         </div>
       </Overlay>
     </>
