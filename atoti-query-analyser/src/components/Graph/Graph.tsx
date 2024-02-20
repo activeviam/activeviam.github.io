@@ -62,7 +62,7 @@ export function Graph({
   const notificationContext = useNotificationContext();
 
   useEffect(() => {
-    if (query.graph.getVertexCount() >= 10) {
+    if (query.graph.getVertexCount() >= 100) {
       setSelectCriticalSubgraphFlag(true);
       notificationContext?.newMessage(
         "Graph filter",
