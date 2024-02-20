@@ -62,7 +62,7 @@ export function Graph({
   const notificationContext = useNotificationContext();
 
   useEffect(() => {
-    if (query.graph.getVertexCount() >= 100) {
+    if (query.graph.getVertexCount() >= 10) {
       setSelectCriticalSubgraphFlag(true);
       notificationContext?.newMessage(
         "Graph filter",
@@ -70,7 +70,7 @@ export function Graph({
         { bg: "info" }
       );
     }
-  }, []);
+  }, [query, notificationContext]);
 
   const selectedRetrievals = useMemo(() => {
     if (selectCriticalSubgraphFlag) {
@@ -289,7 +289,9 @@ export function Graph({
             <Link
               link={link}
               key={link.id}
-              minCriticalScore={minCriticalScore}
+              minCriticalScore={
+                selectCriticalSubgraphFlag ? minCriticalScore : 0
+              }
             />
           ))}
           {nodes.map((node) => (
