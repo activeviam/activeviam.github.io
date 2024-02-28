@@ -343,6 +343,10 @@ export async function parseMultiV1(
       sectionHeaders.push(i);
     }
   }
+  if (sectionHeaders.length === 0) {
+    // No begin marker found, considering as single GAQ
+    sectionHeaders.push(0);
+  }
 
   sectionHeaders.push(lines.length);
   const parts = [];
