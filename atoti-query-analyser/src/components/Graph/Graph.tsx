@@ -16,7 +16,7 @@ import {
 import { condenseFastRetrievals } from "../../library/graphProcessors/condenseFastRetrievals";
 import { Link } from "./Link";
 import { Node } from "./Node";
-import { Button, Form, Overlay } from "react-bootstrap";
+import { Button, ButtonGroup, Form, Overlay } from "react-bootstrap";
 import { Menu } from "./Menu";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import {
@@ -34,7 +34,7 @@ import _ from "lodash";
 import { requireNonNull } from "../../library/utilities/util";
 import { useWindowSize } from "../../hooks/windowSize";
 import { updateGraph } from "../../library/graphView/graphHelpers";
-import { D3DragEvent, D3ZoomEvent } from "d3";
+import { D3DragEvent, D3ZoomEvent, ZoomBehavior } from "d3";
 
 interface DataModel {
   graph: RetrievalGraph;
@@ -124,6 +124,7 @@ export function Graph({
   const windowSize = useWindowSize();
   const svgRef = useRef<SVGSVGElement | null>(null);
   const triggerRef = useRef(null);
+  const zoomRef = useRef<ZoomBehavior<SVGSVGElement, unknown>>();
   const notificationContext = useNotificationContext();
 
   const [autoCriticalScoreFilterNotified, setAutoCriticalScoreFilterNotified] =
@@ -227,7 +228,7 @@ export function Graph({
       return;
     }
 
-    const d3Graph = d3.select<SVGSVGElement, undefined>(svgRef.current);
+    const d3Graph = d3.select<SVGSVGElement, unknown>(svgRef.current);
 
     const setupDragging = (force: d3.Simulation<D3Node, undefined>) => {
       if (svgRef.current === null) {
@@ -310,16 +311,18 @@ export function Graph({
     setupDragging(force);
     forceRef.current = force;
 
-    d3Graph.call(
-      d3
-        .zoom<SVGSVGElement, undefined>()
-        .on("zoom", (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
-          clickNode(null);
-          d3Graph.select("g").attr("transform", event.transform.toString());
-        })
-    );
+    const zoom = d3
+      .zoom<SVGSVGElement, unknown>()
+      .on("zoom", (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
+        clickNode(null);
+        d3Graph.select("g").attr("transform", event.transform.toString());
+      });
+
+    d3Graph.call(zoom);
+    zoomRef.current = zoom;
 
     return () => {
+      zoomRef.current = undefined;
       forceRef.current = undefined;
       force.stop();
     };
@@ -347,6 +350,17 @@ export function Graph({
     if (forceRef.current !== undefined) {
       forceRef.current.alphaTarget(0.3).restart();
     }
+  };
+
+  const zoomScaleBy = (factor: number) => {
+    if (svgRef.current === null) {
+      return;
+    }
+    if (zoomRef.current === undefined) {
+      return;
+    }
+    const svg = d3.select(svgRef.current);
+    svg.transition().call(zoomRef.current?.scaleBy, factor);
   };
 
   return (
@@ -398,6 +412,10 @@ export function Graph({
             selectedMeasures={selectedMeasures}
             onSelectedMeasure={selectMeasure}
           >
+            <ButtonGroup>
+              <Button onClick={() => zoomScaleBy(2)}>Zoom in</Button>
+              <Button onClick={() => zoomScaleBy(0.5)}>Zoom out</Button>
+            </ButtonGroup>
             <Button onClick={onUntangle}>Untangle</Button>
             <h5>Fast retrieval condensation</h5>
             <Form>
