@@ -138,7 +138,7 @@ function updateNode(
  * Update properties of SVG elements representing the graph.
  * */
 function updateGraph(
-  selection: Selection<SVGSVGElement, undefined, null, undefined>
+  selection: Selection<SVGSVGElement, unknown, null, undefined>
 ) {
   selection.selectAll<SVGGElement, D3Node>(".node").call(updateNode);
   selection.selectAll<SVGLineElement, D3Link>(".link").call(updateLink);

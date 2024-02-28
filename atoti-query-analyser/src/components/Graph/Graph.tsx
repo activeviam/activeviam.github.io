@@ -4,7 +4,7 @@ import { D3Link } from "../../library/dataStructures/d3/d3Link";
 import "./Drawer.css";
 import { Link } from "./Link";
 import { Node } from "./Node";
-import { Button, Overlay } from "react-bootstrap";
+import { Button, ButtonGroup, Overlay } from "react-bootstrap";
 import { Menu } from "./Menu";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { VertexSelection } from "../../library/dataStructures/processing/selection";
@@ -16,7 +16,7 @@ import _ from "lodash";
 import { requireNonNull } from "../../library/utilities/util";
 import { useWindowSize } from "../../hooks/windowSize";
 import { updateGraph } from "../../library/graphView/graphHelpers";
-import { D3DragEvent, D3ZoomEvent } from "d3";
+import { D3DragEvent, D3ZoomEvent, ZoomBehavior } from "d3";
 
 /**
  * This Reach component is responsible for retrieval graph visualization.
@@ -49,6 +49,7 @@ export function Graph({
   const windowSize = useWindowSize();
   const svgRef = useRef<SVGSVGElement | null>(null);
   const triggerRef = useRef(null);
+  const zoomRef = useRef<ZoomBehavior<SVGSVGElement, unknown>>();
 
   const selectedRetrievals = useMemo(() => {
     if (selectedMeasures.length === 0) {
@@ -109,7 +110,7 @@ export function Graph({
       return;
     }
 
-    const d3Graph = d3.select<SVGSVGElement, undefined>(svgRef.current);
+    const d3Graph = d3.select<SVGSVGElement, unknown>(svgRef.current);
 
     const setupDragging = (force: d3.Simulation<D3Node, undefined>) => {
       if (svgRef.current === null) {
@@ -191,14 +192,19 @@ export function Graph({
     const force = setupForceSimulation();
     setupDragging(force);
 
-    d3Graph.call(
-      d3
-        .zoom<SVGSVGElement, undefined>()
-        .on("zoom", (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
-          clickNode(null);
-          d3Graph.select("g").attr("transform", event.transform.toString());
-        })
-    );
+    const zoom = d3
+      .zoom<SVGSVGElement, unknown>()
+      .on("zoom", (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
+        clickNode(null);
+        d3Graph.select("g").attr("transform", event.transform.toString());
+      });
+
+    d3Graph.call(zoom);
+    zoomRef.current = zoom;
+
+    return () => {
+      zoomRef.current = undefined;
+    };
   }, [epoch, nodes, links]);
 
   useEffect(() => {
@@ -212,6 +218,17 @@ export function Graph({
     setLinks(d3data.links);
     setEpoch((e) => e + 1);
   }, [query, selectedRetrievals, selection]);
+
+  const zoomScaleBy = (factor: number) => {
+    if (svgRef.current === null) {
+      return;
+    }
+    if (zoomRef.current === undefined) {
+      return;
+    }
+    const svg = d3.select(svgRef.current);
+    svg.transition().call(zoomRef.current?.scaleBy, factor);
+  };
 
   return (
     <>
@@ -252,7 +269,12 @@ export function Graph({
             measures={query.querySummary.measures}
             selectedMeasures={selectedMeasures}
             onSelectedMeasure={selectMeasure}
-          />
+          >
+            <ButtonGroup>
+              <Button onClick={() => zoomScaleBy(2)}>Zoom in</Button>
+              <Button onClick={() => zoomScaleBy(0.5)}>Zoom out</Button>
+            </ButtonGroup>
+          </Menu>
         </div>
       </Overlay>
     </>
