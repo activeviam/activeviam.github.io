@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
+import {
+  Button,
+  ButtonGroup,
+  Col,
+  Form,
+  Row,
+  Spinner,
+  ToggleButton,
+} from "react-bootstrap";
 import { useErrorMessage } from "../../hooks/notification";
 import { ServerInput } from "../../library/inputProcessors/server";
 import { asError } from "../../library/utilities/util";
@@ -26,6 +34,11 @@ export enum InputType {
   DEVELOPER,
 }
 
+export enum InputSource {
+  TEXT_AREA = "Text area",
+  FILE = "File upload",
+}
+
 /**
  * Callback on form submission.
  * */
@@ -33,7 +46,8 @@ export type OnInput = (
   mode: InputMode,
   type: InputType,
   input: string | ServerInput,
-  showError: (error: Error) => void
+  showError: (error: Error) => void,
+  statusLine: (message: string) => void
 ) => Promise<void>;
 
 /**
@@ -134,6 +148,57 @@ function TypeInput({
   );
 }
 
+function SourceInput({
+  source,
+  setSource,
+}: {
+  source: InputSource;
+  setSource: (newSource: InputSource) => void;
+}) {
+  return (
+    <>
+      {[InputSource.TEXT_AREA, InputSource.FILE].map((src) => {
+        return (
+          <Form.Check
+            inline
+            label={src}
+            key={src}
+            value={src}
+            type="radio"
+            onChange={() => setSource(src)}
+            checked={src === source}
+          />
+        );
+      })}
+    </>
+  );
+}
+
+function TooBigInput({ data }: { data: string }) {
+  const [forceRender, setForceRender] = useState(false);
+  return (
+    <div>
+      <p>Data size exceeds 1 MiB. Its rendering may cause freezing.</p>
+      <ButtonGroup>
+        <ToggleButton
+          id="forceRenderCheck"
+          type="checkbox"
+          checked={forceRender}
+          onChange={(e) => {
+            setForceRender(e.currentTarget.checked);
+          }}
+          value="1"
+        >
+          Render anyway
+        </ToggleButton>
+      </ButtonGroup>
+      {forceRender && (
+        <Form.Control as="textarea" rows={10} value={data} readOnly />
+      )}
+    </div>
+  );
+}
+
 /**
  * This React component is responsible for submission buttons.
  * @param attributes - React JSX attributes
@@ -143,9 +208,11 @@ function TypeInput({
 function Buttons({
   urlMode,
   onSubmit,
+  onDropData,
 }: {
   urlMode: boolean;
   onSubmit: (mode: InputMode) => void;
+  onDropData: () => void;
 }) {
   const restoreInputMode = () => {
     const oldInputMode = window.localStorage.getItem("inputMode");
@@ -192,6 +259,9 @@ function Buttons({
           onClick={() => onSubmit(InputMode.URL)}
         >
           Import from Server
+        </Button>{" "}
+        <Button variant="outline-danger" onClick={onDropData}>
+          Drop data
         </Button>
       </div>
     </>
@@ -275,6 +345,7 @@ export function Input({
 }) {
   const location = new URL(window.location.href);
 
+  const [source, setSource] = useState(InputSource.FILE);
   const [input, setInput] = useState(lastInput);
   const [type, setType] = useState(InputType.CLASSIC);
   const [urlMode, setUrlMode] = useState(false);
@@ -282,8 +353,9 @@ export function Input({
   const [password, setPassword] = useState("");
   const [url, setUrl] = useState("");
   const devMode = location.search.includes("dev"); // Backward compatibility
+  const [statusLine, setStatusLine] = useState("");
 
-  const [prosessing, setProcessing] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
   const { showError } = useErrorMessage();
 
@@ -303,7 +375,8 @@ export function Input({
           query: input,
           credentials: `Basic ${credentials}`,
         },
-        showError
+        showError,
+        setStatusLine
       );
     } catch (err) {
       showError(asError(err));
@@ -313,10 +386,10 @@ export function Input({
     }
   };
 
-  const doPassInput = async (mode: InputMode) => {
+  const doPassInput = async (data: string, mode: InputMode) => {
     setProcessing(true);
     try {
-      await passInput(mode, type, input, showError);
+      await passInput(mode, type, data, showError, setStatusLine);
     } catch (err) {
       showError(asError(err));
     } finally {
@@ -327,7 +400,7 @@ export function Input({
   const dispatchSubmit = (mode: InputMode) => {
     switch (mode) {
       case InputMode.JSON:
-        doPassInput(InputMode.JSON);
+        doPassInput(input, InputMode.JSON);
         break;
       case InputMode.URL:
         if (urlMode) {
@@ -337,23 +410,80 @@ export function Input({
         }
         break;
       case InputMode.V1:
-        doPassInput(InputMode.V1);
+        doPassInput(input, InputMode.V1);
         break;
       default:
         throw new Error(`Unexpected input mode: ${mode} ${InputMode[mode]}`);
     }
   };
 
+  const prettySize = (size: number) => {
+    const suffixes = ["bytes", "KiB", "MiB", "GiB", "TiB"];
+    let suffixIdx = 0;
+    let mutableSize = size;
+    while (mutableSize > 1024 && suffixIdx + 1 < suffixes.length) {
+      mutableSize /= 1024;
+      ++suffixIdx;
+    }
+    return `${mutableSize.toFixed(suffixIdx === 0 ? 0 : 1)} ${
+      suffixes[suffixIdx]
+    }`;
+  };
+
   return (
     <Form className="m-4">
-      <Form.Group controlId="query-input">
-        <Form.Control
-          as="textarea"
-          rows={10}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
-      </Form.Group>
+      <SourceInput source={source} setSource={setSource} />
+      {source === InputSource.TEXT_AREA ? (
+        input.length > 1 << 20 ? (
+          <TooBigInput data={input} />
+        ) : (
+          <Form.Group controlId="query-input-textarea">
+            <Form.Control
+              as="textarea"
+              rows={10}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+          </Form.Group>
+        )
+      ) : (
+        <Form.Group controlId="query-input-file">
+          <Form.Control
+            type="file"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const inputNode = e.target;
+              if (!inputNode.files || inputNode.files.length === 0) {
+                return;
+              }
+              const file = inputNode.files[0];
+
+              const reader = new FileReader();
+              reader.onload = (readerEvent) => {
+                const target = readerEvent.target;
+                if (!target) {
+                  return;
+                }
+                const result = target.result;
+                if (typeof result !== "string") {
+                  return;
+                }
+                setInput(result);
+                setProcessing(false);
+                console.log(result.length);
+              };
+              reader.onerror = (readerEvent) => {
+                showError(
+                  readerEvent.target?.error || new Error("An error occurred")
+                );
+                setProcessing(false);
+              };
+
+              reader.readAsText(file);
+              setProcessing(true);
+            }}
+          ></Form.Control>
+        </Form.Group>
+      )}
       {urlMode ? (
         <URLInput
           url={url}
@@ -365,13 +495,25 @@ export function Input({
         />
       ) : null}
       <TypeInput type={type} setType={setType} />
-      <Buttons urlMode={urlMode} onSubmit={dispatchSubmit} />
+      <p>
+        Data size: {input.length} ({prettySize(input.length)})
+      </p>
+      <Buttons
+        urlMode={urlMode}
+        onSubmit={dispatchSubmit}
+        onDropData={() => setInput("")}
+      />
       <DevButtons
         visible={devMode || type === InputType.DEVELOPER}
         input={input}
         setInput={setInput}
       />
-      {prosessing && <Spinner animation="border" variant="primary" />}
+      {processing && (
+        <div>
+          <Spinner animation="border" variant="primary" />
+          <span>{statusLine}</span>
+        </div>
+      )}
     </Form>
   );
 }
