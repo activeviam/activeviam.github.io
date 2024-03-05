@@ -38,7 +38,17 @@ export function validateBoolean(rawBoolean: any): boolean {
  */
 export function validateString(rawString: any): string {
   if (typeof rawString !== "string") {
-    throw new Error(`Expected string, got ${typeof rawString}`);
+    throw new Error(`Expected string or string[], got ${typeof rawString}`);
+  }
+  return rawString;
+}
+
+/**
+ * Check if input is a string or a list of strings.
+ */
+export function validatePath(rawString: any): string | string[] {
+  if (!Array.isArray(rawString) && typeof rawString !== "string") {
+    throw new Error(`Expected string or string[], got ${typeof rawString}`);
   }
   return rawString;
 }

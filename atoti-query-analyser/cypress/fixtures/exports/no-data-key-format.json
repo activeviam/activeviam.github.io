@@ -1,0 +1,1500 @@
+[
+  {
+    "planInfo": {
+      "pivotType": "ActivePivotVersion",
+      "pivotId": "EquityDerivativesCube",
+      "epoch": "321",
+      "branch": "master",
+      "retrieverType": "ActivePivotAggregatesRetriever",
+      "mdxPass": "SelectPass_0",
+      "contextValues": {
+        "IBranch": "null",
+        "ISubCubeProperties": "null",
+        "IAsOfEpoch": "null",
+        "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false, queryPlanCycleDetection=true]",
+        "IQueriesResultLimit": "QueriesResultLimit [transientLimit=5000000, intermediateLimit=5000000]"
+      },
+      "rangeSharing": 1000000,
+      "missedPrefetchBehavior": "WARN",
+      "aggregatesCache": "capacity=1000, size=0",
+      "globalTimings": {
+        "executionContextCreationTime": 0,
+        "finalizationTime": 4,
+        "planningTime": 1,
+        "queryExecutionTime": 6
+      },
+      "continuous": false
+    },
+    "aggregateRetrievals": [
+      {
+        "retrievalId": 0,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            0
+          ],
+          "startTime": [
+            5
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 1,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveResultsMerger",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          6
+        ],
+        "timingInfo": {
+          "startTime": [
+            4
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 2,
+        "partialProviderName": "N/A",
+        "type": "RangeSharingPrimitiveAggregatesRetrieval",
+        "partitioning": "value(AsOfDate) | hash8(TradeId)",
+        "location": [
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          6,
+          0,
+          0,
+          0,
+          0,
+          6,
+          6,
+          6,
+          0,
+          0,
+          0,
+          0,
+          6,
+          0,
+          0,
+          0,
+          6,
+          6,
+          6
+        ],
+        "timingInfo": {
+          "startTime": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            4,
+            4,
+            1,
+            1,
+            3,
+            2,
+            2,
+            1,
+            2,
+            1,
+            4,
+            1,
+            1,
+            4,
+            4,
+            4,
+            4
+          ],
+          "elapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 3,
+        "partialProviderName": "N/A",
+        "type": "RangeSharingPrimitiveAggregatesRetrieval",
+        "partitioning": "value(AsOfDate) | hash8(TradeId)",
+        "location": [
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Booking",
+            "hierarchy": "Status",
+            "level": [
+              "ALL",
+              "IsSimulated"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          12,
+          0,
+          0,
+          0,
+          0,
+          12,
+          12,
+          12,
+          0,
+          0,
+          0,
+          0,
+          12,
+          0,
+          0,
+          0,
+          12,
+          12,
+          12
+        ],
+        "timingInfo": {
+          "startTime": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            4,
+            4,
+            1,
+            1,
+            3,
+            1,
+            1,
+            1,
+            1,
+            1,
+            4,
+            1,
+            1,
+            1,
+            4,
+            4,
+            4
+          ],
+          "elapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 4,
+        "partialProviderName": "N/A",
+        "type": "RangeSharingPrimitiveAggregatesRetrieval",
+        "partitioning": "value(AsOfDate) | hash8(TradeId)",
+        "location": [
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Booking",
+            "hierarchy": "Status",
+            "level": [
+              "ALL",
+              "IsSimulated",
+              "Status"
+            ],
+            "path": [
+              "AllMember",
+              "*",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          18,
+          0,
+          0,
+          0,
+          0,
+          18,
+          18,
+          18,
+          0,
+          0,
+          0,
+          0,
+          18,
+          0,
+          0,
+          0,
+          18,
+          18,
+          18
+        ],
+        "timingInfo": {
+          "startTime": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            4,
+            1,
+            1,
+            1,
+            4,
+            4,
+            4
+          ],
+          "elapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 5,
+        "partialProviderName": "N/A",
+        "type": "RangeSharingPrimitiveAggregatesRetrieval",
+        "partitioning": "value(AsOfDate) | hash8(TradeId)",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Booking",
+            "hierarchy": "Status",
+            "level": [
+              "ALL",
+              "IsSimulated",
+              "Status"
+            ],
+            "path": [
+              "AllMember",
+              "*",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          34,
+          0,
+          0,
+          0,
+          0,
+          34,
+          34,
+          31,
+          0,
+          0,
+          0,
+          0,
+          34,
+          0,
+          0,
+          0,
+          35,
+          35,
+          32
+        ],
+        "timingInfo": {
+          "startTime": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            4,
+            4,
+            1
+          ],
+          "elapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 6,
+        "partialProviderName": "PartialProvider-2",
+        "type": "PartialPrimitiveAggregatesRetrieval",
+        "partitioning": "value(AsOfDate) | hash8(TradeId)",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "*",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Booking",
+            "hierarchy": "Status",
+            "level": [
+              "ALL",
+              "IsSimulated",
+              "Status"
+            ],
+            "path": [
+              "AllMember",
+              "*",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          53,
+          0,
+          0,
+          0,
+          0,
+          53,
+          52,
+          56,
+          0,
+          0,
+          0,
+          0,
+          55,
+          0,
+          0,
+          0,
+          53,
+          58,
+          51
+        ],
+        "timingInfo": {
+          "startTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          "executionContextStartTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "executionContextElapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "elapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 7,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Booking",
+            "hierarchy": "Status",
+            "level": [
+              "ALL",
+              "IsSimulated"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          2
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            0
+          ],
+          "startTime": [
+            5
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 8,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveResultsMerger",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Booking",
+            "hierarchy": "Status",
+            "level": [
+              "ALL",
+              "IsSimulated"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          12
+        ],
+        "timingInfo": {
+          "startTime": [
+            4
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 9,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Booking",
+            "hierarchy": "Status",
+            "level": [
+              "ALL",
+              "IsSimulated",
+              "Status"
+            ],
+            "path": [
+              "AllMember",
+              "*",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          3
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            1
+          ],
+          "startTime": [
+            4
+          ],
+          "elapsedTime": [
+            1
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 10,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveResultsMerger",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Booking",
+            "hierarchy": "Status",
+            "level": [
+              "ALL",
+              "IsSimulated",
+              "Status"
+            ],
+            "path": [
+              "AllMember",
+              "*",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          18
+        ],
+        "timingInfo": {
+          "startTime": [
+            4
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 11,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "*",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Booking",
+            "hierarchy": "Status",
+            "level": [
+              "ALL",
+              "IsSimulated",
+              "Status"
+            ],
+            "path": [
+              "AllMember",
+              "*",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          12
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            1
+          ],
+          "startTime": [
+            4
+          ],
+          "elapsedTime": [
+            1
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 12,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveResultsMerger",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "*",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Booking",
+            "hierarchy": "Status",
+            "level": [
+              "ALL",
+              "IsSimulated",
+              "Status"
+            ],
+            "path": [
+              "AllMember",
+              "*",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          69
+        ],
+        "timingInfo": {
+          "startTime": [
+            4
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 13,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Booking",
+            "hierarchy": "Status",
+            "level": [
+              "ALL",
+              "IsSimulated",
+              "Status"
+            ],
+            "path": [
+              "AllMember",
+              "*",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          6
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            1
+          ],
+          "startTime": [
+            4
+          ],
+          "elapsedTime": [
+            1
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 14,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveResultsMerger",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Booking",
+            "hierarchy": "Status",
+            "level": [
+              "ALL",
+              "IsSimulated",
+              "Status"
+            ],
+            "path": [
+              "AllMember",
+              "*",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-24"
+            ]
+          }
+        ],
+        "measures": [
+          "delta.SUM"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          36
+        ],
+        "timingInfo": {
+          "startTime": [
+            4
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      }
+    ],
+    "dependencies": {
+      "0": [
+        1
+      ],
+      "1": [
+        2
+      ],
+      "2": [
+        3
+      ],
+      "3": [
+        4
+      ],
+      "4": [
+        5
+      ],
+      "5": [
+        6
+      ],
+      "7": [
+        8
+      ],
+      "8": [
+        3
+      ],
+      "9": [
+        10
+      ],
+      "10": [
+        4
+      ],
+      "11": [
+        12
+      ],
+      "12": [
+        6
+      ],
+      "13": [
+        14
+      ],
+      "14": [
+        5
+      ],
+      "-1": [
+        0,
+        9,
+        11,
+        13,
+        7
+      ]
+    },
+    "externalRetrievals": [
+      {
+        "store": "Forex",
+        "fields": [
+          "Currency",
+          "TargetCurrency"
+        ],
+        "joinedMeasure": [],
+        "condition": "`TargetCurrency` = ZAR",
+        "retrievalId": 0,
+        "resultSizes": [
+          6
+        ],
+        "timingInfo": {
+          "startTime": [
+            0
+          ],
+          "elapsedTime": [
+            1
+          ]
+        }
+      }
+    ],
+    "externalDependencies": {
+      "0": [
+        0
+      ],
+      "7": [
+        0
+      ],
+      "9": [
+        0
+      ],
+      "11": [
+        0
+      ],
+      "13": [
+        0
+      ]
+    },
+    "queryFilters": [
+      {
+        "id": 0,
+        "description": "CubeFilter#1212813 with SubCubeProperties [grantedMeasures=ALL, grantedMembers=ALL]"
+      }
+    ],
+    "querySummary": {
+      "measures": [
+        "delta.SUM"
+      ],
+      "totalRetrievals": 16,
+      "retrievalsCountByType": {
+        "ExternalDatabaseRetrieval": 1,
+        "PrimitiveAnalysisAggregationRetrieval": 5,
+        "PartialPrimitiveAggregatesRetrieval": 1,
+        "PrimitiveResultsMerger": 5,
+        "RangeSharingPrimitiveAggregatesRetrieval": 4
+      },
+      "partitioningCountByType": {
+        "value(AsOfDate) | hash8(TradeId)": 5,
+        "Constant partitioning": 10
+      },
+      "resultSizeByPartitioning": {
+        "value(AsOfDate) | hash8(TradeId)": 0,
+        "Constant partitioning": 165
+      },
+      "partialProviders": [
+        "PartialProvider-2"
+      ],
+      "totalExternalResultSize": 6
+    }
+  }
+]
