@@ -71,11 +71,14 @@ export function App(): JSX.Element {
       }
       rawJson = await queryServer(input);
     } else if (mode === InputMode.V1) {
-      const v1Collection = await parseMultiV1(validateString(input), (currentLine, lineCount) => {
-        if (statusLine) {
-          statusLine(`Processed ${currentLine} lines out of ${lineCount}`);
+      const v1Collection = await parseMultiV1(
+        validateString(input),
+        (currentLine, lineCount) => {
+          if (statusLine) {
+            statusLine(`Processed ${currentLine} lines out of ${lineCount}`);
+          }
         }
-      });
+      );
       rawJson = [];
       for (const v1 of v1Collection) {
         const { errors, result } = convertToV2(v1);
