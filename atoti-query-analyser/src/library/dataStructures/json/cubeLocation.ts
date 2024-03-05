@@ -1,6 +1,7 @@
 import {
   validateList,
   validateObject,
+  validatePath,
   validateString,
 } from "./validatingUtils";
 
@@ -8,7 +9,7 @@ export interface CubeLocation {
   dimension: string;
   hierarchy: string;
   level: string[];
-  path: string[];
+  path: (string | string[])[];
 }
 
 // Reason: `validate...()` function
@@ -24,6 +25,6 @@ export function validateLocation(rawLocation: any): CubeLocation {
     dimension: validateString(rawLocation.dimension),
     hierarchy: validateString(rawLocation.hierarchy),
     level: validateList(rawLocation.level, validateString),
-    path: validateList(rawLocation.path, validateString),
+    path: validateList(rawLocation.path, validatePath),
   };
 }

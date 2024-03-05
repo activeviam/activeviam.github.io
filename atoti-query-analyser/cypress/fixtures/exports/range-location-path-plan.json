@@ -1,0 +1,3290 @@
+{"data":  [
+  {
+    "planInfo": {
+      "pivotType": "ActivePivotVersion",
+      "pivotId": "EquityDerivativesCube",
+      "epoch": "1999",
+      "branch": "master",
+      "retrieverType": "ActivePivotAggregatesRetriever",
+      "mdxPass": "SelectPass_0",
+      "contextValues": {
+        "IBranch": "null",
+        "ISubCubeProperties": "null",
+        "IAsOfEpoch": "null",
+        "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false, queryPlanCycleDetection=true]",
+        "IQueriesResultLimit": "QueriesResultLimit [transientLimit=5000000, intermediateLimit=5000000]"
+      },
+      "rangeSharing": 1000000,
+      "missedPrefetchBehavior": "WARN",
+      "aggregatesCache": "capacity=1000, size=8",
+      "globalTimings": {
+        "executionContextCreationTime": 0,
+        "finalizationTime": 4,
+        "planningTime": 1,
+        "queryExecutionTime": 3
+      },
+      "continuous": false
+    },
+    "aggregateRetrievals": [
+      {
+        "retrievalId": 0,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "USD"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "Rate_fromStore_Forex__#__0__#__equity-derivatives",
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            0
+          ],
+          "startTime": [
+            2
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 1,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveResultsMerger",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "USD"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            2
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 2,
+        "partialProviderName": "N/A",
+        "type": "RangeSharingPrimitiveAggregatesRetrieval",
+        "partitioning": "value(AsOfDate) | hash8(TradeId)",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "USD"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2,
+            2,
+            1,
+            2,
+            2,
+            2,
+            1,
+            0
+          ],
+          "elapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 3,
+        "partialProviderName": "N/A",
+        "type": "RangeSharingPrimitiveAggregatesRetrieval",
+        "partitioning": "value(AsOfDate) | hash8(TradeId)",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          6,
+          6,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          6,
+          6,
+          6,
+          0,
+          0,
+          0,
+          0,
+          6,
+          6
+        ],
+        "timingInfo": {
+          "startTime": [
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2,
+            1,
+            2,
+            2,
+            1,
+            1,
+            0
+          ],
+          "elapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 4,
+        "partialProviderName": "PartialProvider-2",
+        "type": "PartialPrimitiveAggregatesRetrieval",
+        "partitioning": "value(AsOfDate) | hash8(TradeId)",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              [
+                "LISTED",
+                "OTC"
+              ],
+              "*"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          22,
+          23,
+          24,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          22,
+          23,
+          23,
+          0,
+          0,
+          0,
+          0,
+          24,
+          22
+        ],
+        "timingInfo": {
+          "startTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "executionContextStartTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "executionContextElapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "elapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 5,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAggregatesCacheRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            0
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 6,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            0
+          ],
+          "startTime": [
+            0
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 7,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveResultsMerger",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          6
+        ],
+        "timingInfo": {
+          "startTime": [
+            2
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 8,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "Rate_fromStore_Forex__#__0__#__equity-derivatives",
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          6
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            0
+          ],
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 9,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAggregatesCacheRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            0
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 10,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            0
+          ],
+          "startTime": [
+            0
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 11,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveResultsMerger",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          6
+        ],
+        "timingInfo": {
+          "startTime": [
+            2
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 12,
+        "partialProviderName": "N/A",
+        "type": "RangeSharingPrimitiveAggregatesRetrieval",
+        "partitioning": "value(AsOfDate) | hash8(TradeId)",
+        "location": [
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          6,
+          6,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          6,
+          6,
+          6,
+          0,
+          0,
+          0,
+          0,
+          6,
+          6
+        ],
+        "timingInfo": {
+          "startTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            2,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          "elapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 13,
+        "partialProviderName": "PartialProvider-2",
+        "type": "PartialPrimitiveAggregatesRetrieval",
+        "partitioning": "value(AsOfDate) | hash8(TradeId)",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          12,
+          12,
+          12,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          12,
+          12,
+          12,
+          0,
+          0,
+          0,
+          0,
+          12,
+          12
+        ],
+        "timingInfo": {
+          "startTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "executionContextStartTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "executionContextElapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "elapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 14,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "EUR"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "Rate_fromStore_Forex__#__0__#__equity-derivatives",
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            0
+          ],
+          "startTime": [
+            2
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 15,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveResultsMerger",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "EUR"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            2
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 16,
+        "partialProviderName": "N/A",
+        "type": "RangeSharingPrimitiveAggregatesRetrieval",
+        "partitioning": "value(AsOfDate) | hash8(TradeId)",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "EUR"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2,
+            2,
+            1,
+            2,
+            2,
+            2,
+            1,
+            0
+          ],
+          "elapsedTime": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 17,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAggregatesCacheRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              [
+                "LISTED",
+                "OTC"
+              ],
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          4
+        ],
+        "timingInfo": {
+          "startTime": [
+            0
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 18,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              [
+                "LISTED",
+                "OTC"
+              ],
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          4
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            0
+          ],
+          "startTime": [
+            0
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 19,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveResultsMerger",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              [
+                "LISTED",
+                "OTC"
+              ],
+              "*"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          24
+        ],
+        "timingInfo": {
+          "startTime": [
+            2
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 20,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAggregatesCacheRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          2
+        ],
+        "timingInfo": {
+          "startTime": [
+            0
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 21,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          2
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            0
+          ],
+          "startTime": [
+            0
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 22,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveResultsMerger",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          }
+        ],
+        "measures": [
+          "contributors.COUNT",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          12
+        ],
+        "timingInfo": {
+          "startTime": [
+            2
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 23,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "USD"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "pnl.FOREX"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 24,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "USD"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "MULTIPLY(pnl.SUM;Rate_fromStore_Forex)__#__0__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 25,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "pnl.FOREX"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 26,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "MULTIPLY(pnl.SUM;Rate_fromStore_Forex)__#__0__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          6
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 27,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "pnl.FOREX"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          6
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 28,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "pnl.FOREX"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 29,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "MULTIPLY(pnl.SUM;Rate_fromStore_Forex)__#__0__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          6
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 30,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "Rate_fromStore_Forex__#__0__#__equity-derivatives",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          6
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            0
+          ],
+          "startTime": [
+            2
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 31,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "EUR"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "pnl.FOREX"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 32,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              "LISTED",
+              "FUTURE"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "EUR"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "MULTIPLY(pnl.SUM;Rate_fromStore_Forex)__#__0__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 33,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              [
+                "LISTED",
+                "OTC"
+              ],
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "pnl.FOREX"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          4
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 34,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              [
+                "LISTED",
+                "OTC"
+              ],
+              "*"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "MULTIPLY(pnl.SUM;Rate_fromStore_Forex)__#__0__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          24
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 35,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType",
+              "ProductName"
+            ],
+            "path": [
+              "AllMember",
+              [
+                "LISTED",
+                "OTC"
+              ],
+              "*"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "Rate_fromStore_Forex__#__0__#__equity-derivatives",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          24
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            0
+          ],
+          "startTime": [
+            2
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 36,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "pnl.FOREX"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          2
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 37,
+        "partialProviderName": "N/A",
+        "type": "PostProcessedAggregatesRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "MULTIPLY(pnl.SUM;Rate_fromStore_Forex)__#__0__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          12
+        ],
+        "timingInfo": {
+          "startTime": [
+            3
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      },
+      {
+        "retrievalId": 38,
+        "partialProviderName": "N/A",
+        "type": "PrimitiveAnalysisAggregationRetrieval",
+        "partitioning": "Constant partitioning",
+        "location": [
+          {
+            "dimension": "Underlyings",
+            "hierarchy": "Products",
+            "level": [
+              "ALL",
+              "ProductType"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Currency",
+            "hierarchy": "Currency",
+            "level": [
+              "ALL",
+              "Currency"
+            ],
+            "path": [
+              "AllMember",
+              "*"
+            ]
+          },
+          {
+            "dimension": "Time",
+            "hierarchy": "HistoricalDates",
+            "level": [
+              "AsOfDate"
+            ],
+            "path": [
+              "2023-03-16"
+            ]
+          },
+          {
+            "dimension": "TargetCurrency",
+            "hierarchy": "TargetCurrency",
+            "level": [
+              "TargetCurrency"
+            ],
+            "path": [
+              "ZAR"
+            ]
+          }
+        ],
+        "measures": [
+          "Rate_fromStore_Forex__#__0__#__equity-derivatives",
+          "pnl.SUM__#__1__#__equity-derivatives"
+        ],
+        "filterId": 0,
+        "measureProvider": "SimpleMeasuresProvider",
+        "resultSizes": [
+          12
+        ],
+        "timingInfo": {
+          "aggregationProcedureTime": [
+            0
+          ],
+          "startTime": [
+            2
+          ],
+          "elapsedTime": [
+            0
+          ]
+        },
+        "underlyingDataNodes": []
+      }
+    ],
+    "dependencies": {
+      "-1": [
+        0,
+        33,
+        36,
+        5,
+        8,
+        9,
+        14,
+        17,
+        20,
+        23,
+        25,
+        27,
+        28,
+        31
+      ],
+      "0": [
+        1
+      ],
+      "1": [
+        2
+      ],
+      "2": [
+        3
+      ],
+      "3": [
+        4
+      ],
+      "5": [
+        6
+      ],
+      "6": [
+        7
+      ],
+      "7": [
+        3
+      ],
+      "8": [
+        7
+      ],
+      "9": [
+        10
+      ],
+      "10": [
+        11
+      ],
+      "11": [
+        12
+      ],
+      "12": [
+        13
+      ],
+      "14": [
+        15
+      ],
+      "15": [
+        16
+      ],
+      "16": [
+        3
+      ],
+      "17": [
+        18
+      ],
+      "18": [
+        19
+      ],
+      "19": [
+        4
+      ],
+      "20": [
+        21
+      ],
+      "21": [
+        22
+      ],
+      "22": [
+        13
+      ],
+      "23": [
+        0,
+        24
+      ],
+      "24": [
+        0
+      ],
+      "25": [
+        26,
+        5
+      ],
+      "26": [
+        8
+      ],
+      "27": [
+        8,
+        26
+      ],
+      "28": [
+        9,
+        29
+      ],
+      "29": [
+        30
+      ],
+      "30": [
+        11
+      ],
+      "31": [
+        32,
+        14
+      ],
+      "32": [
+        14
+      ],
+      "33": [
+        17,
+        34
+      ],
+      "34": [
+        35
+      ],
+      "35": [
+        19
+      ],
+      "36": [
+        37,
+        20
+      ],
+      "37": [
+        38
+      ],
+      "38": [
+        22
+      ]
+    },
+    "externalRetrievals": [
+      {
+        "store": "Forex",
+        "fields": [
+          "Currency",
+          "TargetCurrency"
+        ],
+        "joinedMeasure": [
+          "Rate_fromStore_Forex__#__0__#__equity-derivatives"
+        ],
+        "condition": "AND(`Currency` = USD, `TargetCurrency` = ZAR)",
+        "retrievalId": 0,
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            0
+          ],
+          "elapsedTime": [
+            1
+          ]
+        }
+      },
+      {
+        "store": "Forex",
+        "fields": [
+          "Currency",
+          "TargetCurrency"
+        ],
+        "joinedMeasure": [
+          "Rate_fromStore_Forex__#__0__#__equity-derivatives"
+        ],
+        "condition": "`TargetCurrency` = ZAR",
+        "retrievalId": 1,
+        "resultSizes": [
+          6
+        ],
+        "timingInfo": {
+          "startTime": [
+            0
+          ],
+          "elapsedTime": [
+            1
+          ]
+        }
+      },
+      {
+        "store": "Forex",
+        "fields": [
+          "Currency",
+          "TargetCurrency"
+        ],
+        "joinedMeasure": [
+          "Rate_fromStore_Forex__#__0__#__equity-derivatives"
+        ],
+        "condition": "AND(`Currency` = EUR, `TargetCurrency` = ZAR)",
+        "retrievalId": 2,
+        "resultSizes": [
+          1
+        ],
+        "timingInfo": {
+          "startTime": [
+            0
+          ],
+          "elapsedTime": [
+            0
+          ]
+        }
+      }
+    ],
+    "externalDependencies": {
+      "0": [
+        0
+      ],
+      "18": [
+        1
+      ],
+      "35": [
+        1
+      ],
+      "21": [
+        1
+      ],
+      "38": [
+        1
+      ],
+      "6": [
+        1
+      ],
+      "8": [
+        1
+      ],
+      "10": [
+        1
+      ],
+      "30": [
+        1
+      ],
+      "14": [
+        2
+      ]
+    },
+    "queryFilters": [
+      {
+        "id": 0,
+        "description": "CubeFilter#1212813 with SubCubeProperties [grantedMeasures=ALL, grantedMembers=ALL]"
+      }
+    ],
+    "querySummary": {
+      "measures": [
+        "contributors.COUNT",
+        "MULTIPLY(pnl.SUM;Rate_fromStore_Forex)__#__0__#__equity-derivatives",
+        "Rate_fromStore_Forex__#__0__#__equity-derivatives",
+        "pnl.SUM__#__1__#__equity-derivatives",
+        "pnl.FOREX"
+      ],
+      "totalRetrievals": 42,
+      "retrievalsCountByType": {
+        "ExternalDatabaseRetrieval": 3,
+        "PostProcessedAggregatesRetrieval": 13,
+        "PrimitiveAnalysisAggregationRetrieval": 10,
+        "PartialPrimitiveAggregatesRetrieval": 2,
+        "PrimitiveResultsMerger": 6,
+        "PrimitiveAggregatesCacheRetrieval": 4,
+        "RangeSharingPrimitiveAggregatesRetrieval": 4
+      },
+      "partitioningCountByType": {
+        "value(AsOfDate) | hash8(TradeId)": 6,
+        "Constant partitioning": 33
+      },
+      "resultSizeByPartitioning": {
+        "value(AsOfDate) | hash8(TradeId)": 0,
+        "Constant partitioning": 182
+      },
+      "partialProviders": [
+        "PartialProvider-2"
+      ],
+      "totalExternalResultSize": 8
+    }
+  }
+]}
