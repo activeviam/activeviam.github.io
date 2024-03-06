@@ -54,15 +54,24 @@ function backgroundColor(d: D3Node) {
 // update functions allows to modify node or links graphic characteristics
 // updateGraph is called when D3 clock ticks, and update nodes and links
 
+function linkColor(d: D3Link, minCriticalScore: number) {
+  const normalizedCriticalScore =
+    minCriticalScore === 1
+      ? 1
+      : (d.criticalScore - minCriticalScore) / (1 - minCriticalScore);
+  return `hsl(${120 * (1 - normalizedCriticalScore)}, 100%, 40%)`;
+}
+
 /**
  * Setup properties of the SVG element corresponding to the graph edge.
  * */
 function enterLink(
-  selection: Selection<SVGLineElement, D3Link, null | BaseType, unknown>
+  selection: Selection<SVGLineElement, D3Link, null | BaseType, unknown>,
+  minCriticalScore: number
 ) {
   selection
     .attr("stroke-width", 6)
-    .style("stroke", (d) => (d.critical ? "#b30000" : "#1B1978"))
+    .style("stroke", (d) => linkColor(d, minCriticalScore))
     .style("opacity", ".8");
 }
 

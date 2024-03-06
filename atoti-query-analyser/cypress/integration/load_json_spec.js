@@ -5,6 +5,8 @@ describe("Works with JSON inputs", () => {
     "larger-distributed-query.json",
     "larger-distribution-query2.json",
     "query-with-external-retrievals.json",
+    "range-location-path-plan.json",
+    "no-data-key-format.json",
   ].forEach((file) => {
     it(`process ${file}`, () => {
       cy.visit("http://localhost:3000");
