@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Details.css";
 import { extractWords } from "library/utilities/textUtils";
 import { CubeLocation } from "library/dataStructures/json/cubeLocation";
@@ -106,25 +106,30 @@ function PlainView({ value }: { value: unknown }) {
  * */
 function ListView({ title, list }: { title: string; list: unknown[] }) {
   const MAX_ELEMENTS = 10;
+  const [truncated, setTruncated] = useState(true);
+
   return (
     <li>
       {title}:
       {list.length === 0 ? (
         <span className="nullish-content"> (no items)</span>
       ) : (
-        <ul>
+        <ul style={{ overflowY: "auto", maxHeight: truncated ? "none" : 200 }}>
           {list
-            .filter((_, idx) => idx < MAX_ELEMENTS)
+            .filter((_, idx) => !truncated || idx < MAX_ELEMENTS)
             .map((item) => (
               <li key={`__element__${item}`}>
                 <PlainView value={item} />
               </li>
             ))}
-          {list.length > MAX_ELEMENTS && (
+          {list.length > MAX_ELEMENTS && truncated && (
             <li key="__ETC__">
-              <span className="nullish-content">
+              <button
+                className="nullish-content button-as-link"
+                onClick={() => setTruncated(false)}
+              >
                 And {list.length - MAX_ELEMENTS} more items
-              </span>
+              </button>
             </li>
           )}
         </ul>
