@@ -36,7 +36,6 @@ import { useWindowSize } from "../../hooks/windowSize";
 import { updateGraph } from "../../library/graphView/graphHelpers";
 import { D3DragEvent, D3ZoomEvent, ZoomBehavior } from "d3";
 
-
 interface DataModel {
   graph: RetrievalGraph;
   selection: VertexSelection;
