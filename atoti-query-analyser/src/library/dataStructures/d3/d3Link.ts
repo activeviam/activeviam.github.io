@@ -4,5 +4,5 @@ export interface D3Link {
   source: D3Node;
   target: D3Node;
   id: string;
-  critical: boolean;
+  criticalScore: number;
 }

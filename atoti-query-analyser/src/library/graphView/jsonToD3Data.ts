@@ -1,15 +1,18 @@
 import { nodeDepths } from "../graphProcessors/fillTimingInfo";
-import { criticalPath } from "../graphProcessors/criticalPath";
 import { addClustersToNodes } from "../graphProcessors/cluster";
 import { abbreviation } from "../utilities/textUtils";
 import {
   AggregateRetrievalKind,
+  RetrievalEdge,
   RetrievalGraph,
   RetrievalVertex,
   VirtualRetrievalKind,
 } from "../dataStructures/json/retrieval";
 import { QueryPlan } from "../dataStructures/processing/queryPlan";
-import { VertexSelection } from "../dataStructures/processing/selection";
+import {
+  EdgeSelection,
+  VertexSelection,
+} from "../dataStructures/processing/selection";
 import { requireNonNull } from "../utilities/util";
 import { D3Node } from "../dataStructures/d3/d3Node";
 import { D3Link } from "../dataStructures/d3/d3Link";
@@ -38,7 +41,7 @@ type IntermediateD3Link = Omit<Omit<D3Link, "source">, "target"> & {
  * */
 function getNodes(
   graph: RetrievalGraph,
-  info: { selection: VertexSelection },
+  info: { vertexSelection: VertexSelection; edgeSelection: EdgeSelection },
   depths: Map<RetrievalVertex, number>
 ): IntermediateD3Node[] {
   // Creates a Set containing all nodes present in the dependencies, then converts
@@ -62,7 +65,7 @@ function getNodes(
   return Array.from(graph.getVertices())
     .filter(
       (vertex) =>
-        info.selection.has(vertex.getUUID()) &&
+        info.vertexSelection.has(vertex.getUUID()) &&
         vertex.getMetadata().$kind !== VirtualRetrievalKind
     )
     .map((vertex) => {
@@ -105,28 +108,47 @@ function getNodes(
     });
 }
 
+function linkId(edge: RetrievalEdge) {
+  return `${edge.getBegin().getUUID()}#${edge.getEnd().getUUID()}`;
+}
+
 /**
  * Builds d3js representation of graph edges.
  * */
 function getLinks(
   graph: RetrievalGraph,
-  info: { selection: VertexSelection }
+  info: { vertexSelection: VertexSelection; edgeSelection: EdgeSelection }
 ): IntermediateD3Link[] {
+  const edgeSelectionTree = new Map<UUID, Set<UUID>>();
+  for (const edge of Array.from(info.edgeSelection)) {
+    if (!edgeSelectionTree.has(edge.source)) {
+      edgeSelectionTree.set(edge.source, new Set<UUID>());
+    }
+    (edgeSelectionTree.get(edge.source) as Set<UUID>).add(edge.target);
+  }
+  const isEdgeSelected = (source: UUID, target: UUID) => {
+    const subTree = edgeSelectionTree.get(source);
+    return Boolean(subTree && subTree.has(target));
+  };
+
   const filteredGraph = graph.filterVertices(
     (vertex) =>
       vertex.getMetadata().$kind !== VirtualRetrievalKind &&
-      info.selection.has(vertex.getUUID())
+      info.vertexSelection.has(vertex.getUUID())
   );
 
   const links: IntermediateD3Link[] = [];
   filteredGraph.getVertices().forEach((source) =>
     filteredGraph.getOutgoingEdges(source).forEach((edge) => {
       const target = edge.getEnd();
+      if (!isEdgeSelected(source.getUUID(), target.getUUID())) {
+        return;
+      }
       links.push({
         source: source.getUUID(),
         target: target.getUUID(),
-        id: `${source.getUUID()}#${target.getUUID()}`,
-        critical: false, // Set later when computing the critical path
+        id: linkId(edge),
+        criticalScore: edge.getMetadata().criticalScore,
       });
     })
   );
@@ -164,17 +186,17 @@ function normalizeIds(
 /**
  * Given a query plan, build data for d3js.
  */
-export function buildD3(query: QueryPlan, selection: VertexSelection) {
-  const info = { selection };
+export function buildD3(
+  query: QueryPlan,
+  vertexSelection: VertexSelection,
+  edgeSelection: EdgeSelection
+) {
+  const info = { vertexSelection, edgeSelection };
   const { graph } = query;
-  const depths = nodeDepths(graph, selection);
+  const depths = nodeDepths(graph, vertexSelection);
   const nodes = getNodes(graph, info, depths);
   const links = getLinks(graph, info);
-  const criticalLinks = criticalPath(graph, selection);
-  links.forEach((link) => {
-    link.critical = criticalLinks.has(link.id);
-  });
-  const clusters = addClustersToNodes(query, info.selection);
+  const clusters = addClustersToNodes(query, vertexSelection);
   nodes.forEach((node) => {
     node.clusterId = requireNonNull(clusters.get(node.id));
   });
