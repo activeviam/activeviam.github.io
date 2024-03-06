@@ -26,6 +26,7 @@
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
     "eslint-plugin-cypress": "^2.12.1",
+    "file-saver": "^2.0.5",
     "fuzzy-search": "^3.2.1",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
@@ -64,6 +65,7 @@
     ]
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.5",
     "cypress": "^4.5.0",
     "eslint": "^8.29.0",
     "eslint-config-airbnb-typescript": "^17.0.0",

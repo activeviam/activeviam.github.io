@@ -1,5 +1,13 @@
-import { applyOnDAG } from "../dataStructures/common/graph";
 import {
+  AGraphObserver,
+  applyOnDAG,
+  dfs,
+  IGraph,
+} from "../dataStructures/common/graph";
+import {
+  ARetrieval,
+  RetrievalEdge,
+  RetrievalEdgeMetadata,
   RetrievalGraph,
   RetrievalVertex,
   VirtualRetrievalKind,
@@ -92,4 +100,98 @@ export function criticalPath(
   }
 
   return criticalLinks;
+}
+
+/**
+ * Assigns critical score to the edges.
+ * */
+export function computeEdgeCriticalScore(graph: RetrievalGraph) {
+  const virtualSource = graph.getVertexByLabel("virtualSource");
+
+  const vertexCriticalScore = applyOnDAG(
+    graph,
+    virtualSource,
+    (vertex, children, childrenValues: (child: RetrievalVertex) => number) => {
+      const elapsedTime = findElapsedTime(vertex);
+
+      return (
+        elapsedTime +
+        Array.from(children)
+          .map((child) => childrenValues(child))
+          .reduce((acc, x) => Math.max(acc, x), 0)
+      );
+    }
+  );
+
+  graph.getVertices().forEach((vertex) => {
+    const edges = Array.from(graph.getOutgoingEdges(vertex)).sort(
+      (lhs, rhs) =>
+        requireNonNull(vertexCriticalScore.get(lhs.getEnd())) -
+        requireNonNull(vertexCriticalScore.get(rhs.getEnd()))
+    );
+
+    if (edges.length <= 1) {
+      edges.forEach((edge) => (edge.getMetadata().criticalScore = 1));
+    } else {
+      edges.forEach(
+        (edge, idx) =>
+          (edge.getMetadata().criticalScore = (idx + 1) / edges.length)
+      );
+    }
+  });
+}
+
+/**
+ * Selects vertices from the graph that are reachable from "virtualSource" after deleting edges with low criticalScore.
+ */
+export function selectCriticalSubgraph(
+  graph: RetrievalGraph,
+  minCriticalScore: number
+): VertexSelection {
+  const result: VertexSelection = new Set();
+
+  class FilteredGraph
+    implements
+      IGraph<ARetrieval, RetrievalEdgeMetadata, RetrievalVertex, RetrievalEdge>
+  {
+    constructor(private underlying: RetrievalGraph) {}
+
+    getOutgoingEdges(vertex: RetrievalVertex): Set<RetrievalEdge> {
+      return new Set(
+        Array.from(this.underlying.getOutgoingEdges(vertex)).filter(
+          (edge) => edge.getMetadata().criticalScore >= minCriticalScore
+        )
+      );
+    }
+
+    getVertexCount(): number {
+      return this.underlying.getVertexCount();
+    }
+
+    getVertices(): Set<RetrievalVertex> {
+      return this.underlying.getVertices();
+    }
+  }
+
+  class VertexCollector extends AGraphObserver<
+    ARetrieval,
+    RetrievalEdgeMetadata,
+    RetrievalVertex,
+    RetrievalEdge,
+    FilteredGraph
+  > {
+    onVertexEnter(vertex: RetrievalVertex) {
+      if (vertex.getMetadata().$kind !== "VirtualRetrieval") {
+        result.add(vertex.getUUID());
+      }
+    }
+  }
+
+  dfs(
+    new FilteredGraph(graph),
+    graph.getVertexByLabel("virtualSource"),
+    new VertexCollector()
+  );
+
+  return result;
 }

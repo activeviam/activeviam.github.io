@@ -71,17 +71,24 @@ export type CondensedRetrieval = ARetrieval & {
 
 export class RetrievalVertex extends Vertex<ARetrieval> {}
 
+export type RetrievalEdgeMetadata = {
+  criticalScore: number;
+};
+
 export class RetrievalEdge extends Edge<
   ARetrieval,
-  undefined,
+  RetrievalEdgeMetadata,
   RetrievalVertex
 > {}
 
-export class RetrievalGraph extends AdjacencyListGraph<ARetrieval, undefined> {}
+export class RetrievalGraph extends AdjacencyListGraph<
+  ARetrieval,
+  RetrievalEdgeMetadata
+> {}
 
 export class ARetrievalGraphObserver extends AGraphObserver<
   ARetrieval,
-  undefined,
+  RetrievalEdgeMetadata,
   RetrievalVertex,
   RetrievalEdge,
   RetrievalGraph

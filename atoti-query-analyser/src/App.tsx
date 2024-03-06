@@ -8,7 +8,7 @@ import { Input, InputMode, InputType } from "./components/Input/Input";
 import { VertexSelection } from "./library/dataStructures/processing/selection";
 import { queryServer, ServerInput } from "./library/inputProcessors/server";
 import { GoBackToParentQueryButton } from "./components/NavBar/GoBackToParentQueryButton";
-import { convertToV2, parseV1 } from "./library/inputProcessors/v1tov2";
+import { convertToV2, parseMultiV1 } from "./library/inputProcessors/v1tov2";
 import {
   preprocessQueryPlan,
   QueryPlan,
@@ -54,11 +54,15 @@ export function App(): JSX.Element {
     mode: InputMode,
     type: InputType,
     input: string | ServerInput,
-    showError: (error: Error) => void
+    showError: (error: Error) => void,
+    statusLine?: (message: string) => void
   ) => {
     let rawJson: unknown;
     if (mode === InputMode.JSON) {
-      rawJson = JSON.parse(validateString(input)).data;
+      const parsedJson = JSON.parse(validateString(input));
+      rawJson = parsedJson.hasOwnProperty("data")
+        ? parsedJson.data
+        : parsedJson;
     } else if (mode === InputMode.URL) {
       if (typeof input !== "object") {
         throw new Error(
@@ -67,11 +71,20 @@ export function App(): JSX.Element {
       }
       rawJson = await queryServer(input);
     } else if (mode === InputMode.V1) {
-      const { errors, result } = convertToV2(
-        await parseV1(validateString(input), () => {})
+      const v1Collection = await parseMultiV1(
+        validateString(input),
+        (currentLine, lineCount) => {
+          if (statusLine) {
+            statusLine(`Processed ${currentLine} lines out of ${lineCount}`);
+          }
+        }
       );
-      rawJson = [result];
-      errors.forEach(showError);
+      rawJson = [];
+      for (const v1 of v1Collection) {
+        const { errors, result } = convertToV2(v1);
+        (rawJson as unknown[]).push(result);
+        errors.forEach(showError);
+      }
     }
 
     const queryPlan = preprocessQueryPlan(rawJson);
