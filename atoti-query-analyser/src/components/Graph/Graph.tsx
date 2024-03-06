@@ -1,15 +1,33 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { untangle } from "../../library/dataStructures/d3/d3Graph";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
 import "./Drawer.css";
+import {
+  computeEdgeCriticalScore,
+  selectCriticalSubgraph,
+} from "../../library/graphProcessors/criticalPath";
+import { UUID } from "../../library/utilities/uuid";
+import { useNotificationContext } from "../Notification/NotificationWrapper";
+import {
+  CondensedRetrieval,
+  RetrievalGraph,
+} from "../../library/dataStructures/json/retrieval";
+import { condenseFastRetrievals } from "../../library/graphProcessors/condenseFastRetrievals";
 import { Link } from "./Link";
 import { Node } from "./Node";
-import { Button, ButtonGroup, Overlay } from "react-bootstrap";
+import { Button, ButtonGroup, Form, Overlay } from "react-bootstrap";
 import { Menu } from "./Menu";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
-import { VertexSelection } from "../../library/dataStructures/processing/selection";
+import {
+  EdgeSelection,
+  VertexSelection,
+} from "../../library/dataStructures/processing/selection";
 import { Measure } from "../../library/dataStructures/json/measure";
-import { filterByMeasures } from "../../library/graphProcessors/selection";
+import {
+  buildDefaultSelection,
+  filterByMeasures,
+} from "../../library/graphProcessors/selection";
 import { buildD3 } from "../../library/graphView/jsonToD3Data";
 import * as d3 from "d3";
 import _ from "lodash";
@@ -17,6 +35,11 @@ import { requireNonNull } from "../../library/utilities/util";
 import { useWindowSize } from "../../hooks/windowSize";
 import { updateGraph } from "../../library/graphView/graphHelpers";
 import { D3DragEvent, D3ZoomEvent, ZoomBehavior } from "d3";
+
+interface DataModel {
+  graph: RetrievalGraph;
+  selection: VertexSelection;
+}
 
 /**
  * This Reach component is responsible for retrieval graph visualization.
@@ -32,7 +55,7 @@ import { D3DragEvent, D3ZoomEvent, ZoomBehavior } from "d3";
  */
 export function Graph({
   query,
-  selection,
+  selection: selection0,
   changeGraph: changeGraph0,
 }: {
   query: QueryPlan;
@@ -46,25 +69,118 @@ export function Graph({
   const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
   const [epoch, setEpoch] = useState(0);
 
+  const [condenseFastRetrievalsFlag, setCondenseFastRetrievalsFlag] =
+    useState(false);
+  const [fastRetrievalMaxElapsedTimeMs, setFastRetrievalMaxElapsedTimeMs] =
+    useState(1);
+  const [fastRetrievalDrillthough, setFastRetrievalDrillthough] =
+    useState<VertexSelection>();
+  const originalData = useMemo<DataModel>(
+    () => ({
+      graph: query.graph,
+      selection: selection0,
+    }),
+    [query, selection0]
+  );
+  const effectiveData = useMemo(() => {
+    let { graph, selection } = originalData;
+
+    if (fastRetrievalDrillthough !== undefined) {
+      selection = fastRetrievalDrillthough;
+    } else if (condenseFastRetrievalsFlag) {
+      graph = condenseFastRetrievals(graph, fastRetrievalMaxElapsedTimeMs);
+      computeEdgeCriticalScore(graph);
+      selection = buildDefaultSelection([graph])[0];
+    }
+
+    return { graph, selection };
+  }, [
+    originalData,
+    condenseFastRetrievalsFlag,
+    fastRetrievalMaxElapsedTimeMs,
+    fastRetrievalDrillthough,
+  ]);
+  const onCondensedRetrievalDrillthrough = (retrieval: CondensedRetrieval) => {
+    const uuidMap = new Map(
+      Array.from(originalData.graph.getVertices()).map((vertex) => [
+        vertex.getMetadata(),
+        vertex.getUUID(),
+      ])
+    );
+
+    setFastRetrievalDrillthough(
+      new Set(
+        retrieval.underlyingRetrievals.map((underlying) =>
+          requireNonNull(uuidMap.get(underlying))
+        )
+      )
+    );
+  };
+
+  const [minCriticalScore, setMinCriticalScore] = useState(0.7);
+  const [selectCriticalSubgraphFlag, setSelectCriticalSubgraphFlag] =
+    useState(false);
+
   const windowSize = useWindowSize();
   const svgRef = useRef<SVGSVGElement | null>(null);
   const triggerRef = useRef(null);
   const zoomRef = useRef<ZoomBehavior<SVGSVGElement, unknown>>();
+  const notificationContext = useNotificationContext();
+
+  const [autoCriticalScoreFilterNotified, setAutoCriticalScoreFilterNotified] =
+    useState(false);
+  useEffect(() => {
+    if (
+      effectiveData.graph.getVertexCount() >= 100 &&
+      !autoCriticalScoreFilterNotified
+    ) {
+      setSelectCriticalSubgraphFlag(true);
+      setAutoCriticalScoreFilterNotified(true);
+      notificationContext?.newMessage(
+        "Graph filter",
+        "Since the retrieval graph is big, the critical score filter is applied. You can configure it in the menu.",
+        { bg: "info" }
+      );
+    }
+  }, [effectiveData, notificationContext, autoCriticalScoreFilterNotified]);
 
   const selectedRetrievals = useMemo(() => {
+    if (selectCriticalSubgraphFlag) {
+      return selectCriticalSubgraph(effectiveData.graph, minCriticalScore);
+    }
     if (selectedMeasures.length === 0) {
       return null;
     }
     return filterByMeasures({
-      graph: query.graph,
+      ...effectiveData,
       measures: selectedMeasures,
-      selection,
     });
-  }, [query, selectedMeasures, selection]);
+  }, [
+    effectiveData,
+    selectedMeasures,
+    selectCriticalSubgraphFlag,
+    minCriticalScore,
+  ]);
+
+  const edgeSelection: EdgeSelection = useMemo(() => {
+    return Array.from(effectiveData.graph.getVertices())
+      .flatMap((v) => Array.from(effectiveData.graph.getOutgoingEdges(v)))
+      .reduce((set, edge) => {
+        const sourceUUID = edge.getBegin().getUUID();
+        const targetUUID = edge.getEnd().getUUID();
+        if (
+          !selectCriticalSubgraphFlag ||
+          edge.getMetadata().criticalScore >= minCriticalScore
+        ) {
+          set.add({ source: sourceUUID, target: targetUUID });
+        }
+        return set;
+      }, new Set<{ source: UUID; target: UUID }>());
+  }, [effectiveData, selectCriticalSubgraphFlag, minCriticalScore]);
 
   useEffect(() => {
     setSelectedMeasures([]);
-  }, [query]);
+  }, [effectiveData]);
 
   const addMeasure = (measure: Measure) => {
     if (selectedMeasures.includes(measure)) {
@@ -101,6 +217,8 @@ export function Graph({
     clickNode(null);
     changeGraph0(id);
   };
+
+  const forceRef = useRef<d3.Simulation<D3Node, undefined>>();
 
   useEffect(() => {
     if (svgRef.current === null) {
@@ -191,6 +309,7 @@ export function Graph({
 
     const force = setupForceSimulation();
     setupDragging(force);
+    forceRef.current = force;
 
     const zoom = d3
       .zoom<SVGSVGElement, unknown>()
@@ -204,6 +323,8 @@ export function Graph({
 
     return () => {
       zoomRef.current = undefined;
+      forceRef.current = undefined;
+      force.stop();
     };
   }, [epoch, nodes, links]);
 
@@ -212,12 +333,24 @@ export function Graph({
       return;
     }
 
-    const d3data = buildD3(query, selectedRetrievals || selection);
+    const d3data = buildD3(
+      effectiveData.graph,
+      selectedRetrievals || effectiveData.selection,
+      edgeSelection
+    );
 
     setNodes(d3data.nodes);
     setLinks(d3data.links);
     setEpoch((e) => e + 1);
-  }, [query, selectedRetrievals, selection]);
+    clickNode(null);
+  }, [effectiveData, selectedRetrievals, edgeSelection]);
+
+  const onUntangle = () => {
+    untangle({ nodes, links });
+    if (forceRef.current !== undefined) {
+      forceRef.current.alphaTarget(0.3).restart();
+    }
+  };
 
   const zoomScaleBy = (factor: number) => {
     if (svgRef.current === null) {
@@ -242,7 +375,13 @@ export function Graph({
       >
         <g key={`e${epoch}`}>
           {links.map((link) => (
-            <Link link={link} key={link.id} />
+            <Link
+              link={link}
+              key={link.id}
+              minCriticalScore={
+                selectCriticalSubgraphFlag ? minCriticalScore : 0
+              }
+            />
           ))}
           {nodes.map((node) => (
             <Node
@@ -251,6 +390,9 @@ export function Graph({
               clickNode={clickNode}
               key={node.id}
               selected={selectedNodeId === node.id}
+              onCondensedRetrievalDrillthrough={
+                onCondensedRetrievalDrillthrough
+              }
             />
           ))}
         </g>
@@ -274,6 +416,60 @@ export function Graph({
               <Button onClick={() => zoomScaleBy(2)}>Zoom in</Button>
               <Button onClick={() => zoomScaleBy(0.5)}>Zoom out</Button>
             </ButtonGroup>
+            <Button onClick={onUntangle}>Untangle</Button>
+            <h5>Fast retrieval condensation</h5>
+            <Form>
+              <Form.Check
+                type="switch"
+                checked={condenseFastRetrievalsFlag}
+                onChange={(e) =>
+                  setCondenseFastRetrievalsFlag(e.target.checked)
+                }
+                label="Apply condensation"
+              />
+              <Form.Label>
+                Max elapsed time: {fastRetrievalMaxElapsedTimeMs}&nbsp;ms
+              </Form.Label>
+              <Form.Range
+                min={0}
+                max={20}
+                step={1}
+                value={fastRetrievalMaxElapsedTimeMs}
+                onChange={(e) =>
+                  setFastRetrievalMaxElapsedTimeMs(+e.target.value)
+                }
+              />
+              {fastRetrievalDrillthough && (
+                <Button onClick={() => setFastRetrievalDrillthough(undefined)}>
+                  Zoom out
+                </Button>
+              )}
+            </Form>
+            <h5>Critical score filter</h5>
+            <Form>
+              <Form.Check
+                type="switch"
+                checked={selectCriticalSubgraphFlag}
+                onChange={(e) =>
+                  setSelectCriticalSubgraphFlag(e.target.checked)
+                }
+                label="Enable filter"
+              />
+              {selectCriticalSubgraphFlag && (
+                <>
+                  <Form.Label>
+                    Minimal score: {minCriticalScore.toFixed(3)}
+                  </Form.Label>
+                  <Form.Range
+                    min={0}
+                    max={1}
+                    step="any"
+                    value={minCriticalScore}
+                    onChange={(e) => setMinCriticalScore(+e.target.value)}
+                  ></Form.Range>
+                </>
+              )}
+            </Form>
           </Menu>
         </div>
       </Overlay>

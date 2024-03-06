@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Details.css";
 import { extractWords } from "library/utilities/textUtils";
 import { CubeLocation } from "library/dataStructures/json/cubeLocation";
@@ -46,6 +46,18 @@ Values.defaultProps = {
 };
 
 /**
+ * Renders a part of a location path
+ * @param pathPart - part of the path to be displayed
+ */
+function renderPathPart(pathPart: string | string[]): string {
+  if (Array.isArray(pathPart)) {
+    return "[" + pathPart.join(", ") + "]";
+  } else {
+    return pathPart;
+  }
+}
+
+/**
  * React component that renders a list of {@link "library/dataStructures/json/cubeLocation"!CubeLocation}.
  * @param attributes - React JSX attributes
  * @param attributes.location - list of locations to be displayed.
@@ -62,7 +74,7 @@ function LocationView({ location }: { location: CubeLocation[] }) {
               {l.level.map((lev, i) => (
                 <li key={lev}>
                   <b>{lev + ": "}</b>
-                  {l.path[i]}
+                  {renderPathPart(l.path[i])}
                 </li>
               ))}
             </ul>
@@ -93,18 +105,33 @@ function PlainView({ value }: { value: unknown }) {
  * @param attributes.title - List title
  * */
 function ListView({ title, list }: { title: string; list: unknown[] }) {
+  const MAX_ELEMENTS = 10;
+  const [truncated, setTruncated] = useState(true);
+
   return (
     <li>
       {title}:
       {list.length === 0 ? (
         <span className="nullish-content"> (no items)</span>
       ) : (
-        <ul>
-          {list.map((item) => (
-            <li key={`${item}`}>
-              <PlainView value={item} />
+        <ul style={{ overflowY: "auto", maxHeight: truncated ? "none" : 200 }}>
+          {list
+            .filter((_, idx) => !truncated || idx < MAX_ELEMENTS)
+            .map((item) => (
+              <li key={`__element__${item}`}>
+                <PlainView value={item} />
+              </li>
+            ))}
+          {list.length > MAX_ELEMENTS && truncated && (
+            <li key="__ETC__">
+              <button
+                className="nullish-content button-as-link"
+                onClick={() => setTruncated(false)}
+              >
+                And {list.length - MAX_ELEMENTS} more items
+              </button>
             </li>
-          ))}
+          )}
         </ul>
       )}
     </li>
@@ -172,6 +199,17 @@ export function Details({
         .map(({ key, value }) => {
           if (key === "location") {
             return <LocationView location={value} key={key} />;
+          }
+          if (key === "underlyingRetrievals") {
+            return (
+              <ListView
+                key={key}
+                title={buildTitle(key)}
+                list={(value as ARetrieval[]).map(
+                  (retrieval) => `${retrieval.$kind} #${retrieval.retrievalId}`
+                )}
+              />
+            );
           }
           if (Array.isArray(value)) {
             return <ListView list={value} title={buildTitle(key)} key={key} />;

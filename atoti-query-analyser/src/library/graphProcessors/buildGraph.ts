@@ -7,6 +7,7 @@ import {
   VirtualRetrieval,
   VirtualRetrievalKind,
 } from "../dataStructures/json/retrieval";
+import { computeEdgeCriticalScore } from "./criticalPath";
 
 /**
  * Takes array of retrievals, verifies index consistency (no gaps, no repeats),
@@ -31,7 +32,10 @@ function processArrayOfRetrievals(
     });
 }
 
-function makeVirtualRetrieval({
+/**
+ * Creates a virtual retrieval.
+ */
+export function makeVirtualRetrieval({
   retrievalId,
   type,
 }: {
@@ -92,7 +96,7 @@ export function buildGraph(
         graph.createEdge(
           key < 0 ? virtualSource.getUUID() : aggregateRetrievalVertices[key],
           depVertices[dep],
-          undefined
+          { criticalScore: 1 }
         );
       });
     });
@@ -108,8 +112,12 @@ export function buildGraph(
       return;
     }
 
-    graph.createEdge(vertex.getUUID(), virtualTarget.getUUID(), undefined);
+    graph.createEdge(vertex.getUUID(), virtualTarget.getUUID(), {
+      criticalScore: 1,
+    });
   });
+
+  computeEdgeCriticalScore(graph);
 
   return graph;
 }

@@ -9,6 +9,10 @@ import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { Popover, Button, Overlay } from "react-bootstrap";
 import { FaTimes } from "react-icons/fa";
 import { Details } from "components/Details/Details";
+import {
+  CondensedRetrieval,
+  CondensedRetrievalKind,
+} from "../../library/dataStructures/json/retrieval";
 import { enterNode, updateNode } from "../../library/graphView/graphHelpers";
 import * as d3 from "d3";
 import { useOverlayContainer } from "../../hooks/overlayContainer";
@@ -33,11 +37,13 @@ const NodePopover = forwardRef(function NodePopover(
     clickNode,
     nodeRef,
     changeGraph,
+    condensedRetrievalDrillthrough,
   }: {
     node: D3Node;
     changeGraph: (childId: number) => void;
     clickNode: (id: number | null) => void;
     nodeRef: SVGElement | null;
+    condensedRetrievalDrillthrough: (retrieval: CondensedRetrieval) => void;
   },
   ref: ForwardedRef<HTMLDivElement>
 ) {
@@ -102,6 +108,17 @@ const NodePopover = forwardRef(function NodePopover(
           elapsedTime={elapsedTimes}
           metadata={metadata}
         />
+        {node.details.metadata.$kind === CondensedRetrievalKind ? (
+          <Button
+            onClick={() =>
+              condensedRetrievalDrillthrough(
+                node.details.metadata as CondensedRetrieval
+              )
+            }
+          >
+            Zoom in
+          </Button>
+        ) : null}
         {childrenIds
           ? childrenIds.map((childId) => (
               <>
@@ -142,11 +159,13 @@ export function Node({
   changeGraph,
   clickNode,
   selected,
+  onCondensedRetrievalDrillthrough,
 }: {
   node: D3Node;
   changeGraph: (childId: number) => void;
   clickNode: (id: number | null) => void;
   selected: boolean;
+  onCondensedRetrievalDrillthrough: (retrieval: CondensedRetrieval) => void;
 }) {
   const ref = useRef<SVGGElement>(null);
 
@@ -170,7 +189,13 @@ export function Node({
   return (
     <>
       <g
-        className={computeClasses(["node", selected ? "selected" : null])}
+        className={computeClasses([
+          "node",
+          selected ? "selected" : null,
+          node.details.metadata.$kind === CondensedRetrievalKind
+            ? "condensed"
+            : null,
+        ])}
         ref={ref}
       >
         {React.createElement(nodeElem, {
@@ -189,6 +214,7 @@ export function Node({
           clickNode={clickNode}
           node={node}
           nodeRef={ref.current}
+          condensedRetrievalDrillthrough={onCondensedRetrievalDrillthrough}
         />
       </Overlay>
     </>

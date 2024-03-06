@@ -251,7 +251,8 @@ type V1InfoKeyType =
   | "isContinuous"
   | "rangeSharing"
   | "missedPrefetchBehavior"
-  | "aggregatesCache";
+  | "aggregatesCache"
+  | "mdxPass";
 
 type V1Info = {
   contextValues: { [key: string]: string };
@@ -277,7 +278,9 @@ interface V1Structure {
  * Parse logs
  */
 async function parseV1(
-  input: string,
+  lines: string[],
+  lineBegin: number,
+  lineEnd: number,
   tickCallback: (currentLine: number, lineCount: number) => void
 ): Promise<V1Structure> {
   const result = await new Promise<V1Structure>((resolve) => {
@@ -303,11 +306,10 @@ async function parseV1(
     };
     accumulator.parents.push(accumulator.root);
 
-    const lines = input.split(/\n/);
-    let currentLine = 0;
+    let currentLine = lineBegin;
     (function loop() {
-      if (currentLine < lines.length) {
-        const to = Math.min(currentLine + 100, lines.length);
+      if (currentLine < lineEnd) {
+        const to = Math.min(currentLine + 73, lineEnd);
         parseLines(accumulator, lines, currentLine, to);
         currentLine = to;
         tickCallback(currentLine, lines.length);
@@ -325,6 +327,43 @@ async function parseV1(
     });
   });
   return result;
+}
+
+/**
+ * Parse logs with multiple GAQ explanations
+ */
+export async function parseMultiV1(
+  input: string,
+  tickCallback: (currentLine: number, lineCount: number) => void
+): Promise<V1Structure[]> {
+  const lines = input.split(/\n/);
+  const sectionHeaders = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].trim() === "GetAggregatesQuery explanation") {
+      sectionHeaders.push(i);
+    }
+  }
+  if (sectionHeaders.length === 0) {
+    // No begin marker found, considering as single GAQ
+    sectionHeaders.push(0);
+  }
+
+  sectionHeaders.push(lines.length);
+  const parts = [];
+  for (let i = 1; i < sectionHeaders.length; ++i) {
+    parts.push(
+      await parseV1(
+        lines,
+        sectionHeaders[i - 1],
+        sectionHeaders[i],
+        tickCallback
+      ).then((part) => {
+        part.info.mdxPass = `GAQ_${i - 1}`;
+        return part;
+      })
+    );
+  }
+  return parts;
 }
 
 function parseSourceId(retrieval: V1Retrieval) {
@@ -839,5 +878,3 @@ export function convertToV2(v1Structure: V1Structure): {
     },
   };
 }
-
-export { parseV1 };
