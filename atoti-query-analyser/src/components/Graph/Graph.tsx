@@ -144,7 +144,7 @@ export function Graph({
   }, [effectiveData, notificationContext, autoCriticalScoreFilterNotified]);
 
   const selectedRetrievals = useMemo(() => {
-    if (selectCriticalSubgraphFlag) {
+    if (selectCriticalSubgraphFlag && !fastRetrievalDrillthough) {
       return selectCriticalSubgraph(effectiveData.graph, minCriticalScore);
     }
     if (selectedMeasures.length === 0) {
@@ -436,6 +436,7 @@ export function Graph({
                   setSelectCriticalSubgraphFlag(e.target.checked)
                 }
                 label="Enable filter"
+                disabled={Boolean(fastRetrievalDrillthough)}
               />
               {selectCriticalSubgraphFlag && (
                 <>
