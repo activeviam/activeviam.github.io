@@ -165,6 +165,7 @@ export function Graph({
     selectedMeasures,
     selectCriticalSubgraphFlag,
     minCriticalScore,
+    fastRetrievalDrillthough,
   ]);
 
   const edgeSelection: EdgeSelection = useMemo(() => {
