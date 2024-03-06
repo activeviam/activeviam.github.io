@@ -88,7 +88,7 @@ class FastRetrievalCondenser {
     const edges: RetrievalEdge[] = [];
     rawEdges.forEach((ends, begin) =>
       ends.forEach((end) => {
-        edges.push(new Edge(undefined, begin, end));
+        edges.push(new Edge({ criticalScore: 1 }, begin, end));
       })
     );
 

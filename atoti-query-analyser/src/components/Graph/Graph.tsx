@@ -4,13 +4,16 @@ import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
 import "./Drawer.css";
 import {
+  computeEdgeCriticalScore,
+  selectCriticalSubgraph,
+} from "../../library/graphProcessors/criticalPath";
+import { UUID } from "../../library/utilities/uuid";
+import { useNotificationContext } from "../Notification/NotificationWrapper";
+import {
   CondensedRetrieval,
   RetrievalGraph,
 } from "../../library/dataStructures/json/retrieval";
 import { condenseFastRetrievals } from "../../library/graphProcessors/condenseFastRetrievals";
-import { selectCriticalSubgraph } from "../../library/graphProcessors/criticalPath";
-import { UUID } from "../../library/utilities/uuid";
-import { useNotificationContext } from "../Notification/NotificationWrapper";
 import { Link } from "./Link";
 import { Node } from "./Node";
 import { Button, Form, Overlay } from "react-bootstrap";
@@ -66,10 +69,6 @@ export function Graph({
   const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
   const [epoch, setEpoch] = useState(0);
 
-  const [minCriticalScore, setMinCriticalScore] = useState(0.7);
-  const [selectCriticalSubgraphFlag, setSelectCriticalSubgraphFlag] =
-    useState(false);
-
   const [condenseFastRetrievalsFlag, setCondenseFastRetrievalsFlag] =
     useState(false);
   const [fastRetrievalMaxElapsedTimeMs, setFastRetrievalMaxElapsedTimeMs] =
@@ -90,7 +89,7 @@ export function Graph({
       selection = fastRetrievalDrillthough;
     } else if (condenseFastRetrievalsFlag) {
       graph = condenseFastRetrievals(graph, fastRetrievalMaxElapsedTimeMs);
-      // computeEdgeCriticalScore(graph);
+      computeEdgeCriticalScore(graph);
       selection = buildDefaultSelection([graph])[0];
     }
 
@@ -118,25 +117,35 @@ export function Graph({
     );
   };
 
+  const [minCriticalScore, setMinCriticalScore] = useState(0.7);
+  const [selectCriticalSubgraphFlag, setSelectCriticalSubgraphFlag] =
+    useState(false);
+
   const windowSize = useWindowSize();
   const svgRef = useRef<SVGSVGElement | null>(null);
   const triggerRef = useRef(null);
   const notificationContext = useNotificationContext();
 
+  const [autoCriticalScoreFilterNotified, setAutoCriticalScoreFilterNotified] =
+    useState(false);
   useEffect(() => {
-    if (query.graph.getVertexCount() >= 100) {
+    if (
+      effectiveData.graph.getVertexCount() >= 100 &&
+      !autoCriticalScoreFilterNotified
+    ) {
       setSelectCriticalSubgraphFlag(true);
+      setAutoCriticalScoreFilterNotified(true);
       notificationContext?.newMessage(
         "Graph filter",
         "Since the retrieval graph is big, the critical score filter is applied. You can configure it in the menu.",
         { bg: "info" }
       );
     }
-  }, [query, notificationContext]);
+  }, [effectiveData, notificationContext, autoCriticalScoreFilterNotified]);
 
   const selectedRetrievals = useMemo(() => {
     if (selectCriticalSubgraphFlag) {
-      return selectCriticalSubgraph(query.graph, minCriticalScore);
+      return selectCriticalSubgraph(effectiveData.graph, minCriticalScore);
     }
     if (selectedMeasures.length === 0) {
       return null;
@@ -145,14 +154,16 @@ export function Graph({
       ...effectiveData,
       measures: selectedMeasures,
     });
-  }, [effectiveData, selectedMeasures,
+  }, [
+    effectiveData,
+    selectedMeasures,
     selectCriticalSubgraphFlag,
     minCriticalScore,
   ]);
 
   const edgeSelection: EdgeSelection = useMemo(() => {
-    return Array.from(query.graph.getVertices())
-      .flatMap((v) => Array.from(query.graph.getOutgoingEdges(v)))
+    return Array.from(effectiveData.graph.getVertices())
+      .flatMap((v) => Array.from(effectiveData.graph.getOutgoingEdges(v)))
       .reduce((set, edge) => {
         const sourceUUID = edge.getBegin().getUUID();
         const targetUUID = edge.getEnd().getUUID();
@@ -164,7 +175,7 @@ export function Graph({
         }
         return set;
       }, new Set<{ source: UUID; target: UUID }>());
-  }, [query, selectCriticalSubgraphFlag, minCriticalScore]);
+  }, [effectiveData, selectCriticalSubgraphFlag, minCriticalScore]);
 
   useEffect(() => {
     setSelectedMeasures([]);
@@ -387,6 +398,7 @@ export function Graph({
             selectedMeasures={selectedMeasures}
             onSelectedMeasure={selectMeasure}
           >
+            <Button onClick={onUntangle}>Untangle</Button>
             <h5>Fast retrieval condensation</h5>
             <Form>
               <Form.Check
@@ -415,7 +427,6 @@ export function Graph({
                 </Button>
               )}
             </Form>
-            <Button onClick={onUntangle}>Untangle</Button>
             <h5>Critical score filter</h5>
             <Form>
               <Form.Check
