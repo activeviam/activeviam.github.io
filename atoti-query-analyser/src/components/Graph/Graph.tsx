@@ -41,6 +41,11 @@ interface DataModel {
   selection: VertexSelection;
 }
 
+interface DataModel {
+  graph: RetrievalGraph;
+  selection: VertexSelection;
+}
+
 /**
  * This Reach component is responsible for retrieval graph visualization.
  * <br/>
@@ -145,7 +150,7 @@ export function Graph({
   }, [effectiveData, notificationContext, autoCriticalScoreFilterNotified]);
 
   const selectedRetrievals = useMemo(() => {
-    if (selectCriticalSubgraphFlag) {
+    if (selectCriticalSubgraphFlag && !fastRetrievalDrillthough) {
       return selectCriticalSubgraph(effectiveData.graph, minCriticalScore);
     }
     if (selectedMeasures.length === 0) {
@@ -160,6 +165,7 @@ export function Graph({
     selectedMeasures,
     selectCriticalSubgraphFlag,
     minCriticalScore,
+    fastRetrievalDrillthough,
   ]);
 
   const edgeSelection: EdgeSelection = useMemo(() => {
@@ -454,6 +460,7 @@ export function Graph({
                   setSelectCriticalSubgraphFlag(e.target.checked)
                 }
                 label="Enable filter"
+                disabled={Boolean(fastRetrievalDrillthough)}
               />
               {selectCriticalSubgraphFlag && (
                 <>
