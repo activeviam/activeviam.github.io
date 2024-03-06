@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from "react";
+import { Button } from "react-bootstrap";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import FuzzySearch from "fuzzy-search";
 import _ from "lodash";
+import { saveAs } from "file-saver";
 import { PlanInfo } from "../../library/dataStructures/json/planInfo";
 import { Measure } from "../../library/dataStructures/json/measure";
 import { QuerySummary } from "../../library/dataStructures/json/querySummary";
@@ -204,12 +206,32 @@ function MapView<K, V>({
 function QuerySummaryView({
   querySummary: summary,
   planInfo: info,
+  graph,
 }: {
   querySummary: QuerySummary;
   planInfo: PlanInfo;
+  graph: RetrievalGraph;
 }) {
+  const exportAsJson = () => {
+    const vertices = Array.from(graph.getVertices());
+    const edges = vertices
+      .flatMap((vertex) => Array.from(graph.getOutgoingEdges(vertex)))
+      .map((edge) => ({
+        begin: edge.getBegin().getUUID(),
+        end: edge.getEnd().getUUID(),
+        metadata: edge.getMetadata(),
+        uuid: edge.getUUID(),
+      }));
+
+    const blob = new Blob([JSON.stringify({ vertices, edges }, null, 2)], {
+      type: "application/json;charset=utf-8",
+    });
+    saveAs(blob, `ExecutionGraph ${info.mdxPass}.json`);
+  };
+
   return (
     <div>
+      <Button onClick={exportAsJson}>Export graph as JSON</Button>
       <p>Total number of retrievals: {summary.totalRetrievals}</p>
       <p>
         Total size of external retrieval results:{" "}

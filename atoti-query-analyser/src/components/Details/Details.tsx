@@ -46,6 +46,18 @@ Values.defaultProps = {
 };
 
 /**
+ * Renders a part of a location path
+ * @param pathPart - part of the path to be displayed
+ */
+function renderPathPart(pathPart: string | string[]): string {
+  if (Array.isArray(pathPart)) {
+    return "[" + pathPart.join(", ") + "]";
+  } else {
+    return pathPart;
+  }
+}
+
+/**
  * React component that renders a list of {@link "library/dataStructures/json/cubeLocation"!CubeLocation}.
  * @param attributes - React JSX attributes
  * @param attributes.location - list of locations to be displayed.
@@ -62,7 +74,7 @@ function LocationView({ location }: { location: CubeLocation[] }) {
               {l.level.map((lev, i) => (
                 <li key={lev}>
                   <b>{lev + ": "}</b>
-                  {l.path[i]}
+                  {renderPathPart(l.path[i])}
                 </li>
               ))}
             </ul>
