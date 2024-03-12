@@ -44,16 +44,19 @@ jobs:
           name: Deploy applications to master
           command: |
             gh-pages --src index.html  \
+              --dist . \
               --dest index.html \
               --branch master \
               --message "Deploy root files" \
               --user "ci-build <ci-build@activeviam.com>"
             gh-pages --src queryplan-analyzer \
+              --dist . \
               --dest queryplan-analyzer \
               --branch master \
               --message "Deploy legacy query analyzer" \
               --user "ci-build <ci-build@activeviam.com>"
             gh-pages --src flightrecording-analyzer \
+              --dist . \
               --dest flightrecording-analyzer \
               --branch master \
               --message "Deploy JFR analyzer" \
