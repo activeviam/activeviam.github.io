@@ -41,11 +41,6 @@ interface DataModel {
   selection: VertexSelection;
 }
 
-interface DataModel {
-  graph: RetrievalGraph;
-  selection: VertexSelection;
-}
-
 /**
  * This Reach component is responsible for retrieval graph visualization.
  * <br/>
