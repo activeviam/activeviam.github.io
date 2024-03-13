@@ -46,6 +46,7 @@ jobs:
             gh-pages --src index.html  \
               --dist . \
               --dest . \
+              --add \
               --branch master \
               --message "Deploy root files" \
               --user "ci-build <ci-build@activeviam.com>"
