@@ -45,7 +45,9 @@ function validateJsonQueryPlanOldFormat(
   );
   const dependencies = validateDependencyMap(rawQueryPlan.dependencies);
   const queryFilters = validateList(rawQueryPlan.queryFilters, validateFilter);
-  const querySummary = validateQuerySummary(rawQueryPlan.querySummary);
+  const querySummary = validateQuerySummary(
+    rawQueryPlan.querySummary ?? rawQueryPlan.planInfo
+  );
   const needFillTimingInfo = optional(
     rawQueryPlan.needFillTimingInfo,
     validateBoolean
@@ -83,7 +85,9 @@ function validateJsonQueryPlanModernFormat(
     optional(rawQueryPlan.queryFilters, (filters) =>
       validateList(filters, validateFilter)
     ) ?? [];
-  const querySummary = validateQuerySummary(rawQueryPlan.querySummary);
+  const querySummary = validateQuerySummary(
+    rawQueryPlan.querySummary ?? rawQueryPlan.planInfo
+  );
   const needFillTimingInfo = optional(
     rawQueryPlan.needFillTimingInfo,
     validateBoolean
