@@ -229,6 +229,36 @@ function QuerySummaryView({
     saveAs(blob, `ExecutionGraph ${info.mdxPass}.json`);
   };
 
+  const operations = Array.from(graph.getVertices()).map((operation) =>
+    operation.getMetadata()
+  );
+  const databaseTime = operations
+    .filter((operation) => operation.type.includes("JIT"))
+    .flatMap((operation) => operation.timingInfo.elapsedTime ?? [])
+    .reduce((result, value) => result + value, 0);
+  const networkTime = operations
+    .flatMap((operation) => operation.timingInfo.broadcastingTime ?? [])
+    .reduce((result, value) => result + value, 0);
+  const providerTime = operations
+    .filter((operation) => operation.type.includes("Partial"))
+    .flatMap((operation) => operation.timingInfo.elapsedTime ?? [])
+    .reduce((result, value) => result + value, 0);
+  const engineTime = operations
+    .filter(
+      ({ type }) =>
+        !type.includes("Partial") &&
+        !type.includes("JIT") &&
+        !type.includes("Distrib")
+    )
+    .flatMap((operation) => operation.timingInfo.elapsedTime ?? [])
+    .reduce((result, value) => result + value, 0);
+  const sectionTimings = {
+    network: networkTime,
+    database: databaseTime,
+    providers: providerTime,
+    engine: engineTime,
+  };
+
   return (
     <div>
       <Button onClick={exportAsJson}>Export graph as JSON</Button>
@@ -237,6 +267,7 @@ function QuerySummaryView({
         Total size of external retrieval results:{" "}
         {summary.totalExternalResultSize}
       </p>
+      <p>{JSON.stringify(sectionTimings)}</p>
       <h4>Query timings</h4>
       <Timings info={info} />
       <h4>Measures</h4>
