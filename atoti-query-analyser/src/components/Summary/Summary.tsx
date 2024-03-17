@@ -14,6 +14,7 @@ import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { QueryPlanMetadata } from "../../library/graphProcessors/extractMetadata";
 import { RetrievalGraph } from "../../library/dataStructures/json/retrieval";
 import { humanisticStringComparator } from "../../library/utilities/textUtils";
+import "./Summary.css";
 
 const TIMING_LABELS = new Map([
   ["CONTEXT", "Context creation time"],
@@ -258,15 +259,36 @@ const ComponentTimingView = ({
   const sortedTimings = Object.entries(timings);
   sortedTimings.sort(([, t1], [, t2]) => t2 - t1);
   const timeFormatter = createTimeFormatter(sortedTimings.map(([, t]) => t));
+  const svgPositions = Object.entries(timings).reduce((acc, [label, time]) => {
+    acc.push({ label, time, lsum: acc.reduce((s, v) => s + v.time, time) });
+    return acc;
+  }, [] as Readonly<{ label: string; time: number; lsum: number }>[] as Readonly<{ label: string; time: number; lsum: number }>[]);
+  const totalSum = svgPositions.reduce((s, v) => s + v.time, 0);
+  const bars = svgPositions.map(({ label, lsum }) => (
+    <rect
+      key={label}
+      className={`component-timing-box timing-${label}`}
+      x={0}
+      y={0}
+      width={`${(lsum / totalSum) * 100}%`}
+      height={25}
+    />
+  ));
+  bars.reverse();
 
   return (
-    <ul>
-      {sortedTimings.map(([label, time]) => (
-        <li key={label} className={`component-timing timing-${label}`}>
-          <b>{label}</b>: {timeFormatter(time)}
-        </li>
-      ))}
-    </ul>
+    <>
+      <svg width="100%" height="25px">
+        <g>{bars}</g>
+      </svg>
+      <ul className="component-timing">
+        {sortedTimings.map(([label, time]) => (
+          <li key={label} className={`component-timing timing-${label}`}>
+            <b>{label}</b>: {timeFormatter(time)}
+          </li>
+        ))}
+      </ul>
+    </>
   );
 };
 
@@ -549,7 +571,7 @@ export function Summary({
     summary = QuerySummaryView(rootQuery);
   }
   return (
-    <div>
+    <div id="summary">
       <h3>
         MDX pass {rootInfo.passType} ({currentQuery})
       </h3>

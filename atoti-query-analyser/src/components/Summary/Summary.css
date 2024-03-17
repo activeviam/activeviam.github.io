@@ -1,0 +1,50 @@
+#summary {
+  margin: 5px 10px 5px;
+}
+
+ul.component-timing {
+  list-style: none;
+  padding-left: 10px;
+  margin-top: 10px;
+}
+
+li.component-timing:before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.timing-database {
+  fill: #59D5E0;
+}
+
+li.component-timing.timing-database:before {
+  background: #59D5E0;
+}
+
+.timing-providers {
+  fill:  #F5DD61;
+}
+
+li.component-timing.timing-providers:before {
+  background: #F5DD61;
+}
+
+.timing-engine {
+  fill: #FAA300;
+}
+
+li.component-timing.timing-engine:before {
+  background: #FAA300;
+}
+
+.timing-network {
+  fill: #F4538A;
+}
+
+li.component-timing.timing-network:before {
+  background: #F4538A;
+}
