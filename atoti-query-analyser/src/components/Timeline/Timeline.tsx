@@ -119,12 +119,14 @@ function Box({
   node,
   selection,
   onSelect,
+  textOffset,
 }: {
   rowIdx: number;
   entry: TimeRange;
   node: RetrievalVertex;
   selection: RetrievalCursor[];
   onSelect: (entry: TimeRange) => void;
+  textOffset: number;
 }) {
   if (node === undefined || entry.retrieval.id !== node.getUUID()) {
     throw new Error(
@@ -143,7 +145,7 @@ function Box({
       <rect
         key={key}
         className={`timeline-box ${selected ? "selected" : ""}`}
-        x={MARGIN + x}
+        x={textOffset + MARGIN + x}
         y={MARGIN + rowIdx * (BOX_MARGIN + BOX_HEIGHT)}
         width={w}
         height={BOX_HEIGHT}
@@ -157,7 +159,7 @@ function Box({
     <rect
       key={key}
       className={`timeline-box ${selected ? "selected" : ""}`}
-      x={MARGIN + x}
+      x={textOffset + MARGIN + x}
       y={MARGIN + rowIdx * (BOX_MARGIN + BOX_HEIGHT)}
       width={w}
       height={BOX_HEIGHT}
@@ -175,12 +177,14 @@ function Row({
   graph,
   selection,
   onSelect,
+  textOffset,
 }: {
   row: TimeRange[];
   idx: number;
   graph: RetrievalGraph;
   selection: RetrievalCursor[];
   onSelect: (entry: TimeRange) => void;
+  textOffset: number;
 }) {
   const boxes = row.map((entry) =>
     Box({
@@ -189,14 +193,38 @@ function Row({
       node: graph.getVertexByUUID(entry.retrieval.id),
       selection,
       onSelect,
+      textOffset,
     })
   );
   return (
     <g className="timeline-row" key={idx}>
+      <text
+        className="timeline-index"
+        x={textOffset / 2}
+        y={MARGIN + idx * (BOX_MARGIN + BOX_HEIGHT) + BOX_HEIGHT / 2}
+        width={textOffset}
+        height={BOX_HEIGHT}
+        dominantBaseline={"middle"}
+        textAnchor={"middle"}
+      >
+        {idx + 1}
+      </text>
       {boxes}
     </g>
   );
 }
+
+const computeTextOffset = (rowCount: number) => {
+  if (rowCount < 10) {
+    return 15;
+  } else if (rowCount < 100) {
+    return 20;
+  } else if (rowCount < 1000) {
+    return 25;
+  } else {
+    return 30;
+  }
+};
 
 /**
  * This React component is responsible for rendering timeline.
@@ -220,12 +248,20 @@ function Rows({
       Math.max(
         ...rows.map((row) => row[row.length - 1]).map((entry) => entry.end)
       );
+  const textOffset = computeTextOffset(rows.length);
   return (
     <div className="timeline-rows">
       <svg width={width} height={height}>
-        {[...rows]
-          .reverse()
-          .map((row, idx) => Row({ row, idx, graph, selection, onSelect }))}
+        {[...rows].reverse().map((row, idx) =>
+          Row({
+            row,
+            idx,
+            graph,
+            selection,
+            onSelect,
+            textOffset,
+          })
+        )}
       </svg>
     </div>
   );

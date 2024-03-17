@@ -9,6 +9,11 @@
   max-height: 90vh;
 }
 
+.timeline-index {
+  fill: #959595;
+  font-size: 0.8rem;
+}
+
 .timeline-box {
   fill: rgb(0, 146, 204);
   rx: 3px;
