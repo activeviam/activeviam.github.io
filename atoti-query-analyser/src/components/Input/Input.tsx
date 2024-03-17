@@ -37,6 +37,7 @@ export enum InputType {
 export enum InputSource {
   TEXT_AREA = "Text area",
   FILE = "File upload",
+  SERVER = "Server query",
 }
 
 /**
@@ -157,19 +158,21 @@ function SourceInput({
 }) {
   return (
     <>
-      {[InputSource.TEXT_AREA, InputSource.FILE].map((src) => {
-        return (
-          <Form.Check
-            inline
-            label={src}
-            key={src}
-            value={src}
-            type="radio"
-            onChange={() => setSource(src)}
-            checked={src === source}
-          />
-        );
-      })}
+      {[InputSource.TEXT_AREA, InputSource.FILE, InputSource.SERVER].map(
+        (src) => {
+          return (
+            <Form.Check
+              inline
+              label={src}
+              key={src}
+              value={src}
+              type="radio"
+              onChange={() => setSource(src)}
+              checked={src === source}
+            />
+          );
+        }
+      )}
     </>
   );
 }
@@ -238,28 +241,33 @@ function Buttons({
   return (
     <>
       <div key="inline-radio" className="mb-3">
-        {[InputMode.JSON, InputMode.V1].map((mode) => {
-          return (
-            <Form.Check
-              inline
-              label={mode}
-              key={mode}
-              value={mode}
-              type="radio"
-              onChange={() => setInputMode(mode)}
-              checked={mode === inputMode}
-            />
-          );
-        })}
-        <Button variant="primary" onClick={() => onSubmit(inputMode)}>
-          Process
-        </Button>{" "}
-        <Button
-          variant={urlMode ? "primary" : "secondary"}
-          onClick={() => onSubmit(InputMode.URL)}
-        >
-          Import from Server
-        </Button>{" "}
+        {urlMode ? (
+          <Button
+            variant={urlMode ? "primary" : "secondary"}
+            onClick={() => onSubmit(InputMode.URL)}
+          >
+            Import
+          </Button>
+        ) : (
+          <>
+            {[InputMode.JSON, InputMode.V1].map((mode) => {
+              return (
+                <Form.Check
+                  inline
+                  label={mode}
+                  key={mode}
+                  value={mode}
+                  type="radio"
+                  onChange={() => setInputMode(mode)}
+                  checked={mode === inputMode}
+                />
+              );
+            })}
+            <Button variant="primary" onClick={() => onSubmit(inputMode)}>
+              Process
+            </Button>
+          </>
+        )}{" "}
         <Button variant="outline-danger" onClick={onDropData}>
           Drop data
         </Button>
@@ -430,10 +438,10 @@ export function Input({
     }`;
   };
 
-  return (
-    <Form className="m-4">
-      <SourceInput source={source} setSource={setSource} />
-      {source === InputSource.TEXT_AREA ? (
+  let sourceForm;
+  switch (source) {
+    case InputSource.TEXT_AREA:
+      sourceForm =
         input.length > 1 << 20 ? (
           <TooBigInput data={input} />
         ) : (
@@ -445,8 +453,10 @@ export function Input({
               onChange={(e) => setInput(e.target.value)}
             />
           </Form.Group>
-        )
-      ) : (
+        );
+      break;
+    case InputSource.FILE:
+      sourceForm = (
         <Form.Group controlId="query-input-file">
           <Form.Control
             type="file"
@@ -483,23 +493,45 @@ export function Input({
             }}
           ></Form.Control>
         </Form.Group>
-      )}
-      {urlMode ? (
-        <URLInput
-          url={url}
-          setUrl={setUrl}
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-        />
-      ) : null}
+      );
+      break;
+    case InputSource.SERVER:
+      sourceForm = (
+        <Form.Group controlId="query-input-textarea">
+          <URLInput
+            url={url}
+            setUrl={setUrl}
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+          />
+          <Form.Control
+            as="textarea"
+            placeholder="Enter a MDX query"
+            rows={10}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            style={{ marginTop: 10 }}
+          />
+        </Form.Group>
+      );
+      break;
+  }
+
+  const loadFromServer = source === InputSource.SERVER;
+  return (
+    <Form className="m-4">
+      <SourceInput source={source} setSource={setSource} />
+      {sourceForm}
       <TypeInput type={type} setType={setType} />
-      <p>
-        Data size: {input.length} ({prettySize(input.length)})
-      </p>
+      {loadFromServer ? null : (
+        <p>
+          Data size: {input.length} ({prettySize(input.length)})
+        </p>
+      )}
       <Buttons
-        urlMode={urlMode}
+        urlMode={loadFromServer}
         onSubmit={dispatchSubmit}
         onDropData={() => setInput("")}
       />
