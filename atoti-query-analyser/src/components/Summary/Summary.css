@@ -18,33 +18,33 @@ li.component-timing:before {
 }
 
 .timing-database {
-  fill: #59D5E0;
+  fill: #59d5e0;
 }
 
 li.component-timing.timing-database:before {
-  background: #59D5E0;
+  background: #59d5e0;
 }
 
 .timing-providers {
-  fill:  #F5DD61;
+  fill: #f5dd61;
 }
 
 li.component-timing.timing-providers:before {
-  background: #F5DD61;
+  background: #f5dd61;
 }
 
 .timing-engine {
-  fill: #FAA300;
+  fill: #faa300;
 }
 
 li.component-timing.timing-engine:before {
-  background: #FAA300;
+  background: #faa300;
 }
 
 .timing-network {
-  fill: #F4538A;
+  fill: #f4538a;
 }
 
 li.component-timing.timing-network:before {
-  background: #F4538A;
+  background: #f4538a;
 }
