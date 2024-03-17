@@ -39,9 +39,12 @@ export function validateQuerySummary(rawQuerySummary: any): QuerySummary {
   validateObject(rawQuerySummary);
 
   return {
-    measures: validateListAsSet(rawQuerySummary.measures, validateMeasure),
+    measures: validateListAsSet(
+      rawQuerySummary.measures ?? [],
+      validateMeasure
+    ),
     partialProviders: validateListAsSet(
-      rawQuerySummary.partialProviders || [],
+      rawQuerySummary.partialProviders ?? [],
       validateString
     ),
     partitioningCountByType: validateObjectAsMap(
@@ -50,7 +53,7 @@ export function validateQuerySummary(rawQuerySummary: any): QuerySummary {
       validateInt
     ),
     resultSizeByPartitioning: validateObjectAsMap(
-      rawQuerySummary.resultSizeByPartitioning || {},
+      rawQuerySummary.resultSizeByPartitioning ?? {},
       validateString,
       validateInt
     ),
