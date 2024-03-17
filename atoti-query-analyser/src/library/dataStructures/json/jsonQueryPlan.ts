@@ -72,14 +72,17 @@ function validateJsonQueryPlanModernFormat(
     validateAggregateRetrieval
   );
   const dependencies = validateDependencyMap(rawQueryPlan.dependencies);
-  const externalRetrievals = validateList(
-    rawQueryPlan.externalRetrievals,
-    validateExternalRetrieval
-  );
-  const externalDependencies = validateDependencyMap(
-    rawQueryPlan.externalDependencies
-  );
-  const queryFilters = validateList(rawQueryPlan.queryFilters, validateFilter);
+  const externalRetrievals =
+    optional(rawQueryPlan.externalRetrievals, (retrievals) =>
+      validateList(retrievals, validateExternalRetrieval)
+    ) ?? [];
+  const externalDependencies =
+    optional(rawQueryPlan.externalDependencies, validateDependencyMap) ??
+    new Map();
+  const queryFilters =
+    optional(rawQueryPlan.queryFilters, (filters) =>
+      validateList(filters, validateFilter)
+    ) ?? [];
   const querySummary = validateQuerySummary(rawQueryPlan.querySummary);
   const needFillTimingInfo = optional(
     rawQueryPlan.needFillTimingInfo,
