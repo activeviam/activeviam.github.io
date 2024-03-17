@@ -227,8 +227,7 @@ const computeComponentTimings = (graph: RetrievalGraph): ComponentTimings => {
     .filter(
       ({ type }) =>
         !type.includes("Partial") &&
-        !type.includes("JIT") &&
-        !type.includes("Distrib")
+        !type.includes("JIT")
     )
     .flatMap((operation) => operation.timingInfo.elapsedTime ?? [])
     .reduce((result, value) => result + value, 0);
