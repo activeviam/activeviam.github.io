@@ -9,14 +9,14 @@
 }
 
 .button-as-link {
-  background: none!important;
+  background: none !important;
   border: none;
-  padding: 0!important;
+  padding: 0 !important;
   color: #069;
   text-decoration: underline;
   cursor: pointer;
 }
 
 .button-as-link:hover {
-  color: #09B;
+  color: #09b;
 }
