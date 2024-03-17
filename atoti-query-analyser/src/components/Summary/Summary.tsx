@@ -527,8 +527,14 @@ export function Summary({
       rangeSharing: 0,
       retrieverType: "",
     };
+    // Build a fake plan with all retrievals from every plan
     const globalQuery: QueryPlan = {
-      graph: new RetrievalGraph(),
+      graph: queries
+        .flatMap((query) => Array.from(query.graph.getVertices()))
+        .reduce((g, node) => {
+          g.addVertex(node);
+          return g;
+        }, new RetrievalGraph()),
       planInfo: globalPlanInfo,
       queryFilters: [],
       querySummary: globalSummary,
