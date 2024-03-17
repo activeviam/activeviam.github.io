@@ -200,7 +200,14 @@ function MapView<K, V>({
   );
 }
 
-const computeComponentTimings = (graph: RetrievalGraph) => {
+type ComponentTimings = Readonly<{
+  database: number;
+  engine: number;
+  network: number;
+  providers: number;
+}>;
+
+const computeComponentTimings = (graph: RetrievalGraph): ComponentTimings => {
   const operations = Array.from(graph.getVertices()).map((operation) =>
     operation.getMetadata()
   );
@@ -230,6 +237,37 @@ const computeComponentTimings = (graph: RetrievalGraph) => {
     providers: providerTime,
     engine: engineTime,
   };
+};
+
+const createTimeFormatter = (
+  values: readonly number[]
+): ((time: number) => string) => {
+  const maxValue = Math.max(...values);
+  if (maxValue < 1000) {
+    return (t) => `${t} ms`;
+  } else if (maxValue < 60000) {
+    return (t) => `${Math.round(t / 1000).toPrecision(1)} s`;
+  } else {
+    return (t) => `${Math.round(t / 60000).toPrecision(1)} mins`;
+  }
+};
+
+const ComponentTimingView = ({
+  timings,
+}: Readonly<{ timings: ComponentTimings }>) => {
+  const sortedTimings = Object.entries(timings);
+  sortedTimings.sort(([, t1], [, t2]) => t2 - t1);
+  const timeFormatter = createTimeFormatter(sortedTimings.map(([, t]) => t));
+
+  return (
+    <ul>
+      {sortedTimings.map(([label, time]) => (
+        <li key={label} className={`component-timing timing-${label}`}>
+          <b>{label}</b>: {timeFormatter(time)}
+        </li>
+      ))}
+    </ul>
+  );
 };
 
 /**
@@ -270,7 +308,8 @@ function QuerySummaryView({
         Total size of external retrieval results:{" "}
         {summary.totalExternalResultSize}
       </p>
-      <p>{JSON.stringify(componentTimings)}</p>
+      <h4>Query timings by components</h4>
+      <ComponentTimingView timings={componentTimings} />
       <h4>Query timings</h4>
       <Timings info={info} />
       <h4>Measures</h4>
