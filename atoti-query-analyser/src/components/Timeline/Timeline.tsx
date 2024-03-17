@@ -223,7 +223,9 @@ function Rows({
   return (
     <div className="timeline-rows">
       <svg width={width} height={height}>
-        {rows.map((row, idx) => Row({ row, idx, graph, selection, onSelect }))}
+        {[...rows]
+          .reverse()
+          .map((row, idx) => Row({ row, idx, graph, selection, onSelect }))}
       </svg>
     </div>
   );
