@@ -18,6 +18,18 @@ function cleanseUrl(url: string) {
   return match[1];
 }
 
+const buildUrl = (apis: any): string => {
+  const avPivot = apis["activeviam/piot"];
+  if (avPivot !== undefined) {
+    return "todo";
+  }
+  const pivotApi = apis["pivot"];
+  if (pivotApi !== undefined) {
+    return "todo";    
+  }
+  throw new Error(`Not supporting this server version.`);
+};
+
 /**
  * Resolves the version of the API of the target server.
  * @param {String} url url of the target server
