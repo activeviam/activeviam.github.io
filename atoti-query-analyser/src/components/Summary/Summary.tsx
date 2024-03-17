@@ -308,8 +308,12 @@ function QuerySummaryView({
         Total size of external retrieval results:{" "}
         {summary.totalExternalResultSize}
       </p>
-      <h4>Query timings by components</h4>
-      <ComponentTimingView timings={componentTimings} />
+      {graph.getVertexCount() > 0 ? (
+        <>
+          <h4>Query timings by components</h4>
+          <ComponentTimingView timings={componentTimings} />
+        </>
+      ) : null}
       <h4>Query timings</h4>
       <Timings info={info} />
       <h4>Measures</h4>
