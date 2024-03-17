@@ -1,12 +1,12 @@
 g.node > rect,
 g.node > circle {
-    --node-stroke: #FFFF00;
-    stroke: var(--node-stroke-0, var(--node-stroke));
-    stroke-width: 1;
+  --node-stroke: #ffff00;
+  stroke: var(--node-stroke-0, var(--node-stroke));
+  stroke-width: 1;
 }
 
 g.node.selected > rect,
 g.node.selected > circle {
-    stroke-width: 3;
-    --node-stroke-0: #2E2E2E;
+  stroke-width: 3;
+  --node-stroke-0: #2e2e2e;
 }

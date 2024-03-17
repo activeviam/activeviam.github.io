@@ -9,12 +9,12 @@ The `FastRetrievalCondenser` class implements an algorithm for condensing fast r
 - **`compute(): RetrievalGraph`**: Generates a new `RetrievalGraph` where groups of fast retrievals have been condensed into single vertices. It maintains the structural integrity of the original graph while simplifying nodes that meet the fast retrieval criteria into condensed forms.
 
 - **Private Methods:**
-    - **`buildInEdgeIndex()`, `buildOutEdgeIndex()`:** Create mappings from vertex UUIDs to lists of incoming and outgoing edges, respectively. These indexes facilitate efficient traversal and analysis of the graph.
-    - **`collectFastRetrievals()`:** Identifies retrievals within the graph that are faster than the specified threshold, marking them for potential condensation.
-    - **`findFastRoots()`:** Determines which fast retrievals serve as roots, meaning they either have no incoming fast retrievals or are entry points for fast retrieval paths.
-    - **`findVisibleFastRoots()`:** Calculates visibility sets for each fast retrieval, indicating which root nodes can reach each retrieval through paths of fast retrievals.
-    - **`groupFastRetrievalsByRootSet()`:** Organizes fast retrievals into groups based on their visibility sets, with each group representing a set of retrievals that share the same visible roots.
-    - **`computeTimingInfo(group: ARetrieval[]): TimingInfo`**: Computes aggregated timing information for a group of retrievals, used to annotate condensed nodes with performance metrics.
+  - **`buildInEdgeIndex()`, `buildOutEdgeIndex()`:** Create mappings from vertex UUIDs to lists of incoming and outgoing edges, respectively. These indexes facilitate efficient traversal and analysis of the graph.
+  - **`collectFastRetrievals()`:** Identifies retrievals within the graph that are faster than the specified threshold, marking them for potential condensation.
+  - **`findFastRoots()`:** Determines which fast retrievals serve as roots, meaning they either have no incoming fast retrievals or are entry points for fast retrieval paths.
+  - **`findVisibleFastRoots()`:** Calculates visibility sets for each fast retrieval, indicating which root nodes can reach each retrieval through paths of fast retrievals.
+  - **`groupFastRetrievalsByRootSet()`:** Organizes fast retrievals into groups based on their visibility sets, with each group representing a set of retrievals that share the same visible roots.
+  - **`computeTimingInfo(group: ARetrieval[]): TimingInfo`**: Computes aggregated timing information for a group of retrievals, used to annotate condensed nodes with performance metrics.
 
 ### `condenseFastRetrievals` Function
 
