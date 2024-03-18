@@ -80,6 +80,7 @@ function URLInput({
     <Row className={"mt-1"}>
       <Col md={6} lg={6}>
         <Form.Control
+          id="server-url"
           placeholder="Server URL"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
@@ -87,6 +88,7 @@ function URLInput({
       </Col>
       <Col>
         <Form.Control
+          id="username"
           placeholder="Username"
           defaultValue={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -94,6 +96,7 @@ function URLInput({
       </Col>
       <Col>
         <Form.Control
+          id="password"
           placeholder="Password"
           type="password"
           defaultValue={password}
@@ -356,10 +359,13 @@ export function Input({
   const [source, setSource] = useState(InputSource.FILE);
   const [input, setInput] = useState(lastInput);
   const [type, setType] = useState(InputType.CLASSIC);
+  const [{ username, password, url, mdxQuery }, setQuery] = useState({
+    username: "",
+    password: "",
+    url: "",
+    mdxQuery: "",
+  });
   const [urlMode, setUrlMode] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [url, setUrl] = useState("");
   const devMode = location.search.includes("dev"); // Backward compatibility
   const [statusLine, setStatusLine] = useState("");
 
@@ -380,7 +386,7 @@ export function Input({
         type,
         {
           url,
-          query: input,
+          query: mdxQuery,
           credentials: `Basic ${credentials}`,
         },
         showError,
@@ -491,27 +497,34 @@ export function Input({
               reader.readAsText(file);
               setProcessing(true);
             }}
-          ></Form.Control>
+          />
         </Form.Group>
       );
       break;
     case InputSource.SERVER:
       sourceForm = (
-        <Form.Group controlId="query-input-textarea">
+        <Form.Group>
           <URLInput
             url={url}
-            setUrl={setUrl}
+            setUrl={(value) => setQuery((query) => ({ ...query, url: value }))}
             username={username}
-            setUsername={setUsername}
+            setUsername={(value) =>
+              setQuery((query) => ({ ...query, username: value }))
+            }
             password={password}
-            setPassword={setPassword}
+            setPassword={(value) =>
+              setQuery((query) => ({ ...query, password: value }))
+            }
           />
           <Form.Control
             as="textarea"
+            id="mdx-query"
             placeholder="Enter a MDX query"
             rows={10}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
+            value={mdxQuery}
+            onChange={(e) =>
+              setQuery((query) => ({ ...query, mdxQuery: e.target.value }))
+            }
             style={{ marginTop: 10 }}
           />
         </Form.Group>
