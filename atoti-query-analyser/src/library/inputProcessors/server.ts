@@ -18,16 +18,18 @@ function cleanseUrl(url: string) {
   return match[1];
 }
 
-const buildUrl = (apis: any): string => {
-  const avPivot = apis["activeviam/piot"];
-  if (avPivot !== undefined) {
-    return "todo";
-  }
-  const pivotApi = apis["pivot"];
+const supportedApis = ["5", "6", "8"];
+
+const findServiceUrl = (apis: any) => {
+  const pivotApi = apis["activeviam/pivot"] ?? apis.pivot;
   if (pivotApi !== undefined) {
-    return "todo";    
+    for (const version of pivotApi.versions) {
+      if (supportedApis.includes(version.id)) {
+        return version.restPath;
+      }
+    }
   }
-  throw new Error(`Not supporting this server version.`);
+  throw new Error("Not supporting this server version.");
 };
 
 /**
@@ -46,8 +48,13 @@ function resolveQueryEndpoint(userUrl: string) {
     fetch(`${url}/versions/rest`).then(
       async (response) => {
         const versions = await response.json();
-        const pivotService = versions.apis.pivot.versions[0].restPath;
-        resolve(`${url}${pivotService}`);
+        const serviceUrl = findServiceUrl(versions.apis);
+        const fullUrl =
+          `${url}/${serviceUrl}/cube/query/mdx/queryplan`.replaceAll(
+            /\/{2,}/g,
+            "/"
+          );
+        resolve(fullUrl);
       },
       (err) => {
         console.error(`Cannot find version of ${url}`, err);
@@ -72,8 +79,7 @@ export interface ServerInput {
  * @returns the exported query plan for the provided query
  */
 export async function queryServer({ url, credentials, query }: ServerInput) {
-  const baseUrl = await resolveQueryEndpoint(url);
-  const queryUrl = `${baseUrl}/cube/query/mdx/queryplan`;
+  const queryUrl = await resolveQueryEndpoint(url);
   const body = {
     mdx: query,
   };
@@ -89,5 +95,6 @@ export async function queryServer({ url, credentials, query }: ServerInput) {
     body: JSON.stringify(body),
   });
   const payload = await response.json();
-  return payload.data;
+  // Old services wrap in {success, data}; new services don't
+  return payload.data ?? payload;
 }
