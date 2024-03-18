@@ -350,21 +350,19 @@ function DevButtons({
 export function Input({
   passInput,
   lastInput,
+  lastQuery,
 }: {
   passInput: OnInput;
   lastInput: string;
+  lastQuery: ServerInput;
 }) {
   const location = new URL(window.location.href);
 
   const [source, setSource] = useState(InputSource.FILE);
   const [input, setInput] = useState(lastInput);
   const [type, setType] = useState(InputType.CLASSIC);
-  const [{ username, password, url, mdxQuery }, setQuery] = useState({
-    username: "",
-    password: "",
-    url: "",
-    mdxQuery: "",
-  });
+  const [query, setQuery] = useState(lastQuery);
+  const { username, password, url, mdxQuery } = query;
   const [urlMode, setUrlMode] = useState(false);
   const devMode = location.search.includes("dev"); // Backward compatibility
   const [statusLine, setStatusLine] = useState("");
@@ -379,19 +377,8 @@ export function Input({
 
   const submitQuery = async () => {
     setProcessing(true);
-    const credentials = btoa(`${username}:${password}`);
     try {
-      await passInput(
-        InputMode.URL,
-        type,
-        {
-          url,
-          query: mdxQuery,
-          credentials: `Basic ${credentials}`,
-        },
-        showError,
-        setStatusLine
-      );
+      await passInput(InputMode.URL, type, query, showError, setStatusLine);
     } catch (err) {
       showError(asError(err));
     } finally {
@@ -506,14 +493,14 @@ export function Input({
         <Form.Group>
           <URLInput
             url={url}
-            setUrl={(value) => setQuery((query) => ({ ...query, url: value }))}
+            setUrl={(value) => setQuery((q) => ({ ...q, url: value }))}
             username={username}
             setUsername={(value) =>
-              setQuery((query) => ({ ...query, username: value }))
+              setQuery((q) => ({ ...q, username: value }))
             }
             password={password}
             setPassword={(value) =>
-              setQuery((query) => ({ ...query, password: value }))
+              setQuery((q) => ({ ...q, password: value }))
             }
           />
           <Form.Control
@@ -523,7 +510,7 @@ export function Input({
             rows={10}
             value={mdxQuery}
             onChange={(e) =>
-              setQuery((query) => ({ ...query, mdxQuery: e.target.value }))
+              setQuery((q) => ({ ...q, mdxQuery: e.target.value }))
             }
             style={{ marginTop: 10 }}
           />

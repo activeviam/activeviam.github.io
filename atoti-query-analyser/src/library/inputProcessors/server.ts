@@ -69,8 +69,9 @@ function resolveQueryEndpoint(userUrl: string) {
 
 export interface ServerInput {
   url: string;
-  credentials: string;
-  query: string;
+  username: string;
+  password: string;
+  mdxQuery: string;
 }
 
 /**
@@ -78,11 +79,17 @@ export interface ServerInput {
  * @param payload payload to send to the server
  * @returns the exported query plan for the provided query
  */
-export async function queryServer({ url, credentials, query }: ServerInput) {
+export async function queryServer({
+  url,
+  mdxQuery,
+  username,
+  password,
+}: ServerInput) {
   const queryUrl = await resolveQueryEndpoint(url);
   const body = {
-    mdx: query,
+    mdx: mdxQuery,
   };
+  const credentials = btoa(`${username}:${password}`);
   const response = await fetch(queryUrl, {
     method: "POST",
     mode: "cors",

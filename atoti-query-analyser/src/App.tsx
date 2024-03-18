@@ -39,6 +39,12 @@ export function App(): JSX.Element {
   const [currentQueryId, setCurrentQueryId] = useState(0);
   const [currentPassId, setCurrentPassId] = useState(0);
   const [lastInput, setLastInput] = useState("");
+  const [lastQuery, setLastQuery] = useState({
+    username: "",
+    password: "",
+    url: "",
+    mdxQuery: "",
+  });
   const [queryPlans, setQueryPlans] = useState<QueryPlan[]>();
 
   const findRootQuery = (
@@ -99,7 +105,11 @@ export function App(): JSX.Element {
     setCurrentQueryId(findRootQuery(metadata, 0) || 0);
     setRoute("summary");
     setQueryPlans(queryPlan);
-    setLastInput(typeof input === "string" ? input : input.query);
+    if (typeof input === "string") {
+      setLastInput(input);
+    } else {
+      setLastQuery(input);
+    }
   };
 
   const changeGraph = (childId: number) => {
@@ -126,7 +136,11 @@ export function App(): JSX.Element {
   };
 
   const renderInput = () => (
-    <Input passInput={processInput} lastInput={lastInput} />
+    <Input
+      passInput={processInput}
+      lastInput={lastInput}
+      lastQuery={lastQuery}
+    />
   );
 
   const renderStub = () => <h1>Load a query plan first!</h1>;
