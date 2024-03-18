@@ -363,6 +363,8 @@ export function Input({
   const [type, setType] = useState(InputType.CLASSIC);
   const [query, setQuery] = useState(lastQuery);
   const { username, password, url, mdxQuery } = query;
+  const setQueryAttribute = (k: keyof ServerInput, v: string) =>
+    setQuery((q) => ({ ...q, ...{ [k]: v } }));
   const [urlMode, setUrlMode] = useState(false);
   const devMode = location.search.includes("dev"); // Backward compatibility
   const [statusLine, setStatusLine] = useState("");
@@ -493,15 +495,11 @@ export function Input({
         <Form.Group>
           <URLInput
             url={url}
-            setUrl={(value) => setQuery((q) => ({ ...q, url: value }))}
+            setUrl={(value) => setQueryAttribute("url", value)}
             username={username}
-            setUsername={(value) =>
-              setQuery((q) => ({ ...q, username: value }))
-            }
+            setUsername={(value) => setQueryAttribute("username", value)}
             password={password}
-            setPassword={(value) =>
-              setQuery((q) => ({ ...q, password: value }))
-            }
+            setPassword={(value) => setQueryAttribute("password", value)}
           />
           <Form.Control
             as="textarea"
@@ -509,9 +507,7 @@ export function Input({
             placeholder="Enter a MDX query"
             rows={10}
             value={mdxQuery}
-            onChange={(e) =>
-              setQuery((q) => ({ ...q, mdxQuery: e.target.value }))
-            }
+            onChange={(e) => setQueryAttribute("mdxQuery", e.target.value)}
             style={{ marginTop: 10 }}
           />
         </Form.Group>
