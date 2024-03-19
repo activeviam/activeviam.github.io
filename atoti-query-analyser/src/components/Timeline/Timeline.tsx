@@ -326,8 +326,8 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
         ({ sum, count }, value) => ({ sum: sum + value, count: count + 1 }),
         { sum: 0, count: 0 }
       );
+    // Find the scale close enough to the mean, but accepting some smaller bars 
     const result = findClosestScale(scales, (mean.sum / mean.count) * 0.75);
-    console.log(mean, result);
     return result ?? scales[0];
   }, [plan]);
   const [selection, setSelection] = useState<RetrievalCursor[]>([]);
