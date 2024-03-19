@@ -4,6 +4,14 @@
 
 .timeline-rows {
   overflow-x: auto;
+  overflow-y: auto;
+  max-width: 100vw;
+  max-height: 90vh;
+}
+
+.timeline-index {
+  fill: #959595;
+  font-size: 0.8rem;
 }
 
 .timeline-box {
