@@ -367,7 +367,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
   return (
     <div className="timeline">
       <div className="scale-control">
-        <div>Diagram scale</div>
+        <div style={{ marginRight: 5 }}>Diagram scale</div>
         <ButtonGroup aria-label="Timeline scale" style={{ marginBottom: 5 }}>
           {scales.map((s, i) => (
             <Button
