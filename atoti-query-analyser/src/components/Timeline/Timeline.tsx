@@ -196,22 +196,11 @@ function Row({
       node: graph.getVertexByUUID(entry.retrieval.id),
       selection,
       onSelect,
-      textOffset,
+      textOffset: 0,
     })
   );
   return (
     <g className="timeline-row" key={idx}>
-      <text
-        className="timeline-index"
-        x={textOffset / 2}
-        y={MARGIN + idx * (BOX_MARGIN + BOX_HEIGHT) + BOX_HEIGHT / 2}
-        width={textOffset}
-        height={BOX_HEIGHT}
-        dominantBaseline={"middle"}
-        textAnchor={"middle"}
-      >
-        {idx + 1}
-      </text>
       {boxes}
     </g>
   );
@@ -256,23 +245,44 @@ function Rows({
   const textOffset = computeTextOffset(rows.length);
   return (
     <div className="timeline-rows">
-      <svg
-        width={width / factor}
-        height={height}
-        viewBox={`0 0 ${width} ${height}`}
-        preserveAspectRatio="none"
-      >
-        {[...rows].reverse().map((row, idx) =>
-          Row({
-            row,
-            idx,
-            graph,
-            selection,
-            onSelect,
-            textOffset,
-          })
-        )}
-      </svg>
+      <div>
+        <svg viewBox={`0 0 ${textOffset} ${height}`} width={textOffset}>
+          {rows.map((_, idx) => (
+            <g className="timeline-row" key={idx}>
+              <text
+                className="timeline-index"
+                x={textOffset / 2}
+                y={MARGIN + idx * (BOX_MARGIN + BOX_HEIGHT) + BOX_HEIGHT / 2}
+                width={textOffset}
+                height={BOX_HEIGHT}
+                dominantBaseline={"middle"}
+                textAnchor={"middle"}
+              >
+                {idx + 1}
+              </text>
+            </g>
+          ))}
+        </svg>
+      </div>
+      <div>
+        <svg
+          width={width / factor}
+          height={height}
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="none"
+        >
+          {[...rows].reverse().map((row, idx) =>
+            Row({
+              row,
+              idx,
+              graph,
+              selection,
+              onSelect,
+              textOffset,
+            })
+          )}
+        </svg>
+      </div>
     </div>
   );
 }
@@ -284,8 +294,10 @@ type Scale = {
 const scales: readonly Scale[] = [
   { label: "1ms", factor: 1 },
   { label: "10ms", factor: 10 },
+  { label: "50ms", factor: 50 },
   { label: "100ms", factor: 100 },
   { label: "1s", factor: 1000 },
+  { label: "5s", factor: 5000 },
   { label: "10s", factor: 10000 },
   { label: "1min", factor: 60000 },
 ];
@@ -314,7 +326,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
         ({ sum, count }, value) => ({ sum: sum + value, count: count + 1 }),
         { sum: 0, count: 0 }
       );
-    const result = findClosestScale(scales, mean.sum / (mean.count * 2));
+    const result = findClosestScale(scales, (mean.sum / mean.count) * 0.75);
     console.log(mean, result);
     return result ?? scales[0];
   }, [plan]);
@@ -354,17 +366,26 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
 
   return (
     <div className="timeline">
-      <ButtonGroup aria-label="Timeline scale" style={{ marginBottom: 5 }}>
-        {scales.map((s, i) => (
-          <Button
-            key={s.label}
-            variant={scale.label === s.label ? "info" : "light"}
-            onClick={() => setScale(s)}
-          >
-            {s.label}
-          </Button>
-        ))}
-      </ButtonGroup>
+      <div className="scale-control">
+        <div>Diagram scale</div>
+        <ButtonGroup aria-label="Timeline scale" style={{ marginBottom: 5 }}>
+          {scales.map((s, i) => (
+            <Button
+              key={s.label}
+              variant={
+                scale.label === s.label
+                  ? "info"
+                  : s.label === defaultScale.label
+                  ? "outline-info"
+                  : "light"
+              }
+              onClick={() => setScale(s)}
+            >
+              {s.label}
+            </Button>
+          ))}
+        </ButtonGroup>
+      </div>
       <Rows
         rows={lines}
         factor={scale.factor}
