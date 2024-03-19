@@ -28,9 +28,7 @@
           "CONTEXT": 0,
           "PLANNING": 0
         },
-        "measures": [
-          "contributors.COUNT"
-        ],
+        "measures": ["contributors.COUNT"],
         "totalRetrievals": 2,
         "retrievalsCountByType": {
           "DistributedAggregatesRetrieval": 1,
@@ -54,36 +52,22 @@
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             },
             {
               "dimension": "TargetCurrency",
               "hierarchy": "TargetCurrency",
-              "level": [
-                "TargetCurrency"
-              ],
-              "path": [
-                "ZAR"
-              ]
+              "level": ["TargetCurrency"],
+              "path": ["ZAR"]
             }
           ],
-          "measures": [
-            "contributors.COUNT"
-          ],
+          "measures": ["contributors.COUNT"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "startTime": [
-              0
-            ],
-            "elapsedTime": [
-              1
-            ]
+            "startTime": [0],
+            "elapsedTime": [1]
           },
           "underlyingDataNodes": []
         },
@@ -95,45 +79,25 @@
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             },
             {
               "dimension": "TargetCurrency",
               "hierarchy": "TargetCurrency",
-              "level": [
-                "TargetCurrency"
-              ],
-              "path": [
-                "ZAR"
-              ]
+              "level": ["TargetCurrency"],
+              "path": ["ZAR"]
             }
           ],
-          "measures": [
-            "contributors.COUNT"
-          ],
+          "measures": ["contributors.COUNT"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "executionTime": [
-              3
-            ],
-            "startTime": [
-              1
-            ],
-            "broadcastingTime": [
-              13
-            ],
-            "processingTime": [
-              0
-            ],
-            "elapsedTime": [
-              2
-            ]
+            "executionTime": [3],
+            "startTime": [1],
+            "broadcastingTime": [13],
+            "processingTime": [0],
+            "elapsedTime": [2]
           },
           "underlyingDataNodes": [
             "Hal_EquityDerivativesCubeEURGBP-master_DATA_8982"
@@ -141,12 +105,8 @@
         }
       ],
       "dependencies": {
-        "-1": [
-          0
-        ],
-        "0": [
-          1
-        ]
+        "-1": [0],
+        "0": [1]
       }
     },
     {
@@ -156,11 +116,7 @@
         "epoch": "895",
         "branch": "master",
         "retrieverType": "ActivePivotAggregatesRetriever",
-        "partialProviders": [
-          "LEAF",
-          "BITMAP",
-          "LEAF"
-        ],
+        "partialProviders": ["LEAF", "BITMAP", "LEAF"],
         "mdxPass": "SelectPass_0",
         "clusterMemberId": "Hal_EquityDerivativesCubeEURGBP-master_DATA_8982",
         "contextValues": {
@@ -178,9 +134,7 @@
           "CONTEXT": 0,
           "PLANNING": 0
         },
-        "measures": [
-          "contributors.COUNT"
-        ],
+        "measures": ["contributors.COUNT"],
         "totalRetrievals": 3,
         "retrievalsCountByType": {
           "PrimitiveAnalysisAggregationRetrieval": 1,
@@ -205,36 +159,22 @@
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             },
             {
               "dimension": "TargetCurrency",
               "hierarchy": "TargetCurrency",
-              "level": [
-                "TargetCurrency"
-              ],
-              "path": [
-                "ZAR"
-              ]
+              "level": ["TargetCurrency"],
+              "path": ["ZAR"]
             }
           ],
-          "measures": [
-            "contributors.COUNT"
-          ],
+          "measures": ["contributors.COUNT"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "startTime": [
-              0
-            ],
-            "elapsedTime": [
-              1
-            ]
+            "startTime": [0],
+            "elapsedTime": [1]
           },
           "underlyingDataNodes": []
         },
@@ -246,38 +186,22 @@
             {
               "dimension": "Currency",
               "hierarchy": "Currency",
-              "level": [
-                "ALL",
-                "Currency"
-              ],
-              "path": [
-                "AllMember",
-                "*"
-              ]
+              "level": ["ALL", "Currency"],
+              "path": ["AllMember", "*"]
             },
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             }
           ],
-          "measures": [
-            "contributors.COUNT"
-          ],
+          "measures": ["contributors.COUNT"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "startTime": [
-              1
-            ],
-            "elapsedTime": [
-              2
-            ]
+            "startTime": [1],
+            "elapsedTime": [2]
           },
           "underlyingDataNodes": []
         },
@@ -289,52 +213,30 @@
             {
               "dimension": "Currency",
               "hierarchy": "Currency",
-              "level": [
-                "ALL",
-                "Currency"
-              ],
-              "path": [
-                "AllMember",
-                "*"
-              ]
+              "level": ["ALL", "Currency"],
+              "path": ["AllMember", "*"]
             },
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             }
           ],
-          "measures": [
-            "contributors.COUNT"
-          ],
+          "measures": ["contributors.COUNT"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "startTime": [
-              2
-            ],
-            "elapsedTime": [
-              3
-            ]
+            "startTime": [2],
+            "elapsedTime": [3]
           },
           "underlyingDataNodes": []
         }
       ],
       "dependencies": {
-        "-1": [
-          0
-        ],
-        "0": [
-          1
-        ],
-        "1": [
-          2
-        ]
+        "-1": [0],
+        "0": [1],
+        "1": [2]
       }
     }
   ]

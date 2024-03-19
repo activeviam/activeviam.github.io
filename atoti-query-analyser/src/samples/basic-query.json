@@ -8,11 +8,7 @@
         "epoch": "586",
         "branch": "master",
         "retrieverType": "ActivePivotAggregatesRetriever",
-        "partialProviders": [
-          "LEAF",
-          "BITMAP",
-          "LEAF"
-        ],
+        "partialProviders": ["LEAF", "BITMAP", "LEAF"],
         "mdxPass": "SelectPass_0",
         "contextValues": {
           "IBranch": "null",
@@ -29,9 +25,7 @@
           "CONTEXT": 0,
           "PLANNING": 0
         },
-        "measures": [
-          "pnl.SUM"
-        ],
+        "measures": ["pnl.SUM"],
         "totalRetrievals": 5,
         "retrievalsCountByType": {
           "PrimitiveAnalysisAggregationRetrieval": 2,
@@ -57,48 +51,28 @@
             {
               "dimension": "CounterParty",
               "hierarchy": "CounterParty",
-              "level": [
-                "ALL",
-                "CounterPartyGroup"
-              ],
-              "path": [
-                "AllMember",
-                "*"
-              ]
+              "level": ["ALL", "CounterPartyGroup"],
+              "path": ["AllMember", "*"]
             },
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             },
             {
               "dimension": "TargetCurrency",
               "hierarchy": "TargetCurrency",
-              "level": [
-                "TargetCurrency"
-              ],
-              "path": [
-                "ZAR"
-              ]
+              "level": ["TargetCurrency"],
+              "path": ["ZAR"]
             }
           ],
-          "measures": [
-            "pnl.SUM"
-          ],
+          "measures": ["pnl.SUM"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "startTime": [
-              0
-            ],
-            "elapsedTime": [
-              3
-            ]
+            "startTime": [0],
+            "elapsedTime": [3]
           },
           "underlyingDataNodes": []
         },
@@ -110,50 +84,28 @@
             {
               "dimension": "Currency",
               "hierarchy": "Currency",
-              "level": [
-                "ALL",
-                "Currency"
-              ],
-              "path": [
-                "AllMember",
-                "*"
-              ]
+              "level": ["ALL", "Currency"],
+              "path": ["AllMember", "*"]
             },
             {
               "dimension": "CounterParty",
               "hierarchy": "CounterParty",
-              "level": [
-                "ALL",
-                "CounterPartyGroup"
-              ],
-              "path": [
-                "AllMember",
-                "*"
-              ]
+              "level": ["ALL", "CounterPartyGroup"],
+              "path": ["AllMember", "*"]
             },
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             }
           ],
-          "measures": [
-            "pnl.SUM"
-          ],
+          "measures": ["pnl.SUM"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "startTime": [
-              4
-            ],
-            "elapsedTime": [
-              5
-            ]
+            "startTime": [4],
+            "elapsedTime": [5]
           },
           "underlyingDataNodes": []
         },
@@ -165,50 +117,28 @@
             {
               "dimension": "Currency",
               "hierarchy": "Currency",
-              "level": [
-                "ALL",
-                "Currency"
-              ],
-              "path": [
-                "AllMember",
-                "*"
-              ]
+              "level": ["ALL", "Currency"],
+              "path": ["AllMember", "*"]
             },
             {
               "dimension": "CounterParty",
               "hierarchy": "CounterParty",
-              "level": [
-                "ALL",
-                "CounterPartyGroup"
-              ],
-              "path": [
-                "AllMember",
-                "*"
-              ]
+              "level": ["ALL", "CounterPartyGroup"],
+              "path": ["AllMember", "*"]
             },
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             }
           ],
-          "measures": [
-            "pnl.SUM"
-          ],
+          "measures": ["pnl.SUM"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "startTime": [
-              5
-            ],
-            "elapsedTime": [
-              7
-            ]
+            "startTime": [5],
+            "elapsedTime": [7]
           },
           "underlyingDataNodes": []
         },
@@ -220,36 +150,22 @@
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             },
             {
               "dimension": "TargetCurrency",
               "hierarchy": "TargetCurrency",
-              "level": [
-                "TargetCurrency"
-              ],
-              "path": [
-                "ZAR"
-              ]
+              "level": ["TargetCurrency"],
+              "path": ["ZAR"]
             }
           ],
-          "measures": [
-            "pnl.SUM"
-          ],
+          "measures": ["pnl.SUM"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "startTime": [
-              0
-            ],
-            "elapsedTime": [
-              2
-            ]
+            "startTime": [0],
+            "elapsedTime": [2]
           },
           "underlyingDataNodes": []
         },
@@ -261,59 +177,32 @@
             {
               "dimension": "Currency",
               "hierarchy": "Currency",
-              "level": [
-                "ALL",
-                "Currency"
-              ],
-              "path": [
-                "AllMember",
-                "*"
-              ]
+              "level": ["ALL", "Currency"],
+              "path": ["AllMember", "*"]
             },
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             }
           ],
-          "measures": [
-            "pnl.SUM"
-          ],
+          "measures": ["pnl.SUM"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "startTime": [
-              2
-            ],
-            "elapsedTime": [
-              4
-            ]
+            "startTime": [2],
+            "elapsedTime": [4]
           },
           "underlyingDataNodes": []
         }
       ],
       "dependencies": {
-        "-1": [
-          0,
-          3
-        ],
-        "0": [
-          1
-        ],
-        "1": [
-          2
-        ],
-        "3": [
-          4
-        ],
-        "4": [
-          1
-        ]
+        "-1": [0, 3],
+        "0": [1],
+        "1": [2],
+        "3": [4],
+        "4": [1]
       }
     }
   ]

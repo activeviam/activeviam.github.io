@@ -115,10 +115,14 @@ export function optional<T>(
   rawValue: any,
   validator: (value: any) => T
 ): T | undefined {
-  try {
-    return validator(rawValue);
-  } catch (_) {
+  if (rawValue === undefined || rawValue === null) {
     return undefined;
+  } else {
+    try {
+      return validator(rawValue);
+    } catch (_) {
+      return undefined;
+    }
   }
 }
 
@@ -132,10 +136,12 @@ export function multiFieldValidate<T>(
 ): T {
   const errors = [];
   for (const rawValue of rawValues) {
-    try {
-      return validator(rawValue);
-    } catch (err) {
-      errors.push(err);
+    if (rawValue !== undefined && rawValue !== null) {
+      try {
+        return validator(rawValue);
+      } catch (err) {
+        errors.push(err);
+      }
     }
   }
   errors.forEach((err) => console.log(err));

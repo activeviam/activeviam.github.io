@@ -14,6 +14,7 @@ import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { QueryPlanMetadata } from "../../library/graphProcessors/extractMetadata";
 import { RetrievalGraph } from "../../library/dataStructures/json/retrieval";
 import { humanisticStringComparator } from "../../library/utilities/textUtils";
+import "./Summary.css";
 
 const TIMING_LABELS = new Map([
   ["CONTEXT", "Context creation time"],
@@ -200,6 +201,96 @@ function MapView<K, V>({
   );
 }
 
+type ComponentTimings = Readonly<{
+  database: number;
+  engine: number;
+  network: number;
+  providers: number;
+}>;
+
+const computeComponentTimings = (graph: RetrievalGraph): ComponentTimings => {
+  const operations = Array.from(graph.getVertices()).map((operation) =>
+    operation.getMetadata()
+  );
+  const databaseTime = operations
+    .filter((operation) => operation.type.includes("JIT"))
+    .flatMap((operation) => operation.timingInfo.elapsedTime ?? [])
+    .reduce((result, value) => result + value, 0);
+  const networkTime = operations
+    .flatMap((operation) => operation.timingInfo.broadcastingTime ?? [])
+    .reduce((result, value) => result + value, 0);
+  const providerTime = operations
+    .filter((operation) => operation.type.includes("Partial"))
+    .flatMap((operation) => operation.timingInfo.elapsedTime ?? [])
+    .reduce((result, value) => result + value, 0);
+  const engineTime = operations
+    .filter(
+      ({ type }) =>
+        !type.includes("Partial") &&
+        !type.includes("JIT")
+    )
+    .flatMap((operation) => operation.timingInfo.elapsedTime ?? [])
+    .reduce((result, value) => result + value, 0);
+  return {
+    network: networkTime,
+    database: databaseTime,
+    providers: providerTime,
+    engine: engineTime,
+  };
+};
+
+const createTimeFormatter = (
+  values: readonly number[]
+): ((time: number) => string) => {
+  const maxValue = Math.max(...values);
+  if (maxValue < 1000) {
+    return (t) => `${t} ms`;
+  } else if (maxValue < 60000) {
+    return (t) => `${Math.round(t / 1000).toFixed(2)} s`;
+  } else {
+    return (t) => `${Math.round(t / 60000).toFixed(1)} mins`;
+  }
+};
+
+const ComponentTimingView = ({
+  timings,
+}: Readonly<{ timings: ComponentTimings }>) => {
+  const sortedTimings = Object.entries(timings);
+  sortedTimings.sort(([, t1], [, t2]) => t2 - t1);
+  const timeFormatter = createTimeFormatter(sortedTimings.map(([, t]) => t));
+  const svgPositions = Object.entries(timings).reduce((acc, [label, time]) => {
+    acc.push({ label, time, lsum: acc.reduce((s, v) => s + v.time, time) });
+    return acc;
+  }, [] as Readonly<{ label: string; time: number; lsum: number }>[] as Readonly<{ label: string; time: number; lsum: number }>[]);
+  const totalSum = svgPositions.reduce((s, v) => s + v.time, 0);
+  const bars = svgPositions.map(({ label, lsum }) => (
+    <rect
+      key={label}
+      className={`component-timing-box timing-${label}`}
+      x={0}
+      y={0}
+      width={`${(lsum / totalSum) * 100}%`}
+      height={25}
+    />
+  ));
+  bars.reverse();
+
+  return (
+    <>
+      <svg width="100%" height="25px">
+        <g>{bars}</g>
+      </svg>
+      <ul className="component-timing">
+        {sortedTimings.map(([label, time]) => (
+          <li key={label} className={`component-timing timing-${label}`}>
+            <b>{label}</b>: {timeFormatter(time)}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
+
 /**
  * This React component is responsible for displaying information about one query.
  * */
@@ -228,6 +319,7 @@ function QuerySummaryView({
     });
     saveAs(blob, `ExecutionGraph ${info.mdxPass}.json`);
   };
+  const componentTimings = computeComponentTimings(graph);
 
   return (
     <div>
@@ -237,6 +329,12 @@ function QuerySummaryView({
         Total size of external retrieval results:{" "}
         {summary.totalExternalResultSize}
       </p>
+      {graph.getVertexCount() > 0 ? (
+        <>
+          <h4>Query timings by components</h4>
+          <ComponentTimingView timings={componentTimings} />
+        </>
+      ) : null}
       <h4>Query timings</h4>
       <Timings info={info} />
       <h4>Measures</h4>
@@ -450,8 +548,14 @@ export function Summary({
       rangeSharing: 0,
       retrieverType: "",
     };
+    // Build a fake plan with all retrievals from every plan
     const globalQuery: QueryPlan = {
-      graph: new RetrievalGraph(),
+      graph: queries
+        .flatMap((query) => Array.from(query.graph.getVertices()))
+        .reduce((g, node) => {
+          g.addVertex(node);
+          return g;
+        }, new RetrievalGraph()),
       planInfo: globalPlanInfo,
       queryFilters: [],
       querySummary: globalSummary,
@@ -466,7 +570,7 @@ export function Summary({
     summary = QuerySummaryView(rootQuery);
   }
   return (
-    <div>
+    <div id="summary">
       <h3>
         MDX pass {rootInfo.passType} ({currentQuery})
       </h3>
