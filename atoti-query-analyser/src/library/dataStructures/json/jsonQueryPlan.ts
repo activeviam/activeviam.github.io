@@ -45,7 +45,9 @@ function validateJsonQueryPlanOldFormat(
   );
   const dependencies = validateDependencyMap(rawQueryPlan.dependencies);
   const queryFilters = validateList(rawQueryPlan.queryFilters, validateFilter);
-  const querySummary = validateQuerySummary(rawQueryPlan.querySummary);
+  const querySummary = validateQuerySummary(
+    rawQueryPlan.querySummary ?? rawQueryPlan.planInfo
+  );
   const needFillTimingInfo = optional(
     rawQueryPlan.needFillTimingInfo,
     validateBoolean
@@ -72,15 +74,20 @@ function validateJsonQueryPlanModernFormat(
     validateAggregateRetrieval
   );
   const dependencies = validateDependencyMap(rawQueryPlan.dependencies);
-  const externalRetrievals = validateList(
-    rawQueryPlan.externalRetrievals,
-    validateExternalRetrieval
+  const externalRetrievals =
+    optional(rawQueryPlan.externalRetrievals, (retrievals) =>
+      validateList(retrievals, validateExternalRetrieval)
+    ) ?? [];
+  const externalDependencies =
+    optional(rawQueryPlan.externalDependencies, validateDependencyMap) ??
+    new Map();
+  const queryFilters =
+    optional(rawQueryPlan.queryFilters, (filters) =>
+      validateList(filters, validateFilter)
+    ) ?? [];
+  const querySummary = validateQuerySummary(
+    rawQueryPlan.querySummary ?? rawQueryPlan.planInfo
   );
-  const externalDependencies = validateDependencyMap(
-    rawQueryPlan.externalDependencies
-  );
-  const queryFilters = validateList(rawQueryPlan.queryFilters, validateFilter);
-  const querySummary = validateQuerySummary(rawQueryPlan.querySummary);
   const needFillTimingInfo = optional(
     rawQueryPlan.needFillTimingInfo,
     validateBoolean

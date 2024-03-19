@@ -8,11 +8,7 @@
         "epoch": "733",
         "branch": "master",
         "retrieverType": "ActivePivotAggregatesRetriever",
-        "partialProviders": [
-          "LEAF",
-          "BITMAP",
-          "LEAF"
-        ],
+        "partialProviders": ["LEAF", "BITMAP", "LEAF"],
         "mdxPass": "SelectPass_0",
         "contextValues": {
           "IBranch": "null",
@@ -29,9 +25,7 @@
           "CONTEXT": 0,
           "PLANNING": 0
         },
-        "measures": [
-          "pnl.SUM"
-        ],
+        "measures": ["pnl.SUM"],
         "totalRetrievals": 3,
         "retrievalsCountByType": {
           "PrimitiveAnalysisAggregationRetrieval": 1,
@@ -56,36 +50,22 @@
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             },
             {
               "dimension": "TargetCurrency",
               "hierarchy": "TargetCurrency",
-              "level": [
-                "TargetCurrency"
-              ],
-              "path": [
-                "ZAR"
-              ]
+              "level": ["TargetCurrency"],
+              "path": ["ZAR"]
             }
           ],
-          "measures": [
-            "pnl.SUM"
-          ],
+          "measures": ["pnl.SUM"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "startTime": [
-              0
-            ],
-            "elapsedTime": [
-              0
-            ]
+            "startTime": [0],
+            "elapsedTime": [0]
           },
           "underlyingDataNodes": []
         },
@@ -97,38 +77,22 @@
             {
               "dimension": "Currency",
               "hierarchy": "Currency",
-              "level": [
-                "ALL",
-                "Currency"
-              ],
-              "path": [
-                "AllMember",
-                "*"
-              ]
+              "level": ["ALL", "Currency"],
+              "path": ["AllMember", "*"]
             },
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             }
           ],
-          "measures": [
-            "pnl.SUM"
-          ],
+          "measures": ["pnl.SUM"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "startTime": [
-              0
-            ],
-            "elapsedTime": [
-              0
-            ]
+            "startTime": [0],
+            "elapsedTime": [0]
           },
           "underlyingDataNodes": []
         },
@@ -140,58 +104,30 @@
             {
               "dimension": "Currency",
               "hierarchy": "Currency",
-              "level": [
-                "ALL",
-                "Currency"
-              ],
-              "path": [
-                "AllMember",
-                "*"
-              ]
+              "level": ["ALL", "Currency"],
+              "path": ["AllMember", "*"]
             },
             {
               "dimension": "Time",
               "hierarchy": "HistoricalDates",
-              "level": [
-                "AsOfDate"
-              ],
-              "path": [
-                "2019-12-11"
-              ]
+              "level": ["AsOfDate"],
+              "path": ["2019-12-11"]
             }
           ],
-          "measures": [
-            "pnl.SUM"
-          ],
+          "measures": ["pnl.SUM"],
           "filterId": 0,
           "measureProvider": "SimpleMeasuresProvider",
           "timingInfo": {
-            "startTime": [
-              0,
-              0,
-              0,
-              0
-            ],
-            "elapsedTime": [
-              0,
-              0,
-              0,
-              0
-            ]
+            "startTime": [0, 0, 0, 0],
+            "elapsedTime": [0, 0, 0, 0]
           },
           "underlyingDataNodes": []
         }
       ],
       "dependencies": {
-        "-1": [
-          0
-        ],
-        "0": [
-          1
-        ],
-        "1": [
-          2
-        ]
+        "-1": [0],
+        "0": [1],
+        "1": [2]
       }
     }
   ]

@@ -1,7 +1,7 @@
 .drawer {
-  -webkit-box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 5px 0px 5px 0px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 5px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 5px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 5px 0px 5px 0px rgba(0, 0, 0, 0.75);
   background: rgb(255, 239, 223);
   width: 300px;
   height: calc(100vh - 80px);
