@@ -261,20 +261,24 @@ function Rows({
     2 * MARGIN + rows.length * (BOX_HEIGHT + BOX_MARGIN) - BOX_MARGIN;
   const width =
     2 * MARGIN +
-    (WIDTH_FACTOR *
+    WIDTH_FACTOR *
       Math.max(
         ...rows.map((row) => row[row.length - 1]).map((entry) => entry.end)
-      )) /
-      factor;
+      );
   const textOffset = computeTextOffset(rows.length);
   return (
     <div className="timeline-rows">
-      <svg width={width} height={height}>
+      <svg
+        width={width / factor}
+        height={height}
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio="none"
+      >
         {[...rows].reverse().map((row, idx) =>
           Row({
             row,
             idx,
-            factor,
+            factor: 1,
             graph,
             selection,
             onSelect,
@@ -286,7 +290,11 @@ function Rows({
   );
 }
 
-const scales = [
+type Scale = {
+  label: string;
+  factor: number;
+};
+const scales: readonly Scale[] = [
   { label: "1ms", factor: 1 },
   { label: "10ms", factor: 10 },
   { label: "100ms", factor: 100 },
@@ -294,6 +302,12 @@ const scales = [
   { label: "10s", factor: 10000 },
   { label: "1min", factor: 60000 },
 ];
+
+const findClosestScale = (values: readonly Scale[], factor: number) => {
+  // could be done with findLast but not available for some reasons
+  const candidates = values.filter((scale) => scale.factor <= factor);
+  return candidates[candidates.length - 1];
+};
 
 /**
  * This React component is responsible for displaying timeline and retrieval
@@ -306,16 +320,19 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
   const lines = useMemo(() => {
     return computeLines(plan);
   }, [plan]);
-  const mean = useMemo(() => {
-    return Array.from(plan.graph.getVertices())
+  const defaultScale = useMemo(() => {
+    const mean = Array.from(plan.graph.getVertices())
       .flatMap((v) => v.getMetadata().timingInfo.elapsedTime ?? [])
       .reduce(
         ({ sum, count }, value) => ({ sum: sum + value, count: count + 1 }),
         { sum: 0, count: 0 }
       );
+    const result = findClosestScale(scales, mean.sum / (mean.count * 2));
+    console.log(mean, result);
+    return result ?? scales[0];
   }, [plan]);
   const [selection, setSelection] = useState<RetrievalCursor[]>([]);
-  const [scale, setScale] = useState(scales[0]);
+  const [scale, setScale] = useState(defaultScale);
 
   useEffect(() => {
     setSelection([]);
@@ -350,7 +367,6 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
 
   return (
     <div className="timeline">
-      <p>{JSON.stringify(mean)}</p>
       <ButtonGroup aria-label="Timeline scale" style={{ marginBottom: 5 }}>
         {scales.map((s, i) => (
           <Button
