@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Button, ToggleButton } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Table from "react-bootstrap/Table";
@@ -286,14 +286,24 @@ const ComponentTimingView = ({
       />
       <ul className="component-timing">
         {sortedTimings.map(([label, time]) => {
-          const formatter = showRealTime
-            ? createTimeFormatter([time])
-            : timeFormatter;
-          return (
-            <li key={label} className={`component-timing timing-${label}`}>
-              <b>{label}</b>: {formatter(time)}
-            </li>
-          );
+          if (showRealTime) {
+            const formatter = createTimeFormatter([time]);
+
+            return (
+              <li key={label} className={`component-timing timing-${label}`}>
+                <b>{label}</b>: {formatter(time)}
+                {time >= 1000 ? (
+                  <span className="component-exact-timing">({time} ms)</span>
+                ) : null}
+              </li>
+            );
+          } else {
+            return (
+              <li key={label} className={`component-timing timing-${label}`}>
+                <b>{label}</b>: {timeFormatter(time)}
+              </li>
+            );
+          }
         })}
       </ul>
     </>
