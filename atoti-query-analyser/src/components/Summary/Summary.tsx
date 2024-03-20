@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, ToggleButton } from "react-bootstrap";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Table from "react-bootstrap/Table";
@@ -251,6 +251,8 @@ const createTimeFormatter = (
 const ComponentTimingView = ({
   timings,
 }: Readonly<{ timings: ComponentTimings }>) => {
+  const [showRealTime, setShowRealTime] = useState(false);
+
   const sortedTimings = Object.entries(timings);
   sortedTimings.sort(([, t1], [, t2]) => t2 - t1);
   const timeFormatter = createTimeFormatter(sortedTimings.map(([, t]) => t));
@@ -276,12 +278,23 @@ const ComponentTimingView = ({
       <svg width="100%" height="25px">
         <g>{bars}</g>
       </svg>
+      <Form.Check
+        type="switch"
+        checked={showRealTime}
+        onChange={(e) => setShowRealTime(e.target.checked)}
+        label="Show real timings"
+      />
       <ul className="component-timing">
-        {sortedTimings.map(([label, time]) => (
-          <li key={label} className={`component-timing timing-${label}`}>
-            <b>{label}</b>: {timeFormatter(time)}
-          </li>
-        ))}
+        {sortedTimings.map(([label, time]) => {
+          const formatter = showRealTime
+            ? createTimeFormatter([time])
+            : timeFormatter;
+          return (
+            <li key={label} className={`component-timing timing-${label}`}>
+              <b>{label}</b>: {formatter(time)}
+            </li>
+          );
+        })}
       </ul>
     </>
   );
