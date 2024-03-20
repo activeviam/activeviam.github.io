@@ -2,6 +2,8 @@ import React, { useMemo } from "react";
 import { useEffect, useState } from "react";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { Toast } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { Details } from "components/Details/Details";
 import { requireNonNull } from "../../library/utilities/util";
 import * as labels from "../../library/graphView/labels";
@@ -119,14 +121,12 @@ function Box({
   node,
   selection,
   onSelect,
-  textOffset,
 }: {
   rowIdx: number;
   entry: TimeRange;
   node: RetrievalVertex;
   selection: RetrievalCursor[];
   onSelect: (entry: TimeRange) => void;
-  textOffset: number;
 }) {
   if (node === undefined || entry.retrieval.id !== node.getUUID()) {
     throw new Error(
@@ -145,7 +145,21 @@ function Box({
       <rect
         key={key}
         className={`timeline-box ${selected ? "selected" : ""}`}
-        x={textOffset + MARGIN + x}
+        x={MARGIN + x}
+        y={MARGIN + rowIdx * (BOX_MARGIN + BOX_HEIGHT)}
+        width={w}
+        height={BOX_HEIGHT}
+        onClick={() => onSelect(entry)}
+      />
+    );
+  } else {
+    const x = entry.start * WIDTH_FACTOR + 2;
+    const w = 1;
+    return (
+      <rect
+        key={key}
+        className={`timeline-box ${selected ? "selected" : ""}`}
+        x={MARGIN + x}
         y={MARGIN + rowIdx * (BOX_MARGIN + BOX_HEIGHT)}
         width={w}
         height={BOX_HEIGHT}
@@ -153,19 +167,6 @@ function Box({
       />
     );
   }
-  const x = entry.start * WIDTH_FACTOR + 2;
-  const w = 1;
-  return (
-    <rect
-      key={key}
-      className={`timeline-box ${selected ? "selected" : ""}`}
-      x={textOffset + MARGIN + x}
-      y={MARGIN + rowIdx * (BOX_MARGIN + BOX_HEIGHT)}
-      width={w}
-      height={BOX_HEIGHT}
-      onClick={() => onSelect(entry)}
-    />
-  );
 }
 
 /**
@@ -177,14 +178,12 @@ function Row({
   graph,
   selection,
   onSelect,
-  textOffset,
 }: {
   row: TimeRange[];
   idx: number;
   graph: RetrievalGraph;
   selection: RetrievalCursor[];
   onSelect: (entry: TimeRange) => void;
-  textOffset: number;
 }) {
   const boxes = row.map((entry) =>
     Box({
@@ -193,22 +192,10 @@ function Row({
       node: graph.getVertexByUUID(entry.retrieval.id),
       selection,
       onSelect,
-      textOffset,
     })
   );
   return (
     <g className="timeline-row" key={idx}>
-      <text
-        className="timeline-index"
-        x={textOffset / 2}
-        y={MARGIN + idx * (BOX_MARGIN + BOX_HEIGHT) + BOX_HEIGHT / 2}
-        width={textOffset}
-        height={BOX_HEIGHT}
-        dominantBaseline={"middle"}
-        textAnchor={"middle"}
-      >
-        {idx + 1}
-      </text>
       {boxes}
     </g>
   );
@@ -231,11 +218,13 @@ const computeTextOffset = (rowCount: number) => {
  * */
 function Rows({
   rows,
+  factor,
   graph,
   selection,
   onSelect,
 }: {
   rows: TimeRange[][];
+  factor: number;
   graph: RetrievalGraph;
   selection: RetrievalCursor[];
   onSelect: (entry: TimeRange) => void;
@@ -251,21 +240,67 @@ function Rows({
   const textOffset = computeTextOffset(rows.length);
   return (
     <div className="timeline-rows">
-      <svg width={width} height={height}>
-        {[...rows].reverse().map((row, idx) =>
-          Row({
-            row,
-            idx,
-            graph,
-            selection,
-            onSelect,
-            textOffset,
-          })
-        )}
-      </svg>
+      <div>
+        <svg viewBox={`0 0 ${textOffset} ${height}`} width={textOffset}>
+          {rows.map((_, idx) => (
+            <g className="timeline-row" key={idx}>
+              <text
+                className="timeline-index"
+                x={textOffset / 2}
+                y={MARGIN + idx * (BOX_MARGIN + BOX_HEIGHT) + BOX_HEIGHT / 2}
+                width={textOffset}
+                height={BOX_HEIGHT}
+                dominantBaseline={"middle"}
+                textAnchor={"middle"}
+              >
+                {idx + 1}
+              </text>
+            </g>
+          ))}
+        </svg>
+      </div>
+      <div>
+        <svg
+          width={width / factor}
+          height={height}
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="none"
+        >
+          {[...rows].reverse().map((row, idx) =>
+            Row({
+              row,
+              idx,
+              graph,
+              selection,
+              onSelect,
+            })
+          )}
+        </svg>
+      </div>
     </div>
   );
 }
+
+type Scale = {
+  label: string;
+  factor: number;
+};
+const scales: readonly Scale[] = [
+  { label: "1ms", factor: 1 },
+  { label: "10ms", factor: 10 },
+  { label: "50ms", factor: 50 },
+  { label: "100ms", factor: 100 },
+  { label: "1s", factor: 1000 },
+  { label: "5s", factor: 5000 },
+  { label: "10s", factor: 10000 },
+  { label: "1min", factor: 60000 },
+];
+
+const findClosestScale = (values: readonly Scale[], factor: number) => {
+  // could be done with findLast but not available for some reasons
+  const candidates = values.filter((scale) => scale.factor <= factor);
+  return candidates[candidates.length - 1];
+};
 
 /**
  * This React component is responsible for displaying timeline and retrieval
@@ -278,7 +313,19 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
   const lines = useMemo(() => {
     return computeLines(plan);
   }, [plan]);
+  const defaultScale = useMemo(() => {
+    const mean = Array.from(plan.graph.getVertices())
+      .flatMap((v) => v.getMetadata().timingInfo.elapsedTime ?? [])
+      .reduce(
+        ({ sum, count }, value) => ({ sum: sum + value, count: count + 1 }),
+        { sum: 0, count: 0 }
+      );
+    // Find the scale close enough to the mean, but accepting some smaller bars
+    const result = findClosestScale(scales, (mean.sum / mean.count) * 0.75);
+    return result ?? scales[0];
+  }, [plan]);
   const [selection, setSelection] = useState<RetrievalCursor[]>([]);
+  const [scale, setScale] = useState(defaultScale);
 
   useEffect(() => {
     setSelection([]);
@@ -313,8 +360,29 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
 
   return (
     <div className="timeline">
+      <div className="scale-control">
+        <div style={{ marginRight: 5 }}>Diagram scale</div>
+        <ButtonGroup aria-label="Timeline scale" style={{ marginBottom: 5 }}>
+          {scales.map((s) => (
+            <Button
+              key={s.label}
+              variant={
+                scale.label === s.label
+                  ? "info"
+                  : s.label === defaultScale.label
+                  ? "outline-info"
+                  : "light"
+              }
+              onClick={() => setScale(s)}
+            >
+              {s.label}
+            </Button>
+          ))}
+        </ButtonGroup>
+      </div>
       <Rows
         rows={lines}
+        factor={scale.factor}
         graph={plan.graph}
         selection={selection}
         onSelect={selectBox}
