@@ -325,25 +325,29 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
     return result ?? scales[0];
   }, [plan]);
   const [selection, setSelection] = useState<RetrievalCursor[]>([]);
+  const [focused, setFocused] = useState<RetrievalCursor | null>(null);
   const [scale, setScale] = useState(defaultScale);
 
   useEffect(() => {
     setSelection([]);
+    setFocused(null);
   }, [plan]);
 
   const selectBox = (entry: TimeRange) => {
-    const changed = [...selection];
-    const idx = selection.findIndex(
-      (cursor) =>
-        cursor.id === entry.retrieval.id &&
-        cursor.partition === entry.retrieval.partition
-    );
-    if (idx >= 0) {
-      changed.splice(idx, 1);
-    } else {
-      changed.push(entry.retrieval);
-    }
-    setSelection(changed);
+    setSelection((entries) => {
+      const changed = [...entries];
+      const idx = selection.findIndex(
+        (cursor) =>
+          cursor.id === entry.retrieval.id &&
+          cursor.partition === entry.retrieval.partition
+      );
+      if (idx >= 0) {
+        changed.splice(idx, 1);
+      } else {
+        changed.push(entry.retrieval);
+      }
+      return changed;
+    });
   };
 
   const closeBox = (retrieval: RetrievalCursor) => {
