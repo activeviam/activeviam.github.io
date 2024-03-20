@@ -38,6 +38,7 @@
 .timeline-details .entry {
   display: inline-block !important;
   vertical-align: top;
+  max-width: 500px;
 }
 
 .timeline-details .entry + .entry {
@@ -45,7 +46,7 @@
 }
 
 .timeline-details .body {
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .timeline-details .body ul {

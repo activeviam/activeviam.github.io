@@ -57,6 +57,10 @@ function renderPathPart(pathPart: string | string[]): string {
   }
 }
 
+const isOnlyAllMember = (axisLocation: CubeLocation): boolean => {
+  return axisLocation.path.length === 1 && axisLocation.level[0] === "ALL";
+};
+
 /**
  * React component that renders a list of {@link "library/dataStructures/json/cubeLocation"!CubeLocation}.
  * @param attributes - React JSX attributes
@@ -67,19 +71,24 @@ function LocationView({ location }: { location: CubeLocation[] }) {
     <li>
       Location:
       <ul>
-        {location.map((l) => (
-          <li key={`${l.dimension}@${l.hierarchy}`}>
-            {l.dimension}: {l.hierarchy}
-            <ul>
-              {l.level.map((lev, i) => (
-                <li key={lev}>
-                  <b>{lev + ": "}</b>
-                  {renderPathPart(l.path[i])}
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
+        {location.map((l) =>
+          isOnlyAllMember(l) ? null : (
+            <li key={`${l.dimension}@${l.hierarchy}`}>
+              {l.dimension}: {l.hierarchy}
+              <ul>
+                {l.level.map((lev, i) =>
+                  i === 0 && lev === "ALL" ? null : (
+                    <li key={lev}>
+                      <span className="level-depth">[{i}]</span>
+                      <b>{lev + ": "}</b>
+                      {renderPathPart(l.path[i])}
+                    </li>
+                  )
+                )}
+              </ul>
+            </li>
+          )
+        )}
       </ul>
     </li>
   );
