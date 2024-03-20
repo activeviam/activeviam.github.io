@@ -20,6 +20,7 @@ function cleanseUrl(url: string) {
 
 const supportedApis = ["5", "6", "8"];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const findServiceUrl = (apis: any) => {
   const pivotApi = apis["activeviam/pivot"] ?? apis.pivot;
   if (pivotApi !== undefined) {
