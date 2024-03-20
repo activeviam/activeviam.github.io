@@ -121,14 +121,12 @@ function Box({
   node,
   selection,
   onSelect,
-  textOffset,
 }: {
   rowIdx: number;
   entry: TimeRange;
   node: RetrievalVertex;
   selection: RetrievalCursor[];
   onSelect: (entry: TimeRange) => void;
-  textOffset: number;
 }) {
   if (node === undefined || entry.retrieval.id !== node.getUUID()) {
     throw new Error(
@@ -147,7 +145,7 @@ function Box({
       <rect
         key={key}
         className={`timeline-box ${selected ? "selected" : ""}`}
-        x={textOffset + MARGIN + x}
+        x={MARGIN + x}
         y={MARGIN + rowIdx * (BOX_MARGIN + BOX_HEIGHT)}
         width={w}
         height={BOX_HEIGHT}
@@ -161,7 +159,7 @@ function Box({
       <rect
         key={key}
         className={`timeline-box ${selected ? "selected" : ""}`}
-        x={textOffset + MARGIN + x}
+        x={MARGIN + x}
         y={MARGIN + rowIdx * (BOX_MARGIN + BOX_HEIGHT)}
         width={w}
         height={BOX_HEIGHT}
@@ -180,14 +178,12 @@ function Row({
   graph,
   selection,
   onSelect,
-  textOffset,
 }: {
   row: TimeRange[];
   idx: number;
   graph: RetrievalGraph;
   selection: RetrievalCursor[];
   onSelect: (entry: TimeRange) => void;
-  textOffset: number;
 }) {
   const boxes = row.map((entry) =>
     Box({
@@ -196,7 +192,6 @@ function Row({
       node: graph.getVertexByUUID(entry.retrieval.id),
       selection,
       onSelect,
-      textOffset: 0,
     })
   );
   return (
@@ -278,7 +273,6 @@ function Rows({
               graph,
               selection,
               onSelect,
-              textOffset,
             })
           )}
         </svg>
@@ -369,7 +363,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
       <div className="scale-control">
         <div style={{ marginRight: 5 }}>Diagram scale</div>
         <ButtonGroup aria-label="Timeline scale" style={{ marginBottom: 5 }}>
-          {scales.map((s, i) => (
+          {scales.map((s) => (
             <Button
               key={s.label}
               variant={
