@@ -372,15 +372,28 @@ const findClosestScale = (values: readonly Scale[], factor: number) => {
   return candidates[candidates.length - 1];
 };
 
+type FocusControl = {
+  item: RetrievalCursor | null;
+  showParents: boolean;
+  showChildren: boolean;
+};
+
 const focusOnItem = (
-  focused: RetrievalCursor | null,
+  state: FocusControl,
   entry: RetrievalCursor
-): RetrievalCursor | null => entry;
+): FocusControl => ({
+  item: entry,
+  showChildren: false,
+  showParents: false,
+});
 
 const unfocusOnItem = (
-  focused: RetrievalCursor | null,
+  state: FocusControl,
   entry: RetrievalCursor
-): RetrievalCursor | null => (areEqualCursors(focused, entry) ? null : focused);
+): FocusControl =>
+  areEqualCursors(state.item, entry)
+    ? { item: null, showParents: false, showChildren: false }
+    : state;
 
 const computeChildRetrievals = (
   graph: RetrievalGraph,
@@ -456,13 +469,16 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
     return result ?? scales[0];
   }, [plan]);
   const [selection, setSelection] = useState<RetrievalCursor[]>([]);
-  const [focusedItem, setFocused] = useState<RetrievalCursor | null>(null);
+  const [{ item: focusedItem, showParents, showChildren }, setFocused] =
+    useState<FocusControl>({
+      item: null,
+      showChildren: false,
+      showParents: false,
+    });
   const focusState = useMemo(
     () => computeFocusState(plan, focusedItem),
     [plan, focusedItem]
   );
-  const [showParents, setShowParents] = useState(false);
-  const [showChildren, setShowChildren] = useState(false);
   const displayFocusState = useMemo(
     () => ({
       ...focusState,
@@ -475,7 +491,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
 
   useEffect(() => {
     setSelection([]);
-    setFocused(null);
+    setFocused({ item: null, showChildren: false, showParents: false });
   }, [plan]);
 
   const selectBox = ({ retrieval }: TimeRange) => {
@@ -548,7 +564,6 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
                 onClose={() => closeBox(key)}
               >
                 <Toast.Header>
-                  {kind}&nbsp;
                   <span className="retrieval-id mr-auto">#{retrievalId}</span>
                   &nbsp;
                   <span className="retrieval-type">{labels.type(type)}</span>
@@ -564,7 +579,12 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
                           : "outline-secondary"
                       }
                       disabled={!isFocused}
-                      onClick={() => setShowParents((value) => !value)}
+                      onClick={() =>
+                        setFocused((state) => ({
+                          ...state,
+                          showParents: !state.showParents,
+                        }))
+                      }
                     >
                       {"<"}
                     </Button>
@@ -572,8 +592,6 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
                       {...buttonProps}
                       onClick={() => {
                         setFocused((state) => focusOnItem(state, key));
-                        setShowChildren(false);
-                        setShowParents(false);
                       }}
                     >
                       Focus
@@ -585,7 +603,12 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
                           : "outline-secondary"
                       }
                       disabled={!isFocused}
-                      onClick={() => setShowChildren((value) => !value)}
+                      onClick={() =>
+                        setFocused((state) => ({
+                          ...state,
+                          showChildren: !state.showChildren,
+                        }))
+                      }
                     >
                       {">"}
                     </Button>
