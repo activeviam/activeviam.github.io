@@ -411,8 +411,9 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
               >
                 <Toast.Header>
                   {kind}&nbsp;
-                  <strong className="mr-auto">#{retrievalId}</strong>
-                  <small>{labels.type(type)}</small>
+                  <span className="retrieval-id mr-auto">#{retrievalId}</span>
+                  &nbsp;
+                  <span className="retrieval-type">{labels.type(type)}</span>
                 </Toast.Header>
                 <Toast.Body className="body">
                   {Details({
