@@ -382,6 +382,23 @@ const unfocusOnItem = (
   entry: RetrievalCursor
 ): RetrievalCursor | null => (areEqualCursors(focused, entry) ? null : focused);
 
+const computeChildRetrievals = (
+  graph: RetrievalGraph,
+  { id }: RetrievalCursor
+): RetrievalCursor[] => {
+  const childVertices = Array.from(
+    graph.getOutgoingEdges(graph.getVertexByUUID(id))
+  ).map((edge) => edge.getEnd());
+  const uniqueVertices = new Set(childVertices);
+  return Array.from(uniqueVertices).flatMap(
+    (node) =>
+      node.getMetadata().timingInfo.elapsedTime?.map((_, i) => ({
+        id: node.getUUID(),
+        partition: i,
+      })) ?? []
+  );
+};
+
 const computeFocusState = (
   plan: QueryPlan,
   focusedItem: RetrievalCursor | null
@@ -403,8 +420,8 @@ const computeFocusState = (
           id: focusedItem.id,
           partition: i,
         })) ?? [];
-    const parents: RetrievalCursor[] = [];
-    const children: RetrievalCursor[] = [];
+    const parents = computeChildRetrievals(plan.graph, focusedItem);
+    const children = computeChildRetrievals(plan.graph.inverse(), focusedItem);
 
     const result = {
       focused: focusedItem,
