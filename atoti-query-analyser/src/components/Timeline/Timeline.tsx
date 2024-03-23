@@ -345,15 +345,14 @@ const findClosestScale = (values: readonly Scale[], factor: number) => {
 };
 
 const focusOnItem = (
-  state: FocusState,
+  focused: RetrievalCursor | null,
   entry: RetrievalCursor
-): FocusState => ({
-  ...state,
-  focused: entry,
-});
+): RetrievalCursor | null => entry;
 
-const unfocusOnItem = (state: FocusState, entry: RetrievalCursor): FocusState =>
-  areEqualCursors(state.focused, entry) ? { ...state, focused: null } : state;
+const unfocusOnItem = (
+  focused: RetrievalCursor | null,
+  entry: RetrievalCursor
+): RetrievalCursor | null => (areEqualCursors(focused, entry) ? null : focused);
 
 /**
  * This React component is responsible for displaying timeline and retrieval
@@ -378,23 +377,28 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
     return result ?? scales[0];
   }, [plan]);
   const [selection, setSelection] = useState<RetrievalCursor[]>([]);
-  const [focusState, setFocused] = useState<FocusState>({
-    focused: null,
-    siblings: [],
-    parents: [],
-    children: [],
-  });
+  const [focusedItem, setFocused] = useState<RetrievalCursor | null>(null);
+  const focusState = useMemo(() => {
+    return {
+      focused: focusedItem,
+      siblings: [],
+      parents: [],
+      children: [],
+    };
+  }, [plan, focusedItem]);
   const [scale, setScale] = useState(defaultScale);
 
   useEffect(() => {
     setSelection([]);
-    setFocused((state) => ({ ...state, focused: null }));
+    setFocused(null);
   }, [plan]);
 
   const selectBox = ({ retrieval }: TimeRange) => {
     const isSelected = selection.some((cursor) =>
       areEqualCursors(cursor, retrieval)
     );
+    // With this approach, it is possible to have stacked updates that mix the selection and focus
+    // But we can leave with it for now
     if (isSelected) {
       setSelection((entries) =>
         entries.filter((entry) => !areEqualCursors(retrieval, entry))
@@ -473,7 +477,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
                     size="sm"
                     {...buttonProps}
                     onClick={() =>
-                      setFocused((state) => ({ ...state, focused: key }))
+                      setFocused((state) => focusOnItem(state, key))
                     }
                   >
                     Focus
