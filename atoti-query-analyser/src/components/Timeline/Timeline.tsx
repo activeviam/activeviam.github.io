@@ -536,10 +536,10 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
             const retrievalId = metadata.retrievalId;
             const type = "type" in metadata ? (metadata.type as string) : kind;
             const timingInfo = metadata.timingInfo;
-            const buttonProps = areEqualCursors(focusState.focused, key)
+            const isFocused = areEqualCursors(focusedItem, key);
+            const buttonProps = isFocused
               ? { variant: "warning", disabled: true }
               : { variant: "outline-warning" };
-            const isFocused = areEqualCursors(focusedItem, key);
 
             return (
               <Toast
@@ -570,9 +570,11 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
                     </Button>
                     <Button
                       {...buttonProps}
-                      onClick={() =>
-                        setFocused((state) => focusOnItem(state, key))
-                      }
+                      onClick={() => {
+                        setFocused((state) => focusOnItem(state, key));
+                        setShowChildren(false);
+                        setShowParents(false);
+                      }}
                     >
                       Focus
                     </Button>
