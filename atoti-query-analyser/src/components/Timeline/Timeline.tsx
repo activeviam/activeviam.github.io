@@ -124,22 +124,50 @@ type FocusState = {
   children: RetrievalCursor[];
 };
 
+type RelativeStateConfig = {
+  classes: readonly string[];
+  match: (
+    selection: readonly RetrievalCursor[],
+    focus: Readonly<FocusState>
+  ) => readonly RetrievalCursor[];
+};
+
+const relativeStates: readonly RelativeStateConfig[] = [
+  {
+    classes: ["focused"],
+    match: (_, focus) => (focus.focused ? [focus.focused] : []),
+  },
+  {
+    classes: ["selected"],
+    match: (selection) => selection,
+  },
+  {
+    classes: ["sibling"],
+    match: (_, focus) => focus.siblings,
+  },
+  {
+    classes: ["parent"],
+    match: (_, focus) => focus.parents,
+  },
+  {
+    classes: ["child"],
+    match: (_, focus) => focus.children,
+  },
+];
+
 const computeRetrievalClasses = (
-  retrieval: RetrievalCursor,
-  selection: RetrievalCursor[],
-  focus: FocusState
-): string[] => {
-  if (areEqualCursors(focus.focused, retrieval)) {
-    return ["focused"];
+  retrieval: Readonly<RetrievalCursor>,
+  selection: readonly RetrievalCursor[],
+  focus: Readonly<FocusState>
+): readonly string[] => {
+  for (const state of relativeStates) {
+    const refs = state.match(selection, focus);
+    const isIncluded = refs.some((entry) => areEqualCursors(retrieval, entry));
+    if (isIncluded) {
+      return state.classes;
+    }
   }
-  const isSelected = selection.some((entry) =>
-    areEqualCursors(retrieval, entry)
-  );
-  if (isSelected) {
-    return ["selected"];
-  } else {
-    return [];
-  }
+  return [];
 };
 
 /**
