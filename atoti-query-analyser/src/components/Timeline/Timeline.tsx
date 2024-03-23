@@ -461,6 +461,16 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
     () => computeFocusState(plan, focusedItem),
     [plan, focusedItem]
   );
+  const [showParents, setShowParents] = useState(false);
+  const [showChildren, setShowChildren] = useState(false);
+  const displayFocusState = useMemo(
+    () => ({
+      ...focusState,
+      parents: showParents ? focusState.parents : [],
+      children: showChildren ? focusState.children : [],
+    }),
+    [focusState, showParents, showChildren]
+  );
   const [scale, setScale] = useState(defaultScale);
 
   useEffect(() => {
@@ -469,20 +479,13 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
   }, [plan]);
 
   const selectBox = ({ retrieval }: TimeRange) => {
-    const isSelected = selection.some((cursor) =>
-      areEqualCursors(cursor, retrieval)
-    );
-    // With this approach, it is possible to have stacked updates that mix the selection and focus
-    // But we can leave with it for now
-    if (isSelected) {
-      setSelection((entries) =>
-        entries.filter((entry) => !areEqualCursors(retrieval, entry))
+    setSelection((entries) => {
+      const isSelected = entries.some((cursor) =>
+        areEqualCursors(cursor, retrieval)
       );
-      setFocused((state) => unfocusOnItem(state, retrieval));
-    } else {
-      setSelection((entries) => [...entries, retrieval]);
-      setFocused((state) => focusOnItem(state, retrieval));
-    }
+      return isSelected ? entries : [...entries, retrieval];
+    });
+    setFocused((state) => focusOnItem(state, retrieval));
   };
 
   const closeBox = (retrieval: RetrievalCursor) => {
@@ -520,7 +523,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
         graph={plan.graph}
         selection={selection}
         onSelect={selectBox}
-        focus={focusState}
+        focus={displayFocusState}
       />
       <div className="timeline-details">
         <div className="d-flex">
@@ -536,6 +539,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
             const buttonProps = areEqualCursors(focusState.focused, key)
               ? { variant: "warning", disabled: true }
               : { variant: "outline-warning" };
+            const isFocused = areEqualCursors(focusedItem, key);
 
             return (
               <Toast
@@ -548,15 +552,42 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
                   <span className="retrieval-id mr-auto">#{retrievalId}</span>
                   &nbsp;
                   <span className="retrieval-type">{labels.type(type)}</span>
-                  <Button
+                  <ButtonGroup
+                    aria-label="Focus history"
                     size="sm"
-                    {...buttonProps}
-                    onClick={() =>
-                      setFocused((state) => focusOnItem(state, key))
-                    }
+                    style={{ marginLeft: 5 }}
                   >
-                    Focus
-                  </Button>
+                    <Button
+                      variant={
+                        isFocused && showParents
+                          ? "secondary"
+                          : "outline-secondary"
+                      }
+                      disabled={!isFocused}
+                      onClick={() => setShowParents((value) => !value)}
+                    >
+                      {"<"}
+                    </Button>
+                    <Button
+                      {...buttonProps}
+                      onClick={() =>
+                        setFocused((state) => focusOnItem(state, key))
+                      }
+                    >
+                      Focus
+                    </Button>
+                    <Button
+                      variant={
+                        isFocused && showChildren
+                          ? "secondary"
+                          : "outline-secondary"
+                      }
+                      disabled={!isFocused}
+                      onClick={() => setShowChildren((value) => !value)}
+                    >
+                      {">"}
+                    </Button>
+                  </ButtonGroup>
                 </Toast.Header>
                 <Toast.Body className="body">
                   {Details({
