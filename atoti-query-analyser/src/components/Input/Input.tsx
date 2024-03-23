@@ -474,7 +474,6 @@ export function Input({
                 }
                 setInput(result);
                 setProcessing(false);
-                console.log(result.length);
               };
               reader.onerror = (readerEvent) => {
                 showError(

@@ -17,7 +17,6 @@ function splitIntoLayers(graph: D3Graph): D3Node[][] {
   }
 
   const sortedKeys = Array.from(layersMap.keys()).sort((l, r) => r - l); // Roots has highest Y coordinates
-  console.log(sortedKeys);
 
   const layers = sortedKeys.map((key) => layersMap.get(key) as D3Node[]);
   layers.forEach((layer) =>
