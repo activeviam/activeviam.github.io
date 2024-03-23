@@ -28,7 +28,11 @@
 }
 
 .timeline-box.selected {
-  fill: rgb(255, 211, 116);
+  fill: rgb(218, 179, 5);
+}
+
+.timeline-box.focused {
+  fill: rgb(255, 223, 43);
 }
 
 .timeline-details {

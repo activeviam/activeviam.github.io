@@ -112,6 +112,36 @@ const BOX_HEIGHT = 25;
 const BOX_MARGIN = 5;
 const WIDTH_FACTOR = 5;
 
+const areEqualCursors = (
+  focused: RetrievalCursor | null,
+  item: RetrievalCursor
+) => focused?.id === item.id && focused?.partition === item.partition;
+
+type FocusState = {
+  focused: RetrievalCursor | null;
+  siblings: RetrievalCursor[];
+  parents: RetrievalCursor[];
+  children: RetrievalCursor[];
+};
+
+const computeRetrievalClasses = (
+  retrieval: RetrievalCursor,
+  selection: RetrievalCursor[],
+  focus: FocusState
+): string[] => {
+  if (areEqualCursors(focus.focused, retrieval)) {
+    return ["focused"];
+  }
+  const isSelected = selection.some((entry) =>
+    areEqualCursors(retrieval, entry)
+  );
+  if (isSelected) {
+    return ["selected"];
+  } else {
+    return [];
+  }
+};
+
 /**
  * This React component is responsible for rendering single retrieval.
  * */
@@ -135,18 +165,22 @@ function Box({
       `Inconsistent state: ${JSON.stringify(entry)} / ${JSON.stringify(node)}`
     );
   }
-  const selected = selection.some(
-    ({ id, partition }) =>
-      entry.retrieval.id === id && entry.retrieval.partition === partition
-  );
   const key = `${entry.retrieval.id}-${entry.retrieval.partition}`;
+  const stateClasses = computeRetrievalClasses(
+    entry.retrieval,
+    selection,
+    focus
+  );
+  const className = ["timeline-box", ...stateClasses].join(" ");
+
   if (entry.start < entry.end) {
     const x = (entry.start + 1) * WIDTH_FACTOR - 1;
     const w = (entry.end - entry.start - 1) * WIDTH_FACTOR + 2;
+
     return (
       <rect
         key={key}
-        className={`timeline-box ${selected ? "selected" : ""}`}
+        className={className}
         x={MARGIN + x}
         y={MARGIN + rowIdx * (BOX_MARGIN + BOX_HEIGHT)}
         width={w}
@@ -160,7 +194,7 @@ function Box({
     return (
       <rect
         key={key}
-        className={`timeline-box ${selected ? "selected" : ""}`}
+        className={className}
         x={MARGIN + x}
         y={MARGIN + rowIdx * (BOX_MARGIN + BOX_HEIGHT)}
         width={w}
@@ -196,6 +230,7 @@ function Row({
       node: graph.getVertexByUUID(entry.retrieval.id),
       selection,
       onSelect,
+      focus,
     })
   );
   return (
@@ -309,25 +344,16 @@ const findClosestScale = (values: readonly Scale[], factor: number) => {
   return candidates[candidates.length - 1];
 };
 
-const areEqualCursors = (
-  focused: RetrievalCursor | null,
-  item: RetrievalCursor
-) => focused?.id === item.id && focused?.partition === item.partition;
-
-type FocusState = {
-  focused: RetrievalCursor | null;
-  siblings: RetrievalCursor[];
-  parents: RetrievalCursor[];
-  children: RetrievalCursor[];
-};
-
-const toggleFocus = (
+const focusOnItem = (
   state: FocusState,
   entry: RetrievalCursor
 ): FocusState => ({
   ...state,
-  focused: areEqualCursors(state.focused, entry) ? null : entry,
+  focused: entry,
 });
+
+const unfocusOnItem = (state: FocusState, entry: RetrievalCursor): FocusState =>
+  areEqualCursors(state.focused, entry) ? { ...state, focused: null } : state;
 
 /**
  * This React component is responsible for displaying timeline and retrieval
@@ -366,28 +392,25 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
   }, [plan]);
 
   const selectBox = ({ retrieval }: TimeRange) => {
-    setSelection((entries) => {
-      const changed = [...entries];
-      const idx = selection.findIndex((cursor) =>
-        areEqualCursors(cursor, retrieval)
+    const isSelected = selection.some((cursor) =>
+      areEqualCursors(cursor, retrieval)
+    );
+    if (isSelected) {
+      setSelection((entries) =>
+        entries.filter((entry) => !areEqualCursors(retrieval, entry))
       );
-      if (idx >= 0) {
-        // Remove box from the list
-        changed.splice(idx, 1);
-      } else {
-        // Add box to the list
-        changed.push(retrieval);
-      }
-      return changed;
-    });
-    setFocused((state) => toggleFocus(state, retrieval));
+      setFocused((state) => unfocusOnItem(state, retrieval));
+    } else {
+      setSelection((entries) => [...entries, retrieval]);
+      setFocused((state) => focusOnItem(state, retrieval));
+    }
   };
 
   const closeBox = (retrieval: RetrievalCursor) => {
     setSelection((entries) => {
       return entries.filter((item) => !areEqualCursors(retrieval, item));
     });
-    setFocused((state) => toggleFocus(state, retrieval));
+    setFocused((state) => unfocusOnItem(state, retrieval));
   };
 
   return (
