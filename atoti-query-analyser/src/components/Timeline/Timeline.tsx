@@ -121,12 +121,14 @@ function Box({
   node,
   selection,
   onSelect,
+  focus,
 }: {
   rowIdx: number;
   entry: TimeRange;
   node: RetrievalVertex;
   selection: RetrievalCursor[];
   onSelect: (entry: TimeRange) => void;
+  focus: FocusState;
 }) {
   if (node === undefined || entry.retrieval.id !== node.getUUID()) {
     throw new Error(
@@ -178,12 +180,14 @@ function Row({
   graph,
   selection,
   onSelect,
+  focus,
 }: {
   row: TimeRange[];
   idx: number;
   graph: RetrievalGraph;
   selection: RetrievalCursor[];
   onSelect: (entry: TimeRange) => void;
+  focus: FocusState;
 }) {
   const boxes = row.map((entry) =>
     Box({
@@ -222,12 +226,14 @@ function Rows({
   graph,
   selection,
   onSelect,
+  focus,
 }: {
   rows: TimeRange[][];
   factor: number;
   graph: RetrievalGraph;
   selection: RetrievalCursor[];
   onSelect: (entry: TimeRange) => void;
+  focus: FocusState;
 }) {
   const height =
     2 * MARGIN + rows.length * (BOX_HEIGHT + BOX_MARGIN) - BOX_MARGIN;
@@ -273,6 +279,7 @@ function Rows({
               graph,
               selection,
               onSelect,
+              focus,
             })
           )}
         </svg>
@@ -302,6 +309,26 @@ const findClosestScale = (values: readonly Scale[], factor: number) => {
   return candidates[candidates.length - 1];
 };
 
+const areEqualCursors = (
+  focused: RetrievalCursor | null,
+  item: RetrievalCursor
+) => focused?.id === item.id && focused?.partition === item.partition;
+
+type FocusState = {
+  focused: RetrievalCursor | null;
+  siblings: RetrievalCursor[];
+  parents: RetrievalCursor[];
+  children: RetrievalCursor[];
+};
+
+const toggleFocus = (
+  state: FocusState,
+  entry: RetrievalCursor
+): FocusState => ({
+  ...state,
+  focused: areEqualCursors(state.focused, entry) ? null : entry,
+});
+
 /**
  * This React component is responsible for displaying timeline and retrieval
  * details when clicking on the corresponding box.
@@ -325,41 +352,42 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
     return result ?? scales[0];
   }, [plan]);
   const [selection, setSelection] = useState<RetrievalCursor[]>([]);
-  const [focused, setFocused] = useState<RetrievalCursor | null>(null);
+  const [focusState, setFocused] = useState<FocusState>({
+    focused: null,
+    siblings: [],
+    parents: [],
+    children: [],
+  });
   const [scale, setScale] = useState(defaultScale);
 
   useEffect(() => {
     setSelection([]);
-    setFocused(null);
+    setFocused((state) => ({ ...state, focused: null }));
   }, [plan]);
 
-  const selectBox = (entry: TimeRange) => {
+  const selectBox = ({ retrieval }: TimeRange) => {
     setSelection((entries) => {
       const changed = [...entries];
-      const idx = selection.findIndex(
-        (cursor) =>
-          cursor.id === entry.retrieval.id &&
-          cursor.partition === entry.retrieval.partition
+      const idx = selection.findIndex((cursor) =>
+        areEqualCursors(cursor, retrieval)
       );
       if (idx >= 0) {
+        // Remove box from the list
         changed.splice(idx, 1);
       } else {
-        changed.push(entry.retrieval);
+        // Add box to the list
+        changed.push(retrieval);
       }
       return changed;
     });
+    setFocused((state) => toggleFocus(state, retrieval));
   };
 
   const closeBox = (retrieval: RetrievalCursor) => {
-    const idx = selection.findIndex(
-      ({ id, partition }) =>
-        id === retrieval.id && partition === retrieval.partition
-    );
-    if (idx >= 0) {
-      const changed = [...selection];
-      changed.splice(idx, 1);
-      setSelection(changed);
-    }
+    setSelection((entries) => {
+      return entries.filter((item) => !areEqualCursors(retrieval, item));
+    });
+    setFocused((state) => toggleFocus(state, retrieval));
   };
 
   return (
@@ -390,6 +418,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
         graph={plan.graph}
         selection={selection}
         onSelect={selectBox}
+        focus={focusState}
       />
       <div className="timeline-details">
         <div className="d-flex">
@@ -402,6 +431,9 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
             const retrievalId = metadata.retrievalId;
             const type = "type" in metadata ? (metadata.type as string) : kind;
             const timingInfo = metadata.timingInfo;
+            const buttonProps = areEqualCursors(focusState.focused, key)
+              ? { variant: "warning", disabled: true }
+              : { variant: "outline-warning" };
 
             return (
               <Toast
@@ -414,6 +446,15 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
                   <span className="retrieval-id mr-auto">#{retrievalId}</span>
                   &nbsp;
                   <span className="retrieval-type">{labels.type(type)}</span>
+                  <Button
+                    size="sm"
+                    {...buttonProps}
+                    onClick={() =>
+                      setFocused((state) => ({ ...state, focused: key }))
+                    }
+                  >
+                    Focus
+                  </Button>
                 </Toast.Header>
                 <Toast.Body className="body">
                   {Details({
