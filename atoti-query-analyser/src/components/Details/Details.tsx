@@ -29,7 +29,7 @@ function Values({ values, selected }: { values: number[]; selected?: number }) {
     <>
       [
       {values.map((v, i, vs) => (
-        <span key={v}>
+        <span key={i}>
           <span className={i === selected ? "selected-partition" : ""}>
             {v}
           </span>

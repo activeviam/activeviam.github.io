@@ -165,7 +165,7 @@ function Box({
       `Inconsistent state: ${JSON.stringify(entry)} / ${JSON.stringify(node)}`
     );
   }
-  const key = `${entry.retrieval.id}-${entry.retrieval.partition}`;
+  const key = `${entry.retrieval.id}#${entry.retrieval.partition}`;
   const stateClasses = computeRetrievalClasses(
     entry.retrieval,
     selection,
@@ -354,6 +354,41 @@ const unfocusOnItem = (
   entry: RetrievalCursor
 ): RetrievalCursor | null => (areEqualCursors(focused, entry) ? null : focused);
 
+const computeFocusState = (
+  plan: QueryPlan,
+  focusedItem: RetrievalCursor | null
+): FocusState => {
+  if (focusedItem === null) {
+    return {
+      focused: focusedItem,
+      siblings: [],
+      parents: [],
+      children: [],
+    };
+  } else {
+    const siblings =
+      plan.graph
+        .getVertexByUUID(focusedItem.id)
+        .getMetadata()
+        .timingInfo.elapsedTime?.filter((_, i) => i !== focusedItem.partition)
+        .map((_, i) => ({
+          id: focusedItem.id,
+          partition: i,
+        })) ?? [];
+    const parents: RetrievalCursor[] = [];
+    const children: RetrievalCursor[] = [];
+
+    const result = {
+      focused: focusedItem,
+      siblings,
+      parents,
+      children,
+    };
+    console.log(result);
+    return result;
+  }
+};
+
 /**
  * This React component is responsible for displaying timeline and retrieval
  * details when clicking on the corresponding box.
@@ -378,14 +413,10 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
   }, [plan]);
   const [selection, setSelection] = useState<RetrievalCursor[]>([]);
   const [focusedItem, setFocused] = useState<RetrievalCursor | null>(null);
-  const focusState = useMemo(() => {
-    return {
-      focused: focusedItem,
-      siblings: [],
-      parents: [],
-      children: [],
-    };
-  }, [plan, focusedItem]);
+  const focusState = useMemo(
+    () => computeFocusState(plan, focusedItem),
+    [plan, focusedItem]
+  );
   const [scale, setScale] = useState(defaultScale);
 
   useEffect(() => {
@@ -464,7 +495,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
 
             return (
               <Toast
-                key={node.getUUID()}
+                key={`${id}#${partition}`}
                 className="entry"
                 onClose={() => closeBox(key)}
               >
