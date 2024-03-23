@@ -17,6 +17,12 @@ li.component-timing:before {
   border-radius: 5px;
 }
 
+.component-exact-timing {
+  font-size: 0.95em;
+  padding-left: 10px;
+  color: #5e5e5e;
+}
+
 .timing-database {
   fill: #59d5e0;
 }
