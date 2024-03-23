@@ -28,11 +28,23 @@
 }
 
 .timeline-box.selected {
-  fill: rgb(218, 179, 5);
+  fill: #4ccd9981;
 }
 
 .timeline-box.focused {
-  fill: rgb(255, 223, 43);
+  fill: #4CCD99;
+}
+
+.timeline-box.sibling {
+  fill: #90D26D;
+}
+
+.timeline-box.parent {
+  fill: #2C7865;
+}
+
+.timeline-box.child {
+  fill: #D9EDBF;
 }
 
 .timeline-details {
