@@ -429,7 +429,6 @@ const computeFocusState = (
       parents,
       children,
     };
-    console.log(result);
     return result;
   }
 };
