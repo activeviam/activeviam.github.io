@@ -242,9 +242,9 @@ const createTimeFormatter = (
   if (maxValue < 1000) {
     return (t) => `${t} ms`;
   } else if (maxValue < 60000) {
-    return (t) => `${Math.round(t / 1000).toFixed(2)} s`;
+    return (t) => `${(t / 1000).toFixed(2)} s`;
   } else {
-    return (t) => `${Math.round(t / 60000).toFixed(1)} mins`;
+    return (t) => `${(t / 60000).toFixed(1)} mins`;
   }
 };
 
