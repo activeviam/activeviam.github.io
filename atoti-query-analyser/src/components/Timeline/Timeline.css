@@ -23,28 +23,27 @@
 }
 
 .timeline-box {
-  fill: rgb(0, 146, 204);
-  rx: 3px;
+  fill: #198db4;
 }
 
 .timeline-box.selected {
-  fill: #4ccd9981;
+  fill: #64CCC5;
 }
 
 .timeline-box.focused {
-  fill: #4CCD99;
+  fill: #E9B824;
 }
 
 .timeline-box.sibling {
-  fill: #90D26D;
+  fill: #ffd145;
 }
 
 .timeline-box.parent {
-  fill: #2C7865;
+  fill: #D83F31;
 }
 
 .timeline-box.child {
-  fill: #D9EDBF;
+  fill: #EE9322;
 }
 
 .timeline-details {
