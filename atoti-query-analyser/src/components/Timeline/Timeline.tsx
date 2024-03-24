@@ -138,10 +138,6 @@ const relativeStates: readonly RelativeStateConfig[] = [
     match: (_, focus) => (focus.focused ? [focus.focused] : []),
   },
   {
-    classes: ["selected"],
-    match: (selection) => selection,
-  },
-  {
     classes: ["sibling"],
     match: (_, focus) => focus.siblings,
   },
@@ -152,6 +148,11 @@ const relativeStates: readonly RelativeStateConfig[] = [
   {
     classes: ["child"],
     match: (_, focus) => focus.children,
+  },
+  // Place selected at the end, to focus on the timeline first
+  {
+    classes: ["selected"],
+    match: (selection) => selection,
   },
 ];
 
