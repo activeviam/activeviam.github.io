@@ -62,7 +62,7 @@ export class StackTraceParser {
         entry.name ? ", function " + entry.name : ""
       }`;
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return location;
     }
   }
