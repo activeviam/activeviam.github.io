@@ -98,7 +98,7 @@ export async function queryServer({
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      Authorization: credentials,
+      Authorization: `Basic ${credentials}`,
     },
     body: JSON.stringify(body),
   });
