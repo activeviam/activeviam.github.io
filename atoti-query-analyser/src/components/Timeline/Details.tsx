@@ -115,12 +115,12 @@ export function TimelineDetails({
                 </ButtonGroup>
               </Toast.Header>
               <Toast.Body className="body">
-                {Details({
-                  metadata,
-                  startTime: requireNonNull(timingInfo.startTime),
-                  elapsedTime: requireNonNull(timingInfo.elapsedTime),
-                  partition,
-                })}
+                <Details
+                  startTime={requireNonNull(timingInfo.startTime)}
+                  elapsedTime={requireNonNull(timingInfo.elapsedTime)}
+                  focused={true}
+                  {...{ partition, metadata }}
+                />
               </Toast.Body>
             </Toast>
           );
