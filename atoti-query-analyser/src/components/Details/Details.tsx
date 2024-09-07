@@ -20,65 +20,28 @@ function isNullish(value: unknown) {
 
 /**
  * React component that represent a list of numbers.
- * @param attributes - React JSX attributes
- * @param attributes.values - List to be displayed
- * @param attributes.selected - Optional, index of list element to be highlighted
  * */
 function Values({
   values,
   selected,
-  focused,
 }: {
-  values: number[];
+  values: (number | string)[];
   selected?: number;
-  focused?: boolean;
 }) {
-  if (selected !== undefined && focused && values.length > 10) {
-    const sortedValues = [...values];
-    sortedValues.sort();
-    const selectedValue = values[selected];
-    const displayedValues = [
-      ...sortedValues.slice(0, 5),
-      "..",
-      ...sortedValues.slice(values.length - 5),
-    ];
-    let highlightedPosition = displayedValues.indexOf(selectedValue);
-    if (highlightedPosition < 0) {
-      displayedValues.splice(5, 0, selectedValue, "..");
-      highlightedPosition = 6;
-    }
-    return (
-      <>
-        [
-        {displayedValues.map((v, i, vs) => (
-          <span key={i}>
-            <span
-              className={i === highlightedPosition ? "selected-partition" : ""}
-            >
-              {v}
-            </span>
-            {i < vs.length - 1 ? "," : ""}
+  return (
+    <>
+      [
+      {values.map((v, i, vs) => (
+        <span key={i}>
+          <span className={i === selected ? "selected-partition" : ""}>
+            {v}
           </span>
-        ))}
-        ] (#{selected})
-      </>
-    );
-  } else {
-    return (
-      <>
-        [
-        {values.map((v, i, vs) => (
-          <span key={i}>
-            <span className={i === selected ? "selected-partition" : ""}>
-              {v}
-            </span>
-            {i < vs.length - 1 ? "," : ""}
-          </span>
-        ))}
-        ]
-      </>
-    );
-  }
+          {i < vs.length - 1 ? "," : ""}
+        </span>
+      ))}
+      ]
+    </>
+  );
 }
 
 Values.defaultProps = {
@@ -196,7 +159,47 @@ function buildTitle(text: string): string {
   return words.map((word) => word[0].toUpperCase() + word.slice(1)).join(" ");
 }
 
-const BLACKLIST = new Set(["retrievalId", "timingInfo"]);
+const BLACKLIST = new Set([
+  "retrievalId",
+  "timingInfo",
+  // Often not important information
+  "$kind",
+  "type",
+  "measureProvider",
+]);
+
+const selectRepresentativeValues = (
+  values: readonly number[],
+  size = 5
+): (number | string)[] => {
+  const sortedValues = [...values];
+  sortedValues.sort();
+  if (values.length > 2 * size) {
+    return [
+      ...sortedValues.slice(0, 5),
+      "..",
+      ...sortedValues.slice(values.length - 5),
+    ];
+  } else {
+    return sortedValues;
+  }
+};
+
+const ValueFromList = ({
+  values,
+  selected,
+}: Readonly<{ values: number[]; selected?: number }>) =>
+  selected === undefined || selected < 0 ? (
+    <Values values={values} />
+  ) : (
+    <>
+      {values[selected]}
+      &nbsp;
+      <div className={"value-sampling"}>
+        <Values values={selectRepresentativeValues(values)} />
+      </div>
+    </>
+  );
 
 /**
  * This React component is responsible for showing detailed info about
@@ -218,7 +221,6 @@ export function Details({
   elapsedTime,
   metadata,
   partition,
-  focused,
 }: {
   startTime: number[];
   elapsedTime: number[];
@@ -226,23 +228,15 @@ export function Details({
   partition?: number;
   focused?: boolean;
 }) {
-  const startTimeElts =
-    partition === undefined ? (
-      JSON.stringify(startTime)
-    ) : (
-      <Values values={startTime} selected={partition} focused={focused} />
-    );
-  const elapsedTimeElts =
-    partition === undefined ? (
-      JSON.stringify(elapsedTime)
-    ) : (
-      <Values values={elapsedTime} selected={partition} focused={focused} />
-    );
-
   return (
     <ul>
-      <li key="startTimeElts">Start: {startTimeElts}</li>
-      <li key="elapsedTimeElts">Elapsed: {elapsedTimeElts}</li>
+      <li key="startTimeElts">
+        Start (ms): <ValueFromList values={startTime} selected={partition} />
+      </li>
+      <li key="elapsedTimeElts">
+        Elapsed (ms):{" "}
+        <ValueFromList values={elapsedTime} selected={partition} />
+      </li>
       {Object.entries(metadata)
         .filter(([key, value]) => !BLACKLIST.has(key) && !isNullish(value))
         .sort((lhs, rhs) => lhs[0].localeCompare(rhs[0]))
@@ -264,7 +258,10 @@ export function Details({
             const selectedPosition =
               sizes.length === elapsedTime.length ? partition : -1;
             const valueList = (
-              <Values values={value as number[]} selected={selectedPosition} />
+              <ValueFromList
+                values={value as number[]}
+                selected={selectedPosition}
+              />
             );
             return <li key={key}>Result sizes: {valueList}</li>;
           } else if (Array.isArray(value)) {
