@@ -27,11 +27,11 @@
 }
 
 .timeline-box.selected {
-  fill: #64CCC5;
+  fill: #64ccc5;
 }
 
 .timeline-box.focused {
-  fill: #E9B824;
+  fill: #e9b824;
 }
 
 .timeline-box.sibling {
@@ -39,11 +39,11 @@
 }
 
 .timeline-box.parent {
-  fill: #D83F31;
+  fill: #d83f31;
 }
 
 .timeline-box.child {
-  fill: #EE9322;
+  fill: #ee9322;
 }
 
 .timeline-details {
