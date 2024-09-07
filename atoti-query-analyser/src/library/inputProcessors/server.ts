@@ -18,7 +18,7 @@ function cleanseUrl(url: string) {
   return match[1];
 }
 
-const supportedApis = ["5", "6", "8"];
+const supportedApis = ["5", "6", "8", "9"];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const findServiceUrl = (apis: any) => {
