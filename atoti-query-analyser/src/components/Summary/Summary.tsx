@@ -242,15 +242,17 @@ const createTimeFormatter = (
   if (maxValue < 1000) {
     return (t) => `${t} ms`;
   } else if (maxValue < 60000) {
-    return (t) => `${Math.round(t / 1000).toFixed(2)} s`;
+    return (t) => `${(t / 1000).toFixed(2)} s`;
   } else {
-    return (t) => `${Math.round(t / 60000).toFixed(1)} mins`;
+    return (t) => `${(t / 60000).toFixed(1)} mins`;
   }
 };
 
 const ComponentTimingView = ({
   timings,
 }: Readonly<{ timings: ComponentTimings }>) => {
+  const [showRealTime, setShowRealTime] = useState(false);
+
   const sortedTimings = Object.entries(timings);
   sortedTimings.sort(([, t1], [, t2]) => t2 - t1);
   const timeFormatter = createTimeFormatter(sortedTimings.map(([, t]) => t));
@@ -276,12 +278,33 @@ const ComponentTimingView = ({
       <svg width="100%" height="25px">
         <g>{bars}</g>
       </svg>
+      <Form.Check
+        type="switch"
+        checked={showRealTime}
+        onChange={(e) => setShowRealTime(e.target.checked)}
+        label="Show real timings"
+      />
       <ul className="component-timing">
-        {sortedTimings.map(([label, time]) => (
-          <li key={label} className={`component-timing timing-${label}`}>
-            <b>{label}</b>: {timeFormatter(time)}
-          </li>
-        ))}
+        {sortedTimings.map(([label, time]) => {
+          if (showRealTime) {
+            const formatter = createTimeFormatter([time]);
+
+            return (
+              <li key={label} className={`component-timing timing-${label}`}>
+                <b>{label}</b>: {formatter(time)}
+                {time >= 1000 ? (
+                  <span className="component-exact-timing">({time} ms)</span>
+                ) : null}
+              </li>
+            );
+          } else {
+            return (
+              <li key={label} className={`component-timing timing-${label}`}>
+                <b>{label}</b>: {timeFormatter(time)}
+              </li>
+            );
+          }
+        })}
       </ul>
     </>
   );
