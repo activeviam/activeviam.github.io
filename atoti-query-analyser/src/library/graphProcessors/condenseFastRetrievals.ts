@@ -219,8 +219,6 @@ class FastRetrievalCondenser {
       retrievalGroups[groupId].push(retrieval);
     });
 
-    console.log(rootSetIndex);
-
     return { groupIdByRetrieval, retrievalGroups };
   }
 

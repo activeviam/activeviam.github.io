@@ -1,3 +1,9 @@
+.level-depth {
+  font-size: 0.8rem;
+  color: #999999;
+  padding-right: 3px;
+}
+
 .selected-partition {
   color: red;
   font-weight: bold;
