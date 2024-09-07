@@ -24,21 +24,61 @@ function isNullish(value: unknown) {
  * @param attributes.values - List to be displayed
  * @param attributes.selected - Optional, index of list element to be highlighted
  * */
-function Values({ values, selected }: { values: number[]; selected?: number }) {
-  return (
-    <>
-      [
-      {values.map((v, i, vs) => (
-        <span key={i}>
-          <span className={i === selected ? "selected-partition" : ""}>
-            {v}
+function Values({
+  values,
+  selected,
+  focused,
+}: {
+  values: number[];
+  selected?: number;
+  focused?: boolean;
+}) {
+  if (selected !== undefined && focused && values.length > 10) {
+    const sortedValues = [...values];
+    sortedValues.sort();
+    const selectedValue = values[selected];
+    const displayedValues = [
+      ...sortedValues.slice(0, 5),
+      "..",
+      ...sortedValues.slice(values.length - 5),
+    ];
+    let highlightedPosition = displayedValues.indexOf(selectedValue);
+    if (highlightedPosition < 0) {
+      displayedValues.splice(5, 0, selectedValue, "..");
+      highlightedPosition = 6;
+    }
+    return (
+      <>
+        [
+        {displayedValues.map((v, i, vs) => (
+          <span key={i}>
+            <span
+              className={i === highlightedPosition ? "selected-partition" : ""}
+            >
+              {v}
+            </span>
+            {i < vs.length - 1 ? "," : ""}
           </span>
-          {i < vs.length - 1 ? "," : ""}
-        </span>
-      ))}
-      ]
-    </>
-  );
+        ))}
+        ] (#{selected})
+      </>
+    );
+  } else {
+    return (
+      <>
+        [
+        {values.map((v, i, vs) => (
+          <span key={i}>
+            <span className={i === selected ? "selected-partition" : ""}>
+              {v}
+            </span>
+            {i < vs.length - 1 ? "," : ""}
+          </span>
+        ))}
+        ]
+      </>
+    );
+  }
 }
 
 Values.defaultProps = {
@@ -126,8 +166,8 @@ function ListView({ title, list }: { title: string; list: unknown[] }) {
         <ul style={{ overflowY: "auto", maxHeight: truncated ? "none" : 200 }}>
           {list
             .filter((_, idx) => !truncated || idx < MAX_ELEMENTS)
-            .map((item) => (
-              <li key={`__element__${item}`}>
+            .map((item, i) => (
+              <li key={`__element__${i}`}>
                 <PlainView value={item} />
               </li>
             ))}
@@ -178,23 +218,25 @@ export function Details({
   elapsedTime,
   metadata,
   partition,
+  focused,
 }: {
   startTime: number[];
   elapsedTime: number[];
   metadata: ARetrieval;
   partition?: number;
+  focused?: boolean;
 }) {
   const startTimeElts =
     partition === undefined ? (
       JSON.stringify(startTime)
     ) : (
-      <Values values={startTime} selected={partition} />
+      <Values values={startTime} selected={partition} focused={focused} />
     );
   const elapsedTimeElts =
     partition === undefined ? (
       JSON.stringify(elapsedTime)
     ) : (
-      <Values values={elapsedTime} selected={partition} />
+      <Values values={elapsedTime} selected={partition} focused={focused} />
     );
 
   return (
@@ -202,14 +244,12 @@ export function Details({
       <li key="startTimeElts">Start: {startTimeElts}</li>
       <li key="elapsedTimeElts">Elapsed: {elapsedTimeElts}</li>
       {Object.entries(metadata)
-        .map(([key, value]) => ({ key, value }))
-        .filter(({ key, value }) => !BLACKLIST.has(key) && !isNullish(value))
-        .sort((lhs, rhs) => lhs.key.localeCompare(rhs.key))
-        .map(({ key, value }) => {
+        .filter(([key, value]) => !BLACKLIST.has(key) && !isNullish(value))
+        .sort((lhs, rhs) => lhs[0].localeCompare(rhs[0]))
+        .map(([key, value]) => {
           if (key === "location") {
             return <LocationView location={value} key={key} />;
-          }
-          if (key === "underlyingRetrievals") {
+          } else if (key === "underlyingRetrievals") {
             return (
               <ListView
                 key={key}
@@ -219,15 +259,23 @@ export function Details({
                 )}
               />
             );
-          }
-          if (Array.isArray(value)) {
+          } else if (key === "resultSizes") {
+            const sizes = value as number[];
+            const selectedPosition =
+              sizes.length === elapsedTime.length ? partition : -1;
+            const valueList = (
+              <Values values={value as number[]} selected={selectedPosition} />
+            );
+            return <li key={key}>Result sizes: {valueList}</li>;
+          } else if (Array.isArray(value)) {
             return <ListView list={value} title={buildTitle(key)} key={key} />;
+          } else {
+            return (
+              <li key={key}>
+                {buildTitle(key)}: <PlainView value={value} />
+              </li>
+            );
           }
-          return (
-            <li key={key}>
-              {buildTitle(key)}: <PlainView value={value} />
-            </li>
-          );
         })}
     </ul>
   );
