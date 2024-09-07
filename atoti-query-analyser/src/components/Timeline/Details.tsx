@@ -118,7 +118,6 @@ export function TimelineDetails({
                 <Details
                   startTime={requireNonNull(timingInfo.startTime)}
                   elapsedTime={requireNonNull(timingInfo.elapsedTime)}
-                  focused={true}
                   {...{ partition, metadata }}
                 />
               </Toast.Body>
