@@ -64,10 +64,8 @@ export function TimelineDetails({
               onClose={() => closeBox(key)}
             >
               <Toast.Header>
-                <span className="retrieval-id mr-auto">
-                  #{retrievalId}[{partition}]
-                </span>
-                &nbsp;
+                <span className="retrieval-id mr-auto">#{retrievalId}</span>
+                <span className="partition-id mr-auto"> [{partition}]</span>
                 <span className="retrieval-type">{labels.type(type)}</span>
                 <ButtonGroup
                   aria-label="Focus history"

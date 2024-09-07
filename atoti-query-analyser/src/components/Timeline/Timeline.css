@@ -63,6 +63,13 @@
 
 .timeline-details .entry .retrieval-id {
   font-weight: bold;
+  margin-right: 2px;
+}
+
+.timeline-details .entry .partition-id {
+  font-weight: lighter;
+  font-style: italic;
+  margin-right: 2px;
 }
 
 .timeline-details .entry .retrieval-type {
