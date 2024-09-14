@@ -143,8 +143,12 @@ export function validateJsonQueryPlan(rawQueryPlan: any): JsonQueryPlan {
     try {
       return convertToV2(validateJsonQueryPlanOldFormat(rawQueryPlan));
     } catch (errV1) {
-      console.log(errV2);
-      console.log(errV1);
+      console.error(
+        "Cannot validate query plan. v2 error",
+        errV2,
+        "v1 error",
+        errV1
+      );
       throw new Error("Failed to validate query plan", {
         cause: [errV2, errV1],
       });

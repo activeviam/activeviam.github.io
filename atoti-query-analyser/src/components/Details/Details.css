@@ -26,3 +26,9 @@
 .button-as-link:hover {
   color: #09b;
 }
+
+.value-sampling {
+  display: inline-block;
+  font-weight: lighter;
+  color: #666666;
+}

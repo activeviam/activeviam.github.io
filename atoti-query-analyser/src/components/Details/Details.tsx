@@ -20,11 +20,14 @@ function isNullish(value: unknown) {
 
 /**
  * React component that represent a list of numbers.
- * @param attributes - React JSX attributes
- * @param attributes.values - List to be displayed
- * @param attributes.selected - Optional, index of list element to be highlighted
  * */
-function Values({ values, selected }: { values: number[]; selected?: number }) {
+function Values({
+  values,
+  selected,
+}: {
+  values: (number | string)[];
+  selected?: number;
+}) {
   return (
     <>
       [
@@ -126,8 +129,8 @@ function ListView({ title, list }: { title: string; list: unknown[] }) {
         <ul style={{ overflowY: "auto", maxHeight: truncated ? "none" : 200 }}>
           {list
             .filter((_, idx) => !truncated || idx < MAX_ELEMENTS)
-            .map((item) => (
-              <li key={`__element__${item}`}>
+            .map((item, i) => (
+              <li key={`__element__${i}`}>
                 <PlainView value={item} />
               </li>
             ))}
@@ -156,7 +159,47 @@ function buildTitle(text: string): string {
   return words.map((word) => word[0].toUpperCase() + word.slice(1)).join(" ");
 }
 
-const BLACKLIST = new Set(["retrievalId", "timingInfo"]);
+const BLACKLIST = new Set([
+  "retrievalId",
+  "timingInfo",
+  // Often not important information
+  "$kind",
+  "type",
+  "measureProvider",
+]);
+
+const selectRepresentativeValues = (
+  values: readonly number[],
+  size = 5
+): (number | string)[] => {
+  const sortedValues = [...values];
+  sortedValues.sort();
+  if (values.length > 2 * size) {
+    return [
+      ...sortedValues.slice(0, 5),
+      "..",
+      ...sortedValues.slice(values.length - 5),
+    ];
+  } else {
+    return sortedValues;
+  }
+};
+
+const ValueFromList = ({
+  values,
+  selected,
+}: Readonly<{ values: number[]; selected?: number }>) =>
+  selected === undefined || selected < 0 ? (
+    <Values values={values} />
+  ) : (
+    <>
+      {values[selected]}
+      &nbsp;
+      <div className={"value-sampling"}>
+        <Values values={selectRepresentativeValues(values)} />
+      </div>
+    </>
+  );
 
 /**
  * This React component is responsible for showing detailed info about
@@ -184,32 +227,22 @@ export function Details({
   metadata: ARetrieval;
   partition?: number;
 }) {
-  const startTimeElts =
-    partition === undefined ? (
-      JSON.stringify(startTime)
-    ) : (
-      <Values values={startTime} selected={partition} />
-    );
-  const elapsedTimeElts =
-    partition === undefined ? (
-      JSON.stringify(elapsedTime)
-    ) : (
-      <Values values={elapsedTime} selected={partition} />
-    );
-
   return (
     <ul>
-      <li key="startTimeElts">Start: {startTimeElts}</li>
-      <li key="elapsedTimeElts">Elapsed: {elapsedTimeElts}</li>
+      <li key="startTimeElts">
+        Start (ms): <ValueFromList values={startTime} selected={partition} />
+      </li>
+      <li key="elapsedTimeElts">
+        Elapsed (ms):{" "}
+        <ValueFromList values={elapsedTime} selected={partition} />
+      </li>
       {Object.entries(metadata)
-        .map(([key, value]) => ({ key, value }))
-        .filter(({ key, value }) => !BLACKLIST.has(key) && !isNullish(value))
-        .sort((lhs, rhs) => lhs.key.localeCompare(rhs.key))
-        .map(({ key, value }) => {
+        .filter(([key, value]) => !BLACKLIST.has(key) && !isNullish(value))
+        .sort((lhs, rhs) => lhs[0].localeCompare(rhs[0]))
+        .map(([key, value]) => {
           if (key === "location") {
             return <LocationView location={value} key={key} />;
-          }
-          if (key === "underlyingRetrievals") {
+          } else if (key === "underlyingRetrievals") {
             return (
               <ListView
                 key={key}
@@ -219,15 +252,26 @@ export function Details({
                 )}
               />
             );
-          }
-          if (Array.isArray(value)) {
+          } else if (key === "resultSizes") {
+            const sizes = value as number[];
+            const selectedPosition =
+              sizes.length === elapsedTime.length ? partition : -1;
+            const valueList = (
+              <ValueFromList
+                values={value as number[]}
+                selected={selectedPosition}
+              />
+            );
+            return <li key={key}>Result sizes: {valueList}</li>;
+          } else if (Array.isArray(value)) {
             return <ListView list={value} title={buildTitle(key)} key={key} />;
+          } else {
+            return (
+              <li key={key}>
+                {buildTitle(key)}: <PlainView value={value} />
+              </li>
+            );
           }
-          return (
-            <li key={key}>
-              {buildTitle(key)}: <PlainView value={value} />
-            </li>
-          );
         })}
     </ul>
   );
