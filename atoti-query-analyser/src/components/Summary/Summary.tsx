@@ -345,7 +345,7 @@ function QuerySummaryView({
       <Button onClick={exportAsJson}>Export graph as JSON</Button>
       <p>Total number of retrievals: {summary.totalRetrievals}</p>
       <p>
-        Total size of external retrieval results:{" "}
+        Total size of database retrieval results:{" "}
         {summary.totalExternalResultSize}
       </p>
       {graph.getVertexCount() > 0 ? (

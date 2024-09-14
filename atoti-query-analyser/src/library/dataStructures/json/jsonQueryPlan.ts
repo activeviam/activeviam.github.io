@@ -75,8 +75,9 @@ function validateJsonQueryPlanModernFormat(
   );
   const dependencies = validateDependencyMap(rawQueryPlan.dependencies);
   const externalRetrievals =
-    optional(rawQueryPlan.externalRetrievals, (retrievals) =>
-      validateList(retrievals, validateExternalRetrieval)
+    optional(
+      rawQueryPlan.externalRetrievals || rawQueryPlan.databaseRetrievals,
+      (retrievals) => validateList(retrievals, validateExternalRetrieval)
     ) ?? [];
   const externalDependencies =
     optional(rawQueryPlan.externalDependencies, validateDependencyMap) ??
