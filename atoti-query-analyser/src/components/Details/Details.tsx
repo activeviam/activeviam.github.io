@@ -226,7 +226,6 @@ export function Details({
   elapsedTime: number[];
   metadata: ARetrieval;
   partition?: number;
-  focused?: boolean;
 }) {
   return (
     <ul>
