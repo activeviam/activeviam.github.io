@@ -52,7 +52,7 @@ function resolveQueryEndpoint(userUrl: string) {
         const serviceUrl = findServiceUrl(versions.apis);
         const fullUrl =
           `${url}/${serviceUrl}/cube/query/mdx/queryplan`.replaceAll(
-            /\/{2,}/g,
+            /(?<!https?:)\/{2,}/g,
             "/"
           );
         resolve(fullUrl);
