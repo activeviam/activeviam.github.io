@@ -1,24 +1,43 @@
 version: 2
 
-jobs:
-  atoti_query:
-    docker:
-      - image: cimg/node:18.13.0
+commands:
+  install_atoti_query_deps:
     steps:
-      - checkout
       - restore_cache:
           keys:
             - deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
       - run:
           name: Install dependencies
           command: yarn install --cwd atoti-query-analyser
-      - run:
-          name: Build application
-          command: yarn --cwd atoti-query-analyser build
       - save_cache:
           key: deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
           paths:
             - atoti-query-analyser/node_modules
+          when: on_success
+
+jobs:
+  check_atoti_query:
+    docker:
+      - image: cimg/node:18.13.0
+    steps:
+      - checkout
+      - install_atoti_query_deps
+      - run:
+          name: Check formatting
+          command: yarn --cwd atoti-query-analyser format-prettier --check
+      - run:
+          # Build in the CI as it checks more errors
+          name: Build application
+          command: yarn --cwd atoti-query-analyser build
+  build_atoti_query:
+    docker:
+      - image: cimg/node:18.13.0
+    steps:
+      - checkout
+      - install_atoti_query_deps
+      - run:
+          name: Build application
+          command: yarn --cwd atoti-query-analyser build
       - run:
           name: Move to workspace
           command: |
@@ -68,17 +87,15 @@ jobs:
 
 workflows:
   version: 2
+  test:
+    jobs:
+      - check_atoti_query
   build:
     jobs:
-      - atoti_query:
-          filters:
-            branches:
-              ignore:
-                - master
-                - /wip-*/
-      - deploy_to_master:
-          requires:
-            - atoti_query
+      - build_atoti_query:
           filters:
             branches:
               only: develop
+      - deploy_to_master:
+          requires:
+            - build_atoti_query
