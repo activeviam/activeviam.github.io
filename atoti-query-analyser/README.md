@@ -75,13 +75,11 @@ Each query has a set of retrievals. Some of them depend on others. Graph of retr
 * `prettier`: Integration with Prettier formatter.
 * `@typescript-eslint/eslint-plugin`: Support for TypeScript.
 * `import`: Provides linting for `import`/`export`.
-* `jsdoc`, `tsdoc`: Support for JSDoc and TSDoc, respectively.
 
 #### Rules
 
 As a basic set of rules, `airbnb-typescript` was chosen. This choice looks quite reasonable.
 Some extra rules were added:
-* `jsdoc/require-jsdoc`: enforce JSDoc comments on public (exported) classes and functions.
 * `tsdoc/syntax`: checks consistency with TSDoc syntax (TODO do we really need it? Seems to be buggy).
 * `semi`: enforce semicolons.
 * `no-param-reassign`: prohibit function argument reassignment.
