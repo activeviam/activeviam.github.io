@@ -9,7 +9,7 @@ export interface CubeLocation {
   dimension: string;
   hierarchy: string;
   level: string[];
-  path: (string | string[])[];
+  path: (any | any[])[];
 }
 
 // Reason: `validate...()` function

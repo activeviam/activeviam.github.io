@@ -52,11 +52,11 @@ Values.defaultProps = {
  * Renders a part of a location path
  * @param pathPart - part of the path to be displayed
  */
-function renderPathPart(pathPart: string | string[]): string {
+function renderPathPart(pathPart: any | any[]) {
   if (Array.isArray(pathPart)) {
     return "[" + pathPart.join(", ") + "]";
   } else {
-    return pathPart;
+    return JSON.stringify(pathPart);
   }
 }
 
