@@ -46,7 +46,7 @@ export function validateString(rawString: any): string {
 /**
  * Check if input is a string or a list of strings.
  */
-export function validatePath(rawString: any): object | object[] {
+export function validatePath(rawString: any): unknown | unknown[] {
   return rawString;
 }
 
