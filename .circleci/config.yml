@@ -3,7 +3,7 @@ version: 2
 jobs:
   atoti_query:
     docker:
-      - image: cimg/node:18.13.0
+      - image: cimg/node:24.10.0
     steps:
       - checkout
       - restore_cache:
@@ -29,7 +29,7 @@ jobs:
           paths: atoti_query
   deploy_to_master:
     docker:
-      - image: circleci/node:13.13
+      - image: cimg/node:24.10.0
     steps:
       - checkout
       - attach_workspace:
