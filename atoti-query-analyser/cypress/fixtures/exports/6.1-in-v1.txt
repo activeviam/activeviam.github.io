@@ -1,0 +1,3227 @@
+[
+    {
+        "planInfo": {
+            "pivotType": "DistributedActivePivotVersion",
+            "pivotId": "RdwQueryCube",
+            "epoch": "252",
+            "branch": "master",
+            "retrieverType": "DistributedActivePivotAggregatesRetriever",
+            "mdxPass": "SelectPass_0",
+            "clusterMemberId": "i-0b7d3cabfb955920e_RdwQueryCube_QUERY_21_6445",
+            "contextValues": {
+                "ISubCubeProperties": "null",
+                "IBranch": "null",
+                "IReferenceNode": "com.nomura.risk.monju.proteus.biz.type.impl.ReferenceNode@b5141234",
+                "ISecurityCubeRestriction": "null",
+                "IAsOfEpoch": "null",
+                "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false, queryPlanCycleDetection=true]",
+                "IUserAuthentication": "UserAuthentication [userName=readdata]",
+                "ICubeFilterClearHierarchies": "null",
+                "IQueryBasedCubeRestriction": "null",
+                "IQueriesResultLimit": "QueriesResultLimit [transientLimit=9223372036854775807, intermediateLimit=2147483647]",
+                "IQueriesTimeLimit": "QueriesTimeLimit [timeLimitInSeconds=30]"
+            },
+            "rangeSharing": 0,
+            "missedPrefetchBehavior": "WARN",
+            "aggregatesCache": "None",
+            "globalTimings": {
+                "executionContextCreationTime": 0,
+                "finalizationTime": 3,
+                "planningTime": 0,
+                "queryExecutionTime": 42
+            },
+            "continuous": false
+        },
+        "aggregateRetrievals": [
+            {
+                "retrievalId": 0,
+                "partialProviderName": "N/A",
+                "type": "PostProcessedAggregatesRetrieval",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    },
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    }
+                ],
+                "measures": [
+                    "Cpty NCAT Marginal"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    0
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        42
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 1,
+                "partialProviderName": "N/A",
+                "type": "PostProcessedAggregatesRetrieval",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    },
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    }
+                ],
+                "measures": [
+                    "Cpty NCAT Vector (Ref.)"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    0
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        42
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 2,
+                "partialProviderName": "N/A",
+                "type": "PostProcessedResultsMerger",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    },
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    }
+                ],
+                "measures": [
+                    "Cpty NCAT Vector"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    0
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        42
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 3,
+                "partialProviderName": "N/A",
+                "type": "PrimitiveResultsMerger",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    },
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    }
+                ],
+                "measures": [
+                    "contributors.COUNT"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        39
+                    ],
+                    "elapsedTime": [
+                        2
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 4,
+                "partialProviderName": "N/A",
+                "type": "DistributedAggregatesRetrieval",
+                "partitioning": "Distributed partitioning",
+                "location": [
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    },
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    }
+                ],
+                "measures": [
+                    "Cpty NCAT Vector",
+                    "contributors.COUNT",
+                    "Count (VaR)"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1
+                ],
+                "timingInfo": {
+                    "executionTime": [
+                        30,
+                        6
+                    ],
+                    "startTime": [
+                        1
+                    ],
+                    "broadcastingTime": [
+                        37,
+                        11
+                    ],
+                    "processingTime": [
+                        0,
+                        0
+                    ],
+                    "elapsedTime": [
+                        38
+                    ]
+                },
+                "underlyingDataNodes": [
+                    "i-038425b99e8aab0d5_VaR_DATA_21_31941",
+                    "i-0b7d3cabfb955920e_RDW_IRC_DATA_21_16901"
+                ]
+            },
+            {
+                "retrievalId": 5,
+                "partialProviderName": "N/A",
+                "type": "DistributedPostProcessedRetrieval",
+                "partitioning": "Distributed partitioning",
+                "location": [
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    },
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    }
+                ],
+                "measures": [
+                    "Cpty NCAT Vector"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    0
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        39
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 6,
+                "partialProviderName": "N/A",
+                "type": "PostProcessedResultsMerger",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    },
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    }
+                ],
+                "measures": [
+                    "Count (VaR)"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        42
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 7,
+                "partialProviderName": "N/A",
+                "type": "DistributedPostProcessedRetrieval",
+                "partitioning": "Distributed partitioning",
+                "location": [
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    },
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    }
+                ],
+                "measures": [
+                    "Count (VaR)"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        39
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            }
+        ],
+        "dependencies": {
+            "0": [
+                1,
+                2,
+                3
+            ],
+            "1": [
+                2,
+                3
+            ],
+            "2": [
+                5,
+                3
+            ],
+            "3": [
+                4
+            ],
+            "5": [
+                4
+            ],
+            "6": [
+                3,
+                7
+            ],
+            "7": [
+                4
+            ],
+            "-1": [
+                0,
+                6
+            ]
+        },
+        "databaseRetrievals": [],
+        "databaseDependencies": {},
+        "queryFilters": [
+            {
+                "id": 0,
+                "description": "CubeFilter#1212813 with SubCubeProperties [grantedMeasures=ALL, grantedMembers=ALL]"
+            }
+        ],
+        "querySummary": {
+            "measures": [
+                "Cpty NCAT Vector",
+                "contributors.COUNT",
+                "Cpty NCAT Marginal",
+                "Cpty NCAT Vector (Ref.)",
+                "Count (VaR)"
+            ],
+            "totalRetrievals": 8,
+            "retrievalsCountByType": {
+                "DistributedAggregatesRetrieval": 1,
+                "PostProcessedAggregatesRetrieval": 2,
+                "PrimitiveResultsMerger": 1,
+                "DistributedPostProcessedRetrieval": 2,
+                "PostProcessedResultsMerger": 2
+            },
+            "partitioningCountByType": {
+                "Distributed partitioning": 3,
+                "Constant partitioning": 5
+            },
+            "resultSizeByPartitioning": {
+                "Distributed partitioning": 2,
+                "Constant partitioning": 2
+            },
+            "partialProviders": [],
+            "totalDatabaseResultSize": 0
+        }
+    },
+    {
+        "planInfo": {
+            "pivotType": "ActivePivotVersion",
+            "pivotId": "VaR",
+            "epoch": "43",
+            "branch": "master",
+            "retrieverType": "ActivePivotAggregatesRetriever",
+            "mdxPass": "SelectPass_0",
+            "clusterMemberId": "i-038425b99e8aab0d5_VaR_DATA_21_31941",
+            "contextValues": {
+                "IBranch": "null",
+                "ISubCubeProperties": "null",
+                "ISecurityCubeRestriction": "null",
+                "IAsOfEpoch": "null",
+                "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false, queryPlanCycleDetection=true]",
+                "IQueryBasedCubeRestriction": "null",
+                "IQueriesResultLimit": "QueriesResultLimit [transientLimit=9223372036854775807, intermediateLimit=2147483647]"
+            },
+            "rangeSharing": 1000000,
+            "missedPrefetchBehavior": "WARN",
+            "aggregatesCache": "capacity=0, size=0",
+            "globalTimings": {
+                "executionContextCreationTime": 0,
+                "finalizationTime": 1,
+                "planningTime": 0,
+                "queryExecutionTime": 24
+            },
+            "continuous": false
+        },
+        "aggregateRetrievals": [
+            {
+                "retrievalId": 0,
+                "partialProviderName": "N/A",
+                "type": "PrimitiveAggregatesCacheRetrieval",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "contributors.COUNT"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        0
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 1,
+                "partialProviderName": "N/A",
+                "type": "PrimitiveAnalysisAggregationRetrieval",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "contributors.COUNT"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1
+                ],
+                "timingInfo": {
+                    "aggregationProcedureTime": [
+                        0
+                    ],
+                    "startTime": [
+                        0
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 2,
+                "partialProviderName": "N/A",
+                "type": "PrimitiveResultsMerger",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "contributors.COUNT"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        23
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 3,
+                "partialProviderName": "N/A",
+                "type": "RangeSharingPrimitiveAggregatesRetrieval",
+                "partitioning": "modulo48(MosDimId) | value(CobDate)",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "contributors.COUNT"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        23,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "elapsedTime": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 4,
+                "partialProviderName": "BITMAP-Provider-0",
+                "type": "PartialPrimitiveAggregatesRetrieval",
+                "partitioning": "modulo48(MosDimId) | value(CobDate)",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "ApplicableView",
+                        "level": [
+                            "ALL",
+                            "ApplicableView"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "*"
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "contributors.COUNT",
+                    "Cpty NCAT Vector (Unfilt.)"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    2,
+                    1,
+                    2,
+                    2,
+                    1,
+                    1,
+                    1,
+                    2,
+                    1,
+                    2,
+                    1,
+                    1,
+                    2,
+                    1,
+                    2,
+                    2,
+                    1,
+                    1,
+                    2,
+                    2,
+                    2,
+                    2,
+                    1,
+                    2,
+                    1,
+                    2,
+                    1,
+                    2,
+                    2,
+                    2,
+                    2,
+                    1,
+                    2,
+                    2,
+                    2,
+                    2,
+                    1,
+                    2,
+                    2,
+                    1,
+                    2,
+                    1,
+                    1,
+                    1,
+                    1,
+                    2,
+                    1,
+                    2
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "executionContextStartTime": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "executionContextElapsedTime": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "elapsedTime": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 5,
+                "partialProviderName": "N/A",
+                "type": "PostProcessedCacheRetrieval",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "Count (VaR)"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        24
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 6,
+                "partialProviderName": "N/A",
+                "type": "PostProcessedAggregatesRetrieval",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "Count (VaR)"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        24
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 7,
+                "partialProviderName": "N/A",
+                "type": "PrimitiveAnalysisAggregationRetrieval",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "ApplicableView",
+                        "level": [
+                            "ALL",
+                            "ApplicableView"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "*"
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "contributors.COUNT",
+                    "Cpty NCAT Vector (Unfilt.)"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    2
+                ],
+                "timingInfo": {
+                    "aggregationProcedureTime": [
+                        0
+                    ],
+                    "startTime": [
+                        24
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 8,
+                "partialProviderName": "N/A",
+                "type": "PrimitiveResultsMerger",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "ApplicableView",
+                        "level": [
+                            "ALL",
+                            "ApplicableView"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "*"
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "contributors.COUNT",
+                    "Cpty NCAT Vector (Unfilt.)"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    2
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        23
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 9,
+                "partialProviderName": "N/A",
+                "type": "PostProcessedCacheRetrieval",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "Cpty NCAT Vector"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    0
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        24
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 10,
+                "partialProviderName": "N/A",
+                "type": "PostProcessedAggregatesRetrieval",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "WhatIf",
+                        "hierarchy": "WhatIf",
+                        "level": [
+                            "isWhatIf"
+                        ],
+                        "path": [
+                            false
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "Cpty NCAT Vector"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    0
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        24
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            }
+        ],
+        "dependencies": {
+            "0": [
+                1
+            ],
+            "1": [
+                2
+            ],
+            "2": [
+                3
+            ],
+            "3": [
+                4
+            ],
+            "5": [
+                0,
+                6
+            ],
+            "6": [
+                0,
+                7
+            ],
+            "7": [
+                8
+            ],
+            "8": [
+                4
+            ],
+            "9": [
+                0,
+                10
+            ],
+            "10": [
+                0,
+                7
+            ],
+            "-1": [
+                0,
+                5,
+                9
+            ]
+        },
+        "databaseRetrievals": [],
+        "databaseDependencies": {},
+        "queryFilters": [
+            {
+                "id": 0,
+                "description": "CubeFilter#1212813 with SubCubeProperties [grantedMeasures=ALL, grantedMembers=ALL]"
+            }
+        ],
+        "querySummary": {
+            "measures": [
+                "Cpty NCAT Vector",
+                "Cpty NCAT Vector (Unfilt.)",
+                "contributors.COUNT",
+                "Count (VaR)"
+            ],
+            "totalRetrievals": 11,
+            "retrievalsCountByType": {
+                "PostProcessedAggregatesRetrieval": 2,
+                "PrimitiveAnalysisAggregationRetrieval": 2,
+                "PostProcessedCacheRetrieval": 2,
+                "PartialPrimitiveAggregatesRetrieval": 1,
+                "PrimitiveResultsMerger": 2,
+                "PrimitiveAggregatesCacheRetrieval": 1,
+                "RangeSharingPrimitiveAggregatesRetrieval": 1
+            },
+            "partitioningCountByType": {
+                "modulo48(MosDimId) | value(CobDate)": 2,
+                "Constant partitioning": 9
+            },
+            "resultSizeByPartitioning": {
+                "modulo48(MosDimId) | value(CobDate)": 3,
+                "Constant partitioning": 9
+            },
+            "partialProviders": [
+                "BITMAP-Provider-0"
+            ],
+            "totalDatabaseResultSize": 0
+        }
+    },
+    {
+        "planInfo": {
+            "pivotType": "ActivePivotVersion",
+            "pivotId": "RDW_IRC",
+            "epoch": "215",
+            "branch": "master",
+            "retrieverType": "ActivePivotAggregatesRetriever",
+            "mdxPass": "SelectPass_0",
+            "clusterMemberId": "i-0b7d3cabfb955920e_RDW_IRC_DATA_21_16901",
+            "contextValues": {
+                "ISubCubeProperties": "null",
+                "IBranch": "null",
+                "ISecurityCubeRestriction": "null",
+                "IAsOfEpoch": "null",
+                "IQueryMonitoring": "QueryMonitoring [printExecutionPlan=false, printExecutionTiming=false, queryPlanExport=true, queryPlanSummary=false, queryPlanCycleDetection=true]",
+                "IQueryBasedCubeRestriction": "null",
+                "IQueriesResultLimit": "QueriesResultLimit [transientLimit=9223372036854775807, intermediateLimit=2147483647]"
+            },
+            "rangeSharing": 1000000,
+            "missedPrefetchBehavior": "WARN",
+            "aggregatesCache": "capacity=0, size=0",
+            "globalTimings": {
+                "executionContextCreationTime": 0,
+                "finalizationTime": 1,
+                "planningTime": 0,
+                "queryExecutionTime": 2
+            },
+            "continuous": false
+        },
+        "aggregateRetrievals": [
+            {
+                "retrievalId": 0,
+                "partialProviderName": "N/A",
+                "type": "PrimitiveAggregatesCacheRetrieval",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "contributors.COUNT"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        0
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 1,
+                "partialProviderName": "N/A",
+                "type": "PrimitiveAnalysisAggregationRetrieval",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "View",
+                        "hierarchy": "View",
+                        "level": [
+                            "View"
+                        ],
+                        "path": [
+                            "ECONOMIC"
+                        ]
+                    },
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "contributors.COUNT"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1
+                ],
+                "timingInfo": {
+                    "aggregationProcedureTime": [
+                        0
+                    ],
+                    "startTime": [
+                        0
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 2,
+                "partialProviderName": "N/A",
+                "type": "PrimitiveResultsMerger",
+                "partitioning": "Constant partitioning",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "contributors.COUNT"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        1
+                    ],
+                    "elapsedTime": [
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            },
+            {
+                "retrievalId": 3,
+                "partialProviderName": "BITMAP-Provider-4",
+                "type": "PartialPrimitiveAggregatesRetrieval",
+                "partitioning": "modulo48(Issuer) | value(CobDate)",
+                "location": [
+                    {
+                        "dimension": "Node",
+                        "hierarchy": "Node",
+                        "level": [
+                            "ALL",
+                            "NodeId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            5966
+                        ]
+                    },
+                    {
+                        "dimension": "CobDate",
+                        "hierarchy": "CobDate",
+                        "level": [
+                            "CobDate"
+                        ],
+                        "path": [
+                            "20250530"
+                        ]
+                    },
+                    {
+                        "dimension": "IntradayRisk",
+                        "hierarchy": "ContextId",
+                        "level": [
+                            "ALL",
+                            "ContextId"
+                        ],
+                        "path": [
+                            "AllMember",
+                            "EOD"
+                        ]
+                    }
+                ],
+                "measures": [
+                    "contributors.COUNT"
+                ],
+                "filterId": 0,
+                "measureProvider": "SimpleMeasuresProvider",
+                "resultSizes": [
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    0,
+                    1,
+                    1
+                ],
+                "timingInfo": {
+                    "startTime": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "executionContextStartTime": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "executionContextElapsedTime": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "elapsedTime": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                "underlyingDataNodes": []
+            }
+        ],
+        "dependencies": {
+            "0": [
+                1
+            ],
+            "1": [
+                2
+            ],
+            "2": [
+                3
+            ],
+            "-1": [
+                0
+            ]
+        },
+        "databaseRetrievals": [],
+        "databaseDependencies": {},
+        "queryFilters": [
+            {
+                "id": 0,
+                "description": "CubeFilter#1212813 with SubCubeProperties [grantedMeasures=ALL, grantedMembers=ALL]"
+            }
+        ],
+        "querySummary": {
+            "measures": [
+                "contributors.COUNT"
+            ],
+            "totalRetrievals": 4,
+            "retrievalsCountByType": {
+                "PrimitiveAnalysisAggregationRetrieval": 1,
+                "PartialPrimitiveAggregatesRetrieval": 1,
+                "PrimitiveResultsMerger": 1,
+                "PrimitiveAggregatesCacheRetrieval": 1
+            },
+            "partitioningCountByType": {
+                "modulo48(Issuer) | value(CobDate)": 1,
+                "Constant partitioning": 3
+            },
+            "resultSizeByPartitioning": {
+                "modulo48(Issuer) | value(CobDate)": 1,
+                "Constant partitioning": 3
+            },
+            "partialProviders": [
+                "BITMAP-Provider-4"
+            ],
+            "totalDatabaseResultSize": 0
+        }
+    }
+]
