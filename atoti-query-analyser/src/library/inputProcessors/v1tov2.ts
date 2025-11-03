@@ -397,6 +397,7 @@ function createDependencyList(v1Structure: V1Structure) {
         mapToInsert = result.dependencies;
         break;
       case "ExternalRetrieval":
+      case "DatabaseRetrieval":
         mapToInsert = result.externalDependencies;
         break;
       default:
@@ -767,7 +768,8 @@ function createRetrievalMap(
           case "Retrieval":
             tryPush(aggregateRetrievals, mapAggregateRetrieval);
             break;
-          case "ExternalRetrieval":
+          case "ExternalRetrieval": // Fallthrough, same as DatabaseRetrieval
+          case "DatabaseRetrieval":
             tryPush(externalRetrievals, mapExternalRetrieval);
             break;
           default:
