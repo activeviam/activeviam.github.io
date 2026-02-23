@@ -21,10 +21,6 @@ import {
 import { TimelineDetails } from "./Details";
 import "./Timeline.css";
 
-/* TODO how to dilate time not to have long boxes taking a lot of spaces
- * We must only dilate time for periods where all entries are in similar
- * buckets. */
-
 /**
  * Helper function that inserts a time range into one of existing timelines or
  * creates a new timeline.
@@ -79,12 +75,15 @@ function extractTimeRanges(node: RetrievalVertex): TimeRange[] {
  * Distributes retrievals into buckets in such way that there are no two
  * overlapping retrievals within one bucket.
  * */
-function computeLines({ graph }: { graph: RetrievalGraph }) {
+function computeLines({ graph }: { graph: RetrievalGraph }, scale: number) {
   const nodes = Array.from(graph.getVertices());
   const result = nodes
     .filter(hasTimingInfo)
     .map(extractTimeRanges)
     .flat()
+    .filter(
+      (entry) => entry.start < entry.end && entry.end - entry.start >= scale
+    )
     .sort((a, b) => {
       return a.start - b.start;
     })
@@ -101,6 +100,7 @@ const MARGIN = 0;
 const BOX_HEIGHT = 25;
 const BOX_MARGIN = 5;
 const WIDTH_FACTOR = 5;
+
 /**
  * This React component is responsible for rendering single retrieval.
  * */
@@ -216,6 +216,7 @@ const computeTextOffset = (rowCount: number) => {
  * */
 function Rows({
   rows,
+  maxEndTime,
   factor,
   graph,
   selection,
@@ -223,20 +224,23 @@ function Rows({
   focus,
 }: {
   rows: TimeRange[][];
+  maxEndTime: number;
   factor: number;
   graph: RetrievalGraph;
   selection: RetrievalCursor[];
   onSelect: (entry: TimeRange) => void;
   focus: FocusState;
 }) {
+  if (rows.length === 0) {
+    return (
+      <div className="timeline-rows">
+        All entries are smaller than one pixel at this scale.
+      </div>
+    );
+  }
   const height =
     2 * MARGIN + rows.length * (BOX_HEIGHT + BOX_MARGIN) - BOX_MARGIN;
-  const width =
-    2 * MARGIN +
-    WIDTH_FACTOR *
-      Math.max(
-        ...rows.map((row) => row[row.length - 1]).map((entry) => entry.end)
-      );
+  const width = 2 * MARGIN + WIDTH_FACTOR * maxEndTime;
   const textOffset = computeTextOffset(rows.length);
   return (
     <div className="timeline-rows">
@@ -311,9 +315,6 @@ const findClosestScale = (values: readonly Scale[], factor: number) => {
  * @param attributes.plan - Query plan to be displayed
  */
 export function Timeline({ plan }: { plan: QueryPlan }) {
-  const lines = useMemo(() => {
-    return computeLines(plan);
-  }, [plan]);
   const defaultScale = useMemo(() => {
     const mean = Array.from(plan.graph.getVertices())
       .flatMap((v) => v.getMetadata().timingInfo.elapsedTime ?? [])
@@ -325,6 +326,14 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
     const result = findClosestScale(scales, (mean.sum / mean.count) * 0.75);
     return result ?? scales[0];
   }, [plan]);
+  const [scale, setScale] = useState(defaultScale);
+  const lines = useMemo(() => {
+    return computeLines(plan, scale.factor);
+  }, [plan, scale]);
+  const maxEndTime = useMemo(() => {
+    if (lines.length === 0) return 0;
+    return Math.max(...lines.map((row) => row[row.length - 1].end));
+  }, [lines]);
   const [selection, setSelection] = useState<RetrievalCursor[]>([]);
   const [focusControlState, setFocused] = useState<FocusControl>({
     item: null,
@@ -344,7 +353,9 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
     }),
     [focusState, showParents, showChildren]
   );
-  const [scale, setScale] = useState(defaultScale);
+  // if (entry.start < entry.end) {
+  //   return (entry.end - entry.start - 1) * WIDTH_FACTOR + 2 >= f;
+  // }, [lines, scale.factor]);
 
   useEffect(() => {
     setSelection([]);
@@ -385,6 +396,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
       </div>
       <Rows
         rows={lines}
+        maxEndTime={maxEndTime}
         factor={scale.factor}
         graph={plan.graph}
         selection={selection}
