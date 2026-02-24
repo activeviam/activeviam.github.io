@@ -23,6 +23,10 @@ import { Summary } from "./components/Summary/Summary";
 import { Graph } from "./components/Graph/Graph";
 import { Timeline } from "./components/Timeline/Timeline";
 import { validateString } from "./library/dataStructures/json/validatingUtils";
+import {
+  extractLabel,
+  saveRecentQueryPlan,
+} from "./library/storage/recentQueryPlans";
 
 /**
  * The root React component.
@@ -93,6 +97,14 @@ export function App(): JSX.Element {
       }
     }
 
+    // Save to history (non-blocking, non-critical)
+    try {
+      const label = extractLabel(rawJson);
+      await saveRecentQueryPlan(label, rawJson);
+    } catch (err) {
+      console.warn("Failed to save to recent history:", err);
+    }
+
     const queryPlan = preprocessQueryPlan(rawJson);
 
     const defaultSelections = buildDefaultSelection(
@@ -110,6 +122,20 @@ export function App(): JSX.Element {
     } else {
       setLastQuery(input);
     }
+  };
+
+  const loadRecentEntry = (data: unknown) => {
+    const queryPlan = preprocessQueryPlan(data);
+    const defaultSelections = buildDefaultSelection(
+      queryPlan.map((query) => query.graph)
+    );
+    const metadata = extractMetadata(queryPlan);
+
+    setSelections(defaultSelections);
+    setQueryMetadata(metadata);
+    setCurrentQueryId(findRootQuery(metadata, 0) || 0);
+    setRoute("summary");
+    setQueryPlans(queryPlan);
   };
 
   const changeGraph = (childId: number) => {
@@ -140,6 +166,7 @@ export function App(): JSX.Element {
       passInput={processInput}
       lastInput={lastInput}
       lastQuery={lastQuery}
+      loadRecentEntry={loadRecentEntry}
     />
   );
 

@@ -11,6 +11,8 @@ import {
 import { useErrorMessage } from "../../hooks/notification";
 import { ServerInput } from "../../library/inputProcessors/server";
 import { asError } from "../../library/utilities/util";
+import { prettySize } from "../../library/utilities/textUtils";
+import { RecentQueryPlans } from "./RecentQueryPlans";
 
 /**
  * Specifies how to process input.
@@ -351,10 +353,12 @@ export function Input({
   passInput,
   lastInput,
   lastQuery,
+  loadRecentEntry,
 }: {
   passInput: OnInput;
   lastInput: string;
   lastQuery: ServerInput;
+  loadRecentEntry: (data: unknown) => void;
 }) {
   const location = new URL(window.location.href);
 
@@ -418,19 +422,6 @@ export function Input({
       default:
         throw new Error(`Unexpected input mode: ${mode} ${InputMode[mode]}`);
     }
-  };
-
-  const prettySize = (size: number) => {
-    const suffixes = ["bytes", "KiB", "MiB", "GiB", "TiB"];
-    let suffixIdx = 0;
-    let mutableSize = size;
-    while (mutableSize > 1024 && suffixIdx + 1 < suffixes.length) {
-      mutableSize /= 1024;
-      ++suffixIdx;
-    }
-    return `${mutableSize.toFixed(suffixIdx === 0 ? 0 : 1)} ${
-      suffixes[suffixIdx]
-    }`;
   };
 
   let sourceForm;
@@ -541,6 +532,7 @@ export function Input({
           <span>{statusLine}</span>
         </div>
       )}
+      <RecentQueryPlans onLoad={loadRecentEntry} />
     </Form>
   );
 }
