@@ -132,6 +132,33 @@ export async function saveRecentQueryPlan(
   return id;
 }
 
+export async function updateRecentQueryPlanLabel(
+  id: number,
+  label: string
+): Promise<void> {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readwrite");
+    const store = tx.objectStore(STORE_NAME);
+    const getRequest = store.get(id);
+    getRequest.onsuccess = () => {
+      const entry = getRequest.result as RecentQueryPlanEntry | undefined;
+      if (!entry) {
+        reject(new Error(`Entry ${id} not found`));
+        return;
+      }
+      entry.label = label;
+      store.put(entry);
+    };
+    getRequest.onerror = () => reject(getRequest.error);
+    tx.oncomplete = () => {
+      db.close();
+      resolve();
+    };
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
 export async function deleteRecentQueryPlan(id: number): Promise<void> {
   const db = await openDb();
   return new Promise((resolve, reject) => {

@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, ListGroup, Spinner } from "react-bootstrap";
+import { Button, Form, ListGroup, Spinner } from "react-bootstrap";
 import {
   deleteRecentQueryPlan,
   getRecentQueryPlans,
   loadRecentQueryPlanData,
   RecentQueryPlanEntry,
+  updateRecentQueryPlanLabel,
 } from "../../library/storage/recentQueryPlans";
 import { prettySize } from "../../library/utilities/textUtils";
 
@@ -15,6 +16,8 @@ export function RecentQueryPlans({
 }) {
   const [entries, setEntries] = useState<RecentQueryPlanEntry[]>([]);
   const [loadingId, setLoadingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState("");
 
   const refresh = useCallback(() => {
     getRecentQueryPlans()
@@ -47,6 +50,34 @@ export function RecentQueryPlans({
     }
   };
 
+  const startEditing = (entry: RecentQueryPlanEntry) => {
+    setEditingId(entry.id ?? null);
+    setEditValue(entry.label);
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditValue("");
+  };
+
+  const saveLabel = async () => {
+    if (editingId === null) return;
+    const trimmed = editValue.trim();
+    if (trimmed === "") {
+      cancelEditing();
+      return;
+    }
+    try {
+      await updateRecentQueryPlanLabel(editingId, trimmed);
+      refresh();
+    } catch (err) {
+      console.warn("Failed to update label:", err);
+    } finally {
+      setEditingId(null);
+      setEditValue("");
+    }
+  };
+
   if (entries.length === 0) {
     return null;
   }
@@ -61,7 +92,37 @@ export function RecentQueryPlans({
             className="d-flex justify-content-between align-items-center"
           >
             <div>
-              <strong>{entry.label}</strong>
+              {editingId === entry.id ? (
+                <Form.Control
+                  size="sm"
+                  type="text"
+                  value={editValue}
+                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                  autoFocus
+                  onChange={(e) => setEditValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      saveLabel();
+                    } else if (e.key === "Escape") {
+                      cancelEditing();
+                    }
+                  }}
+                  onBlur={() => saveLabel()}
+                />
+              ) : (
+                <span>
+                  <strong>{entry.label}</strong>{" "}
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="p-0 text-muted"
+                    title="Edit label"
+                    onClick={() => startEditing(entry)}
+                  >
+                    &#9998;
+                  </Button>
+                </span>
+              )}
               <br />
               <small className="text-muted">
                 {prettySize(entry.sizeInBytes)} &middot;{" "}

@@ -65,7 +65,8 @@ export function App(): JSX.Element {
     type: InputType,
     input: string | ServerInput,
     showError: (error: Error) => void,
-    statusLine?: (message: string) => void
+    statusLine?: (message: string) => void,
+    labelHint?: string
   ) => {
     let rawJson: unknown;
     if (mode === InputMode.JSON) {
@@ -99,7 +100,7 @@ export function App(): JSX.Element {
 
     // Save to history (non-blocking, non-critical)
     try {
-      const label = extractLabel(rawJson);
+      const label = labelHint || extractLabel(rawJson);
       await saveRecentQueryPlan(label, rawJson);
     } catch (err) {
       console.warn("Failed to save to recent history:", err);

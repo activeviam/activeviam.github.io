@@ -50,7 +50,8 @@ export type OnInput = (
   type: InputType,
   input: string | ServerInput,
   showError: (error: Error) => void,
-  statusLine: (message: string) => void
+  statusLine: (message: string) => void,
+  labelHint?: string
 ) => Promise<void>;
 
 /**
@@ -373,6 +374,7 @@ export function Input({
   const devMode = location.search.includes("dev"); // Backward compatibility
   const [statusLine, setStatusLine] = useState("");
 
+  const [fileName, setFileName] = useState("");
   const [processing, setProcessing] = useState(false);
 
   const { showError } = useErrorMessage();
@@ -393,10 +395,14 @@ export function Input({
     }
   };
 
-  const doPassInput = async (data: string, mode: InputMode) => {
+  const doPassInput = async (
+    data: string,
+    mode: InputMode,
+    labelHint?: string
+  ) => {
     setProcessing(true);
     try {
-      await passInput(mode, type, data, showError, setStatusLine);
+      await passInput(mode, type, data, showError, setStatusLine, labelHint);
     } catch (err) {
       showError(asError(err));
     } finally {
@@ -407,7 +413,7 @@ export function Input({
   const dispatchSubmit = (mode: InputMode) => {
     switch (mode) {
       case InputMode.JSON:
-        doPassInput(input, InputMode.JSON);
+        doPassInput(input, InputMode.JSON, fileName);
         break;
       case InputMode.URL:
         if (urlMode) {
@@ -417,7 +423,7 @@ export function Input({
         }
         break;
       case InputMode.V1:
-        doPassInput(input, InputMode.V1);
+        doPassInput(input, InputMode.V1, fileName);
         break;
       default:
         throw new Error(`Unexpected input mode: ${mode} ${InputMode[mode]}`);
@@ -452,6 +458,7 @@ export function Input({
                 return;
               }
               const file = inputNode.files[0];
+              setFileName(file.name);
 
               const reader = new FileReader();
               reader.onload = (readerEvent) => {
