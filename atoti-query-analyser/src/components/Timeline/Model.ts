@@ -3,6 +3,9 @@ import { RetrievalGraph } from "../../library/dataStructures/json/retrieval";
 import { UUID } from "../../library/utilities/uuid";
 import "./Timeline.css";
 
+/** Sentinel partition value for aggregated (all-partition) bars. */
+export const AGGREGATED_PARTITION = -1;
+
 /**
  * A (retrievalID, partitionID) pair.
  * */
@@ -18,6 +21,10 @@ export interface TimeRange {
   retrieval: RetrievalCursor;
   start: number;
   end: number;
+  /** True when this range represents all partitions collapsed into one. */
+  aggregated?: boolean;
+  /** Number of partitions aggregated (for display). */
+  partitionCount?: number;
 }
 
 export type FocusControl = {
@@ -106,12 +113,23 @@ export const unfocusOnItem = (
 
 export const computeChildRetrievals = (
   graph: RetrievalGraph,
-  { id }: RetrievalCursor
+  { id }: RetrievalCursor,
+  aggregated = false
 ): RetrievalCursor[] => {
   const childVertices = Array.from(
     graph.getOutgoingEdges(graph.getVertexByUUID(id))
   ).map((edge) => edge.getEnd());
   const uniqueVertices = new Set(childVertices);
+  if (aggregated) {
+    return Array.from(uniqueVertices)
+      .filter(
+        (node) => (node.getMetadata().timingInfo.elapsedTime?.length ?? 0) > 0
+      )
+      .map((node) => ({
+        id: node.getUUID(),
+        partition: AGGREGATED_PARTITION,
+      }));
+  }
   return Array.from(uniqueVertices).flatMap(
     (node) =>
       node.getMetadata().timingInfo.elapsedTime?.map((_, i) => ({
@@ -123,7 +141,8 @@ export const computeChildRetrievals = (
 
 export const computeFocusState = (
   plan: QueryPlan,
-  focusedItem: RetrievalCursor | null
+  focusedItem: RetrievalCursor | null,
+  aggregated = false
 ): FocusState => {
   if (focusedItem === null) {
     return {
@@ -133,17 +152,28 @@ export const computeFocusState = (
       children: [],
     };
   } else {
-    const siblings =
-      plan.graph
-        .getVertexByUUID(focusedItem.id)
-        .getMetadata()
-        .timingInfo.elapsedTime?.filter((_, i) => i !== focusedItem.partition)
-        .map((_, i) => ({
-          id: focusedItem.id,
-          partition: i,
-        })) ?? [];
-    const parents = computeChildRetrievals(plan.graph, focusedItem);
-    const children = computeChildRetrievals(plan.graph.inverse(), focusedItem);
+    const isAggregated =
+      aggregated || focusedItem.partition === AGGREGATED_PARTITION;
+    const siblings = isAggregated
+      ? []
+      : plan.graph
+          .getVertexByUUID(focusedItem.id)
+          .getMetadata()
+          .timingInfo.elapsedTime?.filter((_, i) => i !== focusedItem.partition)
+          .map((_, i) => ({
+            id: focusedItem.id,
+            partition: i,
+          })) ?? [];
+    const parents = computeChildRetrievals(
+      plan.graph,
+      focusedItem,
+      isAggregated
+    );
+    const children = computeChildRetrievals(
+      plan.graph.inverse(),
+      focusedItem,
+      isAggregated
+    );
 
     const result = {
       focused: focusedItem,
