@@ -46,3 +46,16 @@ export function humanisticStringComparator(lhs: string, rhs: string) {
   const rightToken = rightWords.map((word) => word.toUpperCase()).join();
   return leftToken.localeCompare(rightToken);
 }
+
+export function prettySize(size: number): string {
+  const suffixes = ["bytes", "KiB", "MiB", "GiB", "TiB"];
+  let suffixIdx = 0;
+  let mutableSize = size;
+  while (mutableSize > 1024 && suffixIdx + 1 < suffixes.length) {
+    mutableSize /= 1024;
+    ++suffixIdx;
+  }
+  return `${mutableSize.toFixed(suffixIdx === 0 ? 0 : 1)} ${
+    suffixes[suffixIdx]
+  }`;
+}

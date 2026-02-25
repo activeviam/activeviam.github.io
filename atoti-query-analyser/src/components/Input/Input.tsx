@@ -11,6 +11,8 @@ import {
 import { useErrorMessage } from "../../hooks/notification";
 import { ServerInput } from "../../library/inputProcessors/server";
 import { asError } from "../../library/utilities/util";
+import { prettySize } from "../../library/utilities/textUtils";
+import { RecentQueryPlans } from "./RecentQueryPlans";
 
 /**
  * Specifies how to process input.
@@ -48,7 +50,8 @@ export type OnInput = (
   type: InputType,
   input: string | ServerInput,
   showError: (error: Error) => void,
-  statusLine: (message: string) => void
+  statusLine: (message: string) => void,
+  labelHint?: string
 ) => Promise<void>;
 
 /**
@@ -351,10 +354,12 @@ export function Input({
   passInput,
   lastInput,
   lastQuery,
+  loadRecentEntry,
 }: {
   passInput: OnInput;
   lastInput: string;
   lastQuery: ServerInput;
+  loadRecentEntry: (data: unknown) => void;
 }) {
   const location = new URL(window.location.href);
 
@@ -369,6 +374,7 @@ export function Input({
   const devMode = location.search.includes("dev"); // Backward compatibility
   const [statusLine, setStatusLine] = useState("");
 
+  const [fileName, setFileName] = useState("");
   const [processing, setProcessing] = useState(false);
 
   const { showError } = useErrorMessage();
@@ -389,10 +395,14 @@ export function Input({
     }
   };
 
-  const doPassInput = async (data: string, mode: InputMode) => {
+  const doPassInput = async (
+    data: string,
+    mode: InputMode,
+    labelHint?: string
+  ) => {
     setProcessing(true);
     try {
-      await passInput(mode, type, data, showError, setStatusLine);
+      await passInput(mode, type, data, showError, setStatusLine, labelHint);
     } catch (err) {
       showError(asError(err));
     } finally {
@@ -403,7 +413,7 @@ export function Input({
   const dispatchSubmit = (mode: InputMode) => {
     switch (mode) {
       case InputMode.JSON:
-        doPassInput(input, InputMode.JSON);
+        doPassInput(input, InputMode.JSON, fileName);
         break;
       case InputMode.URL:
         if (urlMode) {
@@ -413,24 +423,11 @@ export function Input({
         }
         break;
       case InputMode.V1:
-        doPassInput(input, InputMode.V1);
+        doPassInput(input, InputMode.V1, fileName);
         break;
       default:
         throw new Error(`Unexpected input mode: ${mode} ${InputMode[mode]}`);
     }
-  };
-
-  const prettySize = (size: number) => {
-    const suffixes = ["bytes", "KiB", "MiB", "GiB", "TiB"];
-    let suffixIdx = 0;
-    let mutableSize = size;
-    while (mutableSize > 1024 && suffixIdx + 1 < suffixes.length) {
-      mutableSize /= 1024;
-      ++suffixIdx;
-    }
-    return `${mutableSize.toFixed(suffixIdx === 0 ? 0 : 1)} ${
-      suffixes[suffixIdx]
-    }`;
   };
 
   let sourceForm;
@@ -461,6 +458,7 @@ export function Input({
                 return;
               }
               const file = inputNode.files[0];
+              setFileName(file.name);
 
               const reader = new FileReader();
               reader.onload = (readerEvent) => {
@@ -541,6 +539,7 @@ export function Input({
           <span>{statusLine}</span>
         </div>
       )}
+      <RecentQueryPlans onLoad={loadRecentEntry} />
     </Form>
   );
 }
