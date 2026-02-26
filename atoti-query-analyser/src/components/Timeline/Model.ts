@@ -3,9 +3,6 @@ import { RetrievalGraph } from "../../library/dataStructures/json/retrieval";
 import { UUID } from "../../library/utilities/uuid";
 import "./Timeline.css";
 
-/** Sentinel partition value for aggregated (all-partition) bars. */
-export const AGGREGATED_PARTITION = -1;
-
 /**
  * A (retrievalID, partitionID) pair.
  * */
@@ -21,10 +18,6 @@ export interface TimeRange {
   retrieval: RetrievalCursor;
   start: number;
   end: number;
-  /** True when this range represents all partitions collapsed into one. */
-  aggregated?: boolean;
-  /** Number of partitions aggregated (for display). */
-  partitionCount?: number;
 }
 
 export type FocusControl = {
@@ -113,23 +106,12 @@ export const unfocusOnItem = (
 
 export const computeChildRetrievals = (
   graph: RetrievalGraph,
-  { id }: RetrievalCursor,
-  aggregated = false
+  { id }: RetrievalCursor
 ): RetrievalCursor[] => {
   const childVertices = Array.from(
     graph.getOutgoingEdges(graph.getVertexByUUID(id))
   ).map((edge) => edge.getEnd());
   const uniqueVertices = new Set(childVertices);
-  if (aggregated) {
-    return Array.from(uniqueVertices)
-      .filter(
-        (node) => (node.getMetadata().timingInfo.elapsedTime?.length ?? 0) > 0
-      )
-      .map((node) => ({
-        id: node.getUUID(),
-        partition: AGGREGATED_PARTITION,
-      }));
-  }
   return Array.from(uniqueVertices).flatMap(
     (node) =>
       node.getMetadata().timingInfo.elapsedTime?.map((_, i) => ({
@@ -141,8 +123,7 @@ export const computeChildRetrievals = (
 
 export const computeFocusState = (
   plan: QueryPlan,
-  focusedItem: RetrievalCursor | null,
-  aggregated = false
+  focusedItem: RetrievalCursor | null
 ): FocusState => {
   if (focusedItem === null) {
     return {
@@ -152,28 +133,17 @@ export const computeFocusState = (
       children: [],
     };
   } else {
-    const isAggregated =
-      aggregated || focusedItem.partition === AGGREGATED_PARTITION;
-    const siblings = isAggregated
-      ? []
-      : plan.graph
-          .getVertexByUUID(focusedItem.id)
-          .getMetadata()
-          .timingInfo.elapsedTime?.filter((_, i) => i !== focusedItem.partition)
-          .map((_, i) => ({
-            id: focusedItem.id,
-            partition: i,
-          })) ?? [];
-    const parents = computeChildRetrievals(
-      plan.graph,
-      focusedItem,
-      isAggregated
-    );
-    const children = computeChildRetrievals(
-      plan.graph.inverse(),
-      focusedItem,
-      isAggregated
-    );
+    const siblings =
+      plan.graph
+        .getVertexByUUID(focusedItem.id)
+        .getMetadata()
+        .timingInfo.elapsedTime?.filter((_, i) => i !== focusedItem.partition)
+        .map((_, i) => ({
+          id: focusedItem.id,
+          partition: i,
+        })) ?? [];
+    const parents = computeChildRetrievals(plan.graph, focusedItem);
+    const children = computeChildRetrievals(plan.graph.inverse(), focusedItem);
 
     const result = {
       focused: focusedItem,
@@ -184,3 +154,51 @@ export const computeFocusState = (
     return result;
   }
 };
+
+// --- Time-slice navigation ---
+
+export interface TimeSlice {
+  index: number;
+  start: number;
+  end: number;
+}
+
+export const ALL_SLICES_INDEX = -1;
+
+export interface SlicedEntry {
+  entry: TimeRange;
+  overflowLeft: boolean;
+  overflowRight: boolean;
+}
+
+export function computeSlices(
+  lines: TimeRange[][],
+  sliceDuration: number,
+  maxEndTime: number
+): TimeSlice[] {
+  if (sliceDuration <= 0 || maxEndTime <= 0) return [];
+  const slices: TimeSlice[] = [];
+  for (let start = 0; start < maxEndTime; start += sliceDuration) {
+    const end = start + sliceDuration;
+    const hasOverlap = lines.some((row) =>
+      row.some((entry) => entry.start < end && entry.end > start)
+    );
+    if (hasOverlap) {
+      slices.push({ index: slices.length, start, end });
+    }
+  }
+  return slices;
+}
+
+export function filterEntriesForSlice(
+  row: TimeRange[],
+  slice: TimeSlice
+): SlicedEntry[] {
+  return row
+    .filter((entry) => entry.start < slice.end && entry.end > slice.start)
+    .map((entry) => ({
+      entry,
+      overflowLeft: entry.start < slice.start,
+      overflowRight: entry.end > slice.end,
+    }));
+}

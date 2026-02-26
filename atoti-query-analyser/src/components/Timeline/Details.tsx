@@ -7,7 +7,6 @@ import { Details } from "components/Details/Details";
 import { requireNonNull } from "../../library/utilities/util";
 import * as labels from "../../library/graphView/labels";
 import {
-  AGGREGATED_PARTITION,
   FocusControl,
   RetrievalCursor,
   areEqualCursors,
@@ -25,7 +24,6 @@ export function TimelineDetails({
   selection,
   setSelection,
   setFocused,
-  isAggregated,
 }: Readonly<{
   plan: QueryPlan;
   focus: FocusControl;
@@ -34,7 +32,6 @@ export function TimelineDetails({
     setter: (entries: RetrievalCursor[]) => RetrievalCursor[]
   ) => void;
   setFocused: (setter: (focus: FocusControl) => FocusControl) => void;
-  isAggregated?: boolean;
 }>) {
   const closeBox = (retrieval: RetrievalCursor) => {
     setSelection((entries) => {
@@ -59,10 +56,6 @@ export function TimelineDetails({
           const buttonProps = isFocused
             ? { variant: "warning", disabled: true }
             : { variant: "outline-warning" };
-          const partitionLabel =
-            partition === AGGREGATED_PARTITION ? "[all]" : `[${partition}]`;
-          const detailsPartition =
-            partition === AGGREGATED_PARTITION ? undefined : partition;
 
           return (
             <Toast
@@ -72,7 +65,7 @@ export function TimelineDetails({
             >
               <Toast.Header>
                 <span className="retrieval-id mr-auto">#{retrievalId}</span>
-                <span className="partition-id mr-auto"> {partitionLabel}</span>
+                <span className="partition-id mr-auto"> [{partition}]</span>
                 <span className="retrieval-type">{labels.type(type)}</span>
                 <ButtonGroup
                   aria-label="Focus history"
@@ -125,8 +118,7 @@ export function TimelineDetails({
                 <Details
                   startTime={requireNonNull(timingInfo.startTime)}
                   elapsedTime={requireNonNull(timingInfo.elapsedTime)}
-                  partition={detailsPartition}
-                  metadata={metadata}
+                  {...{ partition, metadata }}
                 />
               </Toast.Body>
             </Toast>

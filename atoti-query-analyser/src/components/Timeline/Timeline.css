@@ -17,52 +17,6 @@
   flex-direction: row;
 }
 
-.timeline-index-column {
-  flex-shrink: 0;
-}
-
-.timeline-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.timeline-axis-wrapper {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: white;
-}
-
-.timeline-axis {
-  position: relative;
-  height: 24px;
-  border-bottom: 1px solid #ddd;
-}
-
-.timeline-tick {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  pointer-events: none;
-}
-
-.timeline-tick-line {
-  width: 1px;
-  height: 8px;
-  background: #999;
-}
-
-.timeline-tick-label {
-  font-size: 0.65rem;
-  color: #666;
-  white-space: nowrap;
-  transform: translateX(-50%);
-  padding-left: 50%;
-}
-
 .timeline-index {
   fill: #959595;
   font-size: 0.8rem;
@@ -70,11 +24,6 @@
 
 .timeline-box {
   fill: #198db4;
-}
-
-.timeline-box-aggregated {
-  stroke: #1a7a9e;
-  stroke-width: 1;
 }
 
 .timeline-box.selected {
@@ -97,24 +46,28 @@
   fill: #ee9322;
 }
 
-.timeline-truncation-notice {
-  padding: 4px 8px;
-  margin-bottom: 4px;
-  background: #fff3cd;
-  border: 1px solid #ffc107;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  color: #664d03;
+.slice-selector {
+  display: flex;
+  align-items: baseline;
+  margin-top: 4px;
 }
 
-.timeline-truncation-notice .button-as-link {
-  background: none;
-  border: none;
-  padding: 0;
-  color: #0d6efd;
-  text-decoration: underline;
-  cursor: pointer;
-  font-size: inherit;
+.slice-button-scroller {
+  overflow-x: auto;
+  max-width: calc(100vw - 120px);
+}
+
+.slice-count {
+  margin-left: 8px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.timeline-box.overflow-left,
+.timeline-box.overflow-right {
+  stroke-dasharray: 4 2;
+  stroke: #ff6b35;
+  stroke-width: 2;
 }
 
 .timeline-details {
