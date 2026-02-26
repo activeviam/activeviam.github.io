@@ -382,9 +382,7 @@ function SliceSelector({
   if (slices.length <= 1) return null;
 
   const isAll = activeSliceIndex === ALL_SLICES_INDEX;
-  const currentArrayIdx = slices.findIndex(
-    (s) => s.index === activeSliceIndex
-  );
+  const currentArrayIdx = slices.findIndex((s) => s.index === activeSliceIndex);
 
   if (slices.length > COMPACT_THRESHOLD) {
     const hasPrev = !isAll && currentArrayIdx > 0;
@@ -453,7 +451,9 @@ function SliceSelector({
               variant={activeSliceIndex === slice.index ? "info" : "light"}
               onClick={() => setActiveSliceIndex(slice.index)}
             >
-              {formatTime(slice.start)}{"\u2013"}{formatTime(slice.end)}
+              {formatTime(slice.start)}
+              {"\u2013"}
+              {formatTime(slice.end)}
             </Button>
           ))}
         </ButtonGroup>
@@ -504,10 +504,10 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
     return slices[activeSliceIndex] ?? null;
   }, [slices, activeSliceIndex]);
 
-  // Reset slice on plan or scale change
+  // Auto-select first slice when multiple slices exist, reset on plan/scale change
   useEffect(() => {
-    setActiveSliceIndex(ALL_SLICES_INDEX);
-  }, [plan, scale]);
+    setActiveSliceIndex(slices.length > 1 ? 0 : ALL_SLICES_INDEX);
+  }, [slices]);
 
   const [selection, setSelection] = useState<RetrievalCursor[]>([]);
   const [focusControlState, setFocused] = useState<FocusControl>({
