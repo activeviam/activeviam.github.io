@@ -46,6 +46,30 @@
   fill: #ee9322;
 }
 
+.slice-selector {
+  display: flex;
+  align-items: baseline;
+  margin-top: 4px;
+}
+
+.slice-button-scroller {
+  overflow-x: auto;
+  max-width: calc(100vw - 120px);
+}
+
+.slice-count {
+  margin-left: 8px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.timeline-box.overflow-left,
+.timeline-box.overflow-right {
+  stroke-dasharray: 4 2;
+  stroke: #ff6b35;
+  stroke-width: 2;
+}
+
 .timeline-details {
   margin-top: 10px;
   overflow-x: auto;

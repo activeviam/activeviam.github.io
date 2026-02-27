@@ -154,3 +154,51 @@ export const computeFocusState = (
     return result;
   }
 };
+
+// --- Time-slice navigation ---
+
+export interface TimeSlice {
+  index: number;
+  start: number;
+  end: number;
+}
+
+export const ALL_SLICES_INDEX = -1;
+
+export interface SlicedEntry {
+  entry: TimeRange;
+  overflowLeft: boolean;
+  overflowRight: boolean;
+}
+
+export function computeSlices(
+  lines: TimeRange[][],
+  sliceDuration: number,
+  maxEndTime: number
+): TimeSlice[] {
+  if (sliceDuration <= 0 || maxEndTime <= 0) return [];
+  const slices: TimeSlice[] = [];
+  for (let start = 0; start < maxEndTime; start += sliceDuration) {
+    const end = start + sliceDuration;
+    const hasOverlap = lines.some((row) =>
+      row.some((entry) => entry.start < end && entry.end > start)
+    );
+    if (hasOverlap) {
+      slices.push({ index: slices.length, start, end });
+    }
+  }
+  return slices;
+}
+
+export function filterEntriesForSlice(
+  row: TimeRange[],
+  slice: TimeSlice
+): SlicedEntry[] {
+  return row
+    .filter((entry) => entry.start < slice.end && entry.end > slice.start)
+    .map((entry) => ({
+      entry,
+      overflowLeft: entry.start < slice.start,
+      overflowRight: entry.end > slice.end,
+    }));
+}
