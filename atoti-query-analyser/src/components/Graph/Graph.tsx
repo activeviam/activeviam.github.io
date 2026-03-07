@@ -609,7 +609,7 @@ export function Graph({
 
         {/* Node Details Sidebar Drawer */}
         <div
-          className={`sidebar-drawer ${activePanel === "details" ? "open" : ""}`}
+          className={`sidebar-drawer details-drawer ${activePanel === "details" ? "open" : ""}`}
         >
           <div className="sidebar-drawer-header">
             <h5>Node Details</h5>
