@@ -28,4 +28,5 @@ online-tool
 
 # Cypress
 /cypress/screenshots/*
-/cypress/videos/*
+/cypress/videos/*atoti-query-analyser/.claude/settings.local.json
+cypress/videos/
