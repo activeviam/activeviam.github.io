@@ -17,7 +17,17 @@ import { condenseFastRetrievals } from "../../library/graphProcessors/condenseFa
 import { Link } from "./Link";
 import { Node } from "./Node";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
-import { FaClipboardList, FaFilter, FaTimes } from "react-icons/fa";
+import {
+  FaClipboardList,
+  FaFilter,
+  FaInfoCircle,
+  FaTimes,
+} from "react-icons/fa";
+import {
+  NodeDetailsPanel,
+  NodeDetailsState,
+  initialNodeDetailsState,
+} from "./NodeDetailsPanel";
 import { Menu } from "./Menu";
 import { QueryFiltersPanel } from "./QueryFiltersPanel";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
@@ -65,12 +75,15 @@ export function Graph({
   changeGraph: (queryId: number) => void;
 }) {
   const [activePanel, setActivePanel] = useState<
-    "filters" | "queryFilters" | null
+    "filters" | "queryFilters" | "details" | null
   >(null);
   const [selectedMeasures, setSelectedMeasures] = useState<Measure[]>([]);
   const [nodes, setNodes] = useState<D3Node[]>([]);
   const [links, setLinks] = useState<D3Link[]>([]);
-  const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
+  const [nodeDetailsState, setNodeDetailsState] = useState<NodeDetailsState>(
+    initialNodeDetailsState,
+  );
+  const selectedNodeId = nodeDetailsState.currentNodeId;
   const [epoch, setEpoch] = useState(0);
 
   const [condenseFastRetrievalsFlag, setCondenseFastRetrievalsFlag] =
@@ -212,9 +225,62 @@ export function Graph({
   };
 
   const clickNode = (id: number | null) => {
-    setSelectedNodeId((oldId) => {
-      return id === oldId ? null : id;
+    if (id === null) {
+      // Clear current node
+      setNodeDetailsState((prev) => ({
+        ...prev,
+        currentNodeId: null,
+      }));
+      return;
+    }
+
+    setNodeDetailsState((prev) => {
+      // If clicking the current node, toggle it off
+      if (id === prev.currentNodeId) {
+        return {
+          ...prev,
+          currentNodeId: null,
+        };
+      }
+
+      // If clicking a pinned node, clear current and expand/scroll to pinned
+      if (prev.pinnedNodeIds.includes(id)) {
+        return {
+          ...prev,
+          currentNodeId: null,
+          expandedNodeIds: new Set([...prev.expandedNodeIds, id]),
+        };
+      }
+
+      // Otherwise, set as current node and auto-open details panel
+      setActivePanel("details");
+      return {
+        ...prev,
+        currentNodeId: id,
+        expandedNodeIds: new Set([...prev.expandedNodeIds, id]),
+      };
     });
+  };
+
+  const centerOnNode = (nodeId: number) => {
+    const node = nodes.find((n) => n.id === nodeId);
+    if (!node || node.x === undefined || node.y === undefined) return;
+    if (svgRef.current === null || zoomRef.current === undefined) return;
+
+    const svg = d3.select(svgRef.current);
+    const width = windowSize.width - 48;
+    const height = windowSize.height - 56;
+    const scale = d3.zoomTransform(svgRef.current).k;
+
+    svg
+      .transition()
+      .duration(500)
+      .call(
+        zoomRef.current.transform,
+        d3.zoomIdentity
+          .translate(width / 2 - node.x * scale, height / 2 - node.y * scale)
+          .scale(scale),
+      );
   };
 
   const changeGraph = (id: number) => {
@@ -346,7 +412,7 @@ export function Graph({
     setNodes(d3data.nodes);
     setLinks(d3data.links);
     setEpoch((e) => e + 1);
-    clickNode(null);
+    setNodeDetailsState(initialNodeDetailsState);
   }, [effectiveData, selectedRetrievals, edgeSelection]);
 
   const onUntangle = () => {
@@ -393,6 +459,16 @@ export function Graph({
         >
           <FaClipboardList size={20} />
         </button>
+        <button
+          className={`activity-bar-button ${activePanel === "details" ? "active" : ""}`}
+          onClick={() =>
+            setActivePanel(activePanel === "details" ? null : "details")
+          }
+          title="Node Details"
+          aria-label="Toggle node details panel"
+        >
+          <FaInfoCircle size={20} />
+        </button>
       </div>
 
       {/* Graph container */}
@@ -418,12 +494,11 @@ export function Graph({
             {nodes.map((node) => (
               <Node
                 node={node}
-                changeGraph={changeGraph}
                 clickNode={clickNode}
                 key={node.id}
-                selected={selectedNodeId === node.id}
-                onCondensedRetrievalDrillthrough={
-                  onCondensedRetrievalDrillthrough
+                selected={
+                  selectedNodeId === node.id ||
+                  nodeDetailsState.pinnedNodeIds.includes(node.id)
                 }
               />
             ))}
@@ -529,6 +604,33 @@ export function Graph({
           </div>
           <div className="sidebar-drawer-content">
             <QueryFiltersPanel filters={query.queryFilters} />
+          </div>
+        </div>
+
+        {/* Node Details Sidebar Drawer */}
+        <div
+          className={`sidebar-drawer ${activePanel === "details" ? "open" : ""}`}
+        >
+          <div className="sidebar-drawer-header">
+            <h5>Node Details</h5>
+            <button
+              onClick={() => setActivePanel(null)}
+              aria-label="Close panel"
+            >
+              <FaTimes />
+            </button>
+          </div>
+          <div className="sidebar-drawer-content">
+            <NodeDetailsPanel
+              nodes={nodes}
+              state={nodeDetailsState}
+              setState={setNodeDetailsState}
+              onCenterNode={centerOnNode}
+              changeGraph={changeGraph}
+              onCondensedRetrievalDrillthrough={
+                onCondensedRetrievalDrillthrough
+              }
+            />
           </div>
         </div>
       </div>
