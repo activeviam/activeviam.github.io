@@ -48,7 +48,7 @@ export function validateQuerySummary(rawQuerySummary: any): QuerySummary {
       validateString,
     ),
     partitioningCountByType: validateObjectAsMap(
-      rawQuerySummary.partitioningCountByType,
+      rawQuerySummary.partitioningCountByType ?? {},
       validateString,
       validateInt,
     ),
@@ -58,13 +58,13 @@ export function validateQuerySummary(rawQuerySummary: any): QuerySummary {
       validateInt,
     ),
     retrievalsCountByType: validateObjectAsMap(
-      rawQuerySummary.retrievalsCountByType,
+      rawQuerySummary.retrievalsCountByType ?? {},
       validateString,
       validateInt,
     ),
     totalExternalResultSize: validateInt(
       rawQuerySummary.totalExternalResultSize || 0,
     ),
-    totalRetrievals: validateInt(rawQuerySummary.totalRetrievals),
+    totalRetrievals: validateInt(rawQuerySummary.totalRetrievals||0),
   };
 }
