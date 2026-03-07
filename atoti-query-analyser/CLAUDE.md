@@ -10,11 +10,35 @@ Atoti Query Analyzer is a React-based web application for analyzing ActivePivot 
 
 ```bash
 npm start          # Development server at localhost:3000
-npm test           # Run Jest tests in watch mode
 npm run build      # Production build to ./build
 npm run eslint     # Lint and auto-fix src/**/*.{js,ts,tsx}
-npm run cypress    # Run Cypress E2E tests (requires dev server running)
+npm run format-prettier # Run prettier to format the code according to conventions
 ```
+
+## Key features
+
+### Input page to load graph
+
+It can be loaded from files, from a pasted file content or by querying a distant server with a given MDX query.
+
+Old plans can be restored from the IndexedDB. This history is limited to the last 5 plans.
+
+### Summary page
+
+Showing all the measures in the graph.
+Showing all the data and query nodes involved
+
+For a given node, it reports the time spend in the database layer, the network layer, the engine layer.
+
+### Graph page
+
+Showing the graph of nodes executing a given node.
+
+### Timeline
+
+Showing a timeline of the operations, with an ordering created from the graph timing, by sorting them on as less lines as possible.
+
+This view does not report the actual thread execution in the backend, as this information is not encoded in the plan.
 
 ## Architecture
 
@@ -62,5 +86,4 @@ npm run cypress    # Run Cypress E2E tests (requires dev server running)
 
 ## Testing
 
-- Jest unit tests: `src/**/*.test.{ts,tsx}`
-- Cypress E2E tests: `cypress/integration/` - test fixtures in `cypress/fixtures/exports/`
+- Cypress E2E tests: `cypress/integration/` - test fixtures in `cypress/fixtures/exports/` (not working anymore at the moment)
