@@ -33,7 +33,7 @@ export interface JsonQueryPlanModernFormat {
 // Reason: `validate...()` function
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function validateJsonQueryPlanOldFormat(
-  rawQueryPlan: any
+  rawQueryPlan: any,
 ): JsonQueryPlanOldFormat {
   if (typeof rawQueryPlan !== "object" || rawQueryPlan === null) {
     throw new Error("queryPlan is not an object");
@@ -41,16 +41,16 @@ function validateJsonQueryPlanOldFormat(
   const planInfo = validatePlanInfo(rawQueryPlan.planInfo);
   const retrievals = validateList(
     rawQueryPlan.retrievals,
-    validateAggregateRetrieval
+    validateAggregateRetrieval,
   );
   const dependencies = validateDependencyMap(rawQueryPlan.dependencies);
   const queryFilters = validateList(rawQueryPlan.queryFilters, validateFilter);
   const querySummary = validateQuerySummary(
-    rawQueryPlan.querySummary ?? rawQueryPlan.planInfo
+    rawQueryPlan.querySummary ?? rawQueryPlan.planInfo,
   );
   const needFillTimingInfo = optional(
     rawQueryPlan.needFillTimingInfo,
-    validateBoolean
+    validateBoolean,
   );
   return {
     planInfo,
@@ -63,7 +63,7 @@ function validateJsonQueryPlanOldFormat(
 }
 
 function validateJsonQueryPlanModernFormat(
-  rawQueryPlan: any
+  rawQueryPlan: any,
 ): JsonQueryPlanModernFormat {
   if (typeof rawQueryPlan !== "object" || rawQueryPlan === null) {
     throw new Error("queryPlan is not an object");
@@ -71,27 +71,27 @@ function validateJsonQueryPlanModernFormat(
   const planInfo = validatePlanInfo(rawQueryPlan.planInfo);
   const aggregateRetrievals = validateList(
     rawQueryPlan.aggregateRetrievals || rawQueryPlan.retrievals,
-    validateAggregateRetrieval
+    validateAggregateRetrieval,
   );
   const dependencies = validateDependencyMap(rawQueryPlan.dependencies);
   const externalRetrievals =
     optional(
       rawQueryPlan.externalRetrievals || rawQueryPlan.databaseRetrievals,
-      (retrievals) => validateList(retrievals, validateExternalRetrieval)
+      (retrievals) => validateList(retrievals, validateExternalRetrieval),
     ) ?? [];
   const externalDependencies =
     optional(rawQueryPlan.externalDependencies, validateDependencyMap) ??
     new Map();
   const queryFilters =
     optional(rawQueryPlan.queryFilters, (filters) =>
-      validateList(filters, validateFilter)
+      validateList(filters, validateFilter),
     ) ?? [];
   const querySummary = validateQuerySummary(
-    rawQueryPlan.querySummary ?? rawQueryPlan.planInfo
+    rawQueryPlan.querySummary ?? rawQueryPlan.planInfo,
   );
   const needFillTimingInfo = optional(
     rawQueryPlan.needFillTimingInfo,
-    validateBoolean
+    validateBoolean,
   );
   return {
     planInfo,
@@ -147,7 +147,7 @@ export function validateJsonQueryPlan(rawQueryPlan: any): JsonQueryPlan {
         "Cannot validate query plan. v2 error",
         errV2,
         "v1 error",
-        errV1
+        errV1,
       );
       throw new Error("Failed to validate query plan", {
         cause: [errV2, errV1],

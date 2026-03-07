@@ -30,3 +30,4 @@ online-tool
 /cypress/screenshots/*
 /cypress/videos/*atoti-query-analyser/.claude/settings.local.json
 cypress/videos/
+.claude/settings.local.json

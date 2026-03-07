@@ -26,7 +26,7 @@ function last<T>(array: T[]): T | undefined {
 function parseNewRetrieval(
   state: V1Structure,
   _line: string,
-  match: RegExpMatchArray
+  match: RegExpMatchArray,
 ): V1Retrieval {
   const sourceId = `${match[1]}#${match[2]}`;
   if (!state.retrievalIndex.has(sourceId)) {
@@ -55,7 +55,7 @@ function parseProperty(_line: string, match: RegExpMatchArray) {
 function matchLine(
   state: V1Structure,
   line: string,
-  matchClauses: Map<RegExp, OnRegExpMatchAction>
+  matchClauses: Map<RegExp, OnRegExpMatchAction>,
 ) {
   const entries = matchClauses.entries();
   for (let entry = entries.next(); !entry.done; entry = entries.next()) {
@@ -71,7 +71,7 @@ function matchLine(
 type OnRegExpMatchAction = (
   state: V1Structure,
   match: RegExpMatchArray,
-  line: string
+  line: string,
 ) => void;
 
 const RETRIEVAL_CLAUSES = new Map<RegExp, OnRegExpMatchAction>([
@@ -217,7 +217,7 @@ function parseLines(
   state: V1Structure,
   lines: string[],
   from: number,
-  to: number
+  to: number,
 ) {
   for (let i = from; i < to; i += 1) {
     const line = lines[i].trim();
@@ -281,7 +281,7 @@ async function parseV1(
   lines: string[],
   lineBegin: number,
   lineEnd: number,
-  tickCallback: (currentLine: number, lineCount: number) => void
+  tickCallback: (currentLine: number, lineCount: number) => void,
 ): Promise<V1Structure> {
   const result = await new Promise<V1Structure>((resolve) => {
     const accumulator: V1Structure = {
@@ -334,7 +334,7 @@ async function parseV1(
  */
 export async function parseMultiV1(
   input: string,
-  tickCallback: (currentLine: number, lineCount: number) => void
+  tickCallback: (currentLine: number, lineCount: number) => void,
 ): Promise<V1Structure[]> {
   const lines = input.split(/\n/);
   const sectionHeaders = [];
@@ -356,11 +356,11 @@ export async function parseMultiV1(
         lines,
         sectionHeaders[i - 1],
         sectionHeaders[i],
-        tickCallback
+        tickCallback,
       ).then((part) => {
         part.info.mdxPass = `GAQ_${i - 1}`;
         return part;
-      })
+      }),
     );
   }
   return parts;
@@ -413,7 +413,7 @@ function createDependencyList(v1Structure: V1Structure) {
           throw new Error("Only aggregate retrievals can have dependencies");
         }
         computeIfAbsent(mapToInsert, `${parentInfo.retrievalId}`, []).push(
-          retrievalId
+          retrievalId,
         );
       });
     }
@@ -477,7 +477,7 @@ class LocationParser {
       throw new Error(
         `Expected ${chars
           .map((ch) => JSON.stringify(ch))
-          .join(" or ")}, got ${JSON.stringify(nextChar)}`
+          .join(" or ")}, got ${JSON.stringify(nextChar)}`,
       );
     }
   }
@@ -492,7 +492,7 @@ class LocationParser {
 
   private readUntilPredicate(
     predicate: (char: string | null) => boolean,
-    failureMessage?: string | (() => string)
+    failureMessage?: string | (() => string),
   ) {
     const beginPos = this.pos;
 
@@ -580,8 +580,8 @@ class LocationParser {
         members.push(
           this.readUntilPredicate(
             predicate,
-            () => `missing ${bracketBalance} closing braces`
-          )
+            () => `missing ${bracketBalance} closing braces`,
+          ),
         );
       } finally {
         this.removeListener(onCharObserver);
@@ -600,7 +600,7 @@ class LocationParser {
 
 function parseLocation(
   location: string,
-  onRecoverableError: (error: Error) => void
+  onRecoverableError: (error: Error) => void,
 ): CubeLocation[] {
   if (location === undefined || location === "GRAND TOTAL") {
     return [];
@@ -682,7 +682,7 @@ function createFilterMap(v1Structure: V1Structure) {
 function mapAggregateRetrieval(
   retrieval: V1Retrieval,
   filterDictionary: Dictionary<string>,
-  onRecoverableError: (error: Error) => void
+  onRecoverableError: (error: Error) => void,
 ): AggregateRetrieval {
   return {
     $kind: AggregateRetrievalKind,
@@ -694,7 +694,7 @@ function mapAggregateRetrieval(
     timingInfo: parseTimings(retrieval.type, retrieval.properties),
     partitioning: retrieval.properties.Partitioning,
     filterId: requireNonNull(
-      filterDictionary.get(retrieval.properties.Filter || GLOBAL_FILTER)
+      filterDictionary.get(retrieval.properties.Filter || GLOBAL_FILTER),
     ),
     measureProvider: retrieval.properties["Measures provider"],
     underlyingDataNodes: [], // Not supported in previous versions
@@ -719,12 +719,12 @@ function mapExternalRetrieval(retrieval: V1Retrieval): ExternalRetrieval {
 function createRetrievalMap(
   v1Structure: V1Structure,
   filterDictionary: Dictionary<string>,
-  onRecoverableError: (error: Error) => void
+  onRecoverableError: (error: Error) => void,
 ) {
   return Object.values(v1Structure.retrievals)
     .sort(
       (lhs, rhs) =>
-        parseSourceId(lhs).retrievalId - parseSourceId(rhs).retrievalId
+        parseSourceId(lhs).retrievalId - parseSourceId(rhs).retrievalId,
     )
     .reduce(
       (
@@ -735,7 +735,7 @@ function createRetrievalMap(
           aggregateRetrievals: AggregateRetrieval[];
           externalRetrievals: ExternalRetrieval[];
         },
-        retrieval
+        retrieval,
       ) => {
         const { kind, retrievalId } = parseSourceId(retrieval);
 
@@ -744,20 +744,20 @@ function createRetrievalMap(
           mapper: (
             retrieval: V1Retrieval,
             filterDictionary: Dictionary<string>,
-            onRecoverableError: (error: Error) => void
-          ) => T
+            onRecoverableError: (error: Error) => void,
+          ) => T,
         ) => {
           const mappedRetrieval = mapper(
             retrieval,
             filterDictionary,
-            onRecoverableError
+            onRecoverableError,
           );
 
           if (retrievalId !== arrayToInsert.length) {
             throw new Error(
               `Cannot insert ${retrieval.sourceId} because ${kind}#${
                 retrievalId - 1
-              } not found`
+              } not found`,
             );
           }
 
@@ -777,7 +777,7 @@ function createRetrievalMap(
         }
         return { aggregateRetrievals, externalRetrievals };
       },
-      { aggregateRetrievals: [], externalRetrievals: [] }
+      { aggregateRetrievals: [], externalRetrievals: [] },
     );
 }
 
@@ -789,7 +789,7 @@ function resultSizeSum(retrievals: (AggregateRetrieval | ExternalRetrieval)[]) {
 
 function createSummary(
   aggregateRetrievals: AggregateRetrieval[],
-  externalRetrievals: ExternalRetrieval[]
+  externalRetrievals: ExternalRetrieval[],
 ) {
   // TODO Add externalRetrievals info
   const measures = _(aggregateRetrievals)
@@ -805,7 +805,7 @@ function createSummary(
   }
   const partitioningCountByType = _.countBy(
     aggregateRetrievals,
-    (r) => r.partitioning
+    (r) => r.partitioning,
   );
 
   const resultSizeByPartitioning = _(aggregateRetrievals)
@@ -856,7 +856,7 @@ export function convertToV2(v1Structure: V1Structure): {
   const { aggregateRetrievals, externalRetrievals } = createRetrievalMap(
     v1Structure,
     filterDictionary,
-    onRecoverableError
+    onRecoverableError,
   );
   const { dependencies, externalDependencies } =
     createDependencyList(v1Structure);

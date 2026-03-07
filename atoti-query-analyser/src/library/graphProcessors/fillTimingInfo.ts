@@ -29,13 +29,13 @@ export function nodeDepths(graph: RetrievalGraph, selection: VertexSelection) {
     (
       vertex,
       dependencies,
-      childrenValues: (child: RetrievalVertex) => number
+      childrenValues: (child: RetrievalVertex) => number,
     ) => {
       if (vertex === virtualTarget) {
         return -1;
       }
       return 1 + Math.max(...Array.from(dependencies).map(childrenValues));
-    }
+    },
   );
 }
 
@@ -55,14 +55,14 @@ export function setSimulatedTimingInfo(graph: RetrievalGraph) {
     (
       vertex,
       dependencies,
-      childrenValues: (child: RetrievalVertex) => number
+      childrenValues: (child: RetrievalVertex) => number,
     ): number => {
       if (vertex === virtualTarget) {
         return -elapsedTime;
       }
       const startTimeList = Array.from(dependencies).map(childrenValues);
       return elapsedTime + Math.max(...startTimeList);
-    }
+    },
   );
 
   startTimeMap.forEach((startTime, node) => {

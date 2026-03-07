@@ -29,7 +29,7 @@ export function TimelineDetails({
   focus: FocusControl;
   selection: RetrievalCursor[];
   setSelection: (
-    setter: (entries: RetrievalCursor[]) => RetrievalCursor[]
+    setter: (entries: RetrievalCursor[]) => RetrievalCursor[],
   ) => void;
   setFocused: (setter: (focus: FocusControl) => FocusControl) => void;
 }>) {

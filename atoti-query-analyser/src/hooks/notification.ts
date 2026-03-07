@@ -51,7 +51,7 @@ export function useErrorMessage() {
       try {
         const stackLines = stack.split("\n");
         const processedStackLines = await Promise.all(
-          stackLines.map(processStackLine)
+          stackLines.map(processStackLine),
         );
         showErrorMessage(processedStackLines.join("\n"));
       } catch (processingError) {

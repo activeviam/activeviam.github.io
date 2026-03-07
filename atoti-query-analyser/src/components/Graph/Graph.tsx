@@ -80,7 +80,7 @@ export function Graph({
       graph: query.graph,
       selection: selection0,
     }),
-    [query, selection0]
+    [query, selection0],
   );
   const effectiveData = useMemo(() => {
     let { graph, selection } = originalData;
@@ -105,15 +105,15 @@ export function Graph({
       Array.from(originalData.graph.getVertices()).map((vertex) => [
         vertex.getMetadata(),
         vertex.getUUID(),
-      ])
+      ]),
     );
 
     setFastRetrievalDrillthough(
       new Set(
         retrieval.underlyingRetrievals.map((underlying) =>
-          requireNonNull(uuidMap.get(underlying))
-        )
-      )
+          requireNonNull(uuidMap.get(underlying)),
+        ),
+      ),
     );
   };
 
@@ -139,7 +139,7 @@ export function Graph({
       notificationContext?.newMessage(
         "Graph filter",
         "Since the retrieval graph is big, the critical score filter is applied. You can configure it in the menu.",
-        { bg: "info" }
+        { bg: "info" },
       );
     }
   }, [effectiveData, notificationContext, autoCriticalScoreFilterNotified]);
@@ -238,7 +238,7 @@ export function Graph({
 
       const dragStarted = (
         event: D3DragEvent<SVGGElement, D3Node, unknown>,
-        d: D3Node
+        d: D3Node,
       ) => {
         if (!event.active) {
           force.alphaTarget(0.3).restart();
@@ -250,7 +250,7 @@ export function Graph({
 
       const dragging = (
         event: D3DragEvent<SVGGElement, D3Node, unknown>,
-        d: D3Node
+        d: D3Node,
       ) => {
         d.fx = event.x;
         d.fy = event.y;
@@ -258,7 +258,7 @@ export function Graph({
 
       const dragEnded = (
         event: D3DragEvent<SVGGElement, D3Node, unknown>,
-        d: D3Node
+        d: D3Node,
       ) => {
         if (!event.active) {
           force.alphaTarget(0);
@@ -275,7 +275,7 @@ export function Graph({
             .drag<SVGGElement, D3Node>()
             .on("start", dragStarted)
             .on("drag", dragging)
-            .on("end", dragEnded)
+            .on("end", dragEnded),
         );
     };
 
@@ -296,7 +296,7 @@ export function Graph({
         .force("link", d3.forceLink(links).distance(150))
         .force(
           "collide",
-          d3.forceCollide<D3Node>().radius((d) => d.radius)
+          d3.forceCollide<D3Node>().radius((d) => d.radius),
         )
         .force("forceY", d3.forceY<D3Node>((d) => d.yFixed).strength(1))
         .force("forceX", d3.forceX(desiredXPos).strength(0.1));
@@ -337,7 +337,7 @@ export function Graph({
     const d3data = buildD3(
       effectiveData.graph,
       selectedRetrievals || effectiveData.selection,
-      edgeSelection
+      edgeSelection,
     );
 
     setNodes(d3data.nodes);

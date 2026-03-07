@@ -15,7 +15,7 @@
 export class UnionFind<T> {
   constructor(
     private readonly parentMap: Map<T, T> = new Map(),
-    private readonly treeDepth: Map<T, number> = new Map()
+    private readonly treeDepth: Map<T, number> = new Map(),
   ) {}
 
   find(key: T): T {

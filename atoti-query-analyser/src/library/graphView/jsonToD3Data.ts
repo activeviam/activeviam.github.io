@@ -41,7 +41,7 @@ type IntermediateD3Link = Omit<Omit<D3Link, "source">, "target"> & {
 function getNodes(
   graph: RetrievalGraph,
   info: { vertexSelection: VertexSelection; edgeSelection: EdgeSelection },
-  depths: Map<RetrievalVertex, number>
+  depths: Map<RetrievalVertex, number>,
 ): IntermediateD3Node[] {
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object.
@@ -49,23 +49,23 @@ function getNodes(
   const virtualSource = graph.getVertexByLabel("virtualSource");
   const leaves = new Set(
     Array.from(graph.getOutgoingEdges(virtualSource)).map((edge) =>
-      edge.getEnd()
-    )
+      edge.getEnd(),
+    ),
   );
   const roots = new Set(
     Array.from(graph.getVertices()).filter(
       (vertex) =>
         Array.from(graph.getOutgoingEdges(vertex)).filter(
-          (edge) => edge.getEnd().getMetadata().$kind !== VirtualRetrievalKind
-        ).length === 0
-    )
+          (edge) => edge.getEnd().getMetadata().$kind !== VirtualRetrievalKind,
+        ).length === 0,
+    ),
   );
 
   return Array.from(graph.getVertices())
     .filter(
       (vertex) =>
         info.vertexSelection.has(vertex.getUUID()) &&
-        vertex.getMetadata().$kind !== VirtualRetrievalKind
+        vertex.getMetadata().$kind !== VirtualRetrievalKind,
     )
     .map((vertex) => {
       const metadata = vertex.getMetadata();
@@ -78,7 +78,7 @@ function getNodes(
       const { elapsedTime = [0], startTime = [0] } = timingInfo;
       const realStart = Math.min(...startTime);
       const realEnd = Math.max(
-        ...startTime.map((start, i) => start + elapsedTime[i])
+        ...startTime.map((start, i) => start + elapsedTime[i]),
       );
       const realElapsed = realEnd - realStart;
 
@@ -116,7 +116,7 @@ function linkId(edge: RetrievalEdge) {
  * */
 function getLinks(
   graph: RetrievalGraph,
-  info: { vertexSelection: VertexSelection; edgeSelection: EdgeSelection }
+  info: { vertexSelection: VertexSelection; edgeSelection: EdgeSelection },
 ): IntermediateD3Link[] {
   const edgeSelectionTree = new Map<UUID, Set<UUID>>();
   for (const edge of Array.from(info.edgeSelection)) {
@@ -133,7 +133,7 @@ function getLinks(
   const filteredGraph = graph.filterVertices(
     (vertex) =>
       vertex.getMetadata().$kind !== VirtualRetrievalKind &&
-      info.vertexSelection.has(vertex.getUUID())
+      info.vertexSelection.has(vertex.getUUID()),
   );
 
   const links: IntermediateD3Link[] = [];
@@ -149,7 +149,7 @@ function getLinks(
         id: linkId(edge),
         criticalScore: edge.getMetadata().criticalScore,
       });
-    })
+    }),
   );
   return links;
 }
@@ -159,7 +159,7 @@ function getLinks(
  * */
 function normalizeIds(
   nodes: IntermediateD3Node[],
-  links: IntermediateD3Link[]
+  links: IntermediateD3Link[],
 ): D3Graph {
   const idMap = new Map(nodes.map((node, index) => [node.id, index]));
 
@@ -188,7 +188,7 @@ function normalizeIds(
 export function buildD3(
   graph: RetrievalGraph,
   vertexSelection: VertexSelection,
-  edgeSelection: EdgeSelection
+  edgeSelection: EdgeSelection,
 ) {
   const info = { vertexSelection, edgeSelection };
   const depths = nodeDepths(graph, vertexSelection);

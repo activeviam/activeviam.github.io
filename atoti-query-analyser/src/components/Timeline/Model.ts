@@ -28,7 +28,7 @@ export type FocusControl = {
 
 export const areEqualCursors = (
   focused: RetrievalCursor | null,
-  item: RetrievalCursor
+  item: RetrievalCursor,
 ) => focused?.id === item.id && focused?.partition === item.partition;
 
 /// Focus management
@@ -44,7 +44,7 @@ export type RelativeStateConfig = {
   classes: readonly string[];
   match: (
     selection: readonly RetrievalCursor[],
-    focus: Readonly<FocusState>
+    focus: Readonly<FocusState>,
   ) => readonly RetrievalCursor[];
 };
 
@@ -75,7 +75,7 @@ export const relativeStates: readonly RelativeStateConfig[] = [
 export const computeRetrievalClasses = (
   retrieval: Readonly<RetrievalCursor>,
   selection: readonly RetrievalCursor[],
-  focus: Readonly<FocusState>
+  focus: Readonly<FocusState>,
 ): readonly string[] => {
   for (const state of relativeStates) {
     const refs = state.match(selection, focus);
@@ -89,7 +89,7 @@ export const computeRetrievalClasses = (
 
 export const focusOnItem = (
   state: FocusControl,
-  entry: RetrievalCursor
+  entry: RetrievalCursor,
 ): FocusControl => ({
   item: entry,
   showChildren: false,
@@ -98,7 +98,7 @@ export const focusOnItem = (
 
 export const unfocusOnItem = (
   state: FocusControl,
-  entry: RetrievalCursor
+  entry: RetrievalCursor,
 ): FocusControl =>
   areEqualCursors(state.item, entry)
     ? { item: null, showParents: false, showChildren: false }
@@ -106,10 +106,10 @@ export const unfocusOnItem = (
 
 export const computeChildRetrievals = (
   graph: RetrievalGraph,
-  { id }: RetrievalCursor
+  { id }: RetrievalCursor,
 ): RetrievalCursor[] => {
   const childVertices = Array.from(
-    graph.getOutgoingEdges(graph.getVertexByUUID(id))
+    graph.getOutgoingEdges(graph.getVertexByUUID(id)),
   ).map((edge) => edge.getEnd());
   const uniqueVertices = new Set(childVertices);
   return Array.from(uniqueVertices).flatMap(
@@ -117,13 +117,13 @@ export const computeChildRetrievals = (
       node.getMetadata().timingInfo.elapsedTime?.map((_, i) => ({
         id: node.getUUID(),
         partition: i,
-      })) ?? []
+      })) ?? [],
   );
 };
 
 export const computeFocusState = (
   plan: QueryPlan,
-  focusedItem: RetrievalCursor | null
+  focusedItem: RetrievalCursor | null,
 ): FocusState => {
   if (focusedItem === null) {
     return {
@@ -174,14 +174,14 @@ export interface SlicedEntry {
 export function computeSlices(
   lines: TimeRange[][],
   sliceDuration: number,
-  maxEndTime: number
+  maxEndTime: number,
 ): TimeSlice[] {
   if (sliceDuration <= 0 || maxEndTime <= 0) return [];
   const slices: TimeSlice[] = [];
   for (let start = 0; start < maxEndTime; start += sliceDuration) {
     const end = start + sliceDuration;
     const hasOverlap = lines.some((row) =>
-      row.some((entry) => entry.start < end && entry.end > start)
+      row.some((entry) => entry.start < end && entry.end > start),
     );
     if (hasOverlap) {
       slices.push({ index: slices.length, start, end });
@@ -192,7 +192,7 @@ export function computeSlices(
 
 export function filterEntriesForSlice(
   row: TimeRange[],
-  slice: TimeSlice
+  slice: TimeSlice,
 ): SlicedEntry[] {
   return row
     .filter((entry) => entry.start < slice.end && entry.end > slice.start)

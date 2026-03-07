@@ -15,7 +15,7 @@ import { computeEdgeCriticalScore } from "./criticalPath";
  * */
 function processArrayOfRetrievals(
   graph: RetrievalGraph,
-  retrievals: ARetrieval[]
+  retrievals: ARetrieval[],
 ) {
   return retrievals
     .sort((lhs, rhs) => lhs.retrievalId - rhs.retrievalId)
@@ -57,28 +57,28 @@ export function buildGraph(
   aggregateRetrievals: AggregateRetrieval[],
   externalRetrievals: ExternalRetrieval[],
   aggregateDependencies: Map<number, Set<number>>,
-  externalDependencies: Map<number, Set<number>>
+  externalDependencies: Map<number, Set<number>>,
 ): RetrievalGraph {
   const graph = new RetrievalGraph();
 
   const virtualSource = new RetrievalVertex(
-    makeVirtualRetrieval({ type: "VirtualSource", retrievalId: -1 })
+    makeVirtualRetrieval({ type: "VirtualSource", retrievalId: -1 }),
   );
   graph.addVertex(virtualSource);
   graph.labelVertex(virtualSource.getUUID(), "virtualSource");
   const virtualTarget = new RetrievalVertex(
-    makeVirtualRetrieval({ type: "VirtualTarget", retrievalId: -2 })
+    makeVirtualRetrieval({ type: "VirtualTarget", retrievalId: -2 }),
   );
   graph.addVertex(virtualTarget);
   graph.labelVertex(virtualTarget.getUUID(), "virtualTarget");
 
   const aggregateRetrievalVertices = processArrayOfRetrievals(
     graph,
-    aggregateRetrievals
+    aggregateRetrievals,
   );
   const externalRetrievalVertices = processArrayOfRetrievals(
     graph,
-    externalRetrievals
+    externalRetrievals,
   );
 
   [
@@ -96,7 +96,7 @@ export function buildGraph(
         graph.createEdge(
           key < 0 ? virtualSource.getUUID() : aggregateRetrievalVertices[key],
           depVertices[dep],
-          { criticalScore: 1 }
+          { criticalScore: 1 },
         );
       });
     });

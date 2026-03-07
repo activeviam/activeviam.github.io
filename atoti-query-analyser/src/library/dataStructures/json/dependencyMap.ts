@@ -14,6 +14,6 @@ export type DependencyMap = Map<number, Set<number>>;
  */
 export function validateDependencyMap(rawDependencies: any): DependencyMap {
   return validateObjectAsMap(rawDependencies, validateInt, (value) =>
-    validateListAsSet(value, validateInt)
+    validateListAsSet(value, validateInt),
   );
 }

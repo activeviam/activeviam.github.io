@@ -1,4 +1,4 @@
-// / <reference types="cypress" />
+/// <reference types="cypress" />
 
 describe("Works with JSON inputs", () => {
   [
@@ -9,7 +9,7 @@ describe("Works with JSON inputs", () => {
     "no-data-key-format.json",
   ].forEach((file) => {
     it(`process ${file}`, () => {
-      cy.visit("http://localhost:3000");
+      cy.visit("/");
 
       cy.loadJsonInput(file);
 

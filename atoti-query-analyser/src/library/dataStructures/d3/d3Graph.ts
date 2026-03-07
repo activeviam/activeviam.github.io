@@ -22,7 +22,7 @@ function splitIntoLayers(graph: D3Graph): D3Node[][] {
   layers.forEach((layer) =>
     layer.sort((lhs, rhs) => {
       return (lhs.x as number) - (rhs.x as number);
-    })
+    }),
   );
   return layers;
 }
@@ -34,7 +34,7 @@ type ShortEdgesStorage = {
 
 function buildShortEdges(
   graph: D3Graph,
-  layers: D3Node[][]
+  layers: D3Node[][],
 ): ShortEdgesStorage {
   const forward = new Map<D3Node, D3Node[]>();
   const backward = new Map<D3Node, D3Node[]>();
@@ -103,10 +103,10 @@ function buildShortEdges(
 function countCrossings(
   fixedLayer: D3Node[],
   layerToReorder: D3Node[],
-  edges: Map<D3Node, D3Node[]>
+  edges: Map<D3Node, D3Node[]>,
 ): number {
   const fixedLayerIndex = new Map(
-    fixedLayer.map((node, idx): [D3Node, number] => [node, idx])
+    fixedLayer.map((node, idx): [D3Node, number] => [node, idx]),
   );
 
   const count = (leftNeighbors: number[], rightNeighbors: number[]) => {
@@ -130,8 +130,8 @@ function countCrossings(
 
   const neighbors = layerToReorder.map((node) =>
     (edges.get(node) as D3Node[]).map(
-      (neighbor) => fixedLayerIndex.get(neighbor) as number
-    )
+      (neighbor) => fixedLayerIndex.get(neighbor) as number,
+    ),
   );
 
   for (let i = 0; i < layerToReorder.length; ++i) {
@@ -146,10 +146,10 @@ function countCrossings(
 function barycenterHeuristicCrossingMinimization(
   fixedLayer: D3Node[],
   layerToReorder: D3Node[],
-  edges: Map<D3Node, D3Node[]>
+  edges: Map<D3Node, D3Node[]>,
 ) {
   const fixedLayerIndex = new Map(
-    fixedLayer.map((node, idx): [D3Node, number] => [node, idx])
+    fixedLayer.map((node, idx): [D3Node, number] => [node, idx]),
   );
   let crossCount = Number.MAX_SAFE_INTEGER;
   while (true) {
@@ -176,7 +176,7 @@ function barycenterHeuristicCrossingMinimization(
 
     layerToReorder.sort(
       (lhs, rhs) =>
-        (orderMap.get(lhs) as number) - (orderMap.get(rhs) as number)
+        (orderMap.get(lhs) as number) - (orderMap.get(rhs) as number),
     );
   }
 
@@ -209,14 +209,14 @@ export function untangle(graph: D3Graph) {
       barycenterHeuristicCrossingMinimization(
         layers[i - 1],
         layers[i],
-        shortEdges.backward
+        shortEdges.backward,
       );
     }
     for (let i = layers.length - 1; i > 0; --i) {
       barycenterHeuristicCrossingMinimization(
         layers[i],
         layers[i - 1],
-        shortEdges.forward
+        shortEdges.forward,
       );
     }
   }

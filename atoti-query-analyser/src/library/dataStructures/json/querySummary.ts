@@ -41,29 +41,29 @@ export function validateQuerySummary(rawQuerySummary: any): QuerySummary {
   return {
     measures: validateListAsSet(
       rawQuerySummary.measures ?? [],
-      validateMeasure
+      validateMeasure,
     ),
     partialProviders: validateListAsSet(
       rawQuerySummary.partialProviders ?? [],
-      validateString
+      validateString,
     ),
     partitioningCountByType: validateObjectAsMap(
       rawQuerySummary.partitioningCountByType,
       validateString,
-      validateInt
+      validateInt,
     ),
     resultSizeByPartitioning: validateObjectAsMap(
       rawQuerySummary.resultSizeByPartitioning ?? {},
       validateString,
-      validateInt
+      validateInt,
     ),
     retrievalsCountByType: validateObjectAsMap(
       rawQuerySummary.retrievalsCountByType,
       validateString,
-      validateInt
+      validateInt,
     ),
     totalExternalResultSize: validateInt(
-      rawQuerySummary.totalExternalResultSize || 0
+      rawQuerySummary.totalExternalResultSize || 0,
     ),
     totalRetrievals: validateInt(rawQuerySummary.totalRetrievals),
   };

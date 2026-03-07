@@ -53,7 +53,7 @@ export function App(): JSX.Element {
 
   const findRootQuery = (
     metadata: QueryPlanMetadata[],
-    passId: number
+    passId: number,
   ): number | undefined => {
     return metadata
       .filter((q) => q.pass === passId)
@@ -66,18 +66,18 @@ export function App(): JSX.Element {
     input: string | ServerInput,
     showError: (error: Error) => void,
     statusLine?: (message: string) => void,
-    labelHint?: string
+    labelHint?: string,
   ) => {
     let rawJson: unknown;
     if (mode === InputMode.JSON) {
       const parsedJson = JSON.parse(validateString(input));
-      rawJson = parsedJson.hasOwnProperty("data")
+      rawJson = Object.hasOwn(parsedJson, "data")
         ? parsedJson.data
         : parsedJson;
     } else if (mode === InputMode.URL) {
       if (typeof input !== "object") {
         throw new Error(
-          `Bad arguments: ${JSON.stringify({ mode, type, input })}`
+          `Bad arguments: ${JSON.stringify({ mode, type, input })}`,
         );
       }
       rawJson = await queryServer(input);
@@ -88,7 +88,7 @@ export function App(): JSX.Element {
           if (statusLine) {
             statusLine(`Processed ${currentLine} lines out of ${lineCount}`);
           }
-        }
+        },
       );
       rawJson = [];
       for (const v1 of v1Collection) {
@@ -109,7 +109,7 @@ export function App(): JSX.Element {
     const queryPlan = preprocessQueryPlan(rawJson);
 
     const defaultSelections = buildDefaultSelection(
-      queryPlan.map((query) => query.graph)
+      queryPlan.map((query) => query.graph),
     );
     const metadata = extractMetadata(queryPlan);
 
@@ -128,7 +128,7 @@ export function App(): JSX.Element {
   const loadRecentEntry = (data: unknown) => {
     const queryPlan = preprocessQueryPlan(data);
     const defaultSelections = buildDefaultSelection(
-      queryPlan.map((query) => query.graph)
+      queryPlan.map((query) => query.graph),
     );
     const metadata = extractMetadata(queryPlan);
 
@@ -208,7 +208,7 @@ export function App(): JSX.Element {
           navigate={(dir) => setRoute(dir)}
           goBackButton={GoBackToParentQueryButton(
             queryMetadata[currentQueryId]?.parentId || null,
-            changeGraph
+            changeGraph,
           )}
           passChooser={renderPassChooser()}
         />

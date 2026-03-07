@@ -32,7 +32,7 @@ export class StackTraceParser {
   private static readonly instance = new StackTraceParser();
 
   private constructor(
-    private fetchedMappings = new Map<string, Promise<Mapping>>()
+    private fetchedMappings = new Map<string, Promise<Mapping>>(),
   ) {}
 
   public static getInstance() {
@@ -49,7 +49,7 @@ export class StackTraceParser {
   public async parse(location: string): Promise<string> {
     try {
       const [, urlStr, lineStr, columnStr] = requireNonNull(
-        /^(.*):(\d+):(\d+)$/gm.exec(location)
+        /^(.*):(\d+):(\d+)$/gm.exec(location),
       );
       const mapping = await this.getMapping(urlStr);
       const column = +columnStr;
@@ -76,7 +76,7 @@ export class StackTraceParser {
 
     if (rawMapping.version !== 3) {
       throw new Error(
-        `Unknown source map version: ${rawMapping.version} (url=${url})`
+        `Unknown source map version: ${rawMapping.version} (url=${url})`,
       );
     }
 
@@ -87,7 +87,7 @@ export class StackTraceParser {
     line: string,
     vlqState: VLQState,
     sources: string[],
-    names: string[]
+    names: string[],
   ): MappingEntry[] {
     const segments = line.split(",");
 
@@ -132,7 +132,7 @@ export class StackTraceParser {
         vlqState[0] = 0;
         return acc;
       },
-      [[]]
+      [[]],
     );
 
     const rootDir =
@@ -172,7 +172,7 @@ export class StackTraceParser {
     rawSourceColumn: number,
     nameIdx: number,
     sources: string[],
-    names: string[]
+    names: string[],
   ): MappingEntry {
     return {
       column: rawColumn + 1,
@@ -194,7 +194,7 @@ export class StackTraceParser {
 
   private findMappingEntry(
     mappingEntries: MappingEntry[],
-    column: number
+    column: number,
   ): MappingEntry {
     if (column <= mappingEntries[0].column) {
       return mappingEntries[0];

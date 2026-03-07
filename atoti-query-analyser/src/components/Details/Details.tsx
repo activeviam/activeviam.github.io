@@ -23,7 +23,7 @@ function isNullish(value: unknown) {
  * */
 function Values({
   values,
-  selected,
+  selected = undefined,
 }: {
   values: (number | string)[];
   selected?: number;
@@ -43,10 +43,6 @@ function Values({
     </>
   );
 }
-
-Values.defaultProps = {
-  selected: undefined,
-};
 
 /**
  * Renders a part of a location path
@@ -86,11 +82,11 @@ function LocationView({ location }: { location: CubeLocation[] }) {
                       <b>{lev + ": "}</b>
                       {renderPathPart(l.path[i])}
                     </li>
-                  )
+                  ),
                 )}
               </ul>
             </li>
-          )
+          ),
         )}
       </ul>
     </li>
@@ -170,7 +166,7 @@ const BLACKLIST = new Set([
 
 const selectRepresentativeValues = (
   values: readonly number[],
-  size = 5
+  size = 5,
 ): (number | string)[] => {
   const sortedValues = [...values];
   sortedValues.sort();
@@ -220,7 +216,7 @@ export function Details({
   startTime,
   elapsedTime,
   metadata,
-  partition,
+  partition = undefined,
 }: {
   startTime: number[];
   elapsedTime: number[];
@@ -248,7 +244,7 @@ export function Details({
                 key={key}
                 title={buildTitle(key)}
                 list={(value as ARetrieval[]).map(
-                  (retrieval) => `${retrieval.$kind} #${retrieval.retrievalId}`
+                  (retrieval) => `${retrieval.$kind} #${retrieval.retrievalId}`,
                 )}
               />
             );
@@ -276,7 +272,3 @@ export function Details({
     </ul>
   );
 }
-
-Details.defaultProps = {
-  partition: undefined,
-};

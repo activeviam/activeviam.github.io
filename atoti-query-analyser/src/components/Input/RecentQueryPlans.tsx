@@ -97,7 +97,6 @@ export function RecentQueryPlans({
                   size="sm"
                   type="text"
                   value={editValue}
-                  // eslint-disable-next-line jsx-a11y/no-autofocus
                   autoFocus
                   onChange={(e) => setEditValue(e.target.value)}
                   onKeyDown={(e) => {

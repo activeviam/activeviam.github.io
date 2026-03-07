@@ -27,11 +27,11 @@ function removeNoOps(graphs: RetrievalGraph[]) {
           return (
             timingInfo &&
             Object.entries(timingInfo).filter(
-              ([, value]) => value !== undefined
+              ([, value]) => value !== undefined,
             ).length !== 0
           );
         })
-        .map((vertex) => vertex.getUUID())
+        .map((vertex) => vertex.getUUID()),
     );
   });
 }
@@ -83,14 +83,14 @@ export function filterByMeasures({
         return (
           _.intersection(
             measures,
-            (vertex.getMetadata() as AggregateRetrieval).measures
+            (vertex.getMetadata() as AggregateRetrieval).measures,
           ).length > 0
         );
       case ExternalRetrievalKind:
         return (
           _.intersection(
             measures,
-            (vertex.getMetadata() as ExternalRetrieval).joinedMeasure
+            (vertex.getMetadata() as ExternalRetrieval).joinedMeasure,
           ).length > 0
         );
       default:
@@ -99,7 +99,7 @@ export function filterByMeasures({
   };
 
   const selectedVertices = Array.from(filteredGraph.getVertices()).filter(
-    predicate
+    predicate,
   );
 
   class VertexCollector extends ARetrievalGraphObserver {
@@ -119,7 +119,7 @@ export function filterByMeasures({
 
   return new Set(
     Array.from(vertexCollector.collectedVertices).map((vertex) =>
-      vertex.getUUID()
-    )
+      vertex.getUUID(),
+    ),
   );
 }

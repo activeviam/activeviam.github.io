@@ -210,7 +210,7 @@ type ComponentTimings = Readonly<{
 
 const computeComponentTimings = (graph: RetrievalGraph): ComponentTimings => {
   const operations = Array.from(graph.getVertices()).map((operation) =>
-    operation.getMetadata()
+    operation.getMetadata(),
   );
   const databaseTime = operations
     .filter((operation) => operation.type.includes("JIT"))
@@ -236,7 +236,7 @@ const computeComponentTimings = (graph: RetrievalGraph): ComponentTimings => {
 };
 
 const createTimeFormatter = (
-  values: readonly number[]
+  values: readonly number[],
 ): ((time: number) => string) => {
   const maxValue = Math.max(...values);
   if (maxValue < 1000) {
@@ -256,10 +256,17 @@ const ComponentTimingView = ({
   const sortedTimings = Object.entries(timings);
   sortedTimings.sort(([, t1], [, t2]) => t2 - t1);
   const timeFormatter = createTimeFormatter(sortedTimings.map(([, t]) => t));
-  const svgPositions = Object.entries(timings).reduce((acc, [label, time]) => {
-    acc.push({ label, time, lsum: acc.reduce((s, v) => s + v.time, time) });
-    return acc;
-  }, [] as Readonly<{ label: string; time: number; lsum: number }>[] as Readonly<{ label: string; time: number; lsum: number }>[]);
+  const svgPositions = Object.entries(timings).reduce(
+    (acc, [label, time]) => {
+      acc.push({ label, time, lsum: acc.reduce((s, v) => s + v.time, time) });
+      return acc;
+    },
+    [] as Readonly<{
+      label: string;
+      time: number;
+      lsum: number;
+    }>[] as Readonly<{ label: string; time: number; lsum: number }>[],
+  );
   const totalSum = svgPositions.reduce((s, v) => s + v.time, 0);
   const bars = svgPositions.map(({ label, lsum }) => (
     <rect
@@ -414,9 +421,9 @@ function mergeSets<T>(sets: Set<T>[]): Set<T> {
     (acc, set) =>
       Array.from(set).reduce(
         (store: Set<T>, element) => store.add(element),
-        acc
+        acc,
       ),
-    new Set<T>()
+    new Set<T>(),
   );
 }
 
@@ -435,7 +442,7 @@ function mergeSets<T>(sets: Set<T>[]): Set<T> {
  * */
 function mergeMaps<K, V>(
   maps: Map<K, V>[],
-  reducer: (oldValue: V, newValue: V) => V
+  reducer: (oldValue: V, newValue: V) => V,
 ): Map<K, V> {
   return maps.reduce(
     (acc, map) =>
@@ -447,7 +454,7 @@ function mergeMaps<K, V>(
         }
         return store;
       }, acc),
-    new Map<K, V>()
+    new Map<K, V>(),
   );
 }
 
@@ -457,37 +464,37 @@ function mergeMaps<K, V>(
 function computeGlobalSummary(
   queries: QueryPlan[],
   rootInfo: QueryPlanMetadata,
-  underlyingInfos: QueryPlanMetadata[]
+  underlyingInfos: QueryPlanMetadata[],
 ): QuerySummary {
   const summaries = [rootInfo, ...underlyingInfos].map(
-    (info) => queries[info.id].querySummary
+    (info) => queries[info.id].querySummary,
   );
   const measures = mergeSets(summaries.map((summary) => summary.measures));
   const totalRetrievals = summaries.reduce(
     (acc, summary) => acc + summary.totalRetrievals,
-    0
+    0,
   );
 
   const retrievalsCountByType = mergeMaps(
     summaries.map((summary) => summary.retrievalsCountByType),
-    (a, b) => a + b
+    (a, b) => a + b,
   );
   const partitioningCountByType = mergeMaps(
     summaries.map((summary) => summary.partitioningCountByType),
-    (a, b) => a + b
+    (a, b) => a + b,
   );
   const partialProviders = mergeSets(
-    summaries.map((summary) => summary.partialProviders)
+    summaries.map((summary) => summary.partialProviders),
   );
 
   const resultSizeByPartitioning = mergeMaps(
     summaries.map((summary) => summary.resultSizeByPartitioning),
-    (a, b) => a + b
+    (a, b) => a + b,
   );
 
   const totalExternalResultSize = summaries.reduce(
     (acc, summary) => acc + summary.totalExternalResultSize,
-    0
+    0,
   );
 
   return {
@@ -534,7 +541,7 @@ export function Summary({
   const rootId = rootInfo.id;
   const rootQuery = queries[rootId];
   const underlyingQueries = info.filter(
-    (inf) => inf.pass === rootInfo.pass && inf.parentId !== null
+    (inf) => inf.pass === rootInfo.pass && inf.parentId !== null,
   );
 
   let summary;
@@ -551,7 +558,7 @@ export function Summary({
     const globalSummary = computeGlobalSummary(
       queries,
       rootInfo,
-      underlyingQueries
+      underlyingQueries,
     );
     const globalPlanInfo: PlanInfo = {
       aggregatesCache: "",

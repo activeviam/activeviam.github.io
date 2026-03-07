@@ -28,12 +28,12 @@ const preprocessResultSize = (graph: RetrievalGraph) => {
         // They are likely to not have return any result, causing this very short duration
         // we will only do this if the count of operations of duration 0 matches the count of missing sizes
         const zeroOperationCount = elapsedTimes.filter(
-          (time) => time === 0
+          (time) => time === 0,
         ).length;
         if (zeroOperationCount === elapsedTimes.length - resultSizes.length) {
           let sizePosition = 0;
           const processedResultSizes = elapsedTimes.map((time) =>
-            time === 0 ? 0 : resultSizes[sizePosition++]
+            time === 0 ? 0 : resultSizes[sizePosition++],
           );
           Reflect.set(retrieval, "resultSizes", processedResultSizes);
         }
@@ -69,7 +69,7 @@ export function preprocessQueryPlan(json: unknown): QueryPlan[] {
           aggregateRetrievals,
           externalRetrievals,
           dependencies,
-          externalDependencies
+          externalDependencies,
         );
         if (needFillTimingInfo) {
           setSimulatedTimingInfo(graph);
@@ -82,6 +82,6 @@ export function preprocessQueryPlan(json: unknown): QueryPlan[] {
           queryFilters,
           graph,
         };
-      }
+      },
     );
 }

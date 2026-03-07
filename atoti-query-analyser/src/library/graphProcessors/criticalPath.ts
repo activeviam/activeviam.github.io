@@ -44,13 +44,13 @@ interface CriticalScore {
  */
 export function criticalPath(
   graph: RetrievalGraph,
-  selection: VertexSelection
+  selection: VertexSelection,
 ) {
   const virtualSource = graph.getVertexByLabel("virtualSource");
   const filteredGraph = graph.filterVertices(
     (vertex) =>
       vertex.getMetadata().$kind === VirtualRetrievalKind ||
-      selection.has(vertex.getUUID())
+      selection.has(vertex.getUUID()),
   );
 
   // We define criticalScore(node) as elapsedTime(node) + max([criticalScore(dependency) for dependency in graph.getOutgoingEdges(node)])
@@ -58,7 +58,7 @@ export function criticalPath(
   const criticalScoreCalculator = (
     node: RetrievalVertex,
     children: Set<RetrievalVertex>,
-    childrenValues: (child: RetrievalVertex) => CriticalScore
+    childrenValues: (child: RetrievalVertex) => CriticalScore,
   ): CriticalScore => {
     const elapsed = findElapsedTime(node);
 
@@ -82,7 +82,7 @@ export function criticalPath(
   const criticalScore = applyOnDAG(
     filteredGraph,
     virtualSource,
-    criticalScoreCalculator
+    criticalScoreCalculator,
   );
 
   // Recreate path going up from the node with worst critical and collect link ids
@@ -120,14 +120,14 @@ export function computeEdgeCriticalScore(graph: RetrievalGraph) {
           .map((child) => childrenValues(child))
           .reduce((acc, x) => Math.max(acc, x), 0)
       );
-    }
+    },
   );
 
   graph.getVertices().forEach((vertex) => {
     const edges = Array.from(graph.getOutgoingEdges(vertex)).sort(
       (lhs, rhs) =>
         requireNonNull(vertexCriticalScore.get(lhs.getEnd())) -
-        requireNonNull(vertexCriticalScore.get(rhs.getEnd()))
+        requireNonNull(vertexCriticalScore.get(rhs.getEnd())),
     );
 
     if (edges.length <= 1) {
@@ -135,7 +135,7 @@ export function computeEdgeCriticalScore(graph: RetrievalGraph) {
     } else {
       edges.forEach(
         (edge, idx) =>
-          (edge.getMetadata().criticalScore = (idx + 1) / edges.length)
+          (edge.getMetadata().criticalScore = (idx + 1) / edges.length),
       );
     }
   });
@@ -146,21 +146,23 @@ export function computeEdgeCriticalScore(graph: RetrievalGraph) {
  */
 export function selectCriticalSubgraph(
   graph: RetrievalGraph,
-  minCriticalScore: number
+  minCriticalScore: number,
 ): VertexSelection {
   const result: VertexSelection = new Set();
 
-  class FilteredGraph
-    implements
-      IGraph<ARetrieval, RetrievalEdgeMetadata, RetrievalVertex, RetrievalEdge>
-  {
+  class FilteredGraph implements IGraph<
+    ARetrieval,
+    RetrievalEdgeMetadata,
+    RetrievalVertex,
+    RetrievalEdge
+  > {
     constructor(private underlying: RetrievalGraph) {}
 
     getOutgoingEdges(vertex: RetrievalVertex): Set<RetrievalEdge> {
       return new Set(
         Array.from(this.underlying.getOutgoingEdges(vertex)).filter(
-          (edge) => edge.getMetadata().criticalScore >= minCriticalScore
-        )
+          (edge) => edge.getMetadata().criticalScore >= minCriticalScore,
+        ),
       );
     }
 
@@ -190,7 +192,7 @@ export function selectCriticalSubgraph(
   dfs(
     new FilteredGraph(graph),
     graph.getVertexByLabel("virtualSource"),
-    new VertexCollector()
+    new VertexCollector(),
   );
 
   return result;

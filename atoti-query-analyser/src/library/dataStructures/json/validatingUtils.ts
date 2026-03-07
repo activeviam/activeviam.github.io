@@ -24,7 +24,7 @@ export function validateBoolean(rawBoolean: any): boolean {
         return false;
       } else {
         throw new Error(
-          `Cannot cast string ${JSON.stringify(rawBoolean)} to boolean`
+          `Cannot cast string ${JSON.stringify(rawBoolean)} to boolean`,
         );
       }
     }
@@ -69,14 +69,14 @@ export function validateObject(rawObject: any): object {
 export function validateObjectAsMap<K, V>(
   rawObject: any,
   keyValidator: (key: any) => K,
-  valueValidator: (value: any) => V
+  valueValidator: (value: any) => V,
 ): Map<K, V> {
   validateObject(rawObject);
   return new Map(
     Object.entries(rawObject).map(([key, value]) => [
       keyValidator(key),
       valueValidator(value),
-    ])
+    ]),
   );
 }
 
@@ -85,7 +85,7 @@ export function validateObjectAsMap<K, V>(
  */
 export function validateList<T>(
   rawList: any,
-  validateItem: (item: any) => T
+  validateItem: (item: any) => T,
 ): T[] {
   if (!Array.isArray(rawList)) {
     throw new Error("rawList must be a list");
@@ -99,7 +99,7 @@ export function validateList<T>(
  */
 export function validateListAsSet<T>(
   rawList: any,
-  validateItem: (item: any) => T
+  validateItem: (item: any) => T,
 ): Set<T> {
   return new Set(validateList(rawList, validateItem));
 }
@@ -110,14 +110,14 @@ export function validateListAsSet<T>(
  */
 export function optional<T>(
   rawValue: any,
-  validator: (value: any) => T
+  validator: (value: any) => T,
 ): T | undefined {
   if (rawValue === undefined || rawValue === null) {
     return undefined;
   } else {
     try {
       return validator(rawValue);
-    } catch (_) {
+    } catch {
       return undefined;
     }
   }
