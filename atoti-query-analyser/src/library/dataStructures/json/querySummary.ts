@@ -65,6 +65,6 @@ export function validateQuerySummary(rawQuerySummary: any): QuerySummary {
     totalExternalResultSize: validateInt(
       rawQuerySummary.totalExternalResultSize || 0,
     ),
-    totalRetrievals: validateInt(rawQuerySummary.totalRetrievals||0),
+    totalRetrievals: validateInt(rawQuerySummary.totalRetrievals || 0),
   };
 }

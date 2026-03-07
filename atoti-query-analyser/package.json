@@ -35,7 +35,9 @@
     "preview": "vite preview",
     "cypress": "cypress",
     "eslint": "eslint --max-warnings 0 --fix \"src/**/*.{js,ts,tsx}\"",
-    "format-prettier": "prettier --ignore-path .gitignore \"src/**/*.{css,js,jsx,json,md,ts,tsx,yml}\""
+    "format-prettier": "prettier --ignore-path .gitignore \"src/**/*.{css,js,jsx,json,md,ts,tsx,yml}\"",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "browserslist": {
     "production": [
@@ -74,6 +76,7 @@
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.33.1",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vitest": "^4.0.18"
   }
 }
