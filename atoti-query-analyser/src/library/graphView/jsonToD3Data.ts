@@ -153,6 +153,7 @@ function getLinks(
         target: target.getUUID(),
         id: linkId(edge),
         criticalScore: edge.getMetadata().criticalScore,
+        hiddenMerger: edge.getMetadata().hiddenMerger,
       });
     }),
   );

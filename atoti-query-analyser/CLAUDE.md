@@ -41,6 +41,18 @@ The graph view uses a VS Code-style left sidebar layout:
 
 The sidebar architecture is designed to support multiple panels in the future. The `activePanel` state accepts panel IDs like `"filters"` and can be extended with additional panels.
 
+### Partitions view
+
+Displays a condensed graph where nodes are retained only if their `partitioning` value differs from connected neighbors. Chains of nodes with the same partitioning are condensed into single hexagon-shaped nodes (gray color). This view helps identify partition boundaries in the query execution plan.
+
+Key features:
+- **Partition boundary detection**: Retains nodes at partition transitions
+- **Chain condensation**: Groups consecutive nodes with identical partitioning
+- **Hexagon nodes**: Condensed chains rendered as gray hexagons (non-clickable)
+- **Retained nodes**: Original nodes at boundaries remain interactive with popovers
+
+Implementation: `src/library/graphProcessors/condenseByPartitions.ts` and `src/components/Partitions/Partitions.tsx`
+
 ### Timeline
 
 Showing a timeline of the operations, with an ordering created from the graph timing, by sorting them on as less lines as possible.
@@ -79,6 +91,7 @@ This view does not report the actual thread execution in the backend, as this in
 - **Summary**: Query statistics table
 - **PassGraph**: Visualization of passes and query dependencies
 - **Graph**: D3-based force-directed graph of retrievals
+- **Partitions**: Partition-condensed graph view
 - **Timeline**: Execution timeline of retrievals
 
 ### Library Structure
@@ -87,7 +100,7 @@ This view does not report the actual thread execution in the backend, as this in
 - `dataStructures/common/`: Generic containers (Graph, Dictionary, UnionFind)
 - `dataStructures/json/`: JSON parsing/validation interfaces
 - `dataStructures/processing/`: Internal processed data types
-- `graphProcessors/`: Graph algorithms (critical path, clustering, filtering)
+- `graphProcessors/`: Graph algorithms (critical path, clustering, filtering, partition condensation)
 - `graphView/`: D3 visualization helpers
 - `inputProcessors/`: Input parsing (V1 logs, server queries)
 
