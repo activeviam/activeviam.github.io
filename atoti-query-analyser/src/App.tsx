@@ -18,7 +18,7 @@ import {
   QueryPlanMetadata,
 } from "./library/graphProcessors/extractMetadata";
 import { buildDefaultSelection } from "./library/graphProcessors/selection";
-import { PassChooser } from "./components/NavBar/PassChooser";
+import { PassAndClusterChooser } from "./components/NavBar/PassAndClusterChooser";
 import { Summary } from "./components/Summary/Summary";
 import { Graph } from "./components/Graph/Graph";
 import { Timeline } from "./components/Timeline/Timeline";
@@ -143,23 +143,61 @@ export function App(): JSX.Element {
     setCurrentQueryId(childId);
   };
 
+  /**
+   * Auto-selects the best query in a given pass based on priority:
+   * a) clusterMemberId contains "QUERY" (case-insensitive)
+   * b) retrieverType contains "Distribut" (case-insensitive)
+   * c) First alphabetically by clusterMemberId
+   */
+  const autoSelectQueryInPass = (passId: number): number => {
+    const queriesInPass = queryMetadata.filter((q) => q.pass === passId);
+
+    if (queriesInPass.length === 0) return 0;
+
+    // Priority a: clusterMemberId contains "QUERY" (case-insensitive)
+    const queryMatch = queriesInPass.find((q) =>
+      q.name?.toUpperCase().includes("QUERY"),
+    );
+    if (queryMatch) return queryMatch.id;
+
+    // Priority b: retrieverType contains "Distribut" (case-insensitive)
+    if (queryPlans) {
+      const distributedMatch = queriesInPass.find((q) =>
+        queryPlans[q.id]?.planInfo.retrieverType
+          .toLowerCase()
+          .includes("distribut"),
+      );
+      if (distributedMatch) return distributedMatch.id;
+    }
+
+    // Priority c: First alphabetically by clusterMemberId
+    const sorted = [...queriesInPass].sort((a, b) =>
+      (a.name || "").localeCompare(b.name || ""),
+    );
+    return sorted[0]?.id ?? 0;
+  };
+
   const changePass = (passId: number) => {
-    const newQueryId = findRootQuery(queryMetadata, passId) || 0;
-    changeGraph(newQueryId);
+    const newQueryId = autoSelectQueryInPass(passId);
+    setCurrentQueryId(newQueryId);
     setCurrentPassId(passId);
   };
 
-  const renderPassChooser = () => {
-    if (route !== "input") {
-      return (
-        <PassChooser
-          allQueries={queryMetadata}
-          currentPassId={currentPassId}
-          callback={changePass}
-        />
-      );
-    }
-    return null;
+  const changeClusterMember = (queryId: number) => {
+    setCurrentQueryId(queryId);
+  };
+
+  const renderPassAndClusterChooser = () => {
+    if (route === "input" || !queryPlans) return null;
+    return (
+      <PassAndClusterChooser
+        queryMetadata={queryMetadata}
+        currentPassId={currentPassId}
+        currentQueryId={currentQueryId}
+        onPassChange={changePass}
+        onClusterChange={changeClusterMember}
+      />
+    );
   };
 
   const renderInput = () => (
@@ -210,7 +248,7 @@ export function App(): JSX.Element {
             queryMetadata[currentQueryId]?.parentId || null,
             changeGraph,
           )}
-          passChooser={renderPassChooser()}
+          passAndClusterChooser={renderPassAndClusterChooser()}
         />
         <ErrorBoundary>
           <main role="main" className="container-fluid px-0">

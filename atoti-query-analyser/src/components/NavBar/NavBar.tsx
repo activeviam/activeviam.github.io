@@ -12,16 +12,16 @@ import { Nav, Navbar } from "react-bootstrap";
  * @param attributes - React JSX attributes
  * @param attributes.navigate - callback for switching between application sections
  * @param attributes.goBackButton - subcomponent for navigation through queries
- * @param attributes.passChooser - subcomponent for choosing passes
+ * @param attributes.passAndClusterChooser - subcomponent for choosing passes and clusters
  */
 export function NavBar({
   navigate,
   goBackButton,
-  passChooser,
+  passAndClusterChooser,
 }: {
   navigate: (to: string) => void;
   goBackButton?: React.ReactNode;
-  passChooser?: React.ReactNode;
+  passAndClusterChooser?: React.ReactNode;
 }) {
   return (
     <Navbar bg="dark" variant="dark">
@@ -53,7 +53,7 @@ export function NavBar({
         </Nav.Link>
       </Nav>
       <Nav className="ms-auto">
-        {passChooser}
+        {passAndClusterChooser}
         {goBackButton}
       </Nav>
     </Navbar>
