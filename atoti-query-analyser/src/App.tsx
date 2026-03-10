@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { PassGraph } from "./components/PassGraph/PassGraph";
 import { OverlayContainer } from "./hooks/overlayContainer";
 import { NotificationWrapper } from "./components/Notification/NotificationWrapper";
@@ -6,9 +6,8 @@ import { NavBar } from "./components/NavBar/NavBar";
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 import { Input, InputMode, InputType } from "./components/Input/Input";
 import { VertexSelection } from "./library/dataStructures/processing/selection";
-import { queryServer, ServerInput } from "./library/inputProcessors/server";
+import { ServerInput } from "./library/inputProcessors/server";
 import { GoBackToParentQueryButton } from "./components/NavBar/GoBackToParentQueryButton";
-import { convertToV2, parseMultiV1 } from "./library/inputProcessors/v1tov2";
 import {
   preprocessQueryPlan,
   QueryPlan,
@@ -22,11 +21,7 @@ import { PassAndClusterChooser } from "./components/NavBar/PassAndClusterChooser
 import { Summary } from "./components/Summary/Summary";
 import { Graph } from "./components/Graph/Graph";
 import { Timeline } from "./components/Timeline/Timeline";
-import { validateString } from "./library/dataStructures/json/validatingUtils";
-import {
-  extractLabel,
-  saveRecentQueryPlan,
-} from "./library/storage/recentQueryPlans";
+import { useQueryPlanWorker, WorkerResult } from "./workers/useQueryPlanWorker";
 
 /**
  * The root React component.
@@ -50,6 +45,7 @@ export function App(): JSX.Element {
     mdxQuery: "",
   });
   const [queryPlans, setQueryPlans] = useState<QueryPlan[]>();
+  const [workerError, setWorkerError] = useState<Error | null>(null);
 
   const findRootQuery = (
     metadata: QueryPlanMetadata[],
@@ -60,84 +56,103 @@ export function App(): JSX.Element {
       ?.find((q) => q.parentId === null)?.id;
   };
 
-  const processInput = async (
-    mode: InputMode,
-    type: InputType,
-    input: string | ServerInput,
-    showError: (error: Error) => void,
-    statusLine?: (message: string) => void,
-    labelHint?: string,
-  ) => {
-    let rawJson: unknown;
-    if (mode === InputMode.JSON) {
-      const parsedJson = JSON.parse(validateString(input));
-      rawJson = Object.hasOwn(parsedJson, "data")
-        ? parsedJson.data
-        : parsedJson;
-    } else if (mode === InputMode.URL) {
-      if (typeof input !== "object") {
-        throw new Error(
-          `Bad arguments: ${JSON.stringify({ mode, type, input })}`,
-        );
-      }
-      rawJson = await queryServer(input);
-    } else if (mode === InputMode.V1) {
-      const v1Collection = await parseMultiV1(
-        validateString(input),
-        (currentLine, lineCount) => {
-          if (statusLine) {
-            statusLine(`Processed ${currentLine} lines out of ${lineCount}`);
-          }
-        },
+  const processRawJson = useCallback(
+    (rawJson: unknown, input?: string | ServerInput) => {
+      const queryPlan = preprocessQueryPlan(rawJson);
+      const defaultSelections = buildDefaultSelection(
+        queryPlan.map((query) => query.graph),
       );
-      rawJson = [];
-      for (const v1 of v1Collection) {
-        const { errors, result } = convertToV2(v1);
-        (rawJson as unknown[]).push(result);
-        errors.forEach(showError);
+      const metadata = extractMetadata(queryPlan);
+
+      setSelections(defaultSelections);
+      setQueryMetadata(metadata);
+      setCurrentQueryId(findRootQuery(metadata, 0) || 0);
+      setRoute("summary");
+      setQueryPlans(queryPlan);
+
+      if (input !== undefined) {
+        if (typeof input === "string") {
+          setLastInput(input);
+        } else {
+          setLastQuery(input);
+        }
       }
-    }
+    },
+    [],
+  );
 
-    // Save to history (non-blocking, non-critical)
-    try {
-      const label = labelHint || extractLabel(rawJson);
-      await saveRecentQueryPlan(label, rawJson);
-    } catch (err) {
-      console.warn("Failed to save to recent history:", err);
-    }
+  const handleWorkerSuccess = useCallback(
+    (result: WorkerResult) => {
+      processRawJson(result.rawJson);
+    },
+    [processRawJson],
+  );
 
-    const queryPlan = preprocessQueryPlan(rawJson);
+  const handleWorkerError = useCallback((error: Error) => {
+    setWorkerError(error);
+  }, []);
 
-    const defaultSelections = buildDefaultSelection(
-      queryPlan.map((query) => query.graph),
-    );
-    const metadata = extractMetadata(queryPlan);
+  const {
+    parseJson,
+    parseV1,
+    fetchAndParse,
+    state: workerState,
+  } = useQueryPlanWorker(handleWorkerSuccess, handleWorkerError);
 
-    setSelections(defaultSelections);
-    setQueryMetadata(metadata);
-    setCurrentQueryId(findRootQuery(metadata, 0) || 0);
-    setRoute("summary");
-    setQueryPlans(queryPlan);
-    if (typeof input === "string") {
-      setLastInput(input);
-    } else {
-      setLastQuery(input);
-    }
-  };
+  const processInput = useCallback(
+    (
+      mode: InputMode,
+      _type: InputType,
+      input: string | ServerInput,
+      showError: (error: Error) => void,
+      _statusLine?: (message: string) => void,
+      labelHint?: string,
+    ) => {
+      // Clear any previous worker error
+      setWorkerError(null);
 
-  const loadRecentEntry = (data: unknown) => {
-    const queryPlan = preprocessQueryPlan(data);
-    const defaultSelections = buildDefaultSelection(
-      queryPlan.map((query) => query.graph),
-    );
-    const metadata = extractMetadata(queryPlan);
+      if (mode === InputMode.JSON) {
+        if (typeof input !== "string") {
+          showError(new Error("JSON mode requires string input"));
+          return;
+        }
+        parseJson(input, labelHint);
+        setLastInput(input);
+      } else if (mode === InputMode.URL) {
+        if (typeof input !== "object") {
+          showError(
+            new Error(`Bad arguments: ${JSON.stringify({ mode, input })}`),
+          );
+          return;
+        }
+        fetchAndParse(input);
+        setLastQuery(input);
+      } else if (mode === InputMode.V1) {
+        if (typeof input !== "string") {
+          showError(new Error("V1 mode requires string input"));
+          return;
+        }
+        parseV1(input, labelHint);
+        setLastInput(input);
+      }
+    },
+    [parseJson, parseV1, fetchAndParse],
+  );
 
-    setSelections(defaultSelections);
-    setQueryMetadata(metadata);
-    setCurrentQueryId(findRootQuery(metadata, 0) || 0);
-    setRoute("summary");
-    setQueryPlans(queryPlan);
-  };
+  // Show worker errors via the notification system when they occur
+  if (workerError) {
+    // We clear the error after showing it to avoid infinite re-renders
+    const errorToShow = workerError;
+    setWorkerError(null);
+    throw errorToShow;
+  }
+
+  const loadRecentEntry = useCallback(
+    (data: unknown) => {
+      processRawJson(data);
+    },
+    [processRawJson],
+  );
 
   const changeGraph = (childId: number) => {
     setCurrentQueryId(childId);
@@ -206,6 +221,7 @@ export function App(): JSX.Element {
       lastInput={lastInput}
       lastQuery={lastQuery}
       loadRecentEntry={loadRecentEntry}
+      workerState={workerState}
     />
   );
 

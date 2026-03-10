@@ -4,15 +4,16 @@ import {
   ButtonGroup,
   Col,
   Form,
+  ProgressBar,
   Row,
   Spinner,
   ToggleButton,
 } from "react-bootstrap";
 import { useErrorMessage } from "../../hooks/notification";
 import { ServerInput } from "../../library/inputProcessors/server";
-import { asError } from "../../library/utilities/util";
 import { prettySize } from "../../library/utilities/textUtils";
 import { RecentQueryPlans } from "./RecentQueryPlans";
+import { WorkerState } from "../../workers/queryPlanParserTypes";
 
 /**
  * Specifies how to process input.
@@ -52,7 +53,7 @@ export type OnInput = (
   showError: (error: Error) => void,
   statusLine: (message: string) => void,
   labelHint?: string,
-) => Promise<void>;
+) => void;
 
 /**
  * This React component is used for getting server credentials from the user.
@@ -349,17 +350,20 @@ function DevButtons({
  * @param attributes - React JSX attributes
  * @param attributes.lastInput - initial value for input text area
  * @param attributes.passInput - callback for form submission
+ * @param attributes.workerState - current state of the background worker
  */
 export function Input({
   passInput,
   lastInput,
   lastQuery,
   loadRecentEntry,
+  workerState,
 }: {
   passInput: OnInput;
   lastInput: string;
   lastQuery: ServerInput;
   loadRecentEntry: (data: unknown) => void;
+  workerState: WorkerState;
 }) {
   const location = new URL(window.location.href);
 
@@ -372,10 +376,8 @@ export function Input({
     setQuery((q) => ({ ...q, ...{ [k]: v } }));
   const [urlMode, setUrlMode] = useState(false);
   const devMode = location.search.includes("dev"); // Backward compatibility
-  const [statusLine, setStatusLine] = useState("");
-
   const [fileName, setFileName] = useState("");
-  const [processing, setProcessing] = useState(false);
+  const [fileReading, setFileReading] = useState(false);
 
   const { showError } = useErrorMessage();
 
@@ -383,31 +385,13 @@ export function Input({
     setUrlMode(true);
   };
 
-  const submitQuery = async () => {
-    setProcessing(true);
-    try {
-      await passInput(InputMode.URL, type, query, showError, setStatusLine);
-    } catch (err) {
-      showError(asError(err));
-    } finally {
-      setProcessing(false);
-      setUrlMode(false);
-    }
+  const submitQuery = () => {
+    passInput(InputMode.URL, type, query, showError, () => {});
+    setUrlMode(false);
   };
 
-  const doPassInput = async (
-    data: string,
-    mode: InputMode,
-    labelHint?: string,
-  ) => {
-    setProcessing(true);
-    try {
-      await passInput(mode, type, data, showError, setStatusLine, labelHint);
-    } catch (err) {
-      showError(asError(err));
-    } finally {
-      setProcessing(false);
-    }
+  const doPassInput = (data: string, mode: InputMode, labelHint?: string) => {
+    passInput(mode, type, data, showError, () => {}, labelHint);
   };
 
   const dispatchSubmit = (mode: InputMode) => {
@@ -471,17 +455,17 @@ export function Input({
                   return;
                 }
                 setInput(result);
-                setProcessing(false);
+                setFileReading(false);
               };
               reader.onerror = (readerEvent) => {
                 showError(
                   readerEvent.target?.error || new Error("An error occurred"),
                 );
-                setProcessing(false);
+                setFileReading(false);
               };
 
               reader.readAsText(file);
-              setProcessing(true);
+              setFileReading(true);
             }}
           />
         </Form.Group>
@@ -533,10 +517,30 @@ export function Input({
         input={input}
         setInput={setInput}
       />
-      {processing && (
-        <div>
-          <Spinner animation="border" variant="primary" />
-          <span>{statusLine}</span>
+      {(fileReading || workerState.isProcessing) && (
+        <div className="my-3">
+          <div className="d-flex align-items-center mb-2">
+            <Spinner animation="border" variant="primary" size="sm" />
+            <span className="ms-2">
+              {fileReading ? "Reading file..." : workerState.message}
+            </span>
+          </div>
+          {workerState.isProcessing &&
+            workerState.progress !== undefined &&
+            workerState.progress > 0 && (
+              <ProgressBar
+                now={workerState.progress}
+                label={`${workerState.progress}%`}
+                animated
+              />
+            )}
+          {workerState.warnings.length > 0 && (
+            <div className="mt-2 text-warning">
+              <small>
+                {workerState.warnings.length} warning(s) during parsing
+              </small>
+            </div>
+          )}
         </div>
       )}
       <RecentQueryPlans onLoad={loadRecentEntry} />
