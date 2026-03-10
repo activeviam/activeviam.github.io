@@ -17,8 +17,9 @@ import { condenseFastRetrievals } from "../../library/graphProcessors/condenseFa
 import { Link } from "./Link";
 import { Node } from "./Node";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
-import { FaFilter, FaTimes } from "react-icons/fa";
+import { FaClipboardList, FaFilter, FaTimes } from "react-icons/fa";
 import { Menu } from "./Menu";
+import { QueryFiltersPanel } from "./QueryFiltersPanel";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import {
   EdgeSelection,
@@ -63,7 +64,9 @@ export function Graph({
   selection: VertexSelection;
   changeGraph: (queryId: number) => void;
 }) {
-  const [activePanel, setActivePanel] = useState<"filters" | null>(null);
+  const [activePanel, setActivePanel] = useState<
+    "filters" | "queryFilters" | null
+  >(null);
   const [selectedMeasures, setSelectedMeasures] = useState<Measure[]>([]);
   const [nodes, setNodes] = useState<D3Node[]>([]);
   const [links, setLinks] = useState<D3Link[]>([]);
@@ -378,6 +381,18 @@ export function Graph({
         >
           <FaFilter size={20} />
         </button>
+        <button
+          className={`activity-bar-button ${activePanel === "queryFilters" ? "active" : ""}`}
+          onClick={() =>
+            setActivePanel(
+              activePanel === "queryFilters" ? null : "queryFilters",
+            )
+          }
+          title="Query Filters"
+          aria-label="Toggle query filters panel"
+        >
+          <FaClipboardList size={20} />
+        </button>
       </div>
 
       {/* Graph container */}
@@ -496,6 +511,24 @@ export function Graph({
                 )}
               </Form>
             </Menu>
+          </div>
+        </div>
+
+        {/* Query Filters Sidebar Drawer */}
+        <div
+          className={`sidebar-drawer ${activePanel === "queryFilters" ? "open" : ""}`}
+        >
+          <div className="sidebar-drawer-header">
+            <h5>Query Filters</h5>
+            <button
+              onClick={() => setActivePanel(null)}
+              aria-label="Close panel"
+            >
+              <FaTimes />
+            </button>
+          </div>
+          <div className="sidebar-drawer-content">
+            <QueryFiltersPanel filters={query.queryFilters} />
           </div>
         </div>
       </div>
