@@ -12,6 +12,11 @@ export interface QueryPlanMetadata {
   name?: string;
   id: number;
   parentId: number | null;
+  // Timing fields from globalTimings
+  contextTime?: number;
+  preparationTime?: number;
+  planningTime?: number;
+  executionTime?: number;
 }
 
 export const QueryPlanMetadataPropType = PropTypes.shape({
@@ -20,6 +25,10 @@ export const QueryPlanMetadataPropType = PropTypes.shape({
   name: PropTypes.string,
   id: PropTypes.number.isRequired,
   parentId: PropTypes.number,
+  contextTime: PropTypes.number,
+  preparationTime: PropTypes.number,
+  planningTime: PropTypes.number,
+  executionTime: PropTypes.number,
 });
 
 /**
@@ -57,6 +66,50 @@ function findChildrenAndParents(
 }
 
 /**
+ * Builds the label for a query node in the DOT output.
+ * Format:
+ *   QueryName
+ *   (PassType)
+ *   ---
+ *   Context: X ms
+ *   Preparation: X ms
+ *   ...
+ */
+function buildNodeLabel(queryMetadata: QueryPlanMetadata): string {
+  const labelParts: string[] = [];
+
+  // Node name at top
+  if (queryMetadata.name) {
+    labelParts.push(queryMetadata.name);
+  }
+
+  // Pass type in parentheses
+  labelParts.push(`(${queryMetadata.passType}Pass)`);
+
+  // Add timings section if any exist
+  const timings: string[] = [];
+  if (queryMetadata.contextTime !== undefined) {
+    timings.push(`Context: ${queryMetadata.contextTime} ms`);
+  }
+  if (queryMetadata.preparationTime !== undefined) {
+    timings.push(`Preparation: ${queryMetadata.preparationTime} ms`);
+  }
+  if (queryMetadata.planningTime !== undefined) {
+    timings.push(`Planning: ${queryMetadata.planningTime} ms`);
+  }
+  if (queryMetadata.executionTime !== undefined) {
+    timings.push(`Execution: ${queryMetadata.executionTime} ms`);
+  }
+
+  if (timings.length > 0) {
+    labelParts.push("---");
+    labelParts.push(...timings);
+  }
+
+  return labelParts.join("\n");
+}
+
+/**
  * Exports queries metadata info in DOT format
  * */
 export function dumpMetadata(metadata: QueryPlanMetadata[]) {
@@ -81,10 +134,7 @@ export function dumpMetadata(metadata: QueryPlanMetadata[]) {
 
     Array.from(queries).forEach((queryId) => {
       const queryMetadata = metadata[queryId];
-
-      const label = Object.entries(queryMetadata)
-        .map(([k, v]) => `${k}: ${JSON.stringify(v)}`)
-        .join("\n");
+      const label = buildNodeLabel(queryMetadata);
       lines.push(`q${queryId} [label=${JSON.stringify(label)}]`);
       if (queryMetadata.parentId !== null) {
         lines.push(`q${queryMetadata.parentId} -> q${queryId}`);
@@ -99,6 +149,18 @@ export function dumpMetadata(metadata: QueryPlanMetadata[]) {
 }
 
 /**
+ * Helper to get timing value from globalTimings Map,
+ * checking both V1 and V2 keys.
+ */
+function getTiming(
+  timings: Map<string, number>,
+  v1Key: string,
+  v2Key: string,
+): number | undefined {
+  return timings.get(v1Key) ?? timings.get(v2Key);
+}
+
+/**
  * Given an array of
  * {@link "library/dataStructures/processing/queryPlan"!QueryPlan `QueryPlan[]`},
  * extract information about passes and query dependencies tree.
@@ -106,16 +168,33 @@ export function dumpMetadata(metadata: QueryPlanMetadata[]) {
 export function extractMetadata(data: QueryPlan[]): QueryPlanMetadata[] {
   const res: QueryPlanMetadata[] = data.map((query, queryId) => {
     const { planInfo } = query;
-    const { clusterMemberId, mdxPass } = planInfo;
+    const { clusterMemberId, mdxPass, globalTimings } = planInfo;
 
     const passInfo = (mdxPass || "Select_0").split("_");
     const passNumber = parseInt(passInfo[1], 10);
+
     return {
       id: queryId,
       parentId: null,
       passType: passInfo[0],
       pass: passNumber,
       name: clusterMemberId,
+      contextTime: getTiming(
+        globalTimings,
+        "CONTEXT",
+        "executionContextCreationTime",
+      ),
+      preparationTime: getTiming(
+        globalTimings,
+        "FINALIZATION",
+        "finalizationTime",
+      ),
+      planningTime: getTiming(globalTimings, "PLANNING", "planningTime"),
+      executionTime: getTiming(
+        globalTimings,
+        "EXECUTION",
+        "queryExecutionTime",
+      ),
     };
   });
 
