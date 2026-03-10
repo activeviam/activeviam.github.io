@@ -51,7 +51,7 @@ export type OnInput = (
   input: string | ServerInput,
   showError: (error: Error) => void,
   statusLine: (message: string) => void,
-  labelHint?: string
+  labelHint?: string,
 ) => Promise<void>;
 
 /**
@@ -177,7 +177,7 @@ function SourceInput({
               checked={src === source}
             />
           );
-        }
+        },
       )}
     </>
   );
@@ -398,7 +398,7 @@ export function Input({
   const doPassInput = async (
     data: string,
     mode: InputMode,
-    labelHint?: string
+    labelHint?: string,
   ) => {
     setProcessing(true);
     try {
@@ -475,7 +475,7 @@ export function Input({
               };
               reader.onerror = (readerEvent) => {
                 showError(
-                  readerEvent.target?.error || new Error("An error occurred")
+                  readerEvent.target?.error || new Error("An error occurred"),
                 );
                 setProcessing(false);
               };

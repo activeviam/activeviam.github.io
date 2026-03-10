@@ -53,7 +53,7 @@ function resolveQueryEndpoint(userUrl: string) {
         const fullUrl =
           `${url}/${serviceUrl}/cube/query/mdx/queryplan`.replaceAll(
             /(?<!https?:)\/{2,}/g,
-            "/"
+            "/",
           );
         resolve(fullUrl);
       },
@@ -61,7 +61,7 @@ function resolveQueryEndpoint(userUrl: string) {
         console.error(`Cannot find version of ${url}`, err);
         serverCache.delete(url);
         reject(new Error("Unavailable"));
-      }
+      },
     );
   });
   serverCache.set(url, resolution);

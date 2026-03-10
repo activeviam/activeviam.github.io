@@ -8,7 +8,7 @@ import React from "react";
  * */
 export function GoBackToParentQueryButton(
   currentParentId: number | null,
-  callback: (id: number) => void
+  callback: (id: number) => void,
 ) {
   if (currentParentId !== null) {
     return (

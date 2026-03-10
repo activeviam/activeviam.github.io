@@ -68,7 +68,7 @@ function linkColor(d: D3Link, minCriticalScore: number) {
  * */
 function enterLink(
   selection: Selection<SVGLineElement, D3Link, null | BaseType, unknown>,
-  minCriticalScore: number
+  minCriticalScore: number,
 ) {
   selection
     .attr("stroke-width", 6)
@@ -80,7 +80,7 @@ function enterLink(
  * Update properties of the SVG element corresponding to the graph edge.
  * */
 function updateLink(
-  selection: Selection<SVGLineElement, D3Link, null | BaseType, unknown>
+  selection: Selection<SVGLineElement, D3Link, null | BaseType, unknown>,
 ) {
   selection
     .attr("x1", (d) => `${d.source.x || 0}`)
@@ -97,7 +97,7 @@ function computeRadius(d: D3Node) {
  * Setup properties of the SVG element corresponding to the graph vertex.
  * */
 function enterNode(
-  selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>
+  selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>,
 ) {
   selection
     .select<SVGCircleElement>("circle")
@@ -127,7 +127,7 @@ function rectTranslate(d: D3Node) {
  * Update properties of the SVG element corresponding to the graph vertex.
  * */
 function updateNode(
-  selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>
+  selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>,
 ) {
   selection
     .select<SVGCircleElement>("circle")
@@ -148,7 +148,7 @@ function updateNode(
  * Update properties of SVG elements representing the graph.
  * */
 function updateGraph(
-  selection: Selection<SVGSVGElement, unknown, null, undefined>
+  selection: Selection<SVGSVGElement, unknown, null, undefined>,
 ) {
   selection.selectAll<SVGGElement, D3Node>(".node").call(updateNode);
   selection.selectAll<SVGLineElement, D3Link>(".link").call(updateLink);

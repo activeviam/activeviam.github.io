@@ -145,7 +145,7 @@ export function Menu({
     const searcher = new FuzzySearch(
       _.difference(Array.from(measures), selectedMeasures),
       undefined,
-      { caseSensitive: false }
+      { caseSensitive: false },
     );
     return searcher.search(trimmedQuery).sort(humanisticStringComparator);
   }, [measures, selectedMeasures, searchQuery]);

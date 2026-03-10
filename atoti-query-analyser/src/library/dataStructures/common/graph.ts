@@ -10,7 +10,7 @@ export interface IVertex<VertexMetadata> {
 export interface IEdge<
   VertexMetadata,
   EdgeMetadata,
-  Vertex extends IVertex<VertexMetadata>
+  Vertex extends IVertex<VertexMetadata>,
 > {
   getBegin(): Vertex;
 
@@ -40,15 +40,14 @@ export class Vertex<VertexMetadata> implements IVertex<VertexMetadata> {
 export class Edge<
   VertexMetadata,
   EdgeMetadata,
-  Vertex extends IVertex<VertexMetadata>
-> implements IEdge<VertexMetadata, EdgeMetadata, Vertex>
-{
+  Vertex extends IVertex<VertexMetadata>,
+> implements IEdge<VertexMetadata, EdgeMetadata, Vertex> {
   private readonly uuid: UUID;
 
   constructor(
     private readonly metadata: EdgeMetadata,
     private readonly begin: Vertex,
-    private readonly end: Vertex
+    private readonly end: Vertex,
   ) {
     this.uuid = generateUUID();
   }
@@ -74,7 +73,7 @@ export interface IGraph<
   VertexMetadata,
   EdgeMetadata,
   Vertex extends IVertex<VertexMetadata>,
-  Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>
+  Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>,
 > {
   getVertices(): Set<Vertex>;
 
@@ -92,9 +91,8 @@ class AdjacencyListGraphBase<
   VertexMetadata,
   EdgeMetadata,
   Vertex extends IVertex<VertexMetadata>,
-  Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>
-> implements IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>
-{
+  Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>,
+> implements IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge> {
   protected readonly vertexMap: Map<Vertex, Set<Edge>>;
 
   protected readonly vertexByUUID: Map<UUID, Vertex>;
@@ -179,7 +177,7 @@ class AdjacencyListGraphBase<
             mangle(edge.getBegin().getUUID()) +
             " -> " +
             mangle(edge.getEnd().getUUID()) +
-            ";"
+            ";",
         );
       });
     });
@@ -195,7 +193,7 @@ class AdjacencyListGraphBase<
  * */
 export class AdjacencyListGraph<
   VertexMetadata,
-  EdgeMetadata
+  EdgeMetadata,
 > extends AdjacencyListGraphBase<
   VertexMetadata,
   EdgeMetadata,
@@ -215,7 +213,7 @@ export class AdjacencyListGraph<
    * which contains those and only those vertices that match the predicate.
    * */
   filterVertices(
-    predicate: (vertex: Vertex<VertexMetadata>) => boolean
+    predicate: (vertex: Vertex<VertexMetadata>) => boolean,
   ): AdjacencyListGraph<VertexMetadata, EdgeMetadata> {
     const result = new AdjacencyListGraph<VertexMetadata, EdgeMetadata>();
 
@@ -255,7 +253,7 @@ export class AdjacencyListGraph<
       result.createEdge(
         edge.getEnd().getUUID(),
         edge.getBegin().getUUID(),
-        Object.assign({}, edge.getMetadata())
+        Object.assign({}, edge.getMetadata()),
       );
     });
 
@@ -275,7 +273,7 @@ export interface IGraphObserver<
   EdgeMetadata,
   Vertex extends IVertex<VertexMetadata>,
   Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>,
-  Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>
+  Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>,
 > {
   /** This callback is called before traversal start. */
   onBeginSearch(graph: Graph): void;
@@ -303,9 +301,8 @@ export class AGraphObserver<
   EdgeMetadata,
   Vertex extends IVertex<VertexMetadata>,
   Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>,
-  Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>
-> implements IGraphObserver<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph>
-{
+  Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>,
+> implements IGraphObserver<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph> {
   onBeginSearch(graph: Graph): void {}
 
   onEdgeDiscover(edge: Edge): void {}
@@ -333,7 +330,7 @@ class Dfs<
   EdgeMetadata,
   Vertex extends IVertex<VertexMetadata>,
   Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>,
-  Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>
+  Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>,
 > {
   private visitedVertices: Set<Vertex> = new Set();
 
@@ -346,7 +343,7 @@ class Dfs<
       Vertex,
       Edge,
       Graph
-    >
+    >,
   ) {}
 
   private isVisited(node: Vertex): boolean {
@@ -433,7 +430,7 @@ class AcyclicGraphFunctionCalculator<
   Vertex extends IVertex<VertexMetadata>,
   Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>,
   Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>,
-  T
+  T,
 > extends AGraphObserver<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph> {
   public readonly functionValues = new Map<Vertex, T>();
 
@@ -443,8 +440,8 @@ class AcyclicGraphFunctionCalculator<
     private reducer: (
       vertex: Vertex,
       children: Set<Vertex>,
-      childrenValues: (child: Vertex) => T
-    ) => T
+      childrenValues: (child: Vertex) => T,
+    ) => T,
   ) {
     super();
   }
@@ -478,11 +475,11 @@ export function multiDfs<
   EdgeMetadata,
   Vertex extends IVertex<VertexMetadata>,
   Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>,
-  Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>
+  Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>,
 >(
   graph: Graph,
   rootNodes: Vertex[],
-  observer: IGraphObserver<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph>
+  observer: IGraphObserver<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph>,
 ): void {
   new Dfs(graph, rootNodes, observer).run();
 }
@@ -496,16 +493,16 @@ export function dfs<
   EdgeMetadata,
   Vertex extends IVertex<VertexMetadata>,
   Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>,
-  Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>
+  Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>,
 >(
   graph: Graph,
   rootNode: Vertex,
-  observer: IGraphObserver<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph>
+  observer: IGraphObserver<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph>,
 ): void {
   multiDfs<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph>(
     graph,
     [rootNode],
-    observer
+    observer,
   );
 }
 
@@ -524,15 +521,15 @@ export function applyOnDAG<
     Vertex,
     IEdge<unknown, unknown, Vertex>
   >,
-  T
+  T,
 >(
   graph: Graph,
   rootNode: Vertex,
   reducer: (
     vertex: Vertex,
     children: Set<Vertex>,
-    childrenValues: (child: Vertex) => T
-  ) => T
+    childrenValues: (child: Vertex) => T,
+  ) => T,
 ): Map<Vertex, T> {
   const observer = new AcyclicGraphFunctionCalculator(reducer);
   dfs(graph, rootNode, observer);

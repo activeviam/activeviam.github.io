@@ -31,7 +31,7 @@ import "./Timeline.css";
  * */
 function placeRetrieval(
   state: { lines: TimeRange[][]; last: number[] },
-  entry: TimeRange
+  entry: TimeRange,
 ) {
   const { lines, last } = state;
   // Find the first one whose last is before entry start
@@ -86,7 +86,7 @@ function computeLines({ graph }: { graph: RetrievalGraph }, scale: number) {
     .map(extractTimeRanges)
     .flat()
     .filter(
-      (entry) => entry.start < entry.end && entry.end - entry.start >= scale
+      (entry) => entry.start < entry.end && entry.end - entry.start >= scale,
     )
     .sort((a, b) => {
       return a.start - b.start;
@@ -139,21 +139,21 @@ function Box({
 }) {
   if (node === undefined || entry.retrieval.id !== node.getUUID()) {
     throw new Error(
-      `Inconsistent state: ${JSON.stringify(entry)} / ${JSON.stringify(node)}`
+      `Inconsistent state: ${JSON.stringify(entry)} / ${JSON.stringify(node)}`,
     );
   }
   const key = `${entry.retrieval.id}#${entry.retrieval.partition}`;
   const stateClasses = computeRetrievalClasses(
     entry.retrieval,
     selection,
-    focus
+    focus,
   );
   const overflowClasses = [
     overflowLeft ? "overflow-left" : "",
     overflowRight ? "overflow-right" : "",
   ].filter(Boolean);
   const className = ["timeline-box", ...stateClasses, ...overflowClasses].join(
-    " "
+    " ",
   );
 
   if (entry.start < entry.end) {
@@ -214,7 +214,7 @@ function Row({
       selection,
       onSelect,
       focus,
-    })
+    }),
   );
   return (
     <g className="timeline-row" key={idx}>
@@ -326,7 +326,7 @@ function Rows({
                       focus,
                       overflowLeft: se.overflowLeft,
                       overflowRight: se.overflowRight,
-                    })
+                    }),
                   )}
                 </g>
               );
@@ -476,7 +476,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
       .flatMap((v) => v.getMetadata().timingInfo.elapsedTime ?? [])
       .reduce(
         ({ sum, count }, value) => ({ sum: sum + value, count: count + 1 }),
-        { sum: 0, count: 0 }
+        { sum: 0, count: 0 },
       );
     // Find the scale close enough to the mean, but accepting some smaller bars
     const result = findClosestScale(scales, (mean.sum / mean.count) * 0.75);
@@ -496,7 +496,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
 
   const slices = useMemo(
     () => computeSlices(lines, sliceDuration, maxEndTime),
-    [lines, sliceDuration, maxEndTime]
+    [lines, sliceDuration, maxEndTime],
   );
   const [activeSliceIndex, setActiveSliceIndex] = useState(ALL_SLICES_INDEX);
   const activeSlice = useMemo(() => {
@@ -518,7 +518,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
   const { item: focusedItem, showParents, showChildren } = focusControlState;
   const focusState = useMemo(
     () => computeFocusState(plan, focusedItem),
-    [plan, focusedItem]
+    [plan, focusedItem],
   );
   const displayFocusState = useMemo(
     () => ({
@@ -526,7 +526,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
       parents: showParents ? focusState.parents : [],
       children: showChildren ? focusState.children : [],
     }),
-    [focusState, showParents, showChildren]
+    [focusState, showParents, showChildren],
   );
 
   useEffect(() => {
@@ -537,7 +537,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
   const selectBox = ({ retrieval }: TimeRange) => {
     setSelection((entries) => {
       const isSelected = entries.some((cursor) =>
-        areEqualCursors(cursor, retrieval)
+        areEqualCursors(cursor, retrieval),
       );
       return isSelected ? entries : [...entries, retrieval];
     });
@@ -556,8 +556,8 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
                 scale.label === s.label
                   ? "info"
                   : s.label === defaultScale.label
-                  ? "outline-info"
-                  : "light"
+                    ? "outline-info"
+                    : "light"
               }
               onClick={() => setScale(s)}
             >

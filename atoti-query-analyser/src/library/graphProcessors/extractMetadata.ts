@@ -28,10 +28,10 @@ export const QueryPlanMetadataPropType = PropTypes.shape({
  * */
 function findChildrenAndParents(
   res: QueryPlanMetadata[],
-  queries: QueryPlan[]
+  queries: QueryPlan[],
 ) {
   const resIndexByName = new Map(
-    res.map((queryInfo) => [queryInfo.name, queryInfo])
+    res.map((queryInfo) => [queryInfo.name, queryInfo]),
   );
 
   queries.forEach((query, queryId) => {
@@ -45,7 +45,7 @@ function findChildrenAndParents(
       const underlyingDataNodes = metadata.underlyingDataNodes;
 
       metadata.childrenIds = underlyingDataNodes.map(
-        (name) => requireNonNull(resIndexByName.get(name)).id
+        (name) => requireNonNull(resIndexByName.get(name)).id,
       );
 
       // give its children their parentId
@@ -70,7 +70,7 @@ export function dumpMetadata(metadata: QueryPlanMetadata[]) {
   lines.push(
     'fontname="Helvetica,Arial,sans-serif"\n' +
       '\tnode [fontname="Helvetica,Arial,sans-serif",shape=box]\n' +
-      '\tedge [fontname="Helvetica,Arial,sans-serif"]'
+      '\tedge [fontname="Helvetica,Arial,sans-serif"]',
   );
 
   queriesByPass.forEach((queries, pass) => {

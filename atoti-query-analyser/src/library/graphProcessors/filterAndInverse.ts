@@ -10,7 +10,7 @@ import { VertexSelection } from "../dataStructures/processing/selection";
  */
 export function filterAndInverse(
   graph: RetrievalGraph,
-  selection: VertexSelection
+  selection: VertexSelection,
 ) {
   const virtualSource = graph.getVertexByLabel("virtualSource");
   const virtualTarget = graph.getVertexByLabel("virtualTarget");
@@ -18,7 +18,7 @@ export function filterAndInverse(
   const virtualVertices = new Set([virtualSource, virtualTarget]);
 
   const filteredGraph = graph.filterVertices(
-    (vertex) => !virtualVertices.has(vertex) && selection.has(vertex.getUUID())
+    (vertex) => !virtualVertices.has(vertex) && selection.has(vertex.getUUID()),
   );
   const invGraph = filteredGraph.inverse();
 
@@ -49,12 +49,12 @@ export function filterAndInverse(
     sources.forEach((vertex) =>
       gr.createEdge(virtualSource.getUUID(), vertex.getUUID(), {
         criticalScore: 1,
-      })
+      }),
     );
     sinks.forEach((vertex) =>
       gr.createEdge(vertex.getUUID(), virtualTarget.getUUID(), {
         criticalScore: 1,
-      })
+      }),
     );
   });
 

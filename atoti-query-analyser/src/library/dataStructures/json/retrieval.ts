@@ -101,7 +101,7 @@ export class ARetrievalGraphObserver extends AGraphObserver<
  * Deep validation of JSON parse result, expected to be {@link AggregateRetrieval}.
  */
 export function validateAggregateRetrieval(
-  rawRetrieval: any
+  rawRetrieval: any,
 ): AggregateRetrieval {
   validateObject(rawRetrieval);
 
@@ -112,20 +112,20 @@ export function validateAggregateRetrieval(
     measureProvider: validateString(rawRetrieval.measureProvider || "N/A"),
     measures: validateList(rawRetrieval.measures, validateMeasure),
     partialProviderName: validateString(
-      rawRetrieval.partialProviderName || "N/A"
+      rawRetrieval.partialProviderName || "N/A",
     ),
     partitioning: validateString(rawRetrieval.partitioning),
     resultSizes: validateList(rawRetrieval.resultSizes || [], validateInt),
     retrievalId: multiFieldValidate(
       validateInt,
       rawRetrieval.retrievalId,
-      rawRetrieval.retrId
+      rawRetrieval.retrId,
     ),
     timingInfo: validateTimingInfo(rawRetrieval.timingInfo),
     type: validateString(rawRetrieval.type),
     underlyingDataNodes: validateList(
       rawRetrieval.underlyingDataNodes,
-      validateString
+      validateString,
     ),
   };
 }
@@ -134,7 +134,7 @@ export function validateAggregateRetrieval(
  * Deep validation of JSON parse result, expected to be {@link ExternalRetrieval}.
  */
 export function validateExternalRetrieval(
-  rawRetrieval: any
+  rawRetrieval: any,
 ): ExternalRetrieval {
   validateObject(rawRetrieval);
 
@@ -147,7 +147,7 @@ export function validateExternalRetrieval(
     retrievalId: multiFieldValidate(
       validateInt,
       rawRetrieval.retrievalId,
-      rawRetrieval.retrId
+      rawRetrieval.retrId,
     ),
     store: validateString(rawRetrieval.store),
     timingInfo: validateTimingInfo(rawRetrieval.timingInfo),

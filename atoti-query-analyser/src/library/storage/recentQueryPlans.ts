@@ -30,7 +30,7 @@ function openDb(): Promise<IDBDatabase> {
 }
 
 async function compressData(
-  data: unknown
+  data: unknown,
 ): Promise<{ blob: Blob; originalSize: number }> {
   const json = JSON.stringify(data);
   const originalSize = new Blob([json]).size;
@@ -83,14 +83,14 @@ export async function getRecentQueryPlans(): Promise<RecentQueryPlanEntry[]> {
 }
 
 export async function loadRecentQueryPlanData(
-  entry: RecentQueryPlanEntry
+  entry: RecentQueryPlanEntry,
 ): Promise<unknown> {
   return decompressData(entry.compressedData);
 }
 
 export async function saveRecentQueryPlan(
   label: string,
-  data: unknown
+  data: unknown,
 ): Promise<number> {
   const { blob, originalSize } = await compressData(data);
   const db = await openDb();
@@ -134,7 +134,7 @@ export async function saveRecentQueryPlan(
 
 export async function updateRecentQueryPlanLabel(
   id: number,
-  label: string
+  label: string,
 ): Promise<void> {
   const db = await openDb();
   return new Promise((resolve, reject) => {

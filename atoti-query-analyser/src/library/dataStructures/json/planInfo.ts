@@ -58,18 +58,18 @@ export function validatePlanInfo(rawPlanInfo: any): PlanInfo {
     contextValues: validateObjectAsMap(
       rawPlanInfo.contextValues,
       validateString,
-      validateString
+      validateString,
     ),
     epoch: validateString(rawPlanInfo.epoch),
     globalTimings: validateObjectAsMap(
       rawPlanInfo.globalTimings,
       validateString,
-      validateInt
+      validateInt,
     ),
     isContinuous: multiFieldValidate(
       validateBoolean,
       rawPlanInfo.isContinuous,
-      rawPlanInfo.continuous
+      rawPlanInfo.continuous,
     ),
     isEmpty: false,
     mdxPass: optional(rawPlanInfo.mdxPass, validateString),

@@ -25,7 +25,10 @@ class FastRetrievalCondenser {
 
   private retrievalGroups: UUID[][];
 
-  public constructor(private graph: RetrievalGraph, private threshold: number) {
+  public constructor(
+    private graph: RetrievalGraph,
+    private threshold: number,
+  ) {
     this.inEdgeIndex = this.buildInEdgeIndex();
     this.outEdgeIndex = this.buildOutEdgeIndex();
     this.fastRetrievals = this.collectFastRetrievals();
@@ -40,7 +43,7 @@ class FastRetrievalCondenser {
   public compute(): RetrievalGraph {
     const condensedRetrievals: ARetrieval[] = this.retrievalGroups
       .map((group) =>
-        group.map((uuid) => this.graph.getVertexByUUID(uuid).getMetadata())
+        group.map((uuid) => this.graph.getVertexByUUID(uuid).getMetadata()),
       )
       .map((group, id) => {
         if (group.length === 1) {
@@ -55,7 +58,7 @@ class FastRetrievalCondenser {
         } as CondensedRetrieval;
       });
     const condensedVertices: RetrievalVertex[] = condensedRetrievals.map(
-      (retrieval) => new RetrievalVertex(retrieval)
+      (retrieval) => new RetrievalVertex(retrieval),
     );
 
     const mapVertex = (uuid: UUID) => {
@@ -89,7 +92,7 @@ class FastRetrievalCondenser {
     rawEdges.forEach((ends, begin) =>
       ends.forEach((end) => {
         edges.push(new Edge({ criticalScore: 1 }, begin, end));
-      })
+      }),
     );
 
     const newGraph = new RetrievalGraph();
@@ -107,7 +110,7 @@ class FastRetrievalCondenser {
           result.set(e.getEnd().getUUID(), []);
         }
         (result.get(e.getEnd().getUUID()) as RetrievalEdge[]).push(e);
-      })
+      }),
     );
 
     return result;
@@ -122,7 +125,7 @@ class FastRetrievalCondenser {
           result.set(e.getBegin().getUUID(), []);
         }
         (result.get(e.getBegin().getUUID()) as RetrievalEdge[]).push(e);
-      })
+      }),
     );
 
     return result;
@@ -137,7 +140,7 @@ class FastRetrievalCondenser {
       }
       const maxElapsedTime = elapsedTime.reduce(
         (acc, x) => Math.max(acc, x),
-        0
+        0,
       );
       if (maxElapsedTime <= this.threshold) {
         result.add(vertex.getUUID());
@@ -230,7 +233,7 @@ class FastRetrievalCondenser {
       .flatMap((r) => r.timingInfo.elapsedTime)
       .filter((x) => x !== undefined) as number[];
     const endTimes = startTimes.map(
-      (startTime, idx) => startTime + elapsedTimes[idx]
+      (startTime, idx) => startTime + elapsedTimes[idx],
     );
 
     const beginTime = Math.min(...startTimes);
@@ -248,17 +251,17 @@ class FastRetrievalCondenser {
  */
 export function condenseFastRetrievals(
   graph: RetrievalGraph,
-  threshold: number
+  threshold: number,
 ): RetrievalGraph {
   const result = new FastRetrievalCondenser(graph, threshold).compute();
 
   result.labelVertex(
     graph.getVertexByLabel("virtualSource").getUUID(),
-    "virtualSource"
+    "virtualSource",
   );
   result.labelVertex(
     graph.getVertexByLabel("virtualTarget").getUUID(),
-    "virtualTarget"
+    "virtualTarget",
   );
 
   return result;

@@ -45,7 +45,7 @@ const NodePopover = forwardRef(function NodePopover(
     nodeRef: SVGElement | null;
     condensedRetrievalDrillthrough: (retrieval: CondensedRetrieval) => void;
   },
-  ref: ForwardedRef<HTMLDivElement>
+  ref: ForwardedRef<HTMLDivElement>,
 ) {
   const { details } = node;
   const { startTimes, elapsedTimes, metadata } = details;
@@ -112,7 +112,7 @@ const NodePopover = forwardRef(function NodePopover(
           <Button
             onClick={() =>
               condensedRetrievalDrillthrough(
-                node.details.metadata as CondensedRetrieval
+                node.details.metadata as CondensedRetrieval,
               )
             }
           >

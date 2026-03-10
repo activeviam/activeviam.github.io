@@ -48,7 +48,7 @@ export function useNotificationContext() {
 class NotificationServiceState {
   constructor(
     private readonly messages: Message[],
-    private readonly epoch: number
+    private readonly epoch: number,
   ) {}
 
   /** Returns array of messages. */
@@ -65,7 +65,7 @@ class NotificationServiceState {
   addMessage(message: Message): NotificationServiceState {
     return new NotificationServiceState(
       [...this.messages, message],
-      this.epoch + 1
+      this.epoch + 1,
     );
   }
 
@@ -73,7 +73,7 @@ class NotificationServiceState {
   deleteMessage(id: number): NotificationServiceState {
     return new NotificationServiceState(
       this.messages.filter((message) => message.id !== id),
-      this.epoch + 1
+      this.epoch + 1,
     );
   }
 }
@@ -90,7 +90,7 @@ type NotificationAction =
  * */
 function reduceNotificationServiceState(
   state: NotificationServiceState,
-  action: NotificationAction
+  action: NotificationAction,
 ): NotificationServiceState {
   switch (action.$action) {
     case "addMessage":
@@ -145,7 +145,7 @@ export function NotificationWrapper({
 }) {
   const [serviceState, updateServiceState] = useReducer(
     reduceNotificationServiceState,
-    new NotificationServiceState([], 0)
+    new NotificationServiceState([], 0),
   );
 
   const newMessage = (title: string, body: string, props?: ToastProps) => {

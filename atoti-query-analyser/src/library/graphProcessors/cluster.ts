@@ -11,18 +11,18 @@ import { VertexSelection } from "../dataStructures/processing/selection";
  * */
 export function addClustersToNodes(
   graph: RetrievalGraph,
-  selection: VertexSelection
+  selection: VertexSelection,
 ): Map<UUID, number> {
   const { invGraph, virtualSource } = filterAndInverse(graph, selection);
   const unionFind = new UnionFind();
 
   const vertices = Array.from(invGraph.getVertices()).filter(
-    (vertex) => vertex !== virtualSource
+    (vertex) => vertex !== virtualSource,
   );
   vertices.forEach((vertex) =>
     invGraph.getOutgoingEdges(vertex).forEach((edge) => {
       unionFind.union(edge.getBegin(), edge.getEnd());
-    })
+    }),
   );
 
   const dict = new Dictionary();
