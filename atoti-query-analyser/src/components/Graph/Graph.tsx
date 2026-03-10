@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { untangle } from "../../library/dataStructures/d3/d3Graph";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
-import "./Drawer.css";
+import "./GraphSidebar.css";
 import {
   computeEdgeCriticalScore,
   selectCriticalSubgraph,
@@ -16,7 +16,8 @@ import {
 import { condenseFastRetrievals } from "../../library/graphProcessors/condenseFastRetrievals";
 import { Link } from "./Link";
 import { Node } from "./Node";
-import { Button, ButtonGroup, Form, Overlay } from "react-bootstrap";
+import { Button, ButtonGroup, Form } from "react-bootstrap";
+import { FaFilter, FaTimes } from "react-icons/fa";
 import { Menu } from "./Menu";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import {
@@ -62,7 +63,7 @@ export function Graph({
   selection: VertexSelection;
   changeGraph: (queryId: number) => void;
 }) {
-  const [showDrawer, setShowDrawer] = useState(false);
+  const [activePanel, setActivePanel] = useState<"filters" | null>(null);
   const [selectedMeasures, setSelectedMeasures] = useState<Measure[]>([]);
   const [nodes, setNodes] = useState<D3Node[]>([]);
   const [links, setLinks] = useState<D3Link[]>([]);
@@ -123,7 +124,6 @@ export function Graph({
 
   const windowSize = useWindowSize();
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const triggerRef = useRef(null);
   const zoomRef = useRef<ZoomBehavior<SVGSVGElement, unknown>>();
   const notificationContext = useNotificationContext();
 
@@ -365,116 +365,140 @@ export function Graph({
   };
 
   return (
-    <>
-      <svg
-        className="graph"
-        ref={svgRef}
-        style={{
-          width: windowSize.width,
-          height: windowSize.height - 56,
-        }}
-      >
-        <g key={`e${epoch}`}>
-          {links.map((link) => (
-            <Link
-              link={link}
-              key={link.id}
-              minCriticalScore={
-                selectCriticalSubgraphFlag ? minCriticalScore : 0
-              }
-            />
-          ))}
-          {nodes.map((node) => (
-            <Node
-              node={node}
-              changeGraph={changeGraph}
-              clickNode={clickNode}
-              key={node.id}
-              selected={selectedNodeId === node.id}
-              onCondensedRetrievalDrillthrough={
-                onCondensedRetrievalDrillthrough
-              }
-            />
-          ))}
-        </g>
-      </svg>
-      <Button
-        ref={triggerRef}
-        className={`drawer-trigger ${showDrawer ? "open" : ""}`}
-        variant="info"
-        onClick={() => setShowDrawer(!showDrawer)}
-      >
-        Menu
-      </Button>
-      <Overlay target={triggerRef.current} placement="left" show={showDrawer}>
-        <div className="drawer">
-          <Menu
-            measures={query.querySummary.measures}
-            selectedMeasures={selectedMeasures}
-            onSelectedMeasure={selectMeasure}
-          >
-            <ButtonGroup>
-              <Button onClick={() => zoomScaleBy(2)}>Zoom in</Button>
-              <Button onClick={() => zoomScaleBy(0.5)}>Zoom out</Button>
-            </ButtonGroup>
-            <Button onClick={onUntangle}>Untangle</Button>
-            <h5>Fast retrieval condensation</h5>
-            <Form>
-              <Form.Check
-                type="switch"
-                checked={condenseFastRetrievalsFlag}
-                onChange={(e) =>
-                  setCondenseFastRetrievalsFlag(e.target.checked)
-                }
-                label="Apply condensation"
-              />
-              <Form.Label>
-                Max elapsed time: {fastRetrievalMaxElapsedTimeMs}&nbsp;ms
-              </Form.Label>
-              <Form.Range
-                min={0}
-                max={20}
-                step={1}
-                value={fastRetrievalMaxElapsedTimeMs}
-                onChange={(e) =>
-                  setFastRetrievalMaxElapsedTimeMs(+e.target.value)
+    <div className="graph-with-sidebar">
+      {/* Activity Bar - permanent vertical column */}
+      <div className="activity-bar">
+        <button
+          className={`activity-bar-button ${activePanel === "filters" ? "active" : ""}`}
+          onClick={() =>
+            setActivePanel(activePanel === "filters" ? null : "filters")
+          }
+          title="Filters & Controls"
+          aria-label="Toggle filters panel"
+        >
+          <FaFilter size={20} />
+        </button>
+      </div>
+
+      {/* Graph container */}
+      <div className="graph-container">
+        <svg
+          className="graph"
+          ref={svgRef}
+          style={{
+            width: windowSize.width - 48,
+            height: windowSize.height - 56,
+          }}
+        >
+          <g key={`e${epoch}`}>
+            {links.map((link) => (
+              <Link
+                link={link}
+                key={link.id}
+                minCriticalScore={
+                  selectCriticalSubgraphFlag ? minCriticalScore : 0
                 }
               />
-              {fastRetrievalDrillthough && (
-                <Button onClick={() => setFastRetrievalDrillthough(undefined)}>
-                  Zoom out
-                </Button>
-              )}
-            </Form>
-            <h5>Critical score filter</h5>
-            <Form>
-              <Form.Check
-                type="switch"
-                checked={selectCriticalSubgraphFlag}
-                onChange={(e) =>
-                  setSelectCriticalSubgraphFlag(e.target.checked)
+            ))}
+            {nodes.map((node) => (
+              <Node
+                node={node}
+                changeGraph={changeGraph}
+                clickNode={clickNode}
+                key={node.id}
+                selected={selectedNodeId === node.id}
+                onCondensedRetrievalDrillthrough={
+                  onCondensedRetrievalDrillthrough
                 }
-                label="Enable filter"
-                disabled={Boolean(fastRetrievalDrillthough)}
               />
-              {selectCriticalSubgraphFlag && (
-                <>
-                  <Form.Label>
-                    Minimal score: {minCriticalScore.toFixed(3)}
-                  </Form.Label>
-                  <Form.Range
-                    min={0}
-                    max={1}
-                    step="any"
-                    value={minCriticalScore}
-                    onChange={(e) => setMinCriticalScore(+e.target.value)}
-                  ></Form.Range>
-                </>
-              )}
-            </Form>
-          </Menu>
+            ))}
+          </g>
+        </svg>
+
+        {/* Sidebar Drawer - floats over graph */}
+        <div
+          className={`sidebar-drawer ${activePanel === "filters" ? "open" : ""}`}
+        >
+          <div className="sidebar-drawer-header">
+            <h5>Filters & Controls</h5>
+            <button
+              onClick={() => setActivePanel(null)}
+              aria-label="Close panel"
+            >
+              <FaTimes />
+            </button>
+          </div>
+          <div className="sidebar-drawer-content">
+            <Menu
+              measures={query.querySummary.measures}
+              selectedMeasures={selectedMeasures}
+              onSelectedMeasure={selectMeasure}
+            >
+              <ButtonGroup>
+                <Button onClick={() => zoomScaleBy(2)}>Zoom in</Button>
+                <Button onClick={() => zoomScaleBy(0.5)}>Zoom out</Button>
+              </ButtonGroup>
+              <Button onClick={onUntangle}>Untangle</Button>
+              <h5>Fast retrieval condensation</h5>
+              <Form>
+                <Form.Check
+                  type="switch"
+                  checked={condenseFastRetrievalsFlag}
+                  onChange={(e) =>
+                    setCondenseFastRetrievalsFlag(e.target.checked)
+                  }
+                  label="Apply condensation"
+                />
+                <Form.Label>
+                  Max elapsed time: {fastRetrievalMaxElapsedTimeMs}&nbsp;ms
+                </Form.Label>
+                <Form.Range
+                  min={0}
+                  max={20}
+                  step={1}
+                  value={fastRetrievalMaxElapsedTimeMs}
+                  onChange={(e) =>
+                    setFastRetrievalMaxElapsedTimeMs(+e.target.value)
+                  }
+                />
+                {fastRetrievalDrillthough && (
+                  <Button
+                    onClick={() => setFastRetrievalDrillthough(undefined)}
+                  >
+                    Zoom out
+                  </Button>
+                )}
+              </Form>
+              <h5>Critical score filter</h5>
+              <Form>
+                <Form.Check
+                  type="switch"
+                  checked={selectCriticalSubgraphFlag}
+                  onChange={(e) =>
+                    setSelectCriticalSubgraphFlag(e.target.checked)
+                  }
+                  label="Enable filter"
+                  disabled={Boolean(fastRetrievalDrillthough)}
+                />
+                {selectCriticalSubgraphFlag && (
+                  <>
+                    <Form.Label>
+                      Minimal score: {minCriticalScore.toFixed(3)}
+                    </Form.Label>
+                    <Form.Range
+                      min={0}
+                      max={1}
+                      step="any"
+                      value={minCriticalScore}
+                      onChange={(e) => setMinCriticalScore(+e.target.value)}
+                    ></Form.Range>
+                  </>
+                )}
+              </Form>
+            </Menu>
+          </div>
         </div>
-      </Overlay>
-    </>
+      </div>
+    </div>
   );
 }

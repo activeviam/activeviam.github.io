@@ -1,0 +1,104 @@
+/* Main container - flexbox layout */
+.graph-with-sidebar {
+  display: flex;
+  height: calc(100vh - 56px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Activity Bar - permanent vertical column */
+.activity-bar {
+  width: 48px;
+  min-width: 48px;
+  background: #2d2d2d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 8px;
+  z-index: 10;
+}
+
+.activity-bar-button {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: #858585;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.activity-bar-button:hover {
+  color: #ffffff;
+}
+
+.activity-bar-button.active {
+  color: #ffffff;
+  border-left: 2px solid #007acc;
+  padding-left: 2px;
+}
+
+/* Graph container - takes remaining width */
+.graph-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Sidebar Drawer - floats over graph */
+.sidebar-drawer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 100%;
+  background: rgb(255, 239, 223);
+  box-shadow: 3px 0 8px rgba(0, 0, 0, 0.2);
+  transform: translateX(-100%);
+  transition: transform 0.2s ease-out;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-drawer.open {
+  transform: translateX(0);
+}
+
+.sidebar-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #ddd;
+  background: rgb(245, 225, 205);
+}
+
+.sidebar-drawer-header h5 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.sidebar-drawer-header button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #666;
+  padding: 0 4px;
+}
+
+.sidebar-drawer-header button:hover {
+  color: #333;
+}
+
+.sidebar-drawer-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}

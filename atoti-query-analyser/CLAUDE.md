@@ -34,6 +34,13 @@ For a given node, it reports the time spend in the database layer, the network l
 
 Showing the graph of nodes executing a given node.
 
+The graph view uses a VS Code-style left sidebar layout:
+- **Activity Bar**: A permanent vertical icon column (48px wide) on the left side
+- **Sidebar Drawer**: Clicking an icon opens a floating panel that slides over the graph (does not resize the graph)
+- **Filters Panel**: Contains measure filtering, zoom controls, untangle button, fast retrieval condensation settings, and critical score filter
+
+The sidebar architecture is designed to support multiple panels in the future. The `activePanel` state accepts panel IDs like `"filters"` and can be extended with additional panels.
+
 ### Timeline
 
 Showing a timeline of the operations, with an ordering created from the graph timing, by sorting them on as less lines as possible.
