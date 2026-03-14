@@ -125,3 +125,8 @@
   margin: 0;
   font-family: monospace;
 }
+
+/* Node Details drawer needs more width */
+.sidebar-drawer.details-drawer {
+  width: 450px;
+}

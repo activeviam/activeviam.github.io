@@ -10,3 +10,23 @@ g.node.selected > circle {
   stroke-width: 3;
   --node-stroke-0: #2e2e2e;
 }
+
+/* Highlighted state when clicking from accordion */
+g.node.highlighted > rect,
+g.node.highlighted > circle {
+  stroke-width: 4;
+  --node-stroke-0: #007acc;
+  animation: pulse-node 0.5s ease-in-out;
+}
+
+@keyframes pulse-node {
+  0% {
+    stroke-width: 3;
+  }
+  50% {
+    stroke-width: 6;
+  }
+  100% {
+    stroke-width: 4;
+  }
+}
