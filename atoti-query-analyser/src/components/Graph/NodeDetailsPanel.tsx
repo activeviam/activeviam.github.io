@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Button } from "react-bootstrap";
+import { Button, ButtonGroup } from "react-bootstrap";
 import { FaThumbtack, FaTimes } from "react-icons/fa";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { Details } from "../Details/Details";
@@ -7,6 +7,7 @@ import {
   CondensedRetrieval,
   CondensedRetrievalKind,
 } from "../../library/dataStructures/json/retrieval";
+import { ComparisonState } from "./NodeComparisonPanel";
 import "./NodeDetailsPanel.css";
 
 export interface NodeDetailsState {
@@ -30,6 +31,8 @@ interface NodeDetailsPanelProps {
   onCenterNode: (nodeId: number) => void;
   changeGraph: (queryId: number) => void;
   onCondensedRetrievalDrillthrough: (retrieval: CondensedRetrieval) => void;
+  comparisonState: ComparisonState;
+  setComparisonState: React.Dispatch<React.SetStateAction<ComparisonState>>;
 }
 
 function getNodeLabel(node: D3Node): string {
@@ -49,6 +52,10 @@ function NodeAccordionItem({
   onHeaderClick,
   changeGraph,
   onCondensedRetrievalDrillthrough,
+  isLeftNode,
+  isRightNode,
+  onToggleLeftNode,
+  onToggleRightNode,
 }: {
   node: D3Node;
   isPinned: boolean;
@@ -60,6 +67,10 @@ function NodeAccordionItem({
   onHeaderClick: () => void;
   changeGraph: (queryId: number) => void;
   onCondensedRetrievalDrillthrough: (retrieval: CondensedRetrieval) => void;
+  isLeftNode: boolean;
+  isRightNode: boolean;
+  onToggleLeftNode: () => void;
+  onToggleRightNode: () => void;
 }) {
   const { details } = node;
   const { startTimes, elapsedTimes, metadata } = details;
@@ -99,6 +110,28 @@ function NodeAccordionItem({
         >
           {isPinned ? <FaTimes /> : <FaThumbtack />}
         </Button>
+        <ButtonGroup size="sm" className="comparison-buttons">
+          <Button
+            variant={isLeftNode ? "warning" : "outline-warning"}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleLeftNode();
+            }}
+            title="Set as left comparison node"
+          >
+            Left
+          </Button>
+          <Button
+            variant={isRightNode ? "primary" : "outline-primary"}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleRightNode();
+            }}
+            title="Set as right comparison node"
+          >
+            Right
+          </Button>
+        </ButtonGroup>
       </div>
       {isExpanded && (
         <div className="node-details-body">
@@ -141,6 +174,8 @@ export function NodeDetailsPanel({
   onCenterNode,
   changeGraph,
   onCondensedRetrievalDrillthrough,
+  comparisonState,
+  setComparisonState,
 }: NodeDetailsPanelProps) {
   const currentNodeRef = useRef<HTMLDivElement>(null);
 
@@ -154,6 +189,20 @@ export function NodeDetailsPanel({
     .filter((n): n is D3Node => n !== undefined);
 
   const canPin = state.pinnedNodeIds.length < MAX_PINNED_NODES;
+
+  const toggleLeftNode = (nodeId: number) => {
+    setComparisonState((prev) => ({
+      ...prev,
+      leftNodeId: prev.leftNodeId === nodeId ? null : nodeId,
+    }));
+  };
+
+  const toggleRightNode = (nodeId: number) => {
+    setComparisonState((prev) => ({
+      ...prev,
+      rightNodeId: prev.rightNodeId === nodeId ? null : nodeId,
+    }));
+  };
 
   const handlePin = (nodeId: number) => {
     setState((prev) => ({
@@ -221,6 +270,10 @@ export function NodeDetailsPanel({
             onHeaderClick={() => handleHeaderClick(currentNode.id)}
             changeGraph={changeGraph}
             onCondensedRetrievalDrillthrough={onCondensedRetrievalDrillthrough}
+            isLeftNode={comparisonState.leftNodeId === currentNode.id}
+            isRightNode={comparisonState.rightNodeId === currentNode.id}
+            onToggleLeftNode={() => toggleLeftNode(currentNode.id)}
+            onToggleRightNode={() => toggleRightNode(currentNode.id)}
           />
         </div>
       )}
@@ -247,6 +300,10 @@ export function NodeDetailsPanel({
                 onCondensedRetrievalDrillthrough={
                   onCondensedRetrievalDrillthrough
                 }
+                isLeftNode={comparisonState.leftNodeId === node.id}
+                isRightNode={comparisonState.rightNodeId === node.id}
+                onToggleLeftNode={() => toggleLeftNode(node.id)}
+                onToggleRightNode={() => toggleRightNode(node.id)}
               />
             </div>
           ))}
