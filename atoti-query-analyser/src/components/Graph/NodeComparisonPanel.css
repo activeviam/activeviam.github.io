@@ -72,21 +72,34 @@
   word-break: break-word;
 }
 
+/* Cell-based aligned rows */
+.comparison-cell {
+  padding: 4px 10px;
+  min-height: 1.5em;
+}
+
+.location-hierarchy-cell {
+  font-weight: 600;
+  background: rgba(245, 225, 205, 0.3);
+}
+
+.location-level-cell {
+  padding-left: 20px;
+}
+
 /* Diff colors */
 .diff-same {
   color: #000;
 }
 
-.diff-left-only {
+.diff-left-only,
+.diff-left-different {
   color: #d97706;
 }
 
-.diff-right-only {
+.diff-right-only,
+.diff-right-different {
   color: #2563eb;
-}
-
-.diff-different {
-  color: #dc2626;
 }
 
 .diff-na {
@@ -94,47 +107,7 @@
   font-style: italic;
 }
 
-/* Lists for array values */
-.comparison-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.comparison-list li {
-  padding: 2px 0;
-}
-
-/* Location display */
-.location-list {
-  margin: 0;
-}
-
-.location-item {
-  margin-bottom: 8px;
-}
-
-.location-item:last-child {
-  margin-bottom: 0;
-}
-
-.location-key {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 2px;
-}
-
-.location-levels-list {
-  list-style: none;
-  padding-left: 12px;
-  margin: 0;
-  border-left: 2px solid rgba(200, 200, 200, 0.4);
-}
-
-.location-levels-list li {
-  padding: 1px 0;
-}
-
+/* Level display */
 .level-index {
   color: #9ca3af;
   font-size: 0.75rem;

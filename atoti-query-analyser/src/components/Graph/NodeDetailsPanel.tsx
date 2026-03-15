@@ -190,17 +190,45 @@ export function NodeDetailsPanel({
 
   const canPin = state.pinnedNodeIds.length < MAX_PINNED_NODES;
 
+  const pinNodeIfNeeded = (nodeId: number) => {
+    setState((prevState) => {
+      // Already pinned, no change needed
+      if (prevState.pinnedNodeIds.includes(nodeId)) {
+        return prevState;
+      }
+      // Can't pin more
+      if (prevState.pinnedNodeIds.length >= MAX_PINNED_NODES) {
+        return prevState;
+      }
+      return {
+        ...prevState,
+        currentNodeId:
+          prevState.currentNodeId === nodeId ? null : prevState.currentNodeId,
+        pinnedNodeIds: [nodeId, ...prevState.pinnedNodeIds],
+        expandedNodeIds: new Set([...prevState.expandedNodeIds, nodeId]),
+      };
+    });
+  };
+
   const toggleLeftNode = (nodeId: number) => {
+    const isSelecting = comparisonState.leftNodeId !== nodeId;
+    if (isSelecting) {
+      pinNodeIfNeeded(nodeId);
+    }
     setComparisonState((prev) => ({
       ...prev,
-      leftNodeId: prev.leftNodeId === nodeId ? null : nodeId,
+      leftNodeId: isSelecting ? nodeId : null,
     }));
   };
 
   const toggleRightNode = (nodeId: number) => {
+    const isSelecting = comparisonState.rightNodeId !== nodeId;
+    if (isSelecting) {
+      pinNodeIfNeeded(nodeId);
+    }
     setComparisonState((prev) => ({
       ...prev,
-      rightNodeId: prev.rightNodeId === nodeId ? null : nodeId,
+      rightNodeId: isSelecting ? nodeId : null,
     }));
   };
 

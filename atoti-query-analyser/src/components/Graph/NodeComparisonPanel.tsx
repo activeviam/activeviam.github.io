@@ -5,7 +5,6 @@ import {
   compareNodes,
   ArrayDiffItem,
   LocationDiffItem,
-  LevelDiffItem,
   ScalarDiffResult,
   DiffStatus,
 } from "../../library/comparison/nodeComparison";
@@ -34,7 +33,7 @@ function getNodeLabel(node: D3Node): string {
   return `${metadata.$kind}#${metadata.retrievalId} (${elapsed}ms)`;
 }
 
-function getDiffClass(status: DiffStatus): string {
+function getDiffClass(status: DiffStatus, side?: "left" | "right"): string {
   switch (status) {
     case "same":
       return "diff-same";
@@ -43,7 +42,8 @@ function getDiffClass(status: DiffStatus): string {
     case "right-only":
       return "diff-right-only";
     case "different":
-      return "diff-different";
+      // When values differ, use the side-specific color
+      return side === "left" ? "diff-left-different" : "diff-right-different";
     case "na":
       return "diff-na";
   }
@@ -56,135 +56,93 @@ function ScalarRow({
   label: string;
   result: ScalarDiffResult;
 }) {
-  const leftClass = getDiffClass(
+  const leftStatus =
     result.leftValue === null
       ? "na"
       : result.status === "same"
         ? "same"
         : result.status === "left-only"
           ? "left-only"
-          : "different",
-  );
-  const rightClass = getDiffClass(
+          : "different";
+  const rightStatus =
     result.rightValue === null
       ? "na"
       : result.status === "same"
         ? "same"
         : result.status === "right-only"
           ? "right-only"
-          : "different",
-  );
+          : "different";
 
   return (
     <tr>
       <td className="comparison-attr">{label}</td>
-      <td className={`comparison-value ${leftClass}`}>
+      <td className={`comparison-value ${getDiffClass(leftStatus, "left")}`}>
         {result.leftValue ?? <span className="diff-na">N/A</span>}
       </td>
-      <td className={`comparison-value ${rightClass}`}>
+      <td className={`comparison-value ${getDiffClass(rightStatus, "right")}`}>
         {result.rightValue ?? <span className="diff-na">N/A</span>}
       </td>
     </tr>
   );
 }
 
-function ArrayRow({ label, items }: { label: string; items: ArrayDiffItem[] }) {
-  // Split items for left and right columns
-  const leftItems = items.filter((i) => i.status !== "right-only");
-  const rightItems = items.filter((i) => i.status !== "left-only");
-
-  // Sort: common items first (alphabetically), then unique items (alphabetically)
-  const sortItems = (arr: ArrayDiffItem[]) => {
-    const common = arr.filter((i) => i.status === "same");
-    const unique = arr.filter((i) => i.status !== "same");
-    return [...common, ...unique];
-  };
-
-  const sortedLeft = sortItems(leftItems);
-  const sortedRight = sortItems(rightItems);
-
-  return (
-    <tr>
-      <td className="comparison-attr">{label}</td>
-      <td className="comparison-value">
-        {sortedLeft.length === 0 ? (
-          <span className="diff-na">N/A</span>
-        ) : (
-          <ul className="comparison-list">
-            {sortedLeft.map((item, i) => (
-              <li key={i} className={getDiffClass(item.status)}>
-                {item.value}
-              </li>
-            ))}
-          </ul>
-        )}
-      </td>
-      <td className="comparison-value">
-        {sortedRight.length === 0 ? (
-          <span className="diff-na">N/A</span>
-        ) : (
-          <ul className="comparison-list">
-            {sortedRight.map((item, i) => (
-              <li key={i} className={getDiffClass(item.status)}>
-                {item.value}
-              </li>
-            ))}
-          </ul>
-        )}
-      </td>
-    </tr>
-  );
+interface AlignedRow {
+  leftValue: string | null;
+  leftStatus: DiffStatus;
+  rightValue: string | null;
+  rightStatus: DiffStatus;
 }
 
-function LevelsList({
-  levels,
-  side,
-}: {
-  levels: LevelDiffItem[];
-  side: "left" | "right";
-}) {
-  // Filter levels that exist on this side
-  const visibleLevels = levels.filter((level) =>
-    side === "left" ? level.leftPath !== null : level.rightPath !== null,
-  );
+function buildAlignedArrayRows(items: ArrayDiffItem[]): AlignedRow[] {
+  // Sort items: same first (alphabetically), then left-only, then right-only
+  const same = items
+    .filter((i) => i.status === "same")
+    .sort((a, b) => a.value.localeCompare(b.value));
+  const leftOnly = items
+    .filter((i) => i.status === "left-only")
+    .sort((a, b) => a.value.localeCompare(b.value));
+  const rightOnly = items
+    .filter((i) => i.status === "right-only")
+    .sort((a, b) => a.value.localeCompare(b.value));
 
-  if (visibleLevels.length === 0) {
-    return null;
+  const rows: AlignedRow[] = [];
+
+  // Same items appear on both sides
+  for (const item of same) {
+    rows.push({
+      leftValue: item.value,
+      leftStatus: "same",
+      rightValue: item.value,
+      rightStatus: "same",
+    });
   }
 
-  return (
-    <ul className="location-levels-list">
-      {visibleLevels.map((level) => {
-        const path = side === "left" ? level.leftPath : level.rightPath;
-        const levelClass = getDiffClass(
-          level.status === "same"
-            ? "same"
-            : level.status === (side === "left" ? "left-only" : "right-only")
-              ? side === "left"
-                ? "left-only"
-                : "right-only"
-              : "different",
-        );
-        return (
-          <li key={level.levelName} className={levelClass}>
-            <span className="level-index">[{level.levelIndex}]</span>
-            <span className="level-name">{level.levelName}:</span>{" "}
-            <span className="level-path">{path}</span>
-          </li>
-        );
-      })}
-    </ul>
-  );
+  // Left-only and right-only items - interleave or stack
+  const maxUnique = Math.max(leftOnly.length, rightOnly.length);
+  for (let i = 0; i < maxUnique; i++) {
+    const left = leftOnly[i];
+    const right = rightOnly[i];
+    rows.push({
+      leftValue: left?.value ?? null,
+      leftStatus: left ? "left-only" : "na",
+      rightValue: right?.value ?? null,
+      rightStatus: right ? "right-only" : "na",
+    });
+  }
+
+  return rows;
 }
 
-function LocationRow({
+function ArrayRows({
   label,
   items,
 }: {
   label: string;
-  items: LocationDiffItem[];
+  items: ArrayDiffItem[];
 }) {
-  if (items.length === 0) {
+  const rows = buildAlignedArrayRows(items);
+
+  if (rows.length === 0) {
     return (
       <tr>
         <td className="comparison-attr">{label}</td>
@@ -199,59 +157,190 @@ function LocationRow({
   }
 
   return (
-    <tr>
-      <td className="comparison-attr">{label}</td>
-      <td className="comparison-value">
-        <ul className="comparison-list location-list">
-          {items.map((item) => {
-            // Skip hierarchies that only exist on the right
-            if (item.status === "right-only") {
-              return null;
-            }
-            const headerClass = getDiffClass(
-              item.status === "same"
-                ? "same"
-                : item.status === "left-only"
-                  ? "left-only"
-                  : "different",
-            );
-            return (
-              <li key={item.key} className="location-item">
-                <span className={`location-key ${headerClass}`}>
-                  {item.key}
-                </span>
-                <LevelsList levels={item.levels} side="left" />
-              </li>
-            );
-          })}
-        </ul>
-      </td>
-      <td className="comparison-value">
-        <ul className="comparison-list location-list">
-          {items.map((item) => {
-            // Skip hierarchies that only exist on the left
-            if (item.status === "left-only") {
-              return null;
-            }
-            const headerClass = getDiffClass(
-              item.status === "same"
-                ? "same"
-                : item.status === "right-only"
-                  ? "right-only"
-                  : "different",
-            );
-            return (
-              <li key={item.key} className="location-item">
-                <span className={`location-key ${headerClass}`}>
-                  {item.key}
-                </span>
-                <LevelsList levels={item.levels} side="right" />
-              </li>
-            );
-          })}
-        </ul>
-      </td>
-    </tr>
+    <>
+      {rows.map((row, i) => (
+        <tr key={i}>
+          {i === 0 && (
+            <td className="comparison-attr" rowSpan={rows.length}>
+              {label}
+            </td>
+          )}
+          <td
+            className={`comparison-value comparison-cell ${getDiffClass(row.leftStatus, "left")}`}
+          >
+            {row.leftValue ?? ""}
+          </td>
+          <td
+            className={`comparison-value comparison-cell ${getDiffClass(row.rightStatus, "right")}`}
+          >
+            {row.rightValue ?? ""}
+          </td>
+        </tr>
+      ))}
+    </>
+  );
+}
+
+interface LocationAlignedRow {
+  type: "hierarchy" | "level";
+  // For hierarchy rows
+  hierarchyKey?: string;
+  leftHierarchyStatus?: DiffStatus;
+  rightHierarchyStatus?: DiffStatus;
+  // For level rows
+  levelIndex?: number;
+  leftLevelName?: string | null;
+  leftLevelPath?: string | null;
+  leftLevelStatus?: DiffStatus;
+  rightLevelName?: string | null;
+  rightLevelPath?: string | null;
+  rightLevelStatus?: DiffStatus;
+}
+
+function buildAlignedLocationRows(
+  items: LocationDiffItem[],
+): LocationAlignedRow[] {
+  const rows: LocationAlignedRow[] = [];
+
+  for (const item of items) {
+    // Add hierarchy header row
+    const leftHierarchyStatus: DiffStatus =
+      item.status === "right-only"
+        ? "na"
+        : item.status === "same"
+          ? "same"
+          : item.status === "left-only"
+            ? "left-only"
+            : "different";
+    const rightHierarchyStatus: DiffStatus =
+      item.status === "left-only"
+        ? "na"
+        : item.status === "same"
+          ? "same"
+          : item.status === "right-only"
+            ? "right-only"
+            : "different";
+
+    rows.push({
+      type: "hierarchy",
+      hierarchyKey: item.key,
+      leftHierarchyStatus,
+      rightHierarchyStatus,
+    });
+
+    // Add level rows - aligned by level index
+    for (const level of item.levels) {
+      const leftLevelStatus: DiffStatus =
+        level.leftPath === null
+          ? "na"
+          : level.status === "same"
+            ? "same"
+            : level.status === "left-only"
+              ? "left-only"
+              : "different";
+      const rightLevelStatus: DiffStatus =
+        level.rightPath === null
+          ? "na"
+          : level.status === "same"
+            ? "same"
+            : level.status === "right-only"
+              ? "right-only"
+              : "different";
+
+      rows.push({
+        type: "level",
+        levelIndex: level.levelIndex,
+        leftLevelName: level.leftPath !== null ? level.levelName : null,
+        leftLevelPath: level.leftPath,
+        leftLevelStatus,
+        rightLevelName: level.rightPath !== null ? level.levelName : null,
+        rightLevelPath: level.rightPath,
+        rightLevelStatus,
+      });
+    }
+  }
+
+  return rows;
+}
+
+function LocationRows({
+  label,
+  items,
+}: {
+  label: string;
+  items: LocationDiffItem[];
+}) {
+  const rows = buildAlignedLocationRows(items);
+
+  if (rows.length === 0) {
+    return (
+      <tr>
+        <td className="comparison-attr">{label}</td>
+        <td className="comparison-value">
+          <span className="diff-na">N/A</span>
+        </td>
+        <td className="comparison-value">
+          <span className="diff-na">N/A</span>
+        </td>
+      </tr>
+    );
+  }
+
+  return (
+    <>
+      {rows.map((row, i) => (
+        <tr key={i}>
+          {i === 0 && (
+            <td className="comparison-attr" rowSpan={rows.length}>
+              {label}
+            </td>
+          )}
+          {row.type === "hierarchy" ? (
+            <>
+              <td
+                className={`comparison-value comparison-cell location-hierarchy-cell ${getDiffClass(row.leftHierarchyStatus!, "left")}`}
+              >
+                {row.leftHierarchyStatus !== "na" ? row.hierarchyKey : ""}
+              </td>
+              <td
+                className={`comparison-value comparison-cell location-hierarchy-cell ${getDiffClass(row.rightHierarchyStatus!, "right")}`}
+              >
+                {row.rightHierarchyStatus !== "na" ? row.hierarchyKey : ""}
+              </td>
+            </>
+          ) : (
+            <>
+              <td
+                className={`comparison-value comparison-cell location-level-cell ${getDiffClass(row.leftLevelStatus!, "left")}`}
+              >
+                {row.leftLevelName !== null && (
+                  <>
+                    <span className="level-index">[{row.levelIndex}]</span>
+                    <span className="level-name">
+                      {row.leftLevelName}:
+                    </span>{" "}
+                    <span className="level-path">{row.leftLevelPath}</span>
+                  </>
+                )}
+              </td>
+              <td
+                className={`comparison-value comparison-cell location-level-cell ${getDiffClass(row.rightLevelStatus!, "right")}`}
+              >
+                {row.rightLevelName !== null && (
+                  <>
+                    <span className="level-index">[{row.levelIndex}]</span>
+                    <span className="level-name">
+                      {row.rightLevelName}:
+                    </span>{" "}
+                    <span className="level-path">{row.rightLevelPath}</span>
+                  </>
+                )}
+              </td>
+            </>
+          )}
+        </tr>
+      ))}
+    </>
   );
 }
 
@@ -345,8 +434,8 @@ export function NodeComparisonPanel({
             </thead>
             <tbody>
               <ScalarRow label="Type" result={comparison!.type} />
-              <LocationRow label="Location" items={comparison!.location} />
-              <ArrayRow label="Measures" items={comparison!.measures} />
+              <LocationRows label="Location" items={comparison!.location} />
+              <ArrayRows label="Measures" items={comparison!.measures} />
               <ScalarRow label="Filter ID" result={comparison!.filterId} />
               <ScalarRow label="Provider" result={comparison!.provider} />
               <ScalarRow
