@@ -95,6 +95,7 @@ export function Graph({
   const selectedNodeId = nodeDetailsState.currentNodeId;
   const [epoch, setEpoch] = useState(0);
 
+  const [invertLayout, setInvertLayout] = useState(true);
   const [condenseFastRetrievalsFlag, setCondenseFastRetrievalsFlag] =
     useState(false);
   const [fastRetrievalMaxElapsedTimeMs, setFastRetrievalMaxElapsedTimeMs] =
@@ -416,13 +417,14 @@ export function Graph({
       effectiveData.graph,
       selectedRetrievals || effectiveData.selection,
       edgeSelection,
+      invertLayout,
     );
 
     setNodes(d3data.nodes);
     setLinks(d3data.links);
     setEpoch((e) => e + 1);
     setNodeDetailsState(initialNodeDetailsState);
-  }, [effectiveData, selectedRetrievals, edgeSelection]);
+  }, [effectiveData, selectedRetrievals, edgeSelection, invertLayout]);
 
   const onUntangle = () => {
     untangle({ nodes, links });
@@ -548,6 +550,12 @@ export function Graph({
                 <Button onClick={() => zoomScaleBy(0.5)}>Zoom out</Button>
               </ButtonGroup>
               <Button onClick={onUntangle}>Untangle</Button>
+              <Form.Check
+                type="switch"
+                checked={invertLayout}
+                onChange={(e) => setInvertLayout(e.target.checked)}
+                label="Show requested values first"
+              />
               <h5>Fast retrieval condensation</h5>
               <Form>
                 <Form.Check
