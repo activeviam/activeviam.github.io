@@ -1,0 +1,136 @@
+.node-comparison-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.comparison-selectors {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.comparison-selector {
+  flex: 1;
+}
+
+.comparison-selector .form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.comparison-empty {
+  padding: 24px 12px;
+  text-align: center;
+  color: #666;
+}
+
+.comparison-empty p {
+  margin: 0;
+}
+
+.comparison-table-wrapper {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 8px 10px;
+  border: 1px solid rgba(200, 200, 200, 0.3);
+  vertical-align: top;
+}
+
+.comparison-table thead {
+  position: sticky;
+  top: 0;
+  background: rgb(245, 225, 205);
+  z-index: 1;
+}
+
+.comparison-table th {
+  font-weight: 600;
+  text-align: left;
+}
+
+.comparison-table .comparison-attr {
+  width: 100px;
+  min-width: 100px;
+  font-weight: 500;
+  background: rgba(245, 225, 205, 0.5);
+}
+
+.comparison-table .comparison-value {
+  word-break: break-word;
+}
+
+/* Cell-based aligned rows */
+.comparison-cell {
+  padding: 4px 10px;
+  min-height: 1.5em;
+}
+
+.location-hierarchy-cell {
+  font-weight: 600;
+  background: rgba(245, 225, 205, 0.3);
+}
+
+.location-level-cell {
+  padding-left: 20px;
+}
+
+/* Diff colors */
+.diff-same {
+  color: #000;
+}
+
+.diff-left-only,
+.diff-left-different {
+  color: #d97706;
+}
+
+.diff-right-only,
+.diff-right-different {
+  color: #2563eb;
+}
+
+.diff-na {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Level display */
+.level-index {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  margin-right: 4px;
+}
+
+.level-name {
+  font-weight: 500;
+}
+
+.level-path {
+  font-family: monospace;
+  font-size: 0.8rem;
+}
+
+/* Comparison selection buttons in NodeDetailsPanel */
+.comparison-buttons {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.comparison-buttons .btn {
+  padding: 2px 8px;
+  font-size: 0.7rem;
+}

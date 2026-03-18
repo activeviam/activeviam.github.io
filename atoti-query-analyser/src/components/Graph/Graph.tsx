@@ -19,6 +19,7 @@ import { Node } from "./Node";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
 import {
   FaClipboardList,
+  FaColumns,
   FaFilter,
   FaInfoCircle,
   FaTimes,
@@ -28,6 +29,11 @@ import {
   NodeDetailsState,
   initialNodeDetailsState,
 } from "./NodeDetailsPanel";
+import {
+  NodeComparisonPanel,
+  ComparisonState,
+  initialComparisonState,
+} from "./NodeComparisonPanel";
 import { Menu } from "./Menu";
 import { QueryFiltersPanel } from "./QueryFiltersPanel";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
@@ -75,8 +81,11 @@ export function Graph({
   changeGraph: (queryId: number) => void;
 }) {
   const [activePanel, setActivePanel] = useState<
-    "filters" | "queryFilters" | "details" | null
+    "filters" | "queryFilters" | "details" | "comparison" | null
   >(null);
+  const [comparisonState, setComparisonState] = useState<ComparisonState>(
+    initialComparisonState,
+  );
   const [selectedMeasures, setSelectedMeasures] = useState<Measure[]>([]);
   const [nodes, setNodes] = useState<D3Node[]>([]);
   const [links, setLinks] = useState<D3Link[]>([]);
@@ -469,6 +478,16 @@ export function Graph({
         >
           <FaInfoCircle size={20} />
         </button>
+        <button
+          className={`activity-bar-button ${activePanel === "comparison" ? "active" : ""}`}
+          onClick={() =>
+            setActivePanel(activePanel === "comparison" ? null : "comparison")
+          }
+          title="Node Comparison"
+          aria-label="Toggle node comparison panel"
+        >
+          <FaColumns size={20} />
+        </button>
       </div>
 
       {/* Graph container */}
@@ -630,6 +649,31 @@ export function Graph({
               onCondensedRetrievalDrillthrough={
                 onCondensedRetrievalDrillthrough
               }
+              comparisonState={comparisonState}
+              setComparisonState={setComparisonState}
+            />
+          </div>
+        </div>
+
+        {/* Node Comparison Sidebar Drawer */}
+        <div
+          className={`sidebar-drawer comparison-drawer ${activePanel === "comparison" ? "open" : ""}`}
+        >
+          <div className="sidebar-drawer-header">
+            <h5>Node Comparison</h5>
+            <button
+              onClick={() => setActivePanel(null)}
+              aria-label="Close panel"
+            >
+              <FaTimes />
+            </button>
+          </div>
+          <div className="sidebar-drawer-content">
+            <NodeComparisonPanel
+              nodes={nodes}
+              pinnedNodeIds={nodeDetailsState.pinnedNodeIds}
+              comparisonState={comparisonState}
+              setComparisonState={setComparisonState}
             />
           </div>
         </div>

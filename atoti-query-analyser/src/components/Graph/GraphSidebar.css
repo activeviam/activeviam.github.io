@@ -130,3 +130,8 @@
 .sidebar-drawer.details-drawer {
   width: 450px;
 }
+
+/* Node Comparison drawer needs even more width */
+.sidebar-drawer.comparison-drawer {
+  width: 800px;
+}
