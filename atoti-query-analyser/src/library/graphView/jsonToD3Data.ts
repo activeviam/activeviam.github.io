@@ -42,6 +42,7 @@ function getNodes(
   graph: RetrievalGraph,
   info: { vertexSelection: VertexSelection; edgeSelection: EdgeSelection },
   depths: Map<RetrievalVertex, number>,
+  invertLayout: boolean,
 ): IntermediateD3Node[] {
   // Creates a Set containing all nodes present in the dependencies, then converts
   // it to an array and map each node number to its node object.
@@ -60,6 +61,8 @@ function getNodes(
         ).length === 0,
     ),
   );
+
+  const maxDepth = Math.max(...Array.from(depths.values()));
 
   return Array.from(graph.getVertices())
     .filter(
@@ -83,7 +86,9 @@ function getNodes(
       const realElapsed = realEnd - realStart;
 
       const radius = computeRadius(realElapsed);
-      const yFixed = requireNonNull(depths.get(vertex)) * 150;
+      const depth = requireNonNull(depths.get(vertex));
+      const effectiveDepth = invertLayout ? maxDepth - depth : depth;
+      const yFixed = effectiveDepth * 150;
       const name =
         kind === AggregateRetrievalKind
           ? `${retrievalId}`
@@ -189,10 +194,11 @@ export function buildD3(
   graph: RetrievalGraph,
   vertexSelection: VertexSelection,
   edgeSelection: EdgeSelection,
+  invertLayout: boolean,
 ) {
   const info = { vertexSelection, edgeSelection };
   const depths = nodeDepths(graph, vertexSelection);
-  const nodes = getNodes(graph, info, depths);
+  const nodes = getNodes(graph, info, depths, invertLayout);
   const links = getLinks(graph, info);
   const clusters = addClustersToNodes(graph, vertexSelection);
   nodes.forEach((node) => {
