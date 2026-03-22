@@ -4,6 +4,7 @@ import { Filter } from "../json/filter";
 import { QuerySummary } from "../json/querySummary";
 import { validateJsonQueryPlan } from "../json/jsonQueryPlan";
 import { buildGraph } from "../../graphProcessors/buildGraph";
+import { computeParentMeasures } from "../../graphProcessors/computeParentMeasures";
 import { setSimulatedTimingInfo } from "../../graphProcessors/fillTimingInfo";
 
 export interface QueryPlan {
@@ -75,6 +76,7 @@ export function preprocessQueryPlan(json: unknown): QueryPlan[] {
           setSimulatedTimingInfo(graph);
         }
         preprocessResultSize(graph);
+        computeParentMeasures(graph);
 
         return {
           planInfo,
