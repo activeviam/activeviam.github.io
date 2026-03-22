@@ -19,7 +19,7 @@ function getNodeMeasures(retrieval: ARetrieval): string[] {
 
 function isGeneratedNode(retrieval: ARetrieval): boolean {
   const measures = getNodeMeasures(retrieval);
-  return measures.length > 0 && measures.every((m) => m.includes("_#_"));
+  return measures.length > 0 && measures.every((m) => m.includes("_#_") || m.startsWith("__hidden_"));
 }
 
 function visitAndTagParentMeasures(
