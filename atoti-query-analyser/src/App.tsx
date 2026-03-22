@@ -20,6 +20,7 @@ import { buildDefaultSelection } from "./library/graphProcessors/selection";
 import { PassAndClusterChooser } from "./components/NavBar/PassAndClusterChooser";
 import { Summary } from "./components/Summary/Summary";
 import { Graph } from "./components/Graph/Graph";
+import { Partitions } from "./components/Partitions/Partitions";
 import { Timeline } from "./components/Timeline/Timeline";
 import { useQueryPlanWorker, WorkerResult } from "./workers/useQueryPlanWorker";
 
@@ -252,6 +253,17 @@ export function App(): JSX.Element {
       renderStub()
     );
 
+  const renderPartitions = () =>
+    queryPlans ? (
+      <Partitions
+        query={queryPlans[currentQueryId]}
+        selection={selections[currentQueryId]}
+        changeGraph={changeGraph}
+      />
+    ) : (
+      renderStub()
+    );
+
   const renderTimeline = () =>
     queryPlans ? <Timeline plan={queryPlans[currentQueryId]} /> : renderStub();
 
@@ -272,6 +284,7 @@ export function App(): JSX.Element {
             {route === "passGraph" && renderPassGraph()}
             {route === "summary" && renderSummary()}
             {route === "graph" && renderGraph()}
+            {route === "partitions" && renderPartitions()}
             {route === "timeline" && renderTimeline()}
           </main>
         </ErrorBoundary>

@@ -19,17 +19,22 @@ export const VirtualRetrievalKind = "VirtualRetrieval" as const;
 export const AggregateRetrievalKind = "AggregateRetrieval" as const;
 export const ExternalRetrievalKind = "ExternalRetrieval" as const;
 export const CondensedRetrievalKind = "CondensedRetrieval" as const;
+export const PartitionCondensedRetrievalKind =
+  "PartitionCondensedRetrieval" as const;
 
 type TVirtualRetrievalKind = typeof VirtualRetrievalKind;
 type TAggregateRetrievalKind = typeof AggregateRetrievalKind;
 type TExternalRetrievalKind = typeof ExternalRetrievalKind;
 type TCondensedRetrievalKind = typeof CondensedRetrievalKind;
+type TPartitionCondensedRetrieval = typeof PartitionCondensedRetrievalKind;
+
 
 type RetrievalKind =
   | TVirtualRetrievalKind
   | TExternalRetrievalKind
   | TAggregateRetrievalKind
-  | TCondensedRetrievalKind;
+  | TCondensedRetrievalKind
+  | TPartitionCondensedRetrieval;
 
 export interface ARetrieval {
   $kind: RetrievalKind;
@@ -69,10 +74,18 @@ export type CondensedRetrieval = ARetrieval & {
   underlyingRetrievals: ARetrieval[];
 };
 
+export type PartitionCondensedRetrieval = ARetrieval & {
+  $kind: TPartitionCondensedRetrieval;
+  underlyingRetrievals: ARetrieval[];
+  partitioning: string;
+};
+
+
 export class RetrievalVertex extends Vertex<ARetrieval> {}
 
 export type RetrievalEdgeMetadata = {
   criticalScore: number;
+  hiddenMerger?: ARetrieval;
 };
 
 export class RetrievalEdge extends Edge<

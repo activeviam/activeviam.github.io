@@ -42,6 +42,7 @@ const NODE_COLOR_MAP = new Map([
   ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#9c755f"],
   ["RangeSharingLinearPostProcessorAggregatesRetrieval", "#bab0ab"],
   ["CondensedRetrieval", "#ffff00"],
+  ["PartitionCondensedRetrieval", "#999999"],
 ]);
 
 /**
@@ -118,6 +119,35 @@ function enterNode(
     .attr("dx", "-0.65em");
 }
 
+/**
+ * Curried version of enterNode that accepts a custom color function.
+ * @param colorFn - Function to determine node fill color
+ * @returns An enter function for D3 selections
+ */
+function enterNodeWithColor(colorFn: (d: D3Node) => string) {
+  return (
+    selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>,
+  ) => {
+    selection
+      .select<SVGCircleElement>("circle")
+      .attr("r", computeRadius)
+      .style("fill", colorFn)
+      .style("--node-stroke", (d) => outlineColor(d));
+    selection
+      .select<SVGRectElement>("rect")
+      .attr("width", (d) => 2 * computeRadius(d))
+      .attr("height", (d) => 2 * computeRadius(d))
+      .attr("rx", "3")
+      .style("fill", colorFn)
+      .style("--node-stroke", (d) => outlineColor(d));
+
+    selection
+      .select<SVGTextElement>("text")
+      .attr("dy", ".35em")
+      .attr("dx", "-0.65em");
+  };
+}
+
 function rectTranslate(d: D3Node) {
   const r = computeRadius(d);
   return `translate(${(d.x || 0) - r} ${(d.y || 0) - r})`;
@@ -140,6 +170,11 @@ function updateNode(
     .style("--node-stroke", (d) => outlineColor(d));
 
   selection
+    .select<SVGPolygonElement>("polygon")
+    .attr("transform", (d) => `translate(${d.x || 0} ${d.y || 0})`)
+    .style("--node-stroke", (d) => outlineColor(d));
+
+  selection
     .select<SVGTextElement>("text")
     .attr("transform", (d) => `translate(${d.x || 0} ${d.y || 0})`);
 }
@@ -154,4 +189,87 @@ function updateGraph(
   selection.selectAll<SVGLineElement, D3Link>(".link").call(updateLink);
 }
 
-export { updateGraph, enterLink, updateLink, enterNode, updateNode };
+/**
+ * Compute the points for a hexagon SVG polygon.
+ * @param radius - The radius of the hexagon (distance from center to vertex)
+ * @returns A string suitable for SVG polygon points attribute
+ */
+function computeHexagonPoints(radius: number): string {
+  const points: string[] = [];
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI / 3) * i - Math.PI / 2; // Start from top
+    const x = radius * Math.cos(angle);
+    const y = radius * Math.sin(angle);
+    points.push(`${x},${y}`);
+  }
+  return points.join(" ");
+}
+
+/**
+ * Setup properties of the SVG element corresponding to a hexagon graph vertex.
+ */
+function enterHexagonNode(
+  selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>,
+) {
+  selection
+    .select<SVGPolygonElement>("polygon")
+    .attr("points", (d) => computeHexagonPoints(computeRadius(d)))
+    .style("fill", (d) => backgroundColor(d))
+    .style("--node-stroke", (d) => outlineColor(d));
+
+  selection
+    .select<SVGTextElement>("text")
+    .attr("dy", ".35em")
+    .attr("dx", "-0.65em");
+}
+
+/**
+ * Curried version of enterHexagonNode that accepts a custom color function.
+ * @param colorFn - Function to determine node fill color
+ * @returns An enter function for D3 selections
+ */
+function enterHexagonNodeWithColor(colorFn: (d: D3Node) => string) {
+  return (
+    selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>,
+  ) => {
+    selection
+      .select<SVGPolygonElement>("polygon")
+      .attr("points", (d) => computeHexagonPoints(computeRadius(d)))
+      .style("fill", colorFn)
+      .style("--node-stroke", (d) => outlineColor(d));
+
+    selection
+      .select<SVGTextElement>("text")
+      .attr("dy", ".35em")
+      .attr("dx", "-0.65em");
+  };
+}
+
+/**
+ * Update properties of the SVG element corresponding to a hexagon graph vertex.
+ */
+function updateHexagonNode(
+  selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>,
+) {
+  selection
+    .select<SVGPolygonElement>("polygon")
+    .attr("transform", (d) => `translate(${d.x || 0} ${d.y || 0})`)
+    .style("--node-stroke", (d) => outlineColor(d));
+
+  selection
+    .select<SVGTextElement>("text")
+    .attr("transform", (d) => `translate(${d.x || 0} ${d.y || 0})`);
+}
+
+export {
+  updateGraph,
+  enterLink,
+  updateLink,
+  enterNode,
+  enterNodeWithColor,
+  updateNode,
+  computeHexagonPoints,
+  enterHexagonNode,
+  enterHexagonNodeWithColor,
+  updateHexagonNode,
+};

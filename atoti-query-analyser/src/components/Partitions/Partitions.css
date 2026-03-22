@@ -1,0 +1,41 @@
+.partitions-container {
+  position: relative;
+}
+
+.partitions-graph {
+  display: block;
+}
+
+.partitions-controls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
+/* Style for partition-condensed nodes */
+.node.partition-condensed polygon {
+  cursor: default;
+  stroke: var(--node-stroke);
+  stroke-width: 2px;
+}
+
+.node.partition-condensed text {
+  cursor: default;
+}
+
+/* Styles for links with hidden merger nodes */
+.link-group.has-merger .link {
+  stroke-dasharray: 8 4;
+  cursor: pointer;
+}
+
+.link-group.has-merger:hover .link {
+  stroke-width: 8;
+  filter: brightness(1.2);
+}
+
+.link-group.has-merger.selected .link {
+  stroke-width: 10;
+  filter: brightness(1.3);
+}

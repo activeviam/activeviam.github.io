@@ -25,7 +25,7 @@ export function NavBar({
 }) {
   return (
     <Navbar bg="dark" variant="dark">
-      <Navbar.Brand href="" className="ms-3">
+      <Navbar.Brand className="ms-3">
         QueryViz
       </Navbar.Brand>
       <Nav
@@ -47,6 +47,9 @@ export function NavBar({
         </Nav.Link>
         <Nav.Link href="" eventKey="graph">
           Graph
+        </Nav.Link>
+        <Nav.Link href="" eventKey="partitions">
+          Partitions
         </Nav.Link>
         <Nav.Link href="" eventKey="timeline">
           Timeline
