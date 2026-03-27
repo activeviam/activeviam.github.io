@@ -7,6 +7,7 @@ import {
   CondensedRetrieval,
   CondensedRetrievalKind,
 } from "../../library/dataStructures/json/retrieval";
+import { type as typeLabel } from "../../library/graphView/labels";
 import { ComparisonState } from "./NodeComparisonPanel";
 import "./NodeDetailsPanel.css";
 
@@ -38,7 +39,7 @@ interface NodeDetailsPanelProps {
 function getNodeLabel(node: D3Node): string {
   const { metadata } = node.details;
   const elapsed = Math.max(...node.details.elapsedTimes);
-  return `${metadata.$kind}#${metadata.retrievalId} (${elapsed}ms)`;
+  return `${typeLabel(metadata.type)} #${metadata.retrievalId} (${elapsed}ms)`;
 }
 
 function NodeAccordionItem({
