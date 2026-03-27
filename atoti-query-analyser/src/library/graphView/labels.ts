@@ -7,6 +7,9 @@ const TYPE_LABELS = new Map([
   ["PostProcessedResultsMerger", "Merger"],
   ["PrimitiveResultsMerger", "Merger"],
   ["RangeSharingPrimitiveAggregatesRetrieval", "RangeSharing"],
+  ["PartialPrimitiveAggregatesRetrieval", "Partial Retrieval"],
+  ["PrimitiveAnalysisAggregationRetrieval", "Primitive Procedure"],
+  ["BitmapPrimitiveAggregatesRetrieval", "Bitmap Retrieval"],
 ]);
 
 /**
