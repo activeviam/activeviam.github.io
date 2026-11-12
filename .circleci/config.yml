@@ -13,10 +13,13 @@ jobs:
           name: Install dependencies
           command: yarn install --cwd atoti-query-analyser
       - run:
-          name: Run unit tests
-          command: yarn --cwd atoti-query-analyser test:run
+          name: Run unit tests and check coverage thresholds
+          command: yarn --cwd atoti-query-analyser test:coverage
       - store_test_results:
           path: atoti-query-analyser/test-results
+      - store_artifacts:
+          path: atoti-query-analyser/coverage
+          destination: coverage
       # not saving the cache, as we leave it to the other job
   atoti_query_e2e:
     docker:

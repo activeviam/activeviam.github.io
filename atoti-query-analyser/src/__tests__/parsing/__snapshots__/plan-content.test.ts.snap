@@ -1,0 +1,579 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Query plan content > produces the expected graphs for 6.1-in-v1.txt 1`] = `
+[
+  {
+    "edgeCount": 1316,
+    "filterCount": 47,
+    "kinds": {
+      "AggregateRetrieval": 736,
+      "ExternalRetrieval": 1,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "GAQ_0",
+    "measureCount": 36,
+    "pivotId": "delta_store",
+    "types": {
+      "DatabaseRetrieval": 1,
+      "JITPrimitiveAggregatesRetrieval": 28,
+      "NoOpPrimitiveAggregatesRetrieval": 52,
+      "PostProcessedAggregatesRetrieval": 382,
+      "PostProcessedCacheRetrieval": 6,
+      "PrimitiveAnalysisAggregationRetrieval": 116,
+      "PrimitiveResultsMerger": 90,
+      "RangeSharingPrimitiveAggregatesRetrieval": 62,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 739,
+  },
+]
+`;
+
+exports[`Query plan content > produces the expected graphs for larger-distributed-query.json 1`] = `
+[
+  {
+    "edgeCount": 57,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 33,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SelectPass_0",
+    "measureCount": 6,
+    "pivotId": "AllData",
+    "types": {
+      "DistributedAggregatesRetrieval": 6,
+      "DistributedPostProcessedRetrieval": 9,
+      "NoOpPrimitiveAggregatesRetrieval": 3,
+      "PostProcessedAggregatesRetrieval": 3,
+      "PostProcessedResultsMerger": 9,
+      "PrimitiveResultsMerger": 3,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 35,
+  },
+  {
+    "edgeCount": 22,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 12,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SelectPass_0",
+    "measureCount": 5,
+    "pivotId": "Recommendation",
+    "types": {
+      "JITPrimitiveAggregatesRetrieval": 2,
+      "NoOpPrimitiveAggregatesRetrieval": 1,
+      "PostProcessedAggregatesRetrieval": 4,
+      "PostProcessedResultsMerger": 2,
+      "PrimitiveResultsMerger": 1,
+      "RangeSharingPrimitiveAggregatesRetrieval": 2,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 14,
+  },
+  {
+    "edgeCount": 51,
+    "filterCount": 3,
+    "kinds": {
+      "AggregateRetrieval": 30,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SelectPass_0",
+    "measureCount": 6,
+    "pivotId": "CompetitorPrice",
+    "types": {
+      "JITPrimitiveAggregatesRetrieval": 2,
+      "NoOpPrimitiveAggregatesRetrieval": 8,
+      "PostProcessedAggregatesRetrieval": 10,
+      "PostProcessedResultsMerger": 5,
+      "RangeSharingPrimitiveAggregatesRetrieval": 5,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 32,
+  },
+  {
+    "edgeCount": 5,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 3,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SelectPass_0",
+    "measureCount": 1,
+    "pivotId": "Sale",
+    "types": {
+      "JITPrimitiveAggregatesRetrieval": 1,
+      "PrimitiveResultsMerger": 1,
+      "RangeSharingPrimitiveAggregatesRetrieval": 1,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 5,
+  },
+  {
+    "edgeCount": 20,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 12,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SelectPass_0",
+    "measureCount": 3,
+    "pivotId": "SellingPrice",
+    "types": {
+      "JITPrimitiveAggregatesRetrieval": 1,
+      "NoOpPrimitiveAggregatesRetrieval": 2,
+      "PostProcessedAggregatesRetrieval": 4,
+      "PostProcessedResultsMerger": 2,
+      "RangeSharingPrimitiveAggregatesRetrieval": 3,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 14,
+  },
+]
+`;
+
+exports[`Query plan content > produces the expected graphs for larger-distribution-query2.json 1`] = `
+[
+  {
+    "edgeCount": 56,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 32,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SelectPass_0",
+    "measureCount": 3,
+    "pivotId": "AllData",
+    "types": {
+      "DistributedAggregatesRetrieval": 4,
+      "DistributedPostProcessedRetrieval": 12,
+      "NoOpPrimitiveAggregatesRetrieval": 4,
+      "PostProcessedResultsMerger": 12,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 34,
+  },
+  {
+    "edgeCount": 78,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 36,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SelectPass_0",
+    "measureCount": 16,
+    "pivotId": "Recommendation",
+    "types": {
+      "JITPrimitiveAggregatesRetrieval": 1,
+      "NoOpPrimitiveAggregatesRetrieval": 4,
+      "PostProcessedAggregatesRetrieval": 18,
+      "PostProcessedResultsMerger": 12,
+      "RangeSharingPrimitiveAggregatesRetrieval": 1,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 38,
+  },
+  {
+    "edgeCount": 13,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 8,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SubSelectPass_1",
+    "measureCount": 3,
+    "pivotId": "AllData",
+    "types": {
+      "DistributedAggregatesRetrieval": 1,
+      "DistributedPostProcessedRetrieval": 2,
+      "NoOpPrimitiveAggregatesRetrieval": 2,
+      "PostProcessedAggregatesRetrieval": 1,
+      "PostProcessedResultsMerger": 2,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 10,
+  },
+  {
+    "edgeCount": 20,
+    "filterCount": 3,
+    "kinds": {
+      "AggregateRetrieval": 12,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SubSelectPass_1",
+    "measureCount": 6,
+    "pivotId": "CompetitorPrice",
+    "types": {
+      "JITPrimitiveAggregatesRetrieval": 2,
+      "NoOpPrimitiveAggregatesRetrieval": 3,
+      "PostProcessedAggregatesRetrieval": 4,
+      "PostProcessedResultsMerger": 2,
+      "RangeSharingPrimitiveAggregatesRetrieval": 1,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 14,
+  },
+  {
+    "edgeCount": 10,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 6,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SubSelectPass_1",
+    "measureCount": 3,
+    "pivotId": "SellingPrice",
+    "types": {
+      "JITPrimitiveAggregatesRetrieval": 1,
+      "NoOpPrimitiveAggregatesRetrieval": 1,
+      "PostProcessedAggregatesRetrieval": 2,
+      "PostProcessedResultsMerger": 1,
+      "RangeSharingPrimitiveAggregatesRetrieval": 1,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 8,
+  },
+  {
+    "edgeCount": 1,
+    "filterCount": 0,
+    "kinds": {
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SubSelectPass_2",
+    "measureCount": 0,
+    "pivotId": "",
+    "types": {
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 2,
+  },
+  {
+    "edgeCount": 3,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 2,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SubSelectPass_3",
+    "measureCount": 1,
+    "pivotId": "AllData",
+    "types": {
+      "DistributedAggregatesRetrieval": 1,
+      "PrimitiveResultsMerger": 1,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 4,
+  },
+  {
+    "edgeCount": 3,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 2,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SubSelectPass_3",
+    "measureCount": 1,
+    "pivotId": "Sale",
+    "types": {
+      "JITPrimitiveAggregatesRetrieval": 1,
+      "PrimitiveResultsMerger": 1,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 4,
+  },
+]
+`;
+
+exports[`Query plan content > produces the expected graphs for no-data-key-format.json 1`] = `
+[
+  {
+    "edgeCount": 26,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 15,
+      "ExternalRetrieval": 1,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SelectPass_0",
+    "measureCount": 1,
+    "pivotId": "EquityDerivativesCube",
+    "types": {
+      "ExternalDatabaseRetrieval": 1,
+      "PartialPrimitiveAggregatesRetrieval": 1,
+      "PrimitiveAnalysisAggregationRetrieval": 5,
+      "PrimitiveResultsMerger": 5,
+      "RangeSharingPrimitiveAggregatesRetrieval": 4,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 18,
+  },
+]
+`;
+
+exports[`Query plan content > produces the expected graphs for query-with-external-retrievals.json 1`] = `
+[
+  {
+    "edgeCount": 1040,
+    "filterCount": 37,
+    "kinds": {
+      "AggregateRetrieval": 436,
+      "ExternalRetrieval": 25,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SelectPass_0",
+    "measureCount": 79,
+    "pivotId": "HOLDING",
+    "types": {
+      "ExternalDatabaseRetrieval": 25,
+      "JITPrimitiveAggregatesRetrieval": 2,
+      "NoOpPrimitiveAggregatesRetrieval": 48,
+      "PostProcessedAggregatesRetrieval": 309,
+      "PrimitiveAnalysisAggregationRetrieval": 71,
+      "RangeSharingPrimitiveAggregatesRetrieval": 6,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 463,
+  },
+  {
+    "edgeCount": 1,
+    "filterCount": 0,
+    "kinds": {
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SubSelectPass_1",
+    "measureCount": 0,
+    "pivotId": "",
+    "types": {
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 2,
+  },
+]
+`;
+
+exports[`Query plan content > produces the expected graphs for range-location-path-plan.json 1`] = `
+[
+  {
+    "edgeCount": 73,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 39,
+      "ExternalRetrieval": 3,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SelectPass_0",
+    "measureCount": 5,
+    "pivotId": "EquityDerivativesCube",
+    "types": {
+      "ExternalDatabaseRetrieval": 3,
+      "PartialPrimitiveAggregatesRetrieval": 2,
+      "PostProcessedAggregatesRetrieval": 13,
+      "PrimitiveAggregatesCacheRetrieval": 4,
+      "PrimitiveAnalysisAggregationRetrieval": 10,
+      "PrimitiveResultsMerger": 6,
+      "RangeSharingPrimitiveAggregatesRetrieval": 4,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 44,
+  },
+]
+`;
+
+exports[`Query plan content > produces the expected graphs for small-plan-v1.txt 1`] = `
+[
+  {
+    "edgeCount": 5,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 3,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "GAQ_0",
+    "measureCount": 1,
+    "pivotId": "MemoryCube",
+    "types": {
+      "JITPrimitiveAggregatesRetrieval": 1,
+      "PrimitiveAnalysisAggregationRetrieval": 1,
+      "RangeSharingPrimitiveAggregatesRetrieval": 1,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 5,
+  },
+]
+`;
+
+exports[`Query plan content > produces the expected graphs for v1-external-retrievals.txt 1`] = `
+[
+  {
+    "edgeCount": 17,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 10,
+      "ExternalRetrieval": 1,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "GAQ_0",
+    "measureCount": 8,
+    "pivotId": "MyCube",
+    "types": {
+      "AdaptiveJitPrimitiveAggregatesRetrieval": 2,
+      "ExternalDatabaseRetrieval": 1,
+      "PostProcessedAggregatesRetrieval": 4,
+      "PostProcessedResultsMerger": 1,
+      "PrimitiveAnalysisAggregationRetrieval": 1,
+      "PrimitiveResultsMerger": 2,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 13,
+  },
+]
+`;
+
+exports[`Query plan content > produces the expected graphs for v1-large-plan.txt 1`] = `
+[
+  {
+    "edgeCount": 1992,
+    "filterCount": 76,
+    "kinds": {
+      "AggregateRetrieval": 1164,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "GAQ_0",
+    "measureCount": 27,
+    "pivotId": "ActiveViamCube",
+    "types": {
+      "JITPrimitiveAggregatesRetrieval": 90,
+      "NoOpPrimitiveAggregatesRetrieval": 342,
+      "PartialPrimitiveAggregatesRetrieval": 5,
+      "PostProcessedAggregatesRetrieval": 708,
+      "RangeSharingPrimitiveAggregatesRetrieval": 19,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 1166,
+  },
+]
+`;
+
+exports[`Query plan content > produces the expected graphs for v1-no-space.txt 1`] = `
+[
+  {
+    "edgeCount": 20,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 15,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "GAQ_0",
+    "measureCount": 2,
+    "pivotId": "pivot1",
+    "types": {
+      "BitmapPrimitiveAggregatesRetrieval": 5,
+      "PostProcessedAggregatesRetrieval": 5,
+      "PrimitiveResultsMerger": 5,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 17,
+  },
+]
+`;
+
+exports[`Query plan content > produces the expected graphs for v1-retail.txt 1`] = `
+[
+  {
+    "edgeCount": 127,
+    "filterCount": 4,
+    "kinds": {
+      "AggregateRetrieval": 64,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "GAQ_0",
+    "measureCount": 37,
+    "pivotId": "Bill",
+    "types": {
+      "JITPrimitiveAggregatesRetrieval": 7,
+      "NoOpPrimitiveAggregatesRetrieval": 6,
+      "PostProcessedAggregatesRetrieval": 41,
+      "PostProcessedResultsMerger": 2,
+      "PrimitiveAnalysisAggregationRetrieval": 4,
+      "PrimitiveResultsMerger": 3,
+      "RangeSharingPrimitiveAggregatesRetrieval": 1,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 66,
+  },
+]
+`;
+
+exports[`Query plan content > produces the expected graphs for v1-sample-1.txt 1`] = `
+[
+  {
+    "edgeCount": 23,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 12,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "GAQ_0",
+    "measureCount": 3,
+    "pivotId": "VaR",
+    "types": {
+      "BitmapPrimitiveAggregatesRetrieval": 1,
+      "NoOpPrimitiveAggregatesRetrieval": 3,
+      "PostProcessedAggregatesRetrieval": 5,
+      "RangeSharingLinearPostProcessorAggregatesRetrieval": 3,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 14,
+  },
+]
+`;
+
+exports[`Query plan content > produces the expected graphs for v1-sample-2.txt 1`] = `
+[
+  {
+    "edgeCount": 9,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 5,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "GAQ_0",
+    "measureCount": 3,
+    "pivotId": "VaR",
+    "types": {
+      "BitmapPrimitiveAggregatesRetrieval": 1,
+      "PostProcessedAggregatesRetrieval": 3,
+      "RangeSharingLinearPostProcessorAggregatesRetrieval": 1,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 7,
+  },
+]
+`;

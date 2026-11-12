@@ -13,6 +13,9 @@ npm start          # Development server at localhost:3000
 npm run build      # Production build to ./build
 npm run eslint     # Lint and auto-fix src/**/*.{js,ts,tsx}
 npm run format-prettier # Run prettier to format the code according to conventions
+yarn test          # Unit tests in watch mode
+yarn test:run      # Unit tests, once
+yarn test:coverage # Unit tests with the v8 coverage report and thresholds check
 ```
 
 ## Key features
@@ -106,8 +109,35 @@ This view does not report the actual thread execution in the backend, as this in
 
 ## Testing
 
-- Unit tests (Vitest): `src/**/*.test.ts` - run with `yarn test:run`
+### Unit tests
+
+- Vitest runs the `src/**/*.test.ts` files, in a Node environment (`vitest.config.ts`).
+- Tests live in `src/__tests__/`:
+  - `parsing/`: parsing of the V1 and JSON query plans of `e2e/fixtures/`, with snapshots of the resulting graphs.
+    `parsing/fixtures.ts` lists the fixtures and loads them into `QueryPlan` objects, as the application does.
+  - `graphProcessors/`: the processing pipelines of the Graph and Partitions views, run on every fixture.
+  - `library/`: unit tests of the utilities, data structures, node comparison and server input.
+- When adding a fixture, add it to `parsing/fixtures.ts`, and run `yarn vitest run -u` to write its snapshot.
+- When a change in the parsing modifies a snapshot on purpose, check the diff, then update it with `yarn vitest run -u`.
+- The JUnit report is written to `test-results/results.xml`.
+
+### Coverage
+
+- `yarn test:coverage` collects the coverage with v8, over every file of `src/`, including the React components.
+- The reports (HTML, LCOV, JSON summary) are written to `coverage/`.
+- `scripts/printCoverageSummary.mjs` then prints two figures: the coverage of all `src/`, and of `src/library/`, the React-free logic which the unit tests target.
+- `vitest.config.ts` sets the coverage thresholds to the current coverage, rounded down: the run fails below them.
+  `src/library/**` has its own, higher, thresholds.
+  When adding tests, raise both sets of thresholds to the new coverage.
+
+### End-to-end tests
+
 - E2E tests (Playwright): `e2e/*.spec.ts` - run with `yarn e2e` (starts the Vite dev server on port 5173)
   - Fixtures in `e2e/fixtures/` are discovered automatically: every file is loaded (`.json` as JSON, `.txt` as V1) and every panel of the top menu is opened
   - A test fails on any page error, `console.error`, error notification, error boundary or "Load a query plan first!" stub. Use `console.debug` for non-fatal diagnostics
   - Known broken fixtures are listed in `e2e/knownFailures.ts` and marked with `test.fail`
+
+### CI
+
+- The CircleCI job `atoti_query_tests` runs `yarn test:coverage`, stores the JUnit report as test results and the coverage report as an artifact.
+- The CircleCI job `atoti_query_e2e` runs the Playwright end-to-end tests.
