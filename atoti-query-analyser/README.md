@@ -39,7 +39,7 @@ Each query has a set of retrievals. Some of them depend on others. Graph of retr
 
 ## Project structure
 
-* `cypress`: tests
+* `e2e`: end-to-end tests (Playwright) and their fixtures
 * `media`: assets for documentation
 * `public`: static assets of the web application
 * `src`: source code
@@ -129,9 +129,10 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However, we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-#### `cypress`
+#### `e2e`
 
-Run tests using the Cypress tool.
+Run the end-to-end tests with Playwright. The dev server is started automatically.
+Use `e2e:ui` to open the Playwright UI mode.
 
 #### `eslint`
 
