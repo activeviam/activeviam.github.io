@@ -68,23 +68,9 @@ Each query has a set of retrievals. Some of them depend on others. Graph of retr
 
 ## Project configuration
 
-### ESLint configuration
+### Lint and format
 
-#### Plugins
-* `jsx-a11y`: Static AST checker for accessibility rules on JSX elements.
-* `prettier`: Integration with Prettier formatter.
-* `@typescript-eslint/eslint-plugin`: Support for TypeScript.
-* `import`: Provides linting for `import`/`export`.
-
-#### Rules
-
-As a basic set of rules, `airbnb-typescript` was chosen. This choice looks quite reasonable.
-Some extra rules were added:
-* `tsdoc/syntax`: checks consistency with TSDoc syntax (TODO do we really need it? Seems to be buggy).
-* `semi`: enforce semicolons.
-* `no-param-reassign`: prohibit function argument reassignment.
-* `react/jsx-filename-extension`: prohibit JSX in `.js` files.
-* `prettier/prettier`: config for Prettier.
+The project uses [oxlint](https://oxc.rs/docs/guide/usage/linter) and [oxfmt](https://oxc.rs/docs/guide/usage/formatter) with their default configuration (`.oxlintrc.json` and `.oxfmtrc.json`).
 
 ### TypeScript project configuration
 
@@ -134,13 +120,13 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 Run the end-to-end tests with Playwright. The dev server is started automatically.
 Use `e2e:ui` to open the Playwright UI mode.
 
-#### `eslint`
+#### `lint`
 
-Run ESLint to find code style and code quality issues.
+Run oxlint to find code quality issues. Use `lint:fix` to apply the automatic fixes.
 
-#### `format-prettier`
+#### `format`
 
-Run Prettier formatter.
+Format the code with oxfmt. Use `format:check` to only check it.
 
 #### `typedoc`
 

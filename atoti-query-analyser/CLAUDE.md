@@ -11,8 +11,8 @@ Atoti Query Analyzer is a React-based web application for analyzing ActivePivot 
 ```bash
 npm start          # Development server at localhost:3000
 npm run build      # Production build to ./build
-npm run eslint     # Lint and auto-fix src/**/*.{js,ts,tsx}
-npm run format-prettier # Run prettier to format the code according to conventions
+yarn lint          # Lint with oxlint (yarn lint:fix to auto-fix)
+yarn format        # Format with oxfmt (yarn format:check to only check)
 yarn test          # Unit tests in watch mode
 yarn test:run      # Unit tests, once
 yarn test:coverage # Unit tests with the v8 coverage report and thresholds check
