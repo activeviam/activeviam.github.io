@@ -61,10 +61,13 @@ class NotificationServiceState {
     return this.epoch;
   }
 
-  /** Appends new message and returns new state (the current one remains unmodified). */
-  addMessage(message: Message): NotificationServiceState {
+  /**
+   * Appends new message and returns new state (the current one remains unmodified).
+   * The message id is the current epoch, which is unique as it increases after each modification.
+   */
+  addMessage(message: Omit<Message, "id">): NotificationServiceState {
     return new NotificationServiceState(
-      [...this.messages, message],
+      [...this.messages, { ...message, id: this.epoch }],
       this.epoch + 1,
     );
   }
@@ -82,7 +85,7 @@ class NotificationServiceState {
  * Dispatcher type for NotificationServiceState class and useReducer() React hook.
  * */
 type NotificationAction =
-  | { $action: "addMessage"; params: { message: Message } }
+  | { $action: "addMessage"; params: { message: Omit<Message, "id"> } }
   | { $action: "deleteMessage"; params: { id: number } };
 
 /**
@@ -149,11 +152,12 @@ export function NotificationWrapper({
   );
 
   const newMessage = (title: string, body: string, props?: ToastProps) => {
-    const message: Message = {
+    // The id is assigned by the reducer: this callback is created once, so
+    // reading the state here would always see the initial epoch.
+    const message: Omit<Message, "id"> = {
       title,
       body,
       toastProps: props || {},
-      id: serviceState.getEpoch(),
       creationTime: Date.now(),
     };
 
