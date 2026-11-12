@@ -108,13 +108,7 @@ function reduceNotificationServiceState(
 /**
  * React component for message visualization.
  * */
-function MessageToast({
-  message,
-  onClose,
-}: {
-  message: Message;
-  onClose: () => void;
-}) {
+function MessageToast({ message, onClose }: { message: Message; onClose: () => void }) {
   const fuzzyTimer = useFuzzyTimer(message.creationTime);
   return (
     <Toast
@@ -141,11 +135,7 @@ function MessageToast({
 /**
  * This React component is a wrapper that provides notifications service to its children.
  */
-export function NotificationWrapper({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function NotificationWrapper({ children }: { children: React.ReactNode }) {
   const [serviceState, updateServiceState] = useReducer(
     reduceNotificationServiceState,
     new NotificationServiceState([], 0),

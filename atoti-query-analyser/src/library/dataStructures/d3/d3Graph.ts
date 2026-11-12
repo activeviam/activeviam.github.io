@@ -32,10 +32,7 @@ type ShortEdgesStorage = {
   backward: Map<D3Node, D3Node[]>;
 };
 
-function buildShortEdges(
-  graph: D3Graph,
-  layers: D3Node[][],
-): ShortEdgesStorage {
+function buildShortEdges(graph: D3Graph, layers: D3Node[][]): ShortEdgesStorage {
   const forward = new Map<D3Node, D3Node[]>();
   const backward = new Map<D3Node, D3Node[]>();
   graph.nodes.forEach((v) => {
@@ -105,19 +102,14 @@ function countCrossings(
   layerToReorder: D3Node[],
   edges: Map<D3Node, D3Node[]>,
 ): number {
-  const fixedLayerIndex = new Map(
-    fixedLayer.map((node, idx): [D3Node, number] => [node, idx]),
-  );
+  const fixedLayerIndex = new Map(fixedLayer.map((node, idx): [D3Node, number] => [node, idx]));
 
   const count = (leftNeighbors: number[], rightNeighbors: number[]) => {
     let result = 0;
     let rightPtr = 0;
 
     for (const leftValue of leftNeighbors) {
-      while (
-        rightPtr < rightNeighbors.length &&
-        rightNeighbors[rightPtr] < leftValue
-      ) {
+      while (rightPtr < rightNeighbors.length && rightNeighbors[rightPtr] < leftValue) {
         ++rightPtr;
       }
       result += rightPtr;
@@ -129,9 +121,7 @@ function countCrossings(
   let result = 0;
 
   const neighbors = layerToReorder.map((node) =>
-    (edges.get(node) as D3Node[]).map(
-      (neighbor) => fixedLayerIndex.get(neighbor) as number,
-    ),
+    (edges.get(node) as D3Node[]).map((neighbor) => fixedLayerIndex.get(neighbor) as number),
   );
 
   for (let i = 0; i < layerToReorder.length; ++i) {
@@ -148,9 +138,7 @@ function barycenterHeuristicCrossingMinimization(
   layerToReorder: D3Node[],
   edges: Map<D3Node, D3Node[]>,
 ) {
-  const fixedLayerIndex = new Map(
-    fixedLayer.map((node, idx): [D3Node, number] => [node, idx]),
-  );
+  const fixedLayerIndex = new Map(fixedLayer.map((node, idx): [D3Node, number] => [node, idx]));
   let crossCount = Number.MAX_SAFE_INTEGER;
   while (true) {
     const newCrossCount = countCrossings(fixedLayer, layerToReorder, edges);
@@ -175,21 +163,17 @@ function barycenterHeuristicCrossingMinimization(
     }
 
     layerToReorder.sort(
-      (lhs, rhs) =>
-        (orderMap.get(lhs) as number) - (orderMap.get(rhs) as number),
+      (lhs, rhs) => (orderMap.get(lhs) as number) - (orderMap.get(rhs) as number),
     );
   }
 
-  const xs = layerToReorder
-    .map((node) => node.x)
-    .filter((x) => x !== undefined) as number[];
+  const xs = layerToReorder.map((node) => node.x).filter((x) => x !== undefined) as number[];
   xs.push(0);
   const minX = Math.min(...xs);
   const maxX = Math.max(...xs, 200);
 
   for (let i = 0; i < layerToReorder.length; ++i) {
-    layerToReorder[i].x =
-      minX + ((maxX - minX) * (i + 1)) / (layerToReorder.length + 1);
+    layerToReorder[i].x = minX + ((maxX - minX) * (i + 1)) / (layerToReorder.length + 1);
     layerToReorder[i].y = layerToReorder[i].yFixed;
   }
 }
@@ -206,18 +190,10 @@ export function untangle(graph: D3Graph) {
 
   for (let pass = 0; pass < 10; ++pass) {
     for (let i = 1; i < layers.length; ++i) {
-      barycenterHeuristicCrossingMinimization(
-        layers[i - 1],
-        layers[i],
-        shortEdges.backward,
-      );
+      barycenterHeuristicCrossingMinimization(layers[i - 1], layers[i], shortEdges.backward);
     }
     for (let i = layers.length - 1; i > 0; --i) {
-      barycenterHeuristicCrossingMinimization(
-        layers[i],
-        layers[i - 1],
-        shortEdges.forward,
-      );
+      barycenterHeuristicCrossingMinimization(layers[i], layers[i - 1], shortEdges.forward);
     }
   }
 }

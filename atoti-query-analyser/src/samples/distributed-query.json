@@ -99,9 +99,7 @@
             "processingTime": [0],
             "elapsedTime": [2]
           },
-          "underlyingDataNodes": [
-            "Hal_EquityDerivativesCubeEURGBP-master_DATA_8982"
-          ]
+          "underlyingDataNodes": ["Hal_EquityDerivativesCubeEURGBP-master_DATA_8982"]
         }
       ],
       "dependencies": {

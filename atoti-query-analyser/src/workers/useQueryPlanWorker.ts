@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ServerInput } from "../library/inputProcessors/server";
-import type {
-  WorkerInputMessage,
-  WorkerOutputMessage,
-  WorkerState,
-} from "./queryPlanParserTypes";
+import type { WorkerInputMessage, WorkerOutputMessage, WorkerState } from "./queryPlanParserTypes";
 
 export interface WorkerResult {
   entryId: number;
@@ -44,10 +40,9 @@ export function useQueryPlanWorker(
 
   // Create and cleanup worker
   useEffect(() => {
-    const worker = new Worker(
-      new URL("./queryPlanParser.worker.ts", import.meta.url),
-      { type: "module" },
-    );
+    const worker = new Worker(new URL("./queryPlanParser.worker.ts", import.meta.url), {
+      type: "module",
+    });
 
     worker.onmessage = (event: MessageEvent<WorkerOutputMessage>) => {
       const message = event.data;
@@ -79,9 +74,7 @@ export function useQueryPlanWorker(
 
         case "ERROR":
           setState(initialState);
-          onErrorRef.current(
-            new Error(`${message.payload.phase}: ${message.payload.message}`),
-          );
+          onErrorRef.current(new Error(`${message.payload.phase}: ${message.payload.message}`));
           break;
       }
     };

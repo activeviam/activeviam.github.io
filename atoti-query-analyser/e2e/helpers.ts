@@ -42,9 +42,7 @@ export interface IssueWatcher {
 export function watchIssues(page: Page): IssueWatcher {
   const watcher: IssueWatcher = { issues: [], step: "start" };
   page.on("pageerror", (error) => {
-    watcher.issues.push(
-      `[${watcher.step}] pageerror: ${error.stack ?? error.message}`,
-    );
+    watcher.issues.push(`[${watcher.step}] pageerror: ${error.stack ?? error.message}`);
   });
   page.on("console", (message) => {
     if (message.type() === "error") {
@@ -65,9 +63,7 @@ export function watchIssues(page: Page): IssueWatcher {
 export async function expectNoAppIssue(page: Page) {
   await expect(page.getByText("Oops! Something went wrong")).toHaveCount(0);
   await expect(page.getByText("Load a query plan first!")).toHaveCount(0);
-  await expect(
-    page.locator(".toast", { hasText: "An error occurred" }),
-  ).toHaveCount(0);
+  await expect(page.locator(".toast", { hasText: "An error occurred" })).toHaveCount(0);
 }
 
 /** Opens a panel from the top menu. */
@@ -88,9 +84,7 @@ export async function loadFixture(page: Page, file: string) {
   // The file is read asynchronously: wait for its content to be in the form
   await expect(page.getByText(`Data size: ${content.length} (`)).toBeVisible();
 
-  await page
-    .locator(`input[type="radio"][value="${inputModeOf(file)}"]`)
-    .check();
+  await page.locator(`input[type="radio"][value="${inputModeOf(file)}"]`).check();
   await page.getByRole("button", { name: "Process", exact: true }).click();
 
   await expect(page.locator("#summary")).toBeVisible({ timeout: 60_000 });

@@ -13,11 +13,7 @@ export function requireNonNull<T>(value: T | null | undefined): T {
  * compute the new value using the given supplier, store it in the map and
  * return it.
  */
-export function computeIfAbsent<K, V>(
-  map: Map<K, V>,
-  key: K,
-  valueSupplier: (key: K) => V,
-): V {
+export function computeIfAbsent<K, V>(map: Map<K, V>, key: K, valueSupplier: (key: K) => V): V {
   if (map.has(key)) {
     return requireNonNull(map.get(key));
   }

@@ -24,8 +24,8 @@ Application has 5 sections: **Input**, **Summary**, **Passes diagram**, **Graph*
 ## Data model
 
 Input data is organized in form of list of _query plans_. Inside the query analyzer, query plans are represented by
-interface `QueryPlan`, which corresponds to the class `com.quartetfs.biz.pivot.query.aggregates.IQueryPlan` in 
-ActivePivot. 
+interface `QueryPlan`, which corresponds to the class `com.quartetfs.biz.pivot.query.aggregates.IQueryPlan` in
+ActivePivot.
 
 Queries may be executed within one or several _passes_. Each query belongs to one pass. Each pass has one _root query_,
 which optionally depends on other queries from this pass. In their turn, these queries may also have dependencies,
@@ -39,32 +39,32 @@ Each query has a set of retrievals. Some of them depend on others. Graph of retr
 
 ## Project structure
 
-* `e2e`: end-to-end tests (Playwright) and their fixtures
-* `media`: assets for documentation
-* `public`: static assets of the web application
-* `src`: source code
-    * `components`: React components
-        * `Details`: component for showing retrieval info
-        * `ErrorBoundary`: technical component for catching react rendering-time errors
-        * `Graph`: component for graph drawing
-        * `Input`: component for input consuming
-        * `NavBar`: component for navigation panel
-        * `Notification`: technical component for showing notifications
-        * `PassGraph`: component for showing info on passes and query dependencies
-        * `Summary`: component for showing query summary
-        * `Timeline`: component for showing timeline
-    * `hooks`: react hooks (mechanism for indirect communication between components and arbitrary js code)
-    * `library`: React-free part of code
-        * `dataStructures`: data structures used in this project
-            * `common`: reusable containers and algorithms
-            * `d3`: interfaces for communication with d3.js
-            * `json`: interfaces and functions for parsing and validating raw json
-            * `processing`: interfaces and functions for building handy internal data representation
-        * `devTools`: utilities for making debugging easier
-        * `graphProcessors`: tools for processing query plans
-        * `graphView`: tools for graph visualization
-        * `inputProcessors`: tools for input parsing and processing
-        * `utilities`: helper functions
+- `e2e`: end-to-end tests (Playwright) and their fixtures
+- `media`: assets for documentation
+- `public`: static assets of the web application
+- `src`: source code
+  - `components`: React components
+    - `Details`: component for showing retrieval info
+    - `ErrorBoundary`: technical component for catching react rendering-time errors
+    - `Graph`: component for graph drawing
+    - `Input`: component for input consuming
+    - `NavBar`: component for navigation panel
+    - `Notification`: technical component for showing notifications
+    - `PassGraph`: component for showing info on passes and query dependencies
+    - `Summary`: component for showing query summary
+    - `Timeline`: component for showing timeline
+  - `hooks`: react hooks (mechanism for indirect communication between components and arbitrary js code)
+  - `library`: React-free part of code
+    - `dataStructures`: data structures used in this project
+      - `common`: reusable containers and algorithms
+      - `d3`: interfaces for communication with d3.js
+      - `json`: interfaces and functions for parsing and validating raw json
+      - `processing`: interfaces and functions for building handy internal data representation
+    - `devTools`: utilities for making debugging easier
+    - `graphProcessors`: tools for processing query plans
+    - `graphView`: tools for graph visualization
+    - `inputProcessors`: tools for input parsing and processing
+    - `utilities`: helper functions
 
 ## Project configuration
 

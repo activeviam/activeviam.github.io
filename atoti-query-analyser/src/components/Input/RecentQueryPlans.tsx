@@ -9,11 +9,7 @@ import {
 } from "../../library/storage/recentQueryPlans";
 import { prettySize } from "../../library/utilities/textUtils";
 
-export function RecentQueryPlans({
-  onLoad,
-}: {
-  onLoad: (data: unknown) => void;
-}) {
+export function RecentQueryPlans({ onLoad }: { onLoad: (data: unknown) => void }) {
   const [entries, setEntries] = useState<RecentQueryPlanEntry[]>([]);
   const [loadingId, setLoadingId] = useState<number | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -124,8 +120,7 @@ export function RecentQueryPlans({
               )}
               <br />
               <small className="text-muted">
-                {prettySize(entry.sizeInBytes)} &middot;{" "}
-                {new Date(entry.savedAt).toLocaleString()}
+                {prettySize(entry.sizeInBytes)} &middot; {new Date(entry.savedAt).toLocaleString()}
               </small>
             </div>
             <div>
@@ -136,11 +131,7 @@ export function RecentQueryPlans({
                 disabled={loadingId === entry.id}
                 onClick={() => handleLoad(entry)}
               >
-                {loadingId === entry.id ? (
-                  <Spinner animation="border" size="sm" />
-                ) : (
-                  "Load"
-                )}
+                {loadingId === entry.id ? <Spinner animation="border" size="sm" /> : "Load"}
               </Button>
               <Button
                 variant="outline-danger"

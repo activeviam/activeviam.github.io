@@ -1,10 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { convertToV2, parseMultiV1 } from "library/inputProcessors/v1tov2";
-import {
-  preprocessQueryPlan,
-  QueryPlan,
-} from "library/dataStructures/processing/queryPlan";
+import { preprocessQueryPlan, QueryPlan } from "library/dataStructures/processing/queryPlan";
 
 const FIXTURES_DIR = path.resolve(__dirname, "../../../e2e/fixtures");
 

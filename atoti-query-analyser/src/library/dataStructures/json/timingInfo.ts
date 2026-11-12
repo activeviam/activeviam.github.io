@@ -1,9 +1,4 @@
-import {
-  optional,
-  validateInt,
-  validateList,
-  validateObject,
-} from "./validatingUtils";
+import { optional, validateInt, validateList, validateObject } from "./validatingUtils";
 
 export interface TimingInfo {
   startTime?: number[];
@@ -22,8 +17,7 @@ export interface TimingInfo {
  */
 export function validateTimingInfo(rawTimingInfo: any): TimingInfo {
   validateObject(rawTimingInfo);
-  const validator = (value: any) =>
-    optional(value, (lst) => validateList(lst, validateInt));
+  const validator = (value: any) => optional(value, (lst) => validateList(lst, validateInt));
   return {
     startTime: validator(rawTimingInfo.startTime),
     elapsedTime: validator(rawTimingInfo.elapsedTime),

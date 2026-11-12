@@ -43,10 +43,7 @@ describe("queryServer", () => {
 
     await expect(queryServer(input)).resolves.toEqual([{ planInfo: {} }]);
 
-    expect(fetchMock).toHaveBeenNthCalledWith(
-      1,
-      "http://localhost:9090/versions/rest",
-    );
+    expect(fetchMock).toHaveBeenNthCalledWith(1, "http://localhost:9090/versions/rest");
     const [queryUrl, options] = fetchMock.mock.calls[1];
     expect(queryUrl).toBe(
       "http://localhost:9090/activeviam/pivot/rest/v9/cube/query/mdx/queryplan",
@@ -71,9 +68,7 @@ describe("queryServer", () => {
   });
 
   it("reports unreachable servers", async () => {
-    const consoleError = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     fetchMock.mockRejectedValueOnce(new TypeError("Failed to fetch"));
     await expect(queryServer(input)).rejects.toThrow("Unavailable");
     consoleError.mockRestore();

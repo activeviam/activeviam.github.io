@@ -50,9 +50,7 @@ describe("AdjacencyListGraph", () => {
 
   it("builds an induced subgraph", () => {
     const { graph, a, b } = diamond();
-    const subgraph = graph.filterVertices(
-      (vertex) => vertex.getMetadata() !== "c",
-    );
+    const subgraph = graph.filterVertices((vertex) => vertex.getMetadata() !== "c");
     expect(names(subgraph.getVertices())).toEqual(["a", "b", "d"]);
     expect(successors(subgraph, a)).toEqual(["b"]);
     expect(successors(subgraph, b)).toEqual(["d"]);
@@ -83,9 +81,7 @@ describe("AdjacencyListGraph", () => {
     const outsider = new Vertex("x");
     expect(() => graph.getVertexByLabel("unknown")).toThrow();
     expect(() => graph.getVertexByUUID(outsider.getUUID())).toThrow();
-    expect(() =>
-      graph.createEdge(outsider.getUUID(), outsider.getUUID(), 0),
-    ).toThrow();
+    expect(() => graph.createEdge(outsider.getUUID(), outsider.getUUID(), 0)).toThrow();
   });
 });
 
@@ -130,9 +126,7 @@ describe("graph traversals", () => {
       graph,
       a,
       (_vertex, children, childValue: (child: Vertex<string>) => number) =>
-        children.size === 0
-          ? 0
-          : 1 + Math.max(...Array.from(children, childValue)),
+        children.size === 0 ? 0 : 1 + Math.max(...Array.from(children, childValue)),
     );
     expect(height.get(a)).toBe(2);
     expect(height.get(d)).toBe(0);
@@ -158,9 +152,7 @@ describe("UnionFind", () => {
 describe("Dictionary", () => {
   it("numbers the keys in their order of appearance", () => {
     const dictionary = new Dictionary<string>();
-    expect(
-      ["a", "b", "a", "c", "b"].map((key) => dictionary.index(key)),
-    ).toEqual([0, 1, 0, 2, 1]);
+    expect(["a", "b", "a", "c", "b"].map((key) => dictionary.index(key))).toEqual([0, 1, 0, 2, 1]);
     expect(dictionary.size).toBe(3);
   });
 });

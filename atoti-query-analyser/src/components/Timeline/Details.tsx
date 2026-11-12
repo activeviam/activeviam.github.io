@@ -28,9 +28,7 @@ export function TimelineDetails({
   plan: QueryPlan;
   focus: FocusControl;
   selection: RetrievalCursor[];
-  setSelection: (
-    setter: (entries: RetrievalCursor[]) => RetrievalCursor[],
-  ) => void;
+  setSelection: (setter: (entries: RetrievalCursor[]) => RetrievalCursor[]) => void;
   setFocused: (setter: (focus: FocusControl) => FocusControl) => void;
 }>) {
   const closeBox = (retrieval: RetrievalCursor) => {
@@ -58,26 +56,14 @@ export function TimelineDetails({
             : { variant: "outline-warning" };
 
           return (
-            <Toast
-              key={`${id}#${partition}`}
-              className="entry"
-              onClose={() => closeBox(key)}
-            >
+            <Toast key={`${id}#${partition}`} className="entry" onClose={() => closeBox(key)}>
               <Toast.Header>
                 <span className="retrieval-id mr-auto">#{retrievalId}</span>
                 <span className="partition-id mr-auto"> [{partition}]</span>
                 <span className="retrieval-type">{labels.type(type)}</span>
-                <ButtonGroup
-                  aria-label="Focus history"
-                  size="sm"
-                  style={{ marginLeft: 5 }}
-                >
+                <ButtonGroup aria-label="Focus history" size="sm" style={{ marginLeft: 5 }}>
                   <Button
-                    variant={
-                      isFocused && showParents
-                        ? "secondary"
-                        : "outline-secondary"
-                    }
+                    variant={isFocused && showParents ? "secondary" : "outline-secondary"}
                     disabled={!isFocused}
                     onClick={() =>
                       setFocused((state) => ({
@@ -97,11 +83,7 @@ export function TimelineDetails({
                     Focus
                   </Button>
                   <Button
-                    variant={
-                      isFocused && showChildren
-                        ? "secondary"
-                        : "outline-secondary"
-                    }
+                    variant={isFocused && showChildren ? "secondary" : "outline-secondary"}
                     disabled={!isFocused}
                     onClick={() =>
                       setFocused((state) => ({

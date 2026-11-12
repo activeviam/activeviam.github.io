@@ -19,18 +19,12 @@ const preprocessResultSize = (graph: RetrievalGraph) => {
     const retrieval = node.getMetadata();
     const resultSizes = Reflect.get(retrieval, "resultSizes");
     const elapsedTimes = retrieval.timingInfo.elapsedTime;
-    if (
-      resultSizes &&
-      Array.isArray(resultSizes) &&
-      elapsedTimes !== undefined
-    ) {
+    if (resultSizes && Array.isArray(resultSizes) && elapsedTimes !== undefined) {
       if (resultSizes.length < elapsedTimes.length) {
         // Try to fill the missing result sizes by setting a size of 0 for operations of duration 0.
         // They are likely to not have return any result, causing this very short duration
         // we will only do this if the count of operations of duration 0 matches the count of missing sizes
-        const zeroOperationCount = elapsedTimes.filter(
-          (time) => time === 0,
-        ).length;
+        const zeroOperationCount = elapsedTimes.filter((time) => time === 0).length;
         if (zeroOperationCount === elapsedTimes.length - resultSizes.length) {
           let sizePosition = 0;
           const processedResultSizes = elapsedTimes.map((time) =>

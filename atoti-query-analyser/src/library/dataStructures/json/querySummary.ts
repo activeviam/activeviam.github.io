@@ -39,14 +39,8 @@ export function validateQuerySummary(rawQuerySummary: any): QuerySummary {
   validateObject(rawQuerySummary);
 
   return {
-    measures: validateListAsSet(
-      rawQuerySummary.measures ?? [],
-      validateMeasure,
-    ),
-    partialProviders: validateListAsSet(
-      rawQuerySummary.partialProviders ?? [],
-      validateString,
-    ),
+    measures: validateListAsSet(rawQuerySummary.measures ?? [], validateMeasure),
+    partialProviders: validateListAsSet(rawQuerySummary.partialProviders ?? [], validateString),
     partitioningCountByType: validateObjectAsMap(
       rawQuerySummary.partitioningCountByType ?? {},
       validateString,
@@ -62,9 +56,7 @@ export function validateQuerySummary(rawQuerySummary: any): QuerySummary {
       validateString,
       validateInt,
     ),
-    totalExternalResultSize: validateInt(
-      rawQuerySummary.totalExternalResultSize || 0,
-    ),
+    totalExternalResultSize: validateInt(rawQuerySummary.totalExternalResultSize || 0),
     totalRetrievals: validateInt(rawQuerySummary.totalRetrievals || 0),
   };
 }

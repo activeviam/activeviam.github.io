@@ -5,11 +5,7 @@ import {
   humanisticStringComparator,
   prettySize,
 } from "library/utilities/textUtils";
-import {
-  asError,
-  computeIfAbsent,
-  requireNonNull,
-} from "library/utilities/util";
+import { asError, computeIfAbsent, requireNonNull } from "library/utilities/util";
 import { generateUUID } from "library/utilities/uuid";
 import { type } from "library/graphView/labels";
 import { extractLabel } from "library/storage/recentQueryPlans";
@@ -17,10 +13,7 @@ import { extractLabel } from "library/storage/recentQueryPlans";
 describe("textUtils", () => {
   it.each([
     ["fooBarHTML", ["foo", "Bar", "HTML"]],
-    [
-      "fooBarHTMLEntity01AB23",
-      ["foo", "Bar", "HTML", "Entity", "01", "AB", "23"],
-    ],
+    ["fooBarHTMLEntity01AB23", ["foo", "Bar", "HTML", "Entity", "01", "AB", "23"]],
     [
       "___Foo_bar_HTMLEntity   QwertyUiop foo_bar_quux",
       ["Foo", "bar", "HTML", "Entity", "Qwerty", "Uiop", "foo", "bar", "quux"],
@@ -101,15 +94,11 @@ describe("extractLabel", () => {
   });
 
   it("uses the cube and the pass of the first plan", () => {
+    expect(extractLabel([{ planInfo: { pivotId: "Cube", mdxPass: "Select_0" } }])).toBe(
+      "Cube - Select_0",
+    );
     expect(
-      extractLabel([{ planInfo: { pivotId: "Cube", mdxPass: "Select_0" } }]),
-    ).toBe("Cube - Select_0");
-    expect(
-      extractLabel([
-        { planInfo: { pivotId: "Cube" } },
-        { planInfo: {} },
-        { planInfo: {} },
-      ]),
+      extractLabel([{ planInfo: { pivotId: "Cube" } }, { planInfo: {} }, { planInfo: {} }]),
     ).toBe("Cube (+2 more)");
   });
 });

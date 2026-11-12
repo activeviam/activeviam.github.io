@@ -7,13 +7,7 @@ import { D3Link } from "../../library/dataStructures/d3/d3Link";
  * This React component is responsible for visual representation of an edge of
  * the graph.
  */
-export function Link({
-  link,
-  minCriticalScore,
-}: {
-  link: D3Link;
-  minCriticalScore: number;
-}) {
+export function Link({ link, minCriticalScore }: { link: D3Link; minCriticalScore: number }) {
   const ref = useRef<SVGLineElement>(null);
 
   useLayoutEffect(() => {

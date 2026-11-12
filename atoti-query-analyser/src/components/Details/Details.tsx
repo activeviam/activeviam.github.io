@@ -33,9 +33,7 @@ function Values({
       [
       {values.map((v, i, vs) => (
         <span key={i}>
-          <span className={i === selected ? "selected-partition" : ""}>
-            {v}
-          </span>
+          <span className={i === selected ? "selected-partition" : ""}>{v}</span>
           {i < vs.length - 1 ? "," : ""}
         </span>
       ))}
@@ -99,11 +97,7 @@ function LocationView({ location }: { location: CubeLocation[] }) {
  * @param attributes.value - Value to be displayed
  * */
 function PlainView({ value }: { value: unknown }) {
-  return (
-    <span
-      className={isNullish(value) ? "nullish-content" : ""}
-    >{`${value}`}</span>
-  );
+  return <span className={isNullish(value) ? "nullish-content" : ""}>{`${value}`}</span>;
 }
 
 /**
@@ -164,27 +158,17 @@ const BLACKLIST = new Set([
   "measureProvider",
 ]);
 
-const selectRepresentativeValues = (
-  values: readonly number[],
-  size = 5,
-): (number | string)[] => {
+const selectRepresentativeValues = (values: readonly number[], size = 5): (number | string)[] => {
   const sortedValues = [...values];
   sortedValues.sort();
   if (values.length > 2 * size) {
-    return [
-      ...sortedValues.slice(0, 5),
-      "..",
-      ...sortedValues.slice(values.length - 5),
-    ];
+    return [...sortedValues.slice(0, 5), "..", ...sortedValues.slice(values.length - 5)];
   } else {
     return sortedValues;
   }
 };
 
-const ValueFromList = ({
-  values,
-  selected,
-}: Readonly<{ values: number[]; selected?: number }>) =>
+const ValueFromList = ({ values, selected }: Readonly<{ values: number[]; selected?: number }>) =>
   selected === undefined || selected < 0 ? (
     <Values values={values} />
   ) : (
@@ -229,8 +213,7 @@ export function Details({
         Start (ms): <ValueFromList values={startTime} selected={partition} />
       </li>
       <li key="elapsedTimeElts">
-        Elapsed (ms):{" "}
-        <ValueFromList values={elapsedTime} selected={partition} />
+        Elapsed (ms): <ValueFromList values={elapsedTime} selected={partition} />
       </li>
       {Object.entries(metadata)
         .filter(([key, value]) => !BLACKLIST.has(key) && !isNullish(value))
@@ -250,13 +233,9 @@ export function Details({
             );
           } else if (key === "resultSizes") {
             const sizes = value as number[];
-            const selectedPosition =
-              sizes.length === elapsedTime.length ? partition : -1;
+            const selectedPosition = sizes.length === elapsedTime.length ? partition : -1;
             const valueList = (
-              <ValueFromList
-                values={value as number[]}
-                selected={selectedPosition}
-              />
+              <ValueFromList values={value as number[]} selected={selectedPosition} />
             );
             return <li key={key}>Result sizes: {valueList}</li>;
           } else if (Array.isArray(value)) {

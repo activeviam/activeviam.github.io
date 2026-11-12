@@ -1,10 +1,4 @@
-import React, {
-  CSSProperties,
-  ForwardedRef,
-  forwardRef,
-  useLayoutEffect,
-  useRef,
-} from "react";
+import React, { CSSProperties, ForwardedRef, forwardRef, useLayoutEffect, useRef } from "react";
 import * as d3 from "d3";
 import { Popover, Button, Overlay } from "react-bootstrap";
 import { FaTimes } from "react-icons/fa";
@@ -87,11 +81,7 @@ const MergerPopover = forwardRef(function MergerPopover(
         <p className="text-muted mb-2">
           <em>This merger node has been hidden from the view.</em>
         </p>
-        <Details
-          startTime={startTimes}
-          elapsedTime={elapsedTimes}
-          metadata={merger}
-        />
+        <Details startTime={startTimes} elapsedTime={elapsedTimes} metadata={merger} />
       </Popover.Body>
     </Popover>
   );
@@ -127,9 +117,7 @@ export function InteractiveLink({
 
     // Apply merger-specific styling
     if (hasMerger) {
-      selection
-        .style("stroke", MERGER_LINK_COLOR)
-        .attr("stroke-dasharray", "8 4");
+      selection.style("stroke", MERGER_LINK_COLOR).attr("stroke-dasharray", "8 4");
     }
   }, [link, minCriticalScore, hasMerger]);
 
@@ -140,9 +128,7 @@ export function InteractiveLink({
     d3.select(lineRef.current).datum(link).call(updateLink);
   });
 
-  const onClick = hasMerger
-    ? () => clickLink(selected ? null : link.id)
-    : undefined;
+  const onClick = hasMerger ? () => clickLink(selected ? null : link.id) : undefined;
 
   return (
     <>
@@ -178,11 +164,7 @@ export function InteractiveLink({
           show={selected}
           placement="right"
         >
-          <MergerPopover
-            merger={link.hiddenMerger!}
-            clickLink={clickLink}
-            linkRef={ref.current}
-          />
+          <MergerPopover merger={link.hiddenMerger!} clickLink={clickLink} linkRef={ref.current} />
         </Overlay>
       )}
     </>

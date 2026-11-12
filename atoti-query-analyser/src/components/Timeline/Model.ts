@@ -26,10 +26,8 @@ export type FocusControl = {
   showChildren: boolean;
 };
 
-export const areEqualCursors = (
-  focused: RetrievalCursor | null,
-  item: RetrievalCursor,
-) => focused?.id === item.id && focused?.partition === item.partition;
+export const areEqualCursors = (focused: RetrievalCursor | null, item: RetrievalCursor) =>
+  focused?.id === item.id && focused?.partition === item.partition;
 
 /// Focus management
 
@@ -87,19 +85,13 @@ export const computeRetrievalClasses = (
   return [];
 };
 
-export const focusOnItem = (
-  state: FocusControl,
-  entry: RetrievalCursor,
-): FocusControl => ({
+export const focusOnItem = (state: FocusControl, entry: RetrievalCursor): FocusControl => ({
   item: entry,
   showChildren: false,
   showParents: false,
 });
 
-export const unfocusOnItem = (
-  state: FocusControl,
-  entry: RetrievalCursor,
-): FocusControl =>
+export const unfocusOnItem = (state: FocusControl, entry: RetrievalCursor): FocusControl =>
   areEqualCursors(state.item, entry)
     ? { item: null, showParents: false, showChildren: false }
     : state;
@@ -108,9 +100,9 @@ export const computeChildRetrievals = (
   graph: RetrievalGraph,
   { id }: RetrievalCursor,
 ): RetrievalCursor[] => {
-  const childVertices = Array.from(
-    graph.getOutgoingEdges(graph.getVertexByUUID(id)),
-  ).map((edge) => edge.getEnd());
+  const childVertices = Array.from(graph.getOutgoingEdges(graph.getVertexByUUID(id))).map((edge) =>
+    edge.getEnd(),
+  );
   const uniqueVertices = new Set(childVertices);
   return Array.from(uniqueVertices).flatMap(
     (node) =>
@@ -190,10 +182,7 @@ export function computeSlices(
   return slices;
 }
 
-export function filterEntriesForSlice(
-  row: TimeRange[],
-  slice: TimeSlice,
-): SlicedEntry[] {
+export function filterEntriesForSlice(row: TimeRange[], slice: TimeSlice): SlicedEntry[] {
   return row
     .filter((entry) => entry.start < slice.end && entry.end > slice.start)
     .map((entry) => ({

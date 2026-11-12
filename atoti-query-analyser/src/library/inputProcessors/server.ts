@@ -50,11 +50,10 @@ function resolveQueryEndpoint(userUrl: string) {
       async (response) => {
         const versions = await response.json();
         const serviceUrl = findServiceUrl(versions.apis);
-        const fullUrl =
-          `${url}/${serviceUrl}/cube/query/mdx/queryplan`.replaceAll(
-            /(?<!https?:)\/{2,}/g,
-            "/",
-          );
+        const fullUrl = `${url}/${serviceUrl}/cube/query/mdx/queryplan`.replaceAll(
+          /(?<!https?:)\/{2,}/g,
+          "/",
+        );
         resolve(fullUrl);
       },
       (err) => {
@@ -80,12 +79,7 @@ export interface ServerInput {
  * @param payload payload to send to the server
  * @returns the exported query plan for the provided query
  */
-export async function queryServer({
-  url,
-  mdxQuery,
-  username,
-  password,
-}: ServerInput) {
+export async function queryServer({ url, mdxQuery, username, password }: ServerInput) {
   const queryUrl = await resolveQueryEndpoint(url);
   const body = {
     mdx: mdxQuery,
