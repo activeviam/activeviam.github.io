@@ -361,7 +361,7 @@ export function Input({
   const [query, setQuery] = useState(lastQuery);
   const { username, password, url, mdxQuery } = query;
   const setQueryAttribute = (k: keyof ServerInput, v: string) =>
-    setQuery((q) => ({ ...q, ...{ [k]: v } }));
+    setQuery((q) => ({ ...q, [k]: v }));
   const [urlMode, setUrlMode] = useState(false);
   const devMode = location.search.includes("dev"); // Backward compatibility
   const [fileName, setFileName] = useState("");

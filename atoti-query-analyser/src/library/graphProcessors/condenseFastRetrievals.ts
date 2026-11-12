@@ -203,10 +203,7 @@ class FastRetrievalCondenser {
       groupIdByRetrieval.set(retrieval, groupId);
     });
 
-    const retrievalGroups: UUID[][] = new Array(rootSetIndex.size);
-    for (let i = 0; i < rootSetIndex.size; ++i) {
-      retrievalGroups[i] = [];
-    }
+    const retrievalGroups: UUID[][] = Array.from({ length: rootSetIndex.size }, () => []);
 
     groupIdByRetrieval.forEach((groupId, retrieval) => {
       retrievalGroups[groupId].push(retrieval);
