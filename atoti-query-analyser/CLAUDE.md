@@ -113,7 +113,7 @@ This view does not report the actual thread execution in the backend, as this in
 
 - Vitest runs the `src/**/*.test.ts` files, in a Node environment (`vitest.config.ts`).
 - Tests live in `src/__tests__/`:
-  - `parsing/`: parsing of the V1 and JSON query plans of `cypress/fixtures/exports/`, with snapshots of the resulting graphs.
+  - `parsing/`: parsing of the V1 and JSON query plans of `e2e/fixtures/`, with snapshots of the resulting graphs.
     `parsing/fixtures.ts` lists the fixtures and loads them into `QueryPlan` objects, as the application does.
   - `graphProcessors/`: the processing pipelines of the Graph and Partitions views, run on every fixture.
   - `library/`: unit tests of the utilities, data structures, node comparison and server input.
@@ -130,10 +130,14 @@ This view does not report the actual thread execution in the backend, as this in
   `src/library/**` has its own, higher, thresholds.
   When adding tests, raise both sets of thresholds to the new coverage.
 
+### End-to-end tests
+
+- E2E tests (Playwright): `e2e/*.spec.ts` - run with `yarn e2e` (starts the Vite dev server on port 5173)
+  - Fixtures in `e2e/fixtures/` are discovered automatically: every file is loaded (`.json` as JSON, `.txt` as V1) and every panel of the top menu is opened
+  - A test fails on any page error, `console.error`, error notification, error boundary or "Load a query plan first!" stub. Use `console.debug` for non-fatal diagnostics
+  - Known broken fixtures are listed in `e2e/knownFailures.ts` and marked with `test.fail`
+
 ### CI
 
 - The CircleCI job `atoti_query_tests` runs `yarn test:coverage`, stores the JUnit report as test results and the coverage report as an artifact.
-
-### End-to-end tests
-
-- Cypress E2E tests: `cypress/e2e/` - test fixtures in `cypress/fixtures/exports/` (not working anymore at the moment)
+- The CircleCI job `atoti_query_e2e` runs the Playwright end-to-end tests.

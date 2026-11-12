@@ -6,10 +6,7 @@ import {
   QueryPlan,
 } from "library/dataStructures/processing/queryPlan";
 
-const FIXTURES_DIR = path.resolve(
-  __dirname,
-  "../../../cypress/fixtures/exports",
-);
+const FIXTURES_DIR = path.resolve(__dirname, "../../../e2e/fixtures");
 
 export const V1_FIXTURES = [
   "small-plan-v1.txt",

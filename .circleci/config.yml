@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 jobs:
   atoti_query_tests:
@@ -20,6 +20,35 @@ jobs:
       - store_artifacts:
           path: atoti-query-analyser/coverage
           destination: coverage
+      # not saving the cache, as we leave it to the other job
+  atoti_query_e2e:
+    docker:
+      # Keep the tag aligned with the @playwright/test version in package.json
+      - image: mcr.microsoft.com/playwright:v1.63.0-noble
+    environment:
+      CI: "true"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
+      - run:
+          name: Install yarn
+          command: command -v yarn || npm install -g yarn@1.22.22
+      - run:
+          name: Install dependencies
+          command: yarn install --cwd atoti-query-analyser
+      - run:
+          name: Run end-to-end tests
+          command: yarn --cwd atoti-query-analyser e2e
+      - store_test_results:
+          path: atoti-query-analyser/test-results/e2e
+      - store_artifacts:
+          path: atoti-query-analyser/playwright-report
+          destination: playwright-report
+      - store_artifacts:
+          path: atoti-query-analyser/test-results/e2e/artifacts
+          destination: playwright-artifacts
       # not saving the cache, as we leave it to the other job
   atoti_query:
     docker:
@@ -91,6 +120,12 @@ workflows:
   build:
     jobs:
       - atoti_query_tests:
+          filters:
+            branches:
+              ignore:
+                - master
+                - /wip-*/
+      - atoti_query_e2e:
           filters:
             branches:
               ignore:
