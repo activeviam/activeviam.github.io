@@ -124,9 +124,11 @@ This view does not report the actual thread execution in the backend, as this in
 ### Coverage
 
 - `yarn test:coverage` collects the coverage with v8, over every file of `src/`, including the React components.
-- The reports (HTML, LCOV) are written to `coverage/`.
+- The reports (HTML, LCOV, JSON summary) are written to `coverage/`.
+- `scripts/printCoverageSummary.mjs` then prints two figures: the coverage of all `src/`, and of `src/library/`, the React-free logic which the unit tests target.
 - `vitest.config.ts` sets the coverage thresholds to the current coverage, rounded down: the run fails below them.
-  When adding tests, raise the thresholds to the new coverage.
+  `src/library/**` has its own, higher, thresholds.
+  When adding tests, raise both sets of thresholds to the new coverage.
 
 ### CI
 

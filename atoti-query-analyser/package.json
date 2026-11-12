@@ -38,7 +38,7 @@
     "format-prettier": "prettier --ignore-path .gitignore \"src/**/*.{css,js,jsx,json,md,ts,tsx,yml}\"",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage && node scripts/printCoverageSummary.mjs"
   },
   "browserslist": {
     "production": [
