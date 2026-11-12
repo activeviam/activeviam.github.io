@@ -26,9 +26,10 @@ yarn-error.log*
 .idea
 online-tool
 
-# Cypress
-/cypress/screenshots/*
-/cypress/videos/*atoti-query-analyser/.claude/settings.local.json
-cypress/videos/
+# Playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 .claude/settings.local.json
 test-results/

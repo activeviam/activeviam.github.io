@@ -3,7 +3,6 @@ import tseslint from "typescript-eslint";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import prettier from "eslint-plugin-prettier/recommended";
-import cypress from "eslint-plugin-cypress";
 import globals from "globals";
 
 export default tseslint.config(
@@ -13,8 +12,8 @@ export default tseslint.config(
       "node_modules/**",
       "*.config.js",
       "*.config.ts",
-      "cypress/screenshots/**",
-      "cypress/videos/**",
+      "playwright-report/**",
+      "test-results/**",
     ],
   },
   eslint.configs.recommended,
@@ -71,29 +70,15 @@ export default tseslint.config(
     },
   },
   {
-    files: ["cypress/**/*.{js,ts}"],
-    plugins: {
-      cypress,
-    },
+    files: ["e2e/**/*.ts"],
     languageOptions: {
       globals: {
-        ...globals.browser,
-        ...globals.mocha,
-        cy: "readonly",
-        Cypress: "readonly",
-        expect: "readonly",
-        assert: "readonly",
-        chai: "readonly",
+        ...globals.node,
       },
     },
     rules: {
-      "cypress/no-assigning-return-values": "error",
-      "cypress/no-unnecessary-waiting": "error",
-      "cypress/assertion-before-screenshot": "warn",
-      "cypress/no-force": "warn",
-      "cypress/no-async-tests": "error",
       semi: "error",
     },
   },
-  prettier
+  prettier,
 );

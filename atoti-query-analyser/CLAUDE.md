@@ -106,4 +106,8 @@ This view does not report the actual thread execution in the backend, as this in
 
 ## Testing
 
-- Cypress E2E tests: `cypress/integration/` - test fixtures in `cypress/fixtures/exports/` (not working anymore at the moment)
+- Unit tests (Vitest): `src/**/*.test.ts` - run with `yarn test:run`
+- E2E tests (Playwright): `e2e/*.spec.ts` - run with `yarn e2e` (starts the Vite dev server on port 5173)
+  - Fixtures in `e2e/fixtures/` are discovered automatically: every file is loaded (`.json` as JSON, `.txt` as V1) and every panel of the top menu is opened
+  - A test fails on any page error, `console.error`, error notification, error boundary or "Load a query plan first!" stub. Use `console.debug` for non-fatal diagnostics
+  - Known broken fixtures are listed in `e2e/knownFailures.ts` and marked with `test.fail`
