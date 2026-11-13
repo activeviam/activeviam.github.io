@@ -23,8 +23,11 @@
     "@hpcc-js/wasm": "^2.33.1",
     "@popperjs/core": "^2.11.6",
     "@types/d3": "^7.4.0",
+    "@types/d3-force": "^3.0.10",
+    "@types/d3-selection": "^3.0.11",
     "@types/fuzzy-search": "^2.1.2",
     "@types/lodash": "^4.17.24",
+    "@types/prop-types": "^15.7.15",
     "bootstrap": "^5.3.8",
     "d3": "^7.7.0",
     "d3-drag": "^3.0.0",
@@ -75,6 +78,12 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "packageManager": "pnpm@10.28.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
     ]
   }
 }
