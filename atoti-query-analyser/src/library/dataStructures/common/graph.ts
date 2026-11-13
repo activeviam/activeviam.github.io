@@ -287,7 +287,6 @@ export interface IGraphObserver<
 }
 
 // Reason: abstract class with default no-op methods
-/* eslint-disable @typescript-eslint/no-unused-vars */
 export class AGraphObserver<
   VertexMetadata,
   EdgeMetadata,
@@ -295,20 +294,18 @@ export class AGraphObserver<
   Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>,
   Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>,
 > implements IGraphObserver<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph> {
-  onBeginSearch(graph: Graph): void {}
+  onBeginSearch(_graph: Graph): void {}
 
-  onEdgeDiscover(edge: Edge): void {}
+  onEdgeDiscover(_edge: Edge): void {}
 
   onEndSearch(): void {}
 
-  onVertexDiscover(vertex: Vertex): void {}
+  onVertexDiscover(_vertex: Vertex): void {}
 
-  onVertexEnter(vertex: Vertex): void {}
+  onVertexEnter(_vertex: Vertex): void {}
 
-  onVertexExit(vertex: Vertex): void {}
+  onVertexExit(_vertex: Vertex): void {}
 }
-
-/* eslint-enable @typescript-eslint/no-unused-vars */
 
 /**
  * This class encapsulates depth-first search (DFS) algorithm. This algorithm is used to traverse graphs.

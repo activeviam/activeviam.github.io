@@ -1,4 +1,11 @@
-import React, { useLayoutEffect, useRef, forwardRef, ForwardedRef } from "react";
+import {
+  createElement,
+  CSSProperties,
+  useLayoutEffect,
+  useRef,
+  forwardRef,
+  ForwardedRef,
+} from "react";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { Popover, Button, Overlay } from "react-bootstrap";
 import { FaTimes } from "react-icons/fa";
@@ -192,7 +199,7 @@ export function Node({
         ])}
         ref={ref}
       >
-        {React.createElement(nodeElem, {
+        {createElement(nodeElem, {
           onClick,
         })}
         <text onClick={onClick}>{node.name}</text>

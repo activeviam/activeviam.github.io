@@ -1,4 +1,4 @@
-import React, { CSSProperties, ForwardedRef, forwardRef, useLayoutEffect, useRef } from "react";
+import { CSSProperties, ForwardedRef, forwardRef, useLayoutEffect, useRef } from "react";
 import * as d3 from "d3";
 import { Popover, Button, Overlay } from "react-bootstrap";
 import { FaTimes } from "react-icons/fa";

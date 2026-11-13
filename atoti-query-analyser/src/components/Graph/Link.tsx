@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import React, { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { enterLink, updateLink } from "../../library/graphView/graphHelpers";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
 

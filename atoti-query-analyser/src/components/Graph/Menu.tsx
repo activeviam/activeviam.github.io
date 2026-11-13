@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useMemo, useState } from "react";
+import { PropsWithChildren, useMemo, useState } from "react";
 import { Measure } from "../../library/dataStructures/json/measure";
 import FuzzySearch from "fuzzy-search";
 import _ from "lodash";

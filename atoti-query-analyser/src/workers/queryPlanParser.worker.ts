@@ -1,13 +1,13 @@
 import { parseMultiV1, convertToV2 } from "../library/inputProcessors/v1tov2";
 import { queryServer, ServerInput } from "../library/inputProcessors/server";
 import { saveRecentQueryPlan, extractLabel } from "../library/storage/recentQueryPlans";
-import type { WorkerInputMessage, WorkerOutputMessage } from "./queryPlanParserTypes";
+import type {
+  ProgressPhase,
+  WorkerInputMessage,
+  WorkerOutputMessage,
+} from "./queryPlanParserTypes";
 
-function postProgress(
-  phase: WorkerOutputMessage extends { type: "PROGRESS"; payload: infer P } ? P["phase"] : never,
-  message: string,
-  progress?: number,
-) {
+function postProgress(phase: ProgressPhase, message: string, progress?: number) {
   const msg: WorkerOutputMessage = {
     type: "PROGRESS",
     payload: { phase, message, progress },

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { untangle } from "../../library/dataStructures/d3/d3Graph";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
@@ -122,7 +122,7 @@ export function Graph({
 
   const windowSize = useWindowSize();
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const zoomRef = useRef<ZoomBehavior<SVGSVGElement, unknown>>();
+  const zoomRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | undefined>(undefined);
   const notificationContext = useNotificationContext();
 
   const [autoCriticalScoreFilterNotified, setAutoCriticalScoreFilterNotified] = useState(false);
@@ -257,7 +257,7 @@ export function Graph({
     changeGraph0(id);
   };
 
-  const forceRef = useRef<d3.Simulation<D3Node, undefined>>();
+  const forceRef = useRef<d3.Simulation<D3Node, undefined> | undefined>(undefined);
 
   useEffect(() => {
     if (svgRef.current === null) {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./Details.css";
 import { extractWords } from "library/utilities/textUtils";
 import { CubeLocation } from "library/dataStructures/json/cubeLocation";
