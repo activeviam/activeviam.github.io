@@ -27,7 +27,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `yarn vite --port ${port} --strictPort`,
+    command: `pnpm vite --port ${port} --strictPort`,
     url: `http://localhost:${port}`,
     reuseExistingServer: !isCI,
     timeout: 120_000,

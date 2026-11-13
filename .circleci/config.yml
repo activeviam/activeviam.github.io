@@ -1,20 +1,32 @@
 version: 2.1
 
+commands:
+  install_atoti_dependencies:
+    description: Install pnpm, at the version set by packageManager, and the dependencies of atoti-query-analyser
+    steps:
+      - restore_cache:
+          keys:
+            - pnpm-atoti-{{ checksum "atoti-query-analyser/pnpm-lock.yaml" }}
+            - pnpm-atoti-
+      - run:
+          name: Install pnpm
+          command: |
+            npm install --global --prefix "$HOME/.local" "$(node -p 'require("./atoti-query-analyser/package.json").packageManager')"
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$BASH_ENV"
+      - run:
+          name: Install dependencies
+          command: pnpm --dir atoti-query-analyser install --frozen-lockfile --store-dir "$PWD/.pnpm-store"
+
 jobs:
   atoti_query_tests:
     docker:
       - image: cimg/node:24.10.0
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
-      - run:
-          name: Install dependencies
-          command: yarn install --cwd atoti-query-analyser
+      - install_atoti_dependencies
       - run:
           name: Run unit tests and check coverage thresholds
-          command: yarn --cwd atoti-query-analyser test:coverage
+          command: pnpm --dir atoti-query-analyser test:coverage
       - store_test_results:
           path: atoti-query-analyser/test-results
       - store_artifacts:
@@ -26,21 +38,16 @@ jobs:
       - image: cimg/node:24.10.0
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
-      - run:
-          name: Install dependencies
-          command: yarn install --cwd atoti-query-analyser
+      - install_atoti_dependencies
       - run:
           name: Check formatting with oxfmt
-          command: yarn --cwd atoti-query-analyser format:check
+          command: pnpm --dir atoti-query-analyser format:check
       - run:
           name: Lint with oxlint
-          command: yarn --cwd atoti-query-analyser lint
+          command: pnpm --dir atoti-query-analyser lint
       - run:
           name: Type-check with tsc
-          command: yarn --cwd atoti-query-analyser typecheck
+          command: pnpm --dir atoti-query-analyser typecheck
       # not saving the cache, as we leave it to the other job
   atoti_query_e2e:
     docker:
@@ -50,18 +57,10 @@ jobs:
       CI: "true"
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
-      - run:
-          name: Install yarn
-          command: command -v yarn || npm install -g yarn@1.22.22
-      - run:
-          name: Install dependencies
-          command: yarn install --cwd atoti-query-analyser
+      - install_atoti_dependencies
       - run:
           name: Run end-to-end tests
-          command: yarn --cwd atoti-query-analyser e2e
+          command: pnpm --dir atoti-query-analyser e2e
       - store_test_results:
           path: atoti-query-analyser/test-results/e2e
       - store_artifacts:
@@ -76,19 +75,14 @@ jobs:
       - image: cimg/node:24.10.0
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
-      - run:
-          name: Install dependencies
-          command: yarn install --cwd atoti-query-analyser
+      - install_atoti_dependencies
       - run:
           name: Build application
-          command: yarn --cwd atoti-query-analyser build
+          command: pnpm --dir atoti-query-analyser build
       - save_cache:
-          key: deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
+          key: pnpm-atoti-{{ checksum "atoti-query-analyser/pnpm-lock.yaml" }}
           paths:
-            - atoti-query-analyser/node_modules
+            - .pnpm-store
       - run:
           name: Move to workspace
           command: |
@@ -106,7 +100,7 @@ jobs:
           at: _build
       - run:
           name: Install and configure dependencies
-          command: yarn global add gh-pages@2.2.0 --prefix "$HOME"
+          command: npm install --global --prefix "$HOME" gh-pages@2.2.0
       - add_ssh_keys:
           fingerprints:
             - "bf:66:81:20:29:0d:57:42:bf:6b:78:7b:07:6f:69:6a"
