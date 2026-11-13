@@ -38,6 +38,9 @@ jobs:
       - run:
           name: Lint with oxlint
           command: yarn --cwd atoti-query-analyser lint
+      - run:
+          name: Type-check with tsc
+          command: yarn --cwd atoti-query-analyser typecheck
       # not saving the cache, as we leave it to the other job
   atoti_query_e2e:
     docker:

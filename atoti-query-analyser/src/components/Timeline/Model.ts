@@ -85,7 +85,7 @@ export const computeRetrievalClasses = (
   return [];
 };
 
-export const focusOnItem = (state: FocusControl, entry: RetrievalCursor): FocusControl => ({
+export const focusOnItem = (_state: FocusControl, entry: RetrievalCursor): FocusControl => ({
   item: entry,
   showChildren: false,
   showParents: false,

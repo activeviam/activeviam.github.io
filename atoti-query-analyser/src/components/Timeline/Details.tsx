@@ -1,4 +1,3 @@
-import React from "react";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { Toast } from "react-bootstrap";
 import Button from "react-bootstrap/Button";

@@ -13,6 +13,7 @@ npm start          # Development server at localhost:3000
 npm run build      # Production build to ./build
 yarn lint          # Lint with oxlint (yarn lint:fix to auto-fix)
 yarn format        # Format with oxfmt (yarn format:check to only check)
+yarn typecheck     # Type-check with tsc
 yarn test          # Unit tests in watch mode
 yarn test:run      # Unit tests, once
 yarn test:coverage # Unit tests with the v8 coverage report and thresholds check
@@ -144,4 +145,4 @@ This view does not report the actual thread execution in the backend, as this in
 
 - The CircleCI job `atoti_query_tests` runs `yarn test:coverage`, stores the JUnit report as test results and the coverage report as an artifact.
 - The CircleCI job `atoti_query_e2e` runs the Playwright end-to-end tests.
-- The CircleCI job `atoti_query_lint` runs `yarn format:check` and `yarn lint`: format with `yarn format` and fix the oxlint errors before pushing. The deployment to `master` requires it.
+- The CircleCI job `atoti_query_lint` runs `yarn format:check`, `yarn lint` and `yarn typecheck`: format with `yarn format` and fix the oxlint and tsc errors before pushing. The deployment to `master` requires it.

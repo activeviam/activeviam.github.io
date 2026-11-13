@@ -1,5 +1,3 @@
-import React from "react";
-
 // callback will be changeGraph()
 /**
  * This React component shows a button to go to the parent query if exists.

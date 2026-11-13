@@ -1,4 +1,3 @@
-import React from "react";
 import { Accordion } from "react-bootstrap";
 import { Filter } from "../../library/dataStructures/json/filter";
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { JSX, useCallback, useState } from "react";
 import { PassGraph } from "./components/PassGraph/PassGraph";
 import { OverlayContainer } from "./hooks/overlayContainer";
 import { NotificationWrapper } from "./components/Notification/NotificationWrapper";

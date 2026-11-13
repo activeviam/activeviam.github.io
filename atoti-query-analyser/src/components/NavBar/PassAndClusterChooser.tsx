@@ -1,5 +1,4 @@
 import { NavDropdown } from "react-bootstrap";
-import React from "react";
 import { QueryPlanMetadata } from "../../library/graphProcessors/extractMetadata";
 
 /**

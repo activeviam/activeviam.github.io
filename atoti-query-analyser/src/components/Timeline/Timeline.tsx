@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useEffect, useState } from "react";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import Button from "react-bootstrap/Button";
