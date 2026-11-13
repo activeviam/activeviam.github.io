@@ -21,16 +21,16 @@ export default defineConfig({
       reporter: ["html", "lcov", "json-summary"],
       // Current coverage, rounded down: raise these values when adding tests.
       thresholds: {
-        branches: 34,
+        branches: 35,
         functions: 36,
         lines: 44,
-        statements: 43,
+        statements: 44,
         // The React-free logic, which the unit tests target, has its own higher thresholds.
         "src/library/**": {
-          branches: 76,
-          functions: 77,
-          lines: 81,
-          statements: 81,
+          branches: 77,
+          functions: 78,
+          lines: 82,
+          statements: 82,
         },
       },
     },

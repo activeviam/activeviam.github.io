@@ -30,6 +30,31 @@ exports[`Query plan content > produces the expected graphs for 6.1-in-v1.txt 1`]
 ]
 `;
 
+exports[`Query plan content > produces the expected graphs for gc-pauses-plan.json 1`] = `
+[
+  {
+    "edgeCount": 36,
+    "filterCount": 1,
+    "kinds": {
+      "AggregateRetrieval": 15,
+      "ExternalRetrieval": 3,
+      "VirtualRetrieval": 2,
+    },
+    "mdxPass": "SelectPass_0",
+    "measureCount": 15,
+    "pivotId": "GcCube",
+    "types": {
+      "ExternalDatabaseRetrieval": 3,
+      "PostProcessedAggregatesRetrieval": 1,
+      "PrimitiveAggregatesRetrieval": 14,
+      "VirtualSource": 1,
+      "VirtualTarget": 1,
+    },
+    "vertexCount": 20,
+  },
+]
+`;
+
 exports[`Query plan content > produces the expected graphs for larger-distributed-query.json 1`] = `
 [
   {

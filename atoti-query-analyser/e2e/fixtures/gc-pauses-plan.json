@@ -1,0 +1,467 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "planInfo": {
+        "pivotType": "ActivePivotVersion",
+        "pivotId": "GcCube",
+        "epoch": "1",
+        "branch": "master",
+        "retrieverType": "ActivePivotAggregatesRetriever",
+        "mdxPass": "SelectPass_0",
+        "contextValues": {},
+        "rangeSharing": 1000000,
+        "missedPrefetchBehavior": "WARN",
+        "aggregatesCache": "None",
+        "globalTimings": {
+          "executionContextCreationTime": 0,
+          "finalizationTime": 1,
+          "planningTime": 2,
+          "queryExecutionTime": 7546
+        },
+        "continuous": false
+      },
+      "aggregateRetrievals": [
+        {
+          "retrievalId": 0,
+          "partialProviderName": "N/A",
+          "type": "PostProcessedAggregatesRetrieval",
+          "partitioning": "hash6(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure0"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14, 15],
+          "timingInfo": {
+            "startTime": [6720, 6860, 7000, 7140, 7280, 7420],
+            "elapsedTime": [141, 138, 135, 132, 129, 126]
+          }
+        },
+        {
+          "retrievalId": 1,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash5(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure1"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14],
+          "timingInfo": {
+            "startTime": [5260, 6585, 6710, 6835, 6960],
+            "elapsedTime": [1308, 105, 102, 139, 136]
+          }
+        },
+        {
+          "retrievalId": 2,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure2"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14, 15, 16, 17],
+          "timingInfo": {
+            "startTime": [5000, 5110, 5220, 6530, 6640, 6750, 6860, 6970],
+            "elapsedTime": [195, 1392, 1389, 186, 183, 180, 177, 174]
+          }
+        },
+        {
+          "retrievalId": 3,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash7(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure3"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14, 15, 16],
+          "timingInfo": {
+            "startTime": [4740, 4880, 5020, 5160, 6500, 6640, 6780],
+            "elapsedTime": [162, 159, 156, 1353, 150, 147, 144]
+          }
+        },
+        {
+          "retrievalId": 4,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash6(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure4"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14, 15],
+          "timingInfo": {
+            "startTime": [4480, 4605, 4730, 4855, 4980, 5105],
+            "elapsedTime": [129, 126, 123, 120, 157, 154]
+          }
+        },
+        {
+          "retrievalId": 5,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash5(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure5"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14],
+          "timingInfo": {
+            "startTime": [4220, 4330, 4440, 4550, 4660],
+            "elapsedTime": [136, 133, 130, 127, 124]
+          }
+        },
+        {
+          "retrievalId": 6,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure6"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14, 15, 16, 17],
+          "timingInfo": {
+            "startTime": [3960, 4100, 4240, 4380, 4520, 4660, 4800, 4940],
+            "elapsedTime": [183, 180, 177, 174, 171, 168, 165, 162]
+          }
+        },
+        {
+          "retrievalId": 7,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash7(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure7"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14, 15, 16],
+          "timingInfo": {
+            "startTime": [3700, 3825, 3950, 4075, 4200, 4325, 4450],
+            "elapsedTime": [150, 147, 144, 141, 178, 175, 172]
+          }
+        },
+        {
+          "retrievalId": 8,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash6(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure8"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14, 15],
+          "timingInfo": {
+            "startTime": [2740, 2850, 2960, 3770, 3880, 3990],
+            "elapsedTime": [157, 854, 851, 148, 145, 142]
+          }
+        },
+        {
+          "retrievalId": 9,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash5(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure9"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14],
+          "timingInfo": {
+            "startTime": [2480, 2620, 2760, 2900, 3740],
+            "elapsedTime": [124, 121, 118, 815, 112]
+          }
+        },
+        {
+          "retrievalId": 10,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure10"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14, 15, 16, 17],
+          "timingInfo": {
+            "startTime": [2220, 2345, 2470, 2595, 2720, 2845, 2970, 3795],
+            "elapsedTime": [171, 168, 165, 162, 199, 896, 893, 190]
+          }
+        },
+        {
+          "retrievalId": 11,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash7(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure11"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14, 15, 16],
+          "timingInfo": {
+            "startTime": [1960, 2070, 2180, 2290, 2400, 2510, 2620],
+            "elapsedTime": [178, 175, 172, 169, 166, 163, 160]
+          }
+        },
+        {
+          "retrievalId": 12,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash6(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure12"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14, 15],
+          "timingInfo": {
+            "startTime": [1700, 1840, 1980, 2120, 2260, 2400],
+            "elapsedTime": [145, 142, 139, 136, 133, 130]
+          }
+        },
+        {
+          "retrievalId": 13,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash5(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure13"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14],
+          "timingInfo": {
+            "startTime": [1440, 1565, 1690, 1815, 1940],
+            "elapsedTime": [112, 109, 106, 103, 100]
+          }
+        },
+        {
+          "retrievalId": 14,
+          "partialProviderName": "N/A",
+          "type": "PrimitiveAggregatesRetrieval",
+          "partitioning": "hash8(City)",
+          "location": [
+            {
+              "dimension": "Geography",
+              "hierarchy": "City",
+              "level": ["ALL", "City"],
+              "path": ["AllMember", "*"]
+            }
+          ],
+          "measures": ["Measure14"],
+          "filterId": 0,
+          "measureProvider": "SimpleMeasuresProvider",
+          "underlyingDataNodes": [],
+          "resultSizes": [10, 11, 12, 13, 14, 15, 16, 17],
+          "timingInfo": {
+            "startTime": [780, 890, 1400, 1510, 1620, 1730, 1840, 1950],
+            "elapsedTime": [199, 596, 193, 190, 187, 184, 181, 178]
+          }
+        }
+      ],
+      "externalRetrievals": [
+        {
+          "retrievalId": 0,
+          "store": "Store0",
+          "fields": ["City", "Amount"],
+          "joinedMeasure": [],
+          "condition": "TRUE",
+          "resultSizes": [100, 101, 102, 103, 104],
+          "timingInfo": {
+            "startTime": [0, 110, 220, 330, 440],
+            "elapsedTime": [100, 137, 134, 131, 128]
+          }
+        },
+        {
+          "retrievalId": 1,
+          "store": "Store1",
+          "fields": ["City", "Amount"],
+          "joinedMeasure": [],
+          "condition": "TRUE",
+          "resultSizes": [100, 101, 102, 103, 104, 105],
+          "timingInfo": {
+            "startTime": [260, 385, 510, 635, 760, 885],
+            "elapsedTime": [133, 130, 127, 124, 121, 558]
+          }
+        },
+        {
+          "retrievalId": 2,
+          "store": "Store2",
+          "fields": ["City", "Amount"],
+          "joinedMeasure": [],
+          "condition": "TRUE",
+          "resultSizes": [100, 101, 102, 103, 104, 105, 106],
+          "timingInfo": {
+            "startTime": [520, 660, 800, 940, 1480, 1620, 1760],
+            "elapsedTime": [166, 163, 160, 557, 154, 151, 148]
+          }
+        }
+      ],
+      "dependencies": {
+        "0": [1, 2],
+        "1": [2, 3],
+        "2": [3, 4],
+        "3": [4, 5],
+        "4": [5, 6],
+        "5": [6, 7],
+        "6": [7, 8],
+        "7": [8, 9],
+        "8": [9, 10],
+        "9": [10, 11],
+        "10": [11, 12],
+        "11": [12, 13],
+        "12": [13, 14],
+        "13": [14],
+        "-1": [0]
+      },
+      "externalDependencies": {
+        "12": [2],
+        "13": [1, 2],
+        "14": [0, 1]
+      },
+      "queryFilters": [
+        {
+          "id": 0,
+          "description": "CubeFilter with all access"
+        }
+      ],
+      "querySummary": {
+        "measures": [
+          "Measure0",
+          "Measure1",
+          "Measure2",
+          "Measure3",
+          "Measure4",
+          "Measure5",
+          "Measure6",
+          "Measure7",
+          "Measure8",
+          "Measure9",
+          "Measure10",
+          "Measure11",
+          "Measure12",
+          "Measure13",
+          "Measure14"
+        ],
+        "partialProviders": [],
+        "totalRetrievals": 15,
+        "retrievalsCountByType": {
+          "PostProcessedAggregatesRetrieval": 1,
+          "PrimitiveAggregatesRetrieval": 14
+        },
+        "partitioningCountByType": {},
+        "resultSizeByPartitioning": {},
+        "totalExternalResultSize": 1846
+      }
+    }
+  ]
+}

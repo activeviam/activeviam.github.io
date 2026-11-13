@@ -25,6 +25,7 @@ export const JSON_FIXTURES = [
   "query-with-external-retrievals.json",
   "range-location-path-plan.json",
   "no-data-key-format.json",
+  "gc-pauses-plan.json",
 ];
 
 export const ALL_FIXTURES = [...JSON_FIXTURES, ...V1_FIXTURES];

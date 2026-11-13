@@ -14,6 +14,7 @@ import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import { QueryPlanMetadata } from "../../library/graphProcessors/extractMetadata";
 import { RetrievalGraph } from "../../library/dataStructures/json/retrieval";
 import { humanisticStringComparator } from "../../library/utilities/textUtils";
+import { GcDetectionPanel } from "./GcDetectionPanel";
 import "./Summary.css";
 
 const TIMING_LABELS = new Map([
@@ -324,10 +325,17 @@ function QuerySummaryView({
   querySummary: summary,
   planInfo: info,
   graph,
+  gcDetectionKey,
 }: {
   querySummary: QuerySummary;
   planInfo: PlanInfo;
   graph: RetrievalGraph;
+  /**
+   * Identifier of the plan, resetting the GC report when the plan changes.
+   * The GC detection is not offered when undefined (e.g. for the global
+   * summary, which mixes the clocks of several cluster members).
+   */
+  gcDetectionKey?: number;
 }) {
   const exportAsJson = () => {
     const vertices = Array.from(graph.getVertices());
@@ -363,6 +371,9 @@ function QuerySummaryView({
       ) : null}
       <h4>Query timings</h4>
       <Timings info={info} />
+      {gcDetectionKey !== undefined && graph.getVertexCount() > 0 ? (
+        <GcDetectionPanel key={gcDetectionKey} graph={graph} />
+      ) : null}
       <h4>Measures</h4>
       <MeasureList measures={Array.from(summary.measures)} columns={3} />
       <MapView
@@ -394,10 +405,12 @@ function MultiPivotSummary({
   queries,
   pivots,
   selected,
+  globalPivotId,
 }: {
   queries: QueryPlan[];
   pivots: QueryPlanMetadata[];
   selected: number;
+  globalPivotId: number;
 }) {
   return (
     <>
@@ -405,7 +418,10 @@ function MultiPivotSummary({
       <Tabs defaultActiveKey={pivots[selected].name}>
         {pivots.map((pivot) => (
           <Tab eventKey={pivot.name} title={pivot.name} key={pivot.name}>
-            {QuerySummaryView(queries[pivot.id])}
+            {QuerySummaryView({
+              ...queries[pivot.id],
+              gcDetectionKey: pivot.id === globalPivotId ? undefined : pivot.id,
+            })}
           </Tab>
         ))}
       </Tabs>
@@ -591,9 +607,10 @@ export function Summary({
       pivots: allSummaries,
       queries: [...queries, globalQuery],
       selected: allSummaries.findIndex((inf) => inf.id === currentQuery),
+      globalPivotId: fullInfo.id,
     });
   } else {
-    summary = QuerySummaryView(rootQuery);
+    summary = QuerySummaryView({ ...rootQuery, gcDetectionKey: rootId });
   }
   return (
     <div id="summary">
