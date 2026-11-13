@@ -144,3 +144,4 @@ This view does not report the actual thread execution in the backend, as this in
 
 - The CircleCI job `atoti_query_tests` runs `yarn test:coverage`, stores the JUnit report as test results and the coverage report as an artifact.
 - The CircleCI job `atoti_query_e2e` runs the Playwright end-to-end tests.
+- The CircleCI job `atoti_query_lint` runs `yarn format:check` and `yarn lint`: format with `yarn format` and fix the oxlint errors before pushing. The deployment to `master` requires it.

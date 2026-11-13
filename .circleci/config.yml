@@ -21,6 +21,24 @@ jobs:
           path: atoti-query-analyser/coverage
           destination: coverage
       # not saving the cache, as we leave it to the other job
+  atoti_query_lint:
+    docker:
+      - image: cimg/node:24.10.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - deps-atoti-{{ checksum "atoti-query-analyser/package.json" }}
+      - run:
+          name: Install dependencies
+          command: yarn install --cwd atoti-query-analyser
+      - run:
+          name: Check formatting with oxfmt
+          command: yarn --cwd atoti-query-analyser format:check
+      - run:
+          name: Lint with oxlint
+          command: yarn --cwd atoti-query-analyser lint
+      # not saving the cache, as we leave it to the other job
   atoti_query_e2e:
     docker:
       # Keep the tag aligned with the @playwright/test version in package.json
@@ -125,6 +143,12 @@ workflows:
               ignore:
                 - master
                 - /wip-*/
+      - atoti_query_lint:
+          filters:
+            branches:
+              ignore:
+                - master
+                - /wip-*/
       - atoti_query_e2e:
           filters:
             branches:
@@ -140,6 +164,7 @@ workflows:
       - deploy_to_master:
           requires:
             - atoti_query
+            - atoti_query_lint
           filters:
             branches:
               only: develop
