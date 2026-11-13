@@ -1,18 +1,10 @@
 import { parseMultiV1, convertToV2 } from "../library/inputProcessors/v1tov2";
 import { queryServer, ServerInput } from "../library/inputProcessors/server";
-import {
-  saveRecentQueryPlan,
-  extractLabel,
-} from "../library/storage/recentQueryPlans";
-import type {
-  WorkerInputMessage,
-  WorkerOutputMessage,
-} from "./queryPlanParserTypes";
+import { saveRecentQueryPlan, extractLabel } from "../library/storage/recentQueryPlans";
+import type { WorkerInputMessage, WorkerOutputMessage } from "./queryPlanParserTypes";
 
 function postProgress(
-  phase: WorkerOutputMessage extends { type: "PROGRESS"; payload: infer P }
-    ? P["phase"]
-    : never,
+  phase: WorkerOutputMessage extends { type: "PROGRESS"; payload: infer P } ? P["phase"] : never,
   message: string,
   progress?: number,
 ) {
@@ -52,9 +44,7 @@ async function handleParseJson(rawInput: string, labelHint?: string) {
     const parsedJson = JSON.parse(rawInput);
     rawJson = Object.hasOwn(parsedJson, "data") ? parsedJson.data : parsedJson;
   } catch (err) {
-    throw new Error(
-      `Invalid JSON: ${err instanceof Error ? err.message : String(err)}`,
-    );
+    throw new Error(`Invalid JSON: ${err instanceof Error ? err.message : String(err)}`);
   }
 
   postProgress("saving", "Saving to history...");
@@ -67,17 +57,10 @@ async function handleParseJson(rawInput: string, labelHint?: string) {
 async function handleParseV1(rawInput: string, labelHint?: string) {
   postProgress("parsing", "Parsing V1 logs...", 0);
 
-  const v1Collection = await parseMultiV1(
-    rawInput,
-    (currentLine, lineCount) => {
-      const progress = Math.round((currentLine / lineCount) * 100);
-      postProgress(
-        "parsing",
-        `Processed ${currentLine} lines out of ${lineCount}`,
-        progress,
-      );
-    },
-  );
+  const v1Collection = await parseMultiV1(rawInput, (currentLine, lineCount) => {
+    const progress = Math.round((currentLine / lineCount) * 100);
+    postProgress("parsing", `Processed ${currentLine} lines out of ${lineCount}`, progress);
+  });
 
   postProgress("converting", "Converting to V2 format...");
   const rawJson: unknown[] = [];
@@ -123,10 +106,7 @@ self.onmessage = async (event: MessageEvent<WorkerInputMessage>) => {
         await handleFetchAndParse(payload);
         break;
       default:
-        postError(
-          `Unknown message type: ${(event.data as { type: string }).type}`,
-          "init",
-        );
+        postError(`Unknown message type: ${(event.data as { type: string }).type}`, "init");
     }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

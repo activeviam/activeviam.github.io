@@ -8,14 +8,8 @@ import { Input, InputMode, InputType } from "./components/Input/Input";
 import { VertexSelection } from "./library/dataStructures/processing/selection";
 import { ServerInput } from "./library/inputProcessors/server";
 import { GoBackToParentQueryButton } from "./components/NavBar/GoBackToParentQueryButton";
-import {
-  preprocessQueryPlan,
-  QueryPlan,
-} from "./library/dataStructures/processing/queryPlan";
-import {
-  extractMetadata,
-  QueryPlanMetadata,
-} from "./library/graphProcessors/extractMetadata";
+import { preprocessQueryPlan, QueryPlan } from "./library/dataStructures/processing/queryPlan";
+import { extractMetadata, QueryPlanMetadata } from "./library/graphProcessors/extractMetadata";
 import { buildDefaultSelection } from "./library/graphProcessors/selection";
 import { PassAndClusterChooser } from "./components/NavBar/PassAndClusterChooser";
 import { Summary } from "./components/Summary/Summary";
@@ -48,39 +42,29 @@ export function App(): JSX.Element {
   const [queryPlans, setQueryPlans] = useState<QueryPlan[]>();
   const [workerError, setWorkerError] = useState<Error | null>(null);
 
-  const findRootQuery = (
-    metadata: QueryPlanMetadata[],
-    passId: number,
-  ): number | undefined => {
-    return metadata
-      .filter((q) => q.pass === passId)
-      ?.find((q) => q.parentId === null)?.id;
+  const findRootQuery = (metadata: QueryPlanMetadata[], passId: number): number | undefined => {
+    return metadata.filter((q) => q.pass === passId)?.find((q) => q.parentId === null)?.id;
   };
 
-  const processRawJson = useCallback(
-    (rawJson: unknown, input?: string | ServerInput) => {
-      const queryPlan = preprocessQueryPlan(rawJson);
-      const defaultSelections = buildDefaultSelection(
-        queryPlan.map((query) => query.graph),
-      );
-      const metadata = extractMetadata(queryPlan);
+  const processRawJson = useCallback((rawJson: unknown, input?: string | ServerInput) => {
+    const queryPlan = preprocessQueryPlan(rawJson);
+    const defaultSelections = buildDefaultSelection(queryPlan.map((query) => query.graph));
+    const metadata = extractMetadata(queryPlan);
 
-      setSelections(defaultSelections);
-      setQueryMetadata(metadata);
-      setCurrentQueryId(findRootQuery(metadata, 0) || 0);
-      setRoute("summary");
-      setQueryPlans(queryPlan);
+    setSelections(defaultSelections);
+    setQueryMetadata(metadata);
+    setCurrentQueryId(findRootQuery(metadata, 0) || 0);
+    setRoute("summary");
+    setQueryPlans(queryPlan);
 
-      if (input !== undefined) {
-        if (typeof input === "string") {
-          setLastInput(input);
-        } else {
-          setLastQuery(input);
-        }
+    if (input !== undefined) {
+      if (typeof input === "string") {
+        setLastInput(input);
+      } else {
+        setLastQuery(input);
       }
-    },
-    [],
-  );
+    }
+  }, []);
 
   const handleWorkerSuccess = useCallback(
     (result: WorkerResult) => {
@@ -121,9 +105,7 @@ export function App(): JSX.Element {
         setLastInput(input);
       } else if (mode === InputMode.URL) {
         if (typeof input !== "object") {
-          showError(
-            new Error(`Bad arguments: ${JSON.stringify({ mode, input })}`),
-          );
+          showError(new Error(`Bad arguments: ${JSON.stringify({ mode, input })}`));
           return;
         }
         fetchAndParse(input);
@@ -171,25 +153,19 @@ export function App(): JSX.Element {
     if (queriesInPass.length === 0) return 0;
 
     // Priority a: clusterMemberId contains "QUERY" (case-insensitive)
-    const queryMatch = queriesInPass.find((q) =>
-      q.name?.toUpperCase().includes("QUERY"),
-    );
+    const queryMatch = queriesInPass.find((q) => q.name?.toUpperCase().includes("QUERY"));
     if (queryMatch) return queryMatch.id;
 
     // Priority b: retrieverType contains "Distribut" (case-insensitive)
     if (queryPlans) {
       const distributedMatch = queriesInPass.find((q) =>
-        queryPlans[q.id]?.planInfo.retrieverType
-          .toLowerCase()
-          .includes("distribut"),
+        queryPlans[q.id]?.planInfo.retrieverType.toLowerCase().includes("distribut"),
       );
       if (distributedMatch) return distributedMatch.id;
     }
 
     // Priority c: First alphabetically by clusterMemberId
-    const sorted = [...queriesInPass].sort((a, b) =>
-      (a.name || "").localeCompare(b.name || ""),
-    );
+    const sorted = [...queriesInPass].sort((a, b) => (a.name || "").localeCompare(b.name || ""));
     return sorted[0]?.id ?? 0;
   };
 
@@ -233,11 +209,7 @@ export function App(): JSX.Element {
 
   const renderSummary = () =>
     queryPlans ? (
-      <Summary
-        queries={queryPlans}
-        currentQuery={currentQueryId}
-        info={queryMetadata}
-      />
+      <Summary queries={queryPlans} currentQuery={currentQueryId} info={queryMetadata} />
     ) : (
       renderStub()
     );

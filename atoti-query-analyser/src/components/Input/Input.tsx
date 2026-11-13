@@ -118,18 +118,10 @@ function URLInput({
  * @param attributes.type - Input type
  * @param attributes.setType - Input type setter callback
  * */
-function TypeInput({
-  type,
-  setType,
-}: {
-  type: InputType;
-  setType: (newType: InputType) => void;
-}) {
+function TypeInput({ type, setType }: { type: InputType; setType: (newType: InputType) => void }) {
   const makeLabel = (inputType: InputType): string => {
     const inCodeLabel = InputType[inputType];
-    return (
-      inCodeLabel[0].toUpperCase() + inCodeLabel.substring(1).toLowerCase()
-    );
+    return inCodeLabel[0].toUpperCase() + inCodeLabel.substring(1).toLowerCase();
   };
 
   return (
@@ -165,21 +157,19 @@ function SourceInput({
 }) {
   return (
     <>
-      {[InputSource.TEXT_AREA, InputSource.FILE, InputSource.SERVER].map(
-        (src) => {
-          return (
-            <Form.Check
-              inline
-              label={src}
-              key={src}
-              value={src}
-              type="radio"
-              onChange={() => setSource(src)}
-              checked={src === source}
-            />
-          );
-        },
-      )}
+      {[InputSource.TEXT_AREA, InputSource.FILE, InputSource.SERVER].map((src) => {
+        return (
+          <Form.Check
+            inline
+            label={src}
+            key={src}
+            value={src}
+            type="radio"
+            onChange={() => setSource(src)}
+            checked={src === source}
+          />
+        );
+      })}
     </>
   );
 }
@@ -202,9 +192,7 @@ function TooBigInput({ data }: { data: string }) {
           Render anyway
         </ToggleButton>
       </ButtonGroup>
-      {forceRender && (
-        <Form.Control as="textarea" rows={10} value={data} readOnly />
-      )}
+      {forceRender && <Form.Control as="textarea" rows={10} value={data} readOnly />}
     </div>
   );
 }
@@ -373,7 +361,7 @@ export function Input({
   const [query, setQuery] = useState(lastQuery);
   const { username, password, url, mdxQuery } = query;
   const setQueryAttribute = (k: keyof ServerInput, v: string) =>
-    setQuery((q) => ({ ...q, ...{ [k]: v } }));
+    setQuery((q) => ({ ...q, [k]: v }));
   const [urlMode, setUrlMode] = useState(false);
   const devMode = location.search.includes("dev"); // Backward compatibility
   const [fileName, setFileName] = useState("");
@@ -458,9 +446,7 @@ export function Input({
                 setFileReading(false);
               };
               reader.onerror = (readerEvent) => {
-                showError(
-                  readerEvent.target?.error || new Error("An error occurred"),
-                );
+                showError(readerEvent.target?.error || new Error("An error occurred"));
                 setFileReading(false);
               };
 
@@ -507,11 +493,7 @@ export function Input({
           Data size: {input.length} ({prettySize(input.length)})
         </p>
       )}
-      <Buttons
-        urlMode={loadFromServer}
-        onSubmit={dispatchSubmit}
-        onDropData={() => setInput("")}
-      />
+      <Buttons urlMode={loadFromServer} onSubmit={dispatchSubmit} onDropData={() => setInput("")} />
       <DevButtons
         visible={devMode || type === InputType.DEVELOPER}
         input={input}
@@ -521,24 +503,16 @@ export function Input({
         <div className="my-3">
           <div className="d-flex align-items-center mb-2">
             <Spinner animation="border" variant="primary" size="sm" />
-            <span className="ms-2">
-              {fileReading ? "Reading file..." : workerState.message}
-            </span>
+            <span className="ms-2">{fileReading ? "Reading file..." : workerState.message}</span>
           </div>
           {workerState.isProcessing &&
             workerState.progress !== undefined &&
             workerState.progress > 0 && (
-              <ProgressBar
-                now={workerState.progress}
-                label={`${workerState.progress}%`}
-                animated
-              />
+              <ProgressBar now={workerState.progress} label={`${workerState.progress}%`} animated />
             )}
           {workerState.warnings.length > 0 && (
             <div className="mt-2 text-warning">
-              <small>
-                {workerState.warnings.length} warning(s) during parsing
-              </small>
+              <small>{workerState.warnings.length} warning(s) during parsing</small>
             </div>
           )}
         </div>

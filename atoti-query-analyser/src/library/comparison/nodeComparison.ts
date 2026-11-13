@@ -7,12 +7,7 @@ import {
 } from "../dataStructures/json/retrieval";
 import { CubeLocation } from "../dataStructures/json/cubeLocation";
 
-export type DiffStatus =
-  | "same"
-  | "left-only"
-  | "right-only"
-  | "different"
-  | "na";
+export type DiffStatus = "same" | "left-only" | "right-only" | "different" | "na";
 
 export interface ArrayDiffItem {
   value: string;
@@ -53,10 +48,7 @@ export interface NodeComparisonResult {
 /**
  * Compute set-based diff for string arrays (e.g., Measures)
  */
-export function computeArrayDiff(
-  left: string[],
-  right: string[],
-): ArrayDiffItem[] {
+export function computeArrayDiff(left: string[], right: string[]): ArrayDiffItem[] {
   const leftSet = new Set(left);
   const rightSet = new Set(right);
 
@@ -133,10 +125,7 @@ function compareLevels(
     rightLevelMap.set(levelName, { index: i, path: pathStr });
   }
 
-  const allLevelNames = new Set([
-    ...leftLevelMap.keys(),
-    ...rightLevelMap.keys(),
-  ]);
+  const allLevelNames = new Set([...leftLevelMap.keys(), ...rightLevelMap.keys()]);
   const result: LevelDiffItem[] = [];
 
   for (const levelName of allLevelNames) {
@@ -276,10 +265,7 @@ function isExternalRetrieval(r: ARetrieval): r is ExternalRetrieval {
 /**
  * Main comparison function
  */
-export function compareNodes(
-  left: ARetrieval,
-  right: ARetrieval,
-): NodeComparisonResult {
+export function compareNodes(left: ARetrieval, right: ARetrieval): NodeComparisonResult {
   // Type
   const type = compareScalar(left.type, right.type);
 
@@ -321,12 +307,8 @@ export function compareNodes(
   const provider = compareScalar(leftProvider, rightProvider);
 
   // Partitioning (only for AggregateRetrieval)
-  const leftPartitioning = isAggregateRetrieval(left)
-    ? left.partitioning
-    : null;
-  const rightPartitioning = isAggregateRetrieval(right)
-    ? right.partitioning
-    : null;
+  const leftPartitioning = isAggregateRetrieval(left) ? left.partitioning : null;
+  const rightPartitioning = isAggregateRetrieval(right) ? right.partitioning : null;
   const partitioning = compareScalar(leftPartitioning, rightPartitioning);
 
   return {

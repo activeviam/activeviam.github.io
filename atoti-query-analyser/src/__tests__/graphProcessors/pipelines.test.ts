@@ -10,10 +10,7 @@ import {
   VirtualRetrievalKind,
 } from "library/dataStructures/json/retrieval";
 import { VertexSelection } from "library/dataStructures/processing/selection";
-import {
-  buildDefaultSelection,
-  filterByMeasures,
-} from "library/graphProcessors/selection";
+import { buildDefaultSelection, filterByMeasures } from "library/graphProcessors/selection";
 import {
   computeEdgeCriticalScore,
   criticalPath,
@@ -24,10 +21,7 @@ import { condenseByPartitions } from "library/graphProcessors/condenseByPartitio
 import { removeMergerNodes } from "library/graphProcessors/removeMergerNodes";
 import { nodeDepths } from "library/graphProcessors/fillTimingInfo";
 import { addClustersToNodes } from "library/graphProcessors/cluster";
-import {
-  dumpMetadata,
-  extractMetadata,
-} from "library/graphProcessors/extractMetadata";
+import { dumpMetadata, extractMetadata } from "library/graphProcessors/extractMetadata";
 import { buildD3 } from "library/graphView/jsonToD3Data";
 import { untangle } from "library/dataStructures/d3/d3Graph";
 import {
@@ -77,12 +71,8 @@ describe.each(ALL_FIXTURES)("Graph processing of %s", (filename) => {
   it("selects the virtual vertices and the retrievals with timings", () => {
     plans.forEach((plan, index) => {
       const selection = selections[index];
-      expect(
-        selection.has(plan.graph.getVertexByLabel("virtualSource").getUUID()),
-      ).toBe(true);
-      expect(
-        selection.has(plan.graph.getVertexByLabel("virtualTarget").getUUID()),
-      ).toBe(true);
+      expect(selection.has(plan.graph.getVertexByLabel("virtualSource").getUUID())).toBe(true);
+      expect(selection.has(plan.graph.getVertexByLabel("virtualTarget").getUUID())).toBe(true);
       expect(selection.size).toBeLessThanOrEqual(plan.graph.getVertexCount());
     });
   });
@@ -138,9 +128,7 @@ describe.each(ALL_FIXTURES)("Graph processing of %s", (filename) => {
   it("condenses fast retrievals without losing slow ones", () => {
     plans.forEach(({ graph }) => {
       const condensed = condenseFastRetrievals(graph, 1);
-      expect(condensed.getVertexCount()).toBeLessThanOrEqual(
-        graph.getVertexCount(),
-      );
+      expect(condensed.getVertexCount()).toBeLessThanOrEqual(graph.getVertexCount());
       // Kept retrievals are copies of the original ones.
       const originalIds = new Set(
         realVertices(graph).map((vertex) => vertex.getMetadata().retrievalId),
@@ -148,15 +136,13 @@ describe.each(ALL_FIXTURES)("Graph processing of %s", (filename) => {
       realVertices(condensed)
         .map((vertex) => vertex.getMetadata())
         .filter((metadata) => metadata.$kind !== CondensedRetrievalKind)
-        .forEach((metadata) =>
-          expect(originalIds.has(metadata.retrievalId)).toBe(true),
-        );
+        .forEach((metadata) => expect(originalIds.has(metadata.retrievalId)).toBe(true));
       for (const vertex of condensed.getVertices()) {
         const metadata = vertex.getMetadata();
         if (metadata.$kind === CondensedRetrievalKind) {
           expect(
-            (metadata as unknown as { underlyingRetrievals: unknown[] })
-              .underlyingRetrievals.length,
+            (metadata as unknown as { underlyingRetrievals: unknown[] }).underlyingRetrievals
+              .length,
           ).toBeGreaterThan(0);
         }
       }
@@ -166,9 +152,9 @@ describe.each(ALL_FIXTURES)("Graph processing of %s", (filename) => {
       // The condensed graph goes through the same steps as in the Graph view.
       computeEdgeCriticalScore(condensed);
       const [selection] = buildDefaultSelection([condensed]);
-      expect(
-        buildD3(condensed, selection, new Set(), false).nodes,
-      ).toHaveLength(selection.size - 2);
+      expect(buildD3(condensed, selection, new Set(), false).nodes).toHaveLength(
+        selection.size - 2,
+      );
     });
   });
 
@@ -186,12 +172,7 @@ describe.each(ALL_FIXTURES)("Graph processing of %s", (filename) => {
       expect(clusters.size).toBeGreaterThan(0);
 
       for (const invertLayout of [false, true]) {
-        const { nodes, links } = buildD3(
-          plan.graph,
-          selection,
-          new Set(),
-          invertLayout,
-        );
+        const { nodes, links } = buildD3(plan.graph, selection, new Set(), invertLayout);
         // The virtual source and target are not displayed.
         expect(nodes).toHaveLength(selection.size - 2);
         const ids = new Set(nodes.map((node) => node.id));
@@ -207,8 +188,7 @@ describe.each(ALL_FIXTURES)("Graph processing of %s", (filename) => {
 
   it("condenses partitions and removes mergers as in the Partitions view", () => {
     plans.forEach(({ graph }) => {
-      const { graph: condensedGraph, retainedUUIDs } =
-        condenseByPartitions(graph);
+      const { graph: condensedGraph, retainedUUIDs } = condenseByPartitions(graph);
       retainedUUIDs.forEach((uuid) => expect(graph.hasVertex(uuid)).toBe(true));
 
       const { graph: withoutMergers } = removeMergerNodes(condensedGraph);
@@ -233,9 +213,7 @@ describe.each(ALL_FIXTURES)("Graph processing of %s", (filename) => {
   });
 
   it("compares two retrievals", () => {
-    const retrievals = realVertices(plans[0].graph).map((vertex) =>
-      vertex.getMetadata(),
-    );
+    const retrievals = realVertices(plans[0].graph).map((vertex) => vertex.getMetadata());
     const [left, right] = retrievals;
     const same = compareNodes(left, left);
     expect(same.type.status).toBe("same");
@@ -258,8 +236,6 @@ describe("Graph processing of a partitioned plan", () => {
         .filter((metadata) => metadata.$kind === AggregateRetrievalKind)
         .map((metadata) => (metadata as AggregateRetrieval).partitioning),
     );
-    expect(buildPartitioningColorMap(graph).size).toBeGreaterThanOrEqual(
-      partitionings.size,
-    );
+    expect(buildPartitioningColorMap(graph).size).toBeGreaterThanOrEqual(partitionings.size);
   });
 });

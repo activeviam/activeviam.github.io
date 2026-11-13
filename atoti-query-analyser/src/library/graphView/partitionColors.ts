@@ -55,9 +55,7 @@ function getPartitioning(d: D3Node): string | undefined {
  * @param graph - The retrieval graph to extract partitioning values from
  * @returns A map from partitioning string to color
  */
-export function buildPartitioningColorMap(
-  graph: RetrievalGraph,
-): Map<string, string> {
+export function buildPartitioningColorMap(graph: RetrievalGraph): Map<string, string> {
   const partitionings = new Set<string>();
 
   // Collect all unique partitioning values
@@ -76,10 +74,7 @@ export function buildPartitioningColorMap(
   let colorIndex = 0;
 
   for (const partitioning of partitionings) {
-    colorMap.set(
-      partitioning,
-      PARTITION_COLORS[colorIndex % PARTITION_COLORS.length],
-    );
+    colorMap.set(partitioning, PARTITION_COLORS[colorIndex % PARTITION_COLORS.length]);
     colorIndex++;
   }
 
@@ -93,10 +88,7 @@ export function buildPartitioningColorMap(
  * @param colorMap - Mapping from partitioning values to colors
  * @returns The color for the node
  */
-export function getPartitioningColor(
-  d: D3Node,
-  colorMap: Map<string, string>,
-): string {
+export function getPartitioningColor(d: D3Node, colorMap: Map<string, string>): string {
   const partitioning = getPartitioning(d);
 
   if (partitioning === undefined) {
@@ -112,8 +104,6 @@ export function getPartitioningColor(
  * @param colorMap - Mapping from partitioning values to colors
  * @returns A function that takes a D3Node and returns its color
  */
-export function createPartitioningColorFn(
-  colorMap: Map<string, string>,
-): (d: D3Node) => string {
+export function createPartitioningColorFn(colorMap: Map<string, string>): (d: D3Node) => string {
   return (d: D3Node) => getPartitioningColor(d, colorMap);
 }

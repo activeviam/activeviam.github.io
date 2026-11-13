@@ -29,14 +29,10 @@ function openDb(): Promise<IDBDatabase> {
   });
 }
 
-async function compressData(
-  data: unknown,
-): Promise<{ blob: Blob; originalSize: number }> {
+async function compressData(data: unknown): Promise<{ blob: Blob; originalSize: number }> {
   const json = JSON.stringify(data);
   const originalSize = new Blob([json]).size;
-  const stream = new Blob([json])
-    .stream()
-    .pipeThrough(new CompressionStream("gzip"));
+  const stream = new Blob([json]).stream().pipeThrough(new CompressionStream("gzip"));
   const blob = await new Response(stream).blob();
   return { blob, originalSize };
 }
@@ -82,16 +78,11 @@ export async function getRecentQueryPlans(): Promise<RecentQueryPlanEntry[]> {
   });
 }
 
-export async function loadRecentQueryPlanData(
-  entry: RecentQueryPlanEntry,
-): Promise<unknown> {
+export async function loadRecentQueryPlanData(entry: RecentQueryPlanEntry): Promise<unknown> {
   return decompressData(entry.compressedData);
 }
 
-export async function saveRecentQueryPlan(
-  label: string,
-  data: unknown,
-): Promise<number> {
+export async function saveRecentQueryPlan(label: string, data: unknown): Promise<number> {
   const { blob, originalSize } = await compressData(data);
   const db = await openDb();
   const id = await new Promise<number>((resolve, reject) => {
@@ -132,10 +123,7 @@ export async function saveRecentQueryPlan(
   return id;
 }
 
-export async function updateRecentQueryPlanLabel(
-  id: number,
-  label: string,
-): Promise<void> {
+export async function updateRecentQueryPlanLabel(id: number, label: string): Promise<void> {
   const db = await openDb();
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readwrite");

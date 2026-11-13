@@ -4,21 +4,17 @@ import {
   computeArrayDiff,
   computeLocationDiff,
 } from "library/comparison/nodeComparison";
-import {
-  AggregateRetrieval,
-  ExternalRetrieval,
-} from "library/dataStructures/json/retrieval";
+import { AggregateRetrieval, ExternalRetrieval } from "library/dataStructures/json/retrieval";
 import { CubeLocation } from "library/dataStructures/json/cubeLocation";
 
-const location = (
-  hierarchy: string,
-  level: string[],
-  path: unknown[],
-): CubeLocation => ({ dimension: "Dim", hierarchy, level, path });
+const location = (hierarchy: string, level: string[], path: unknown[]): CubeLocation => ({
+  dimension: "Dim",
+  hierarchy,
+  level,
+  path,
+});
 
-const aggregate = (
-  overrides: Partial<AggregateRetrieval>,
-): AggregateRetrieval => ({
+const aggregate = (overrides: Partial<AggregateRetrieval>): AggregateRetrieval => ({
   $kind: "AggregateRetrieval",
   type: "PrimitiveAggregatesRetrieval",
   retrievalId: 0,
@@ -93,10 +89,7 @@ describe("computeLocationDiff", () => {
       [location("Date", ["ALL", "Year"], ["AllMember", 2024])],
     );
     expect(diff.status).toBe("different");
-    expect(diff.levels.map((level) => level.status)).toEqual([
-      "same",
-      "left-only",
-    ]);
+    expect(diff.levels.map((level) => level.status)).toEqual(["same", "left-only"]);
   });
 });
 
@@ -126,20 +119,14 @@ describe("compareNodes", () => {
     expect(result.type.status).toBe("different");
     expect(result.partitioning.status).toBe("different");
     expect(result.filterId.status).toBe("same");
-    expect(result.measures.map((item) => item.status)).toEqual([
-      "left-only",
-      "right-only",
-    ]);
+    expect(result.measures.map((item) => item.status)).toEqual(["left-only", "right-only"]);
   });
 
   it("compares an aggregate retrieval with an external retrieval", () => {
     const result = compareNodes(aggregate({ measures: ["pnl.SUM"] }), external);
     expect(result.type.status).toBe("different");
     expect(result.partitioning.status).toBe("left-only");
-    expect(result.measures.map((item) => item.status)).toEqual([
-      "left-only",
-      "right-only",
-    ]);
+    expect(result.measures.map((item) => item.status)).toEqual(["left-only", "right-only"]);
 
     const reversed = compareNodes(external, external);
     expect(reversed.partitioning.status).toBe("na");

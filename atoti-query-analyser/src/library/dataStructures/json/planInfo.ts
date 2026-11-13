@@ -55,17 +55,9 @@ export function validatePlanInfo(rawPlanInfo: any): PlanInfo {
     aggregatesCache: validateString(rawPlanInfo.aggregatesCache),
     branch: validateString(rawPlanInfo.branch),
     clusterMemberId: optional(rawPlanInfo.clusterMemberId, validateString),
-    contextValues: validateObjectAsMap(
-      rawPlanInfo.contextValues,
-      validateString,
-      validateString,
-    ),
+    contextValues: validateObjectAsMap(rawPlanInfo.contextValues, validateString, validateString),
     epoch: validateString(rawPlanInfo.epoch),
-    globalTimings: validateObjectAsMap(
-      rawPlanInfo.globalTimings,
-      validateString,
-      validateInt,
-    ),
+    globalTimings: validateObjectAsMap(rawPlanInfo.globalTimings, validateString, validateInt),
     isContinuous: multiFieldValidate(
       validateBoolean,
       rawPlanInfo.isContinuous,

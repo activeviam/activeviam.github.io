@@ -1,14 +1,12 @@
 import React, { useLayoutEffect, useRef, forwardRef, ForwardedRef } from "react";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
- import { Popover, Button, Overlay } from "react-bootstrap";
- import { FaTimes } from "react-icons/fa";
- import { Details } from "components/Details/Details";
+import { Popover, Button, Overlay } from "react-bootstrap";
+import { FaTimes } from "react-icons/fa";
 import { useOverlayContainer } from "../../hooks/overlayContainer";
- import {
-   CondensedRetrieval,
-   CondensedRetrievalKind,
+import {
+  CondensedRetrievalKind,
   PartitionCondensedRetrievalKind,
- } from "../../library/dataStructures/json/retrieval";
+} from "../../library/dataStructures/json/retrieval";
 import {
   enterNode,
   enterNodeWithColor,
@@ -20,9 +18,9 @@ import {
 import * as d3 from "d3";
 import "./Node.css";
 
- const POPOVER_BACKGROUND_COLOR = "#DDDDDD";
- 
- /**
+const POPOVER_BACKGROUND_COLOR = "#DDDDDD";
+
+/**
  * This React component displays a popover for partition-condensed nodes,
  * showing the list of underlying retrievals that were collapsed.
  */
@@ -45,8 +43,7 @@ const PartitionCondensedPopover = forwardRef(function PartitionCondensedPopover(
         underlyingRetrievals?: { $kind: string; retrievalId: number }[];
       }
     ).underlyingRetrievals || [];
-  const partitioning =
-    (metadata as { partitioning?: string }).partitioning || "unknown";
+  const partitioning = (metadata as { partitioning?: string }).partitioning || "unknown";
 
   const arrowRef = useRef<HTMLElement | null>(null);
 
@@ -111,124 +108,6 @@ const PartitionCondensedPopover = forwardRef(function PartitionCondensedPopover(
 });
 
 /**
-  * This React component is responsible for displaying pop-over window with
-  * information about retrieval when clicking graph nodes.
-  *
-  * @param props - React JSX attributes
-  * @param props.node - Selected graph node
-  * @param props.changeGraph - Callback for navigation across current pass
-  * @param props.clickNode - Callback for closing current pop-over
-  * @param props.nodeRef - Reference to the SVG DOM element; needed for
-  * window positioning
-  * */
- const NodePopover = forwardRef(function NodePopover(
-   {
-     node,
-     clickNode,
-     nodeRef,
-     changeGraph,
-     condensedRetrievalDrillthrough,
-   }: {
-     node: D3Node;
-     changeGraph: (childId: number) => void;
-     clickNode: (id: number | null) => void;
-     nodeRef: SVGElement | null;
-     condensedRetrievalDrillthrough: (retrieval: CondensedRetrieval) => void;
-   },
-   ref: ForwardedRef<HTMLDivElement>,
- ) {
-   const { details } = node;
-   const { startTimes, elapsedTimes, metadata } = details;
-   const { type } = metadata;
-   const fullName = `${metadata.$kind}#${metadata.retrievalId}`;
- 
-   let childrenIds: number[];
-   if ("childrenIds" in metadata) {
-     childrenIds = (metadata.childrenIds || []) as number[];
-   } else {
-     childrenIds = [];
-   }
- 
-   const arrowRef = useRef<HTMLElement | null>(null);
- 
-   return (
-     <Popover
-       ref={ref}
-       style={{
-         maxWidth: "800px",
-         pointerEvents: "auto",
-         position: "absolute",
-         top: nodeRef?.getBoundingClientRect().top,
-         left:
-           (nodeRef?.getBoundingClientRect().right || 0) +
-           (arrowRef.current?.getBoundingClientRect().width || 0),
-         transform: "translateY(-50%)",
-       }}
-       arrowProps={{
-         ref: (newRef: HTMLElement | null) => {
-           arrowRef.current = newRef;
-         },
-         style: {
-           position: "absolute",
-           top: "50%",
-           "--bs-popover-bg": POPOVER_BACKGROUND_COLOR,
-           transform: `translateY(${
-             (nodeRef?.getBoundingClientRect().height || 0) / 2
-           }px) translateY(-50%)`,
-         } as CSSProperties,
-       }}
-     >
-       <Popover.Header>
-         <div className="d-flex">
-           <span>{`${type} (${fullName})`}</span>
-           <Button
-             variant="outline-danger"
-             className="ms-auto py-0"
-             size="sm"
-             aria-label="Close"
-             onClick={() => clickNode(null)}
-           >
-             <FaTimes fontSize="small" />
-           </Button>
-         </div>
-       </Popover.Header>
-       <Popover.Body style={{ backgroundColor: POPOVER_BACKGROUND_COLOR }}>
-         <Details
-           startTime={startTimes}
-           elapsedTime={elapsedTimes}
-           metadata={metadata}
-         />
-         {node.details.metadata.$kind === CondensedRetrievalKind ? (
-           <Button
-             onClick={() =>
-               condensedRetrievalDrillthrough(
-                 node.details.metadata as CondensedRetrieval,
-               )
-             }
-           >
-             Zoom in
-           </Button>
-         ) : null}
-         {childrenIds
-           ? childrenIds.map((childId) => (
-               <>
-                 <button
-                   key={childId}
-                   type="button"
-                   className="btn btn-primary"
-                   onClick={() => changeGraph(childId)}
-                 >
-                   Enter sub-query {childId}.
-                 </button>{" "}
-               </>
-             ))
-           : null}
-       </Popover.Body>
-     </Popover>
-   );
- });
- 
-/**
  * Filter out `null` values and join class names using space as a delimiter.
  * */
 function computeClasses(classNames: (string | null)[]) {
@@ -258,8 +137,7 @@ export function Node({
 }) {
   const ref = useRef<SVGGElement>(null);
 
-  const isPartitionCondensed =
-    node.details.metadata.$kind === PartitionCondensedRetrievalKind;
+  const isPartitionCondensed = node.details.metadata.$kind === PartitionCondensedRetrievalKind;
   const onClick = () => {
     if (disableClick && !isPartitionCondensed) {
       return;
@@ -287,9 +165,7 @@ export function Node({
         : enterHexagonNode;
       d3.select(ref.current).datum(node).call(enterFn);
     } else {
-      const enterFn = backgroundColorFn
-        ? enterNodeWithColor(backgroundColorFn)
-        : enterNode;
+      const enterFn = backgroundColorFn ? enterNodeWithColor(backgroundColorFn) : enterNode;
       d3.select(ref.current).datum(node).call(enterFn);
     }
   }, [node, isPartitionCondensed, backgroundColorFn]);
@@ -306,35 +182,29 @@ export function Node({
   });
 
   return (
-     <>
-       <g
-         className={computeClasses([
-           "node",
-           selected ? "selected" : null,
-           node.details.metadata.$kind === CondensedRetrievalKind
-             ? "condensed"
-             : null,
+    <>
+      <g
+        className={computeClasses([
+          "node",
+          selected ? "selected" : null,
+          node.details.metadata.$kind === CondensedRetrievalKind ? "condensed" : null,
           isPartitionCondensed ? "partition-condensed" : null,
-         ])}
-         ref={ref}
-       >
-         {React.createElement(nodeElem, {
-           onClick,
-         })}
-         <text onClick={onClick}>{node.name}</text>
-       </g>
+        ])}
+        ref={ref}
+      >
+        {React.createElement(nodeElem, {
+          onClick,
+        })}
+        <text onClick={onClick}>{node.name}</text>
+      </g>
       <Overlay
         container={useOverlayContainer()}
         target={ref.current}
         show={selected && isPartitionCondensed}
         placement="right"
       >
-        <PartitionCondensedPopover
-          clickNode={clickNode}
-          node={node}
-          nodeRef={ref.current}
-        />
+        <PartitionCondensedPopover clickNode={clickNode} node={node} nodeRef={ref.current} />
       </Overlay>
-     </>
+    </>
   );
 }

@@ -9,26 +9,13 @@ import {
 } from "../../library/graphProcessors/criticalPath";
 import { UUID } from "../../library/utilities/uuid";
 import { useNotificationContext } from "../Notification/NotificationWrapper";
-import {
-  CondensedRetrieval,
-  RetrievalGraph,
-} from "../../library/dataStructures/json/retrieval";
+import { CondensedRetrieval, RetrievalGraph } from "../../library/dataStructures/json/retrieval";
 import { condenseFastRetrievals } from "../../library/graphProcessors/condenseFastRetrievals";
 import { Link } from "./Link";
 import { Node } from "./Node";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
-import {
-  FaClipboardList,
-  FaColumns,
-  FaFilter,
-  FaInfoCircle,
-  FaTimes,
-} from "react-icons/fa";
-import {
-  NodeDetailsPanel,
-  NodeDetailsState,
-  initialNodeDetailsState,
-} from "./NodeDetailsPanel";
+import { FaClipboardList, FaColumns, FaFilter, FaInfoCircle, FaTimes } from "react-icons/fa";
+import { NodeDetailsPanel, NodeDetailsState, initialNodeDetailsState } from "./NodeDetailsPanel";
 import {
   NodeComparisonPanel,
   ComparisonState,
@@ -37,15 +24,9 @@ import {
 import { Menu } from "./Menu";
 import { QueryFiltersPanel } from "./QueryFiltersPanel";
 import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
-import {
-  EdgeSelection,
-  VertexSelection,
-} from "../../library/dataStructures/processing/selection";
+import { EdgeSelection, VertexSelection } from "../../library/dataStructures/processing/selection";
 import { Measure } from "../../library/dataStructures/json/measure";
-import {
-  buildDefaultSelection,
-  filterByMeasures,
-} from "../../library/graphProcessors/selection";
+import { buildDefaultSelection, filterByMeasures } from "../../library/graphProcessors/selection";
 import { buildD3 } from "../../library/graphView/jsonToD3Data";
 import * as d3 from "d3";
 import _ from "lodash";
@@ -83,25 +64,19 @@ export function Graph({
   const [activePanel, setActivePanel] = useState<
     "filters" | "queryFilters" | "details" | "comparison" | null
   >(null);
-  const [comparisonState, setComparisonState] = useState<ComparisonState>(
-    initialComparisonState,
-  );
+  const [comparisonState, setComparisonState] = useState<ComparisonState>(initialComparisonState);
   const [selectedMeasures, setSelectedMeasures] = useState<Measure[]>([]);
   const [nodes, setNodes] = useState<D3Node[]>([]);
   const [links, setLinks] = useState<D3Link[]>([]);
-  const [nodeDetailsState, setNodeDetailsState] = useState<NodeDetailsState>(
-    initialNodeDetailsState,
-  );
+  const [nodeDetailsState, setNodeDetailsState] =
+    useState<NodeDetailsState>(initialNodeDetailsState);
   const selectedNodeId = nodeDetailsState.currentNodeId;
   const [epoch, setEpoch] = useState(0);
 
   const [invertLayout, setInvertLayout] = useState(true);
-  const [condenseFastRetrievalsFlag, setCondenseFastRetrievalsFlag] =
-    useState(false);
-  const [fastRetrievalMaxElapsedTimeMs, setFastRetrievalMaxElapsedTimeMs] =
-    useState(1);
-  const [fastRetrievalDrillthough, setFastRetrievalDrillthough] =
-    useState<VertexSelection>();
+  const [condenseFastRetrievalsFlag, setCondenseFastRetrievalsFlag] = useState(false);
+  const [fastRetrievalMaxElapsedTimeMs, setFastRetrievalMaxElapsedTimeMs] = useState(1);
+  const [fastRetrievalDrillthough, setFastRetrievalDrillthough] = useState<VertexSelection>();
   const originalData = useMemo<DataModel>(
     () => ({
       graph: query.graph,
@@ -137,29 +112,22 @@ export function Graph({
 
     setFastRetrievalDrillthough(
       new Set(
-        retrieval.underlyingRetrievals.map((underlying) =>
-          requireNonNull(uuidMap.get(underlying)),
-        ),
+        retrieval.underlyingRetrievals.map((underlying) => requireNonNull(uuidMap.get(underlying))),
       ),
     );
   };
 
   const [minCriticalScore, setMinCriticalScore] = useState(0.7);
-  const [selectCriticalSubgraphFlag, setSelectCriticalSubgraphFlag] =
-    useState(false);
+  const [selectCriticalSubgraphFlag, setSelectCriticalSubgraphFlag] = useState(false);
 
   const windowSize = useWindowSize();
   const svgRef = useRef<SVGSVGElement | null>(null);
   const zoomRef = useRef<ZoomBehavior<SVGSVGElement, unknown>>();
   const notificationContext = useNotificationContext();
 
-  const [autoCriticalScoreFilterNotified, setAutoCriticalScoreFilterNotified] =
-    useState(false);
+  const [autoCriticalScoreFilterNotified, setAutoCriticalScoreFilterNotified] = useState(false);
   useEffect(() => {
-    if (
-      effectiveData.graph.getVertexCount() >= 100 &&
-      !autoCriticalScoreFilterNotified
-    ) {
+    if (effectiveData.graph.getVertexCount() >= 100 && !autoCriticalScoreFilterNotified) {
       setSelectCriticalSubgraphFlag(true);
       setAutoCriticalScoreFilterNotified(true);
       notificationContext?.newMessage(
@@ -195,10 +163,7 @@ export function Graph({
       .reduce((set, edge) => {
         const sourceUUID = edge.getBegin().getUUID();
         const targetUUID = edge.getEnd().getUUID();
-        if (
-          !selectCriticalSubgraphFlag ||
-          edge.getMetadata().criticalScore >= minCriticalScore
-        ) {
+        if (!selectCriticalSubgraphFlag || edge.getMetadata().criticalScore >= minCriticalScore) {
           set.add({ source: sourceUUID, target: targetUUID });
         }
         return set;
@@ -220,13 +185,7 @@ export function Graph({
     setSelectedMeasures(selectedMeasures.filter((m) => m !== measure));
   };
 
-  const selectMeasure = ({
-    measure,
-    selected,
-  }: {
-    measure: Measure;
-    selected: boolean;
-  }) => {
+  const selectMeasure = ({ measure, selected }: { measure: Measure; selected: boolean }) => {
     if (selected) {
       addMeasure(measure);
     } else {
@@ -315,10 +274,7 @@ export function Graph({
         return;
       }
 
-      const dragStarted = (
-        event: D3DragEvent<SVGGElement, D3Node, unknown>,
-        d: D3Node,
-      ) => {
+      const dragStarted = (event: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
         if (!event.active) {
           force.alphaTarget(0.3).restart();
         }
@@ -327,18 +283,12 @@ export function Graph({
         d.fy = d.y;
       };
 
-      const dragging = (
-        event: D3DragEvent<SVGGElement, D3Node, unknown>,
-        d: D3Node,
-      ) => {
+      const dragging = (event: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
         d.fx = event.x;
         d.fy = event.y;
       };
 
-      const dragEnded = (
-        event: D3DragEvent<SVGGElement, D3Node, unknown>,
-        d: D3Node,
-      ) => {
+      const dragEnded = (event: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
         if (!event.active) {
           force.alphaTarget(0);
         }
@@ -450,9 +400,7 @@ export function Graph({
       <div className="activity-bar">
         <button
           className={`activity-bar-button ${activePanel === "filters" ? "active" : ""}`}
-          onClick={() =>
-            setActivePanel(activePanel === "filters" ? null : "filters")
-          }
+          onClick={() => setActivePanel(activePanel === "filters" ? null : "filters")}
           title="Filters & Controls"
           aria-label="Toggle filters panel"
         >
@@ -460,11 +408,7 @@ export function Graph({
         </button>
         <button
           className={`activity-bar-button ${activePanel === "queryFilters" ? "active" : ""}`}
-          onClick={() =>
-            setActivePanel(
-              activePanel === "queryFilters" ? null : "queryFilters",
-            )
-          }
+          onClick={() => setActivePanel(activePanel === "queryFilters" ? null : "queryFilters")}
           title="Query Filters"
           aria-label="Toggle query filters panel"
         >
@@ -472,9 +416,7 @@ export function Graph({
         </button>
         <button
           className={`activity-bar-button ${activePanel === "details" ? "active" : ""}`}
-          onClick={() =>
-            setActivePanel(activePanel === "details" ? null : "details")
-          }
+          onClick={() => setActivePanel(activePanel === "details" ? null : "details")}
           title="Node Details"
           aria-label="Toggle node details panel"
         >
@@ -482,9 +424,7 @@ export function Graph({
         </button>
         <button
           className={`activity-bar-button ${activePanel === "comparison" ? "active" : ""}`}
-          onClick={() =>
-            setActivePanel(activePanel === "comparison" ? null : "comparison")
-          }
+          onClick={() => setActivePanel(activePanel === "comparison" ? null : "comparison")}
           title="Node Comparison"
           aria-label="Toggle node comparison panel"
         >
@@ -507,9 +447,7 @@ export function Graph({
               <Link
                 link={link}
                 key={link.id}
-                minCriticalScore={
-                  selectCriticalSubgraphFlag ? minCriticalScore : 0
-                }
+                minCriticalScore={selectCriticalSubgraphFlag ? minCriticalScore : 0}
               />
             ))}
             {nodes.map((node) => (
@@ -518,8 +456,7 @@ export function Graph({
                 clickNode={clickNode}
                 key={node.id}
                 selected={
-                  selectedNodeId === node.id ||
-                  nodeDetailsState.pinnedNodeIds.includes(node.id)
+                  selectedNodeId === node.id || nodeDetailsState.pinnedNodeIds.includes(node.id)
                 }
               />
             ))}
@@ -527,15 +464,10 @@ export function Graph({
         </svg>
 
         {/* Sidebar Drawer - floats over graph */}
-        <div
-          className={`sidebar-drawer ${activePanel === "filters" ? "open" : ""}`}
-        >
+        <div className={`sidebar-drawer ${activePanel === "filters" ? "open" : ""}`}>
           <div className="sidebar-drawer-header">
             <h5>Filters & Controls</h5>
-            <button
-              onClick={() => setActivePanel(null)}
-              aria-label="Close panel"
-            >
+            <button onClick={() => setActivePanel(null)} aria-label="Close panel">
               <FaTimes />
             </button>
           </div>
@@ -561,29 +493,19 @@ export function Graph({
                 <Form.Check
                   type="switch"
                   checked={condenseFastRetrievalsFlag}
-                  onChange={(e) =>
-                    setCondenseFastRetrievalsFlag(e.target.checked)
-                  }
+                  onChange={(e) => setCondenseFastRetrievalsFlag(e.target.checked)}
                   label="Apply condensation"
                 />
-                <Form.Label>
-                  Max elapsed time: {fastRetrievalMaxElapsedTimeMs}&nbsp;ms
-                </Form.Label>
+                <Form.Label>Max elapsed time: {fastRetrievalMaxElapsedTimeMs}&nbsp;ms</Form.Label>
                 <Form.Range
                   min={0}
                   max={20}
                   step={1}
                   value={fastRetrievalMaxElapsedTimeMs}
-                  onChange={(e) =>
-                    setFastRetrievalMaxElapsedTimeMs(+e.target.value)
-                  }
+                  onChange={(e) => setFastRetrievalMaxElapsedTimeMs(+e.target.value)}
                 />
                 {fastRetrievalDrillthough && (
-                  <Button
-                    onClick={() => setFastRetrievalDrillthough(undefined)}
-                  >
-                    Zoom out
-                  </Button>
+                  <Button onClick={() => setFastRetrievalDrillthough(undefined)}>Zoom out</Button>
                 )}
               </Form>
               <h5>Critical score filter</h5>
@@ -591,17 +513,13 @@ export function Graph({
                 <Form.Check
                   type="switch"
                   checked={selectCriticalSubgraphFlag}
-                  onChange={(e) =>
-                    setSelectCriticalSubgraphFlag(e.target.checked)
-                  }
+                  onChange={(e) => setSelectCriticalSubgraphFlag(e.target.checked)}
                   label="Enable filter"
                   disabled={Boolean(fastRetrievalDrillthough)}
                 />
                 {selectCriticalSubgraphFlag && (
                   <>
-                    <Form.Label>
-                      Minimal score: {minCriticalScore.toFixed(3)}
-                    </Form.Label>
+                    <Form.Label>Minimal score: {minCriticalScore.toFixed(3)}</Form.Label>
                     <Form.Range
                       min={0}
                       max={1}
@@ -617,15 +535,10 @@ export function Graph({
         </div>
 
         {/* Query Filters Sidebar Drawer */}
-        <div
-          className={`sidebar-drawer ${activePanel === "queryFilters" ? "open" : ""}`}
-        >
+        <div className={`sidebar-drawer ${activePanel === "queryFilters" ? "open" : ""}`}>
           <div className="sidebar-drawer-header">
             <h5>Query Filters</h5>
-            <button
-              onClick={() => setActivePanel(null)}
-              aria-label="Close panel"
-            >
+            <button onClick={() => setActivePanel(null)} aria-label="Close panel">
               <FaTimes />
             </button>
           </div>
@@ -635,15 +548,10 @@ export function Graph({
         </div>
 
         {/* Node Details Sidebar Drawer */}
-        <div
-          className={`sidebar-drawer details-drawer ${activePanel === "details" ? "open" : ""}`}
-        >
+        <div className={`sidebar-drawer details-drawer ${activePanel === "details" ? "open" : ""}`}>
           <div className="sidebar-drawer-header">
             <h5>Node Details</h5>
-            <button
-              onClick={() => setActivePanel(null)}
-              aria-label="Close panel"
-            >
+            <button onClick={() => setActivePanel(null)} aria-label="Close panel">
               <FaTimes />
             </button>
           </div>
@@ -654,9 +562,7 @@ export function Graph({
               setState={setNodeDetailsState}
               onCenterNode={centerOnNode}
               changeGraph={changeGraph}
-              onCondensedRetrievalDrillthrough={
-                onCondensedRetrievalDrillthrough
-              }
+              onCondensedRetrievalDrillthrough={onCondensedRetrievalDrillthrough}
               comparisonState={comparisonState}
               setComparisonState={setComparisonState}
             />
@@ -669,10 +575,7 @@ export function Graph({
         >
           <div className="sidebar-drawer-header">
             <h5>Node Comparison</h5>
-            <button
-              onClick={() => setActivePanel(null)}
-              aria-label="Close panel"
-            >
+            <button onClick={() => setActivePanel(null)} aria-label="Close panel">
               <FaTimes />
             </button>
           </div>

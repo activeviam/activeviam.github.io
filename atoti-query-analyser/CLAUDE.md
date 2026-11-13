@@ -38,6 +38,7 @@ For a given node, it reports the time spend in the database layer, the network l
 Showing the graph of nodes executing a given node.
 
 The graph view uses a VS Code-style left sidebar layout:
+
 - **Activity Bar**: A permanent vertical icon column (48px wide) on the left side
 - **Sidebar Drawer**: Clicking an icon opens a floating panel that slides over the graph (does not resize the graph)
 - **Filters Panel**: Contains measure filtering, zoom controls, untangle button, fast retrieval condensation settings, and critical score filter
@@ -49,6 +50,7 @@ The sidebar architecture is designed to support multiple panels in the future. T
 Displays a condensed graph where nodes are retained only if their `partitioning` value differs from connected neighbors. Chains of nodes with the same partitioning are condensed into single hexagon-shaped nodes (gray color). This view helps identify partition boundaries in the query execution plan.
 
 Key features:
+
 - **Partition boundary detection**: Retains nodes at partition transitions
 - **Chain condensation**: Groups consecutive nodes with identical partitioning
 - **Hexagon nodes**: Condensed chains rendered as gray hexagons (non-clickable)
@@ -100,6 +102,7 @@ This view does not report the actual thread execution in the backend, as this in
 ### Library Structure
 
 `src/library/` contains React-free logic:
+
 - `dataStructures/common/`: Generic containers (Graph, Dictionary, UnionFind)
 - `dataStructures/json/`: JSON parsing/validation interfaces
 - `dataStructures/processing/`: Internal processed data types
@@ -141,3 +144,4 @@ This view does not report the actual thread execution in the backend, as this in
 
 - The CircleCI job `atoti_query_tests` runs `yarn test:coverage`, stores the JUnit report as test results and the coverage report as an artifact.
 - The CircleCI job `atoti_query_e2e` runs the Playwright end-to-end tests.
+- The CircleCI job `atoti_query_lint` runs `yarn format:check` and `yarn lint`: format with `yarn format` and fix the oxlint errors before pushing. The deployment to `master` requires it.

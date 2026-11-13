@@ -4,10 +4,7 @@ import { QueryPlan } from "../../library/dataStructures/processing/queryPlan";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { requireNonNull } from "../../library/utilities/util";
-import {
-  RetrievalGraph,
-  RetrievalVertex,
-} from "../../library/dataStructures/json/retrieval";
+import { RetrievalGraph, RetrievalVertex } from "../../library/dataStructures/json/retrieval";
 import {
   TimeRange,
   RetrievalCursor,
@@ -29,17 +26,11 @@ import "./Timeline.css";
  * Helper function that inserts a time range into one of existing timelines or
  * creates a new timeline.
  * */
-function placeRetrieval(
-  state: { lines: TimeRange[][]; last: number[] },
-  entry: TimeRange,
-) {
+function placeRetrieval(state: { lines: TimeRange[][]; last: number[] }, entry: TimeRange) {
   const { lines, last } = state;
   // Find the first one whose last is before entry start
   const candidates = last.filter((t) => t <= entry.start);
-  const idx =
-    candidates.length > 0
-      ? last.indexOf(Math.max(...candidates))
-      : lines.length;
+  const idx = candidates.length > 0 ? last.indexOf(Math.max(...candidates)) : lines.length;
   if (lines[idx]) {
     lines[idx].push(entry);
   } else {
@@ -85,9 +76,7 @@ function computeLines({ graph }: { graph: RetrievalGraph }, scale: number) {
     .filter(hasTimingInfo)
     .map(extractTimeRanges)
     .flat()
-    .filter(
-      (entry) => entry.start < entry.end && entry.end - entry.start >= scale,
-    )
+    .filter((entry) => entry.start < entry.end && entry.end - entry.start >= scale)
     .sort((a, b) => {
       return a.start - b.start;
     })
@@ -138,23 +127,15 @@ function Box({
   overflowRight?: boolean;
 }) {
   if (node === undefined || entry.retrieval.id !== node.getUUID()) {
-    throw new Error(
-      `Inconsistent state: ${JSON.stringify(entry)} / ${JSON.stringify(node)}`,
-    );
+    throw new Error(`Inconsistent state: ${JSON.stringify(entry)} / ${JSON.stringify(node)}`);
   }
   const key = `${entry.retrieval.id}#${entry.retrieval.partition}`;
-  const stateClasses = computeRetrievalClasses(
-    entry.retrieval,
-    selection,
-    focus,
-  );
+  const stateClasses = computeRetrievalClasses(entry.retrieval, selection, focus);
   const overflowClasses = [
     overflowLeft ? "overflow-left" : "",
     overflowRight ? "overflow-right" : "",
   ].filter(Boolean);
-  const className = ["timeline-box", ...stateClasses, ...overflowClasses].join(
-    " ",
-  );
+  const className = ["timeline-box", ...stateClasses, ...overflowClasses].join(" ");
 
   if (entry.start < entry.end) {
     const x = (entry.start + 1) * WIDTH_FACTOR - 1;
@@ -261,13 +242,10 @@ function Rows({
 }) {
   if (rows.length === 0) {
     return (
-      <div className="timeline-rows">
-        All entries are smaller than one pixel at this scale.
-      </div>
+      <div className="timeline-rows">All entries are smaller than one pixel at this scale.</div>
     );
   }
-  const height =
-    2 * MARGIN + rows.length * (BOX_HEIGHT + BOX_MARGIN) - BOX_MARGIN;
+  const height = 2 * MARGIN + rows.length * (BOX_HEIGHT + BOX_MARGIN) - BOX_MARGIN;
 
   let svgWidth: number;
   let viewBox: string;
@@ -305,12 +283,7 @@ function Rows({
         </svg>
       </div>
       <div>
-        <svg
-          width={svgWidth}
-          height={height}
-          viewBox={viewBox}
-          preserveAspectRatio="none"
-        >
+        <svg width={svgWidth} height={height} viewBox={viewBox} preserveAspectRatio="none">
           {[...rows].reverse().map((row, idx) => {
             if (activeSlice) {
               const slicedEntries = filterEntriesForSlice(row, activeSlice);
@@ -474,10 +447,10 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
   const defaultScale = useMemo(() => {
     const mean = Array.from(plan.graph.getVertices())
       .flatMap((v) => v.getMetadata().timingInfo.elapsedTime ?? [])
-      .reduce(
-        ({ sum, count }, value) => ({ sum: sum + value, count: count + 1 }),
-        { sum: 0, count: 0 },
-      );
+      .reduce(({ sum, count }, value) => ({ sum: sum + value, count: count + 1 }), {
+        sum: 0,
+        count: 0,
+      });
     // Find the scale close enough to the mean, but accepting some smaller bars
     const result = findClosestScale(scales, (mean.sum / mean.count) * 0.75);
     return result ?? scales[0];
@@ -516,10 +489,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
     showParents: false,
   });
   const { item: focusedItem, showParents, showChildren } = focusControlState;
-  const focusState = useMemo(
-    () => computeFocusState(plan, focusedItem),
-    [plan, focusedItem],
-  );
+  const focusState = useMemo(() => computeFocusState(plan, focusedItem), [plan, focusedItem]);
   const displayFocusState = useMemo(
     () => ({
       ...focusState,
@@ -536,9 +506,7 @@ export function Timeline({ plan }: { plan: QueryPlan }) {
 
   const selectBox = ({ retrieval }: TimeRange) => {
     setSelection((entries) => {
-      const isSelected = entries.some((cursor) =>
-        areEqualCursors(cursor, retrieval),
-      );
+      const isSelected = entries.some((cursor) => areEqualCursors(cursor, retrieval));
       return isSelected ? entries : [...entries, retrieval];
     });
     setFocused((state) => focusOnItem(state, retrieval));

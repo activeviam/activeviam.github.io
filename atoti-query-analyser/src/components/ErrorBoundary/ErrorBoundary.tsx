@@ -7,13 +7,7 @@ import { useErrorMessage } from "hooks/notification";
  * This React component is shown by {@link ErrorBoundary} instead of its children
  * if a rendering error has occurred.
  * */
-function Fallback({
-  error,
-  resetError,
-}: {
-  error: Error;
-  resetError: () => void;
-}) {
+function Fallback({ error, resetError }: { error: Error; resetError: () => void }) {
   const { showError } = useErrorMessage();
   useLayoutEffect(() => {
     showError(error, true);
@@ -56,10 +50,7 @@ interface ErrorBoundaryState {
  * {@link "components/Notification/NotificationWrapper"!NotificationWrapper NotificationWrapper},
  * an error notification will be shown.
  * */
-export class ErrorBoundary extends React.Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
 
@@ -79,12 +70,7 @@ export class ErrorBoundary extends React.Component<
     const { children } = this.props;
 
     if (error) {
-      return (
-        <Fallback
-          error={error}
-          resetError={() => this.setState({ error: undefined })}
-        />
-      );
+      return <Fallback error={error} resetError={() => this.setState({ error: undefined })} />;
     }
 
     return children;

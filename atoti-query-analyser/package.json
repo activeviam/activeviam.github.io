@@ -4,6 +4,20 @@
   "private": true,
   "homepage": "./",
   "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage && node scripts/printCoverageSummary.mjs"
+  },
   "dependencies": {
     "@hpcc-js/wasm": "^2.33.1",
     "@popperjs/core": "^2.11.6",
@@ -29,32 +43,6 @@
     "uuid": "^14.0.0",
     "vlq": "^2.0.4"
   },
-  "scripts": {
-    "start": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "e2e": "playwright test",
-    "e2e:ui": "playwright test --ui",
-    "lint": "oxlint",
-    "lint:fix": "oxlint --fix",
-    "format": "oxfmt",
-    "format:check": "oxfmt --check",
-    "test": "vitest",
-    "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage && node scripts/printCoverageSummary.mjs"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
     "@babel/core": "^7.29.6",
     "@babel/plugin-syntax-flow": "^7.28.6",
@@ -74,5 +62,17 @@
     "typescript": "^5.9.3",
     "vite": "^6.4.3",
     "vitest": "^5.1.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

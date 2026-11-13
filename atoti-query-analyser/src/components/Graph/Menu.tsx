@@ -35,12 +35,7 @@ function SearchResults({
       {values.map((value) => {
         return (
           <li key={value}>
-            <Button
-              className="my-0"
-              variant="success"
-              size="sm"
-              onClick={() => addCallback(value)}
-            >
+            <Button className="my-0" variant="success" size="sm" onClick={() => addCallback(value)}>
               <FaPlus />
             </Button>
             {` ${value}`}
@@ -127,13 +122,7 @@ export function Menu({
 }: PropsWithChildren<{
   measures: Set<Measure>;
   selectedMeasures: Measure[];
-  onSelectedMeasure: ({
-    measure,
-    selected,
-  }: {
-    measure: Measure;
-    selected: boolean;
-  }) => void;
+  onSelectedMeasure: ({ measure, selected }: { measure: Measure; selected: boolean }) => void;
 }>) {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -150,11 +139,9 @@ export function Menu({
     return searcher.search(trimmedQuery).sort(humanisticStringComparator);
   }, [measures, selectedMeasures, searchQuery]);
 
-  const selectMeasure = (measure: Measure) =>
-    onSelectedMeasure({ measure, selected: true });
+  const selectMeasure = (measure: Measure) => onSelectedMeasure({ measure, selected: true });
 
-  const unselectMeasure = (measure: Measure) =>
-    onSelectedMeasure({ measure, selected: false });
+  const unselectMeasure = (measure: Measure) => onSelectedMeasure({ measure, selected: false });
 
   return (
     <div className="contextualMenu">
@@ -172,10 +159,7 @@ export function Menu({
       </Form>
       <SearchResults values={matchingMeasures} addCallback={selectMeasure} />
       {selectedMeasures.length > 0 ? (
-        <SelectedItems
-          values={selectedMeasures}
-          removeCallback={unselectMeasure}
-        />
+        <SelectedItems values={selectedMeasures} removeCallback={unselectMeasure} />
       ) : (
         <SamplePlaceholder values={Array.from(measures).slice(0, 5)} />
       )}

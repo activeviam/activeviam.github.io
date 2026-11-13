@@ -8,10 +8,7 @@ import {
   RetrievalVertex,
   VirtualRetrievalKind,
 } from "../dataStructures/json/retrieval";
-import {
-  EdgeSelection,
-  VertexSelection,
-} from "../dataStructures/processing/selection";
+import { EdgeSelection, VertexSelection } from "../dataStructures/processing/selection";
 import { requireNonNull } from "../utilities/util";
 import { D3Node } from "../dataStructures/d3/d3Node";
 import { D3Link } from "../dataStructures/d3/d3Link";
@@ -49,9 +46,7 @@ function getNodes(
 
   const virtualSource = graph.getVertexByLabel("virtualSource");
   const leaves = new Set(
-    Array.from(graph.getOutgoingEdges(virtualSource)).map((edge) =>
-      edge.getEnd(),
-    ),
+    Array.from(graph.getOutgoingEdges(virtualSource)).map((edge) => edge.getEnd()),
   );
   const roots = new Set(
     Array.from(graph.getVertices()).filter(
@@ -80,9 +75,7 @@ function getNodes(
 
       const { elapsedTime = [0], startTime = [0] } = timingInfo;
       const realStart = Math.min(...startTime);
-      const realEnd = Math.max(
-        ...startTime.map((start, i) => start + elapsedTime[i]),
-      );
+      const realEnd = Math.max(...startTime.map((start, i) => start + elapsedTime[i]));
       const realElapsed = realEnd - realStart;
 
       const radius = computeRadius(realElapsed);
@@ -90,9 +83,7 @@ function getNodes(
       const effectiveDepth = invertLayout ? maxDepth - depth : depth;
       const yFixed = effectiveDepth * 150;
       const name =
-        kind === AggregateRetrievalKind
-          ? `${retrievalId}`
-          : `${abbreviation(kind)}#${retrievalId}`;
+        kind === AggregateRetrievalKind ? `${retrievalId}` : `${abbreviation(kind)}#${retrievalId}`;
       return {
         id: vertex.getUUID(),
         name,
@@ -163,10 +154,7 @@ function getLinks(
 /**
  * Replaces UUIDs with numeric ids.
  * */
-function normalizeIds(
-  nodes: IntermediateD3Node[],
-  links: IntermediateD3Link[],
-): D3Graph {
+function normalizeIds(nodes: IntermediateD3Node[], links: IntermediateD3Link[]): D3Graph {
   const idMap = new Map(nodes.map((node, index) => [node.id, index]));
 
   const normalizedNodes: D3Node[] = nodes.map((node, index) => ({

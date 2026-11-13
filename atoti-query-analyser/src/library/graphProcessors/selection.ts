@@ -26,9 +26,7 @@ function removeNoOps(graphs: RetrievalGraph[]) {
           const timingInfo = vertex.getMetadata().timingInfo;
           return (
             timingInfo &&
-            Object.entries(timingInfo).filter(
-              ([, value]) => value !== undefined,
-            ).length !== 0
+            Object.entries(timingInfo).filter(([, value]) => value !== undefined).length !== 0
           );
         })
         .map((vertex) => vertex.getUUID()),
@@ -70,8 +68,10 @@ export function filterByMeasures({
   measures: Measure[];
   selection: VertexSelection;
 }) {
-  const { filteredGraph, invGraph, virtualSource, virtualTarget } =
-    filterAndInverse(graph, selection);
+  const { filteredGraph, invGraph, virtualSource, virtualTarget } = filterAndInverse(
+    graph,
+    selection,
+  );
 
   const predicate = (vertex: RetrievalVertex) => {
     const kind = vertex.getMetadata().$kind;
@@ -81,26 +81,19 @@ export function filterByMeasures({
         return false;
       case AggregateRetrievalKind:
         return (
-          _.intersection(
-            measures,
-            (vertex.getMetadata() as AggregateRetrieval).measures,
-          ).length > 0
+          _.intersection(measures, (vertex.getMetadata() as AggregateRetrieval).measures).length > 0
         );
       case ExternalRetrievalKind:
         return (
-          _.intersection(
-            measures,
-            (vertex.getMetadata() as ExternalRetrieval).joinedMeasure,
-          ).length > 0
+          _.intersection(measures, (vertex.getMetadata() as ExternalRetrieval).joinedMeasure)
+            .length > 0
         );
       default:
         throw new Error(`Unsupported retrieval kind: ${kind}`);
     }
   };
 
-  const selectedVertices = Array.from(filteredGraph.getVertices()).filter(
-    predicate,
-  );
+  const selectedVertices = Array.from(filteredGraph.getVertices()).filter(predicate);
 
   class VertexCollector extends ARetrievalGraphObserver {
     collectedVertices = new Set<RetrievalVertex>();
@@ -117,9 +110,5 @@ export function filterByMeasures({
   vertexCollector.collectedVertices.add(virtualSource);
   vertexCollector.collectedVertices.add(virtualTarget);
 
-  return new Set(
-    Array.from(vertexCollector.collectedVertices).map((vertex) =>
-      vertex.getUUID(),
-    ),
-  );
+  return new Set(Array.from(vertexCollector.collectedVertices).map((vertex) => vertex.getUUID()));
 }

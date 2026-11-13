@@ -13,10 +13,7 @@ import { computeEdgeCriticalScore } from "./criticalPath";
  * Takes array of retrievals, verifies index consistency (no gaps, no repeats),
  * creates vertices for each retrieval and returns array of vertex UUIDs.
  * */
-function processArrayOfRetrievals(
-  graph: RetrievalGraph,
-  retrievals: ARetrieval[],
-) {
+function processArrayOfRetrievals(graph: RetrievalGraph, retrievals: ARetrieval[]) {
   return retrievals
     .sort((lhs, rhs) => lhs.retrievalId - rhs.retrievalId)
     .map((retrieval, index) => {
@@ -72,14 +69,8 @@ export function buildGraph(
   graph.addVertex(virtualTarget);
   graph.labelVertex(virtualTarget.getUUID(), "virtualTarget");
 
-  const aggregateRetrievalVertices = processArrayOfRetrievals(
-    graph,
-    aggregateRetrievals,
-  );
-  const externalRetrievalVertices = processArrayOfRetrievals(
-    graph,
-    externalRetrievals,
-  );
+  const aggregateRetrievalVertices = processArrayOfRetrievals(graph, aggregateRetrievals);
+  const externalRetrievalVertices = processArrayOfRetrievals(graph, externalRetrievals);
 
   [
     {
