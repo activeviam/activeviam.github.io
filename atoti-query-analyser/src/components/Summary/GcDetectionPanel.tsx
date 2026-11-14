@@ -11,6 +11,8 @@ import { useGcDetectorWorker } from "../../workers/useGcDetectorWorker";
 
 const ms = (value: number) => `${Math.round(value)} ms`;
 
+const range = ({ start, end }: { start: number; end: number }) => `${ms(start)} – ${ms(end)}`;
+
 function ImpactedOperations({ event }: { event: GcEvent }) {
   return (
     <Table size="sm" bordered className="gc-impacted mb-0">
@@ -22,7 +24,9 @@ function ImpactedOperations({ event }: { event: GcEvent }) {
           <th>Start</th>
           <th>Elapsed</th>
           <th>Median</th>
+          <th>σ</th>
           <th>Gap</th>
+          <th>z-score</th>
           <th>Role</th>
         </tr>
       </thead>
@@ -37,7 +41,9 @@ function ImpactedOperations({ event }: { event: GcEvent }) {
             <td>{ms(op.start)}</td>
             <td>{ms(op.elapsed)}</td>
             <td>{ms(op.median)}</td>
+            <td>{ms(op.sigma)}</td>
             <td>{ms(op.excess)}</td>
+            <td>{op.zScore === null ? "–" : op.zScore.toFixed(1)}</td>
             <td>{op.role}</td>
           </tr>
         ))}
@@ -62,9 +68,17 @@ function GcReport({ report }: { report: GcDetectionReport }) {
     <div className="gc-report">
       <p className="gc-report-params">
         Analyzed {report.analyzedSamples} partitions of {report.analyzedRetrievals} retrievals (with
-        at least {params.minPartitions} partitions). Threshold: {params.minGapMs} ms above the
-        median; confirmation by at least {params.minConfirmations} other operation(s) with a gap of{" "}
-        {params.confirmRatio * 100}% of the GC. Candidates: {report.candidateCount}.
+        at least {params.minPartitions} partitions), out of {report.totalSamples} partitions.
+        Candidates: partitions slower than the median of their retrieval by at least{" "}
+        {params.minGapMs} ms and {params.dispersionFactor} robust standard deviations (σ = 1.4826 ×
+        MAD). A GC must fit in a time range where no partition starts or ends, and be confirmed by
+        at least {params.minConfirmations} other partition(s) with a gap of{" "}
+        {params.confirmRatio * 100}% of the GC (retrievals whose dispersion hides the GC are not
+        used).
+      </p>
+      <p className="gc-report-params">
+        {report.candidateCount} candidates; groups rejected because a partition starts or ends
+        during the GC: {report.rejectedByContradiction}; not confirmed: {report.unconfirmed}.
       </p>
       {report.events.length === 0 ? (
         <p className="gc-no-event">
@@ -91,8 +105,9 @@ function GcReport({ report }: { report: GcDetectionReport }) {
                 >
                   <td>{event.id}</td>
                   <td>
-                    {ms(event.windowStart)} – {ms(event.windowEnd)}
-                    {event.approximateWindow ? " (approx.)" : ""}
+                    {event.approximateWindow
+                      ? `${event.slots.map(range).join(", ")} (${event.slots.length} possible slots)`
+                      : range(event.slots[0])}
                   </td>
                   <td>{ms(event.estimatedDurationMs)}</td>
                   <td>

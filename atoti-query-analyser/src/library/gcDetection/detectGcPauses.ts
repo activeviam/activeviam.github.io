@@ -21,39 +21,68 @@ export interface GcDetectionParams {
   /** Minimal number of partitions of a retrieval to compute a meaningful median. */
   minPartitions: number;
   /**
-   * A concurrent operation confirms a GC of duration D if its own gap is at
-   * least `confirmRatio * D` and if it overlaps the GC window for at least
-   * `confirmRatio * D`.
+   * A gap is significant only if it exceeds `dispersionFactor` times the
+   * robust standard deviation of the partitions of its retrieval.
+   */
+  dispersionFactor: number;
+  /**
+   * A concurrent partition confirms a GC of duration D if its own gap is at
+   * least `confirmRatio * D`.
    */
   confirmRatio: number;
-  /** Minimal number of other operations showing the same gap. */
+  /** Minimal number of other partitions showing the same gap. */
   minConfirmations: number;
+  /**
+   * The GC must fit in a time range of at least `(1 - durationTolerance) * D`
+   * in which no partition starts or ends, D being the estimated duration.
+   */
+  durationTolerance: number;
 }
 
 export const DEFAULT_GC_DETECTION_PARAMS: Readonly<GcDetectionParams> = {
   minGapMs: 300,
   minPartitions: 3,
+  dispersionFactor: 3,
   confirmRatio: 0.5,
   minConfirmations: 1,
+  durationTolerance: 0.2,
 };
+
+/** Scale factor turning a median absolute deviation into a standard deviation. */
+const MAD_TO_SIGMA = 1.4826;
 
 /** A partition impacted by a GC. */
 export interface ImpactedOperation extends TimingSample {
   /** Median of the elapsed times of the partitions of the retrieval. */
   median: number;
+  /** Robust standard deviation (1.4826 × MAD) of the elapsed times of the retrieval. */
+  sigma: number;
   /** `elapsed - median`: estimation of the time lost by this partition. */
   excess: number;
+  /** `excess / sigma`, or null when all the partitions have the same elapsed time. */
+  zScore: number | null;
   /** `candidate` if the gap exceeds the threshold, `confirmation` otherwise. */
   role: "candidate" | "confirmation";
+}
+
+/** A time range, relative to the start of the plan. */
+export interface TimeRange {
+  start: number;
+  end: number;
 }
 
 /** A GC pause detected in the plan. */
 export interface GcEvent {
   id: number;
-  /** Time range in which the GC occurred, relative to the start of the plan. */
+  /** Time range covering every possible position of the GC. */
   windowStart: number;
   windowEnd: number;
-  /** True if the window is shorter than the estimated duration. */
+  /**
+   * Time ranges in which the GC may have occurred: no partition starts or
+   * ends in them, and they are long enough to contain the GC.
+   */
+  slots: TimeRange[];
+  /** True if there are several possible positions for the GC. */
   approximateWindow: boolean;
   /** Median of the gaps of the candidate partitions. */
   estimatedDurationMs: number;
@@ -65,22 +94,25 @@ export interface GcEvent {
 
 export interface GcDetectionReport {
   params: GcDetectionParams;
+  /** Number of partitions, of every retrieval, used to check contradictions. */
+  totalSamples: number;
+  /** Number of retrievals with enough partitions to compute a reference time. */
   analyzedRetrievals: number;
+  /** Number of partitions of these retrievals. */
   analyzedSamples: number;
   candidateCount: number;
+  /** Groups of candidates rejected because a partition starts or ends during the GC. */
+  rejectedByContradiction: number;
+  /** Groups of candidates rejected because no other partition shows the gap. */
+  unconfirmed: number;
   events: GcEvent[];
 }
 
 /**
- * Extracts the partition timings of the retrievals of a graph, as plain
+ * Extracts the partition timings of every retrieval of a graph, as plain
  * objects that can be sent to a web worker.
- * Retrievals with fewer than `minPartitions` partitions are skipped, as no
- * reference time can be computed for them.
  */
-export function extractTimingSamples(
-  graph: RetrievalGraph,
-  minPartitions = DEFAULT_GC_DETECTION_PARAMS.minPartitions,
-): TimingSample[] {
+export function extractTimingSamples(graph: RetrievalGraph): TimingSample[] {
   const samples: TimingSample[] = [];
   for (const vertex of graph.getVertices()) {
     const retrieval = vertex.getMetadata();
@@ -92,9 +124,6 @@ export function extractTimingSamples(
       continue;
     }
     const count = Math.min(startTime.length, elapsedTime.length);
-    if (count < minPartitions) {
-      continue;
-    }
     for (let partition = 0; partition < count; partition++) {
       samples.push({
         retrievalId: retrieval.retrievalId,
@@ -115,9 +144,19 @@ export function median(values: readonly number[]): number {
   return sorted.length % 2 === 1 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 }
 
+/**
+ * Robust standard deviation: 1.4826 times the median absolute deviation. It
+ * is in the same unit as the values, and is not inflated by a few outliers.
+ */
+export function robustSigma(values: readonly number[]): number {
+  const reference = median(values);
+  return MAD_TO_SIGMA * median(values.map((value) => Math.abs(value - reference)));
+}
+
 type MeasuredSample = TimingSample & {
   end: number;
   median: number;
+  sigma: number;
   excess: number;
   key: string;
 };
@@ -132,6 +171,21 @@ const retrievalKey = (sample: TimingSample) => `${sample.kind}#${sample.retrieva
 
 const overlap = (start1: number, end1: number, start2: number, end2: number): number =>
   Math.min(end1, end2) - Math.max(start1, start2);
+
+/** Index of the first value of a sorted array strictly greater than `value`. */
+function upperBound(sorted: readonly number[], value: number): number {
+  let low = 0;
+  let high = sorted.length;
+  while (low < high) {
+    const middle = (low + high) >> 1;
+    if (sorted[middle] <= value) {
+      low = middle + 1;
+    } else {
+      high = middle;
+    }
+  }
+  return low;
+}
 
 /** Computes the gap of every partition to the median of its retrieval. */
 function measureSamples(
@@ -156,13 +210,16 @@ function measureSamples(
       continue;
     }
     retrievalCount++;
-    const reference = median(group.map((sample) => sample.elapsed));
+    const elapsedTimes = group.map((sample) => sample.elapsed);
+    const reference = median(elapsedTimes);
+    const sigma = robustSigma(elapsedTimes);
     for (const sample of group) {
       measured.push({
         ...sample,
         key,
         end: sample.start + sample.elapsed,
         median: reference,
+        sigma,
         excess: sample.elapsed - reference,
       });
     }
@@ -205,6 +262,35 @@ function clusterCandidates(
   return events;
 }
 
+/**
+ * Finds the time ranges of the window in which no partition starts or ends,
+ * and which are at least `minLength` long. A GC freezes every thread: no
+ * partition can start or end while it runs.
+ */
+function findFreeSlots(
+  boundaries: readonly number[],
+  windowStart: number,
+  windowEnd: number,
+  minLength: number,
+): TimeRange[] {
+  const points = [windowStart];
+  for (let i = upperBound(boundaries, windowStart); i < boundaries.length; i++) {
+    if (boundaries[i] >= windowEnd) {
+      break;
+    }
+    points.push(boundaries[i]);
+  }
+  points.push(windowEnd);
+
+  const slots: TimeRange[] = [];
+  for (let i = 1; i < points.length; i++) {
+    if (points[i] - points[i - 1] >= minLength) {
+      slots.push({ start: points[i - 1], end: points[i] });
+    }
+  }
+  return slots;
+}
+
 const toImpacted = (
   sample: MeasuredSample,
   role: ImpactedOperation["role"],
@@ -216,54 +302,90 @@ const toImpacted = (
   start: sample.start,
   elapsed: sample.elapsed,
   median: sample.median,
+  sigma: sample.sigma,
   excess: sample.excess,
+  zScore: sample.sigma > 0 ? sample.excess / sample.sigma : null,
   role,
 });
 
 /**
  * Detects the GC pauses that slowed down the partitions of a query plan.
  *
- * A GC freezes every operation running at that time. It shows up as a
- * partition much slower than the median of its retrieval (by at least
- * `minGapMs`), while other operations running at the same time show a similar
- * gap. The duration of the GC is estimated by the gap to the median.
+ * A GC freezes every operation running at that time:
+ * - it shows up as a partition much slower than the median of its retrieval,
+ *   by at least `minGapMs` and `dispersionFactor` robust standard deviations;
+ *   the gap estimates the duration of the GC;
+ * - no partition can start or end during the GC: the GC must fit in a time
+ *   range free of partition boundaries, or the candidates are rejected;
+ * - the other partitions running during the GC must show a similar gap, at
+ *   least `minConfirmations` of them. Retrievals whose dispersion is larger
+ *   than the GC duration cannot reveal it, and are not used as confirmations.
  */
 export function detectGcPauses(
   samples: readonly TimingSample[],
   params: GcDetectionParams = DEFAULT_GC_DETECTION_PARAMS,
 ): GcDetectionReport {
-  const { minGapMs, minPartitions, confirmRatio, minConfirmations } = params;
+  const {
+    minGapMs,
+    minPartitions,
+    dispersionFactor,
+    confirmRatio,
+    minConfirmations,
+    durationTolerance,
+  } = params;
   const { measured, retrievalCount } = measureSamples(samples, minPartitions);
+  const threshold = (sample: MeasuredSample) => Math.max(minGapMs, dispersionFactor * sample.sigma);
 
-  const candidates = measured.filter((sample) => sample.excess >= minGapMs);
+  const boundaries = samples
+    .flatMap((sample) => [sample.start, sample.start + sample.elapsed])
+    .sort((a, b) => a - b);
+  const candidates = measured.filter((sample) => sample.excess >= threshold(sample));
   // Only partitions with a significant gap can confirm a GC.
   const significant = measured
     .filter((sample) => sample.excess >= confirmRatio * minGapMs)
     .sort((a, b) => a.start - b.start);
 
+  let rejectedByContradiction = 0;
+  let unconfirmed = 0;
   const events = clusterCandidates(candidates, confirmRatio)
-    .map((event) => {
+    .flatMap((event) => {
       const gaps = event.candidates.map((sample) => sample.excess);
       const duration = median(gaps);
+      const slots = findFreeSlots(
+        boundaries,
+        event.windowStart,
+        event.windowEnd,
+        Math.max(minGapMs, (1 - durationTolerance) * duration),
+      );
+      if (slots.length === 0) {
+        rejectedByContradiction++;
+        return [];
+      }
+
       const members = new Set<MeasuredSample>(event.candidates);
+      const windowEnd = slots[slots.length - 1].end;
       for (const sample of significant) {
-        if (sample.start >= event.windowEnd) {
+        if (sample.start >= windowEnd) {
           break;
         }
+        const perceptible = dispersionFactor * sample.sigma < duration;
         if (
           !members.has(sample) &&
-          sample.excess >= confirmRatio * duration &&
-          overlap(event.windowStart, event.windowEnd, sample.start, sample.end) >=
-            confirmRatio * Math.min(duration, event.windowEnd - event.windowStart)
+          perceptible &&
+          sample.excess >= Math.max(confirmRatio * duration, dispersionFactor * sample.sigma) &&
+          slots.some((slot) => overlap(slot.start, slot.end, sample.start, sample.end) > 0)
         ) {
           members.add(sample);
         }
       }
-      return { event, duration, gaps, members };
+      if (members.size - 1 < minConfirmations) {
+        unconfirmed++;
+        return [];
+      }
+      return [{ event, duration, gaps, slots, members }];
     })
-    .filter(({ members }) => members.size - 1 >= minConfirmations)
-    .sort((a, b) => a.event.windowStart - b.event.windowStart)
-    .map(({ event, duration, gaps, members }, index): GcEvent => {
+    .sort((a, b) => a.slots[0].start - b.slots[0].start)
+    .map(({ event, duration, gaps, slots, members }, index): GcEvent => {
       const impacted = Array.from(members)
         .map((sample) =>
           toImpacted(sample, event.candidates.includes(sample) ? "candidate" : "confirmation"),
@@ -271,9 +393,10 @@ export function detectGcPauses(
         .sort((a, b) => a.start - b.start || a.retrievalId - b.retrievalId);
       return {
         id: index + 1,
-        windowStart: event.windowStart,
-        windowEnd: event.windowEnd,
-        approximateWindow: event.windowEnd - event.windowStart < duration,
+        windowStart: slots[0].start,
+        windowEnd: slots[slots.length - 1].end,
+        slots,
+        approximateWindow: slots.length > 1,
         estimatedDurationMs: duration,
         minGapMs: Math.min(...gaps),
         maxGapMs: Math.max(...gaps),
@@ -284,9 +407,12 @@ export function detectGcPauses(
 
   return {
     params: { ...params },
+    totalSamples: samples.length,
     analyzedRetrievals: retrievalCount,
     analyzedSamples: measured.length,
     candidateCount: candidates.length,
+    rejectedByContradiction,
+    unconfirmed,
     events,
   };
 }
