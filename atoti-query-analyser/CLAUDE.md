@@ -35,6 +35,7 @@ Showing all the data and query nodes involved
 For a given node, it reports the time spend in the database layer, the network layer, the engine layer.
 
 The "Detect GC pauses" button (not offered on the "Global summary" tab, which mixes the clocks of several cluster members) runs a GC detection on the displayed plan, in a web worker:
+
 - Logic: `src/library/gcDetection/detectGcPauses.ts`; worker and hook: `src/workers/gcDetector.worker.ts`, `src/workers/useGcDetectorWorker.ts`; UI: `src/components/Summary/GcDetectionPanel.tsx`.
 - For each retrieval with at least 3 partitions, a partition slower than the median of its retrieval by at least 300 ms and 3 robust standard deviations (1.4826 × MAD) is a GC candidate; the gap estimates the GC duration.
 - Candidates are grouped into events, whose window is the intersection of their partitions.
