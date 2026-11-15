@@ -54,3 +54,20 @@ li.component-timing.timing-engine:before {
 li.component-timing.timing-network:before {
   background: #f4538a;
 }
+
+.gc-detection {
+  margin: 15px 0;
+}
+
+.gc-report {
+  margin-top: 10px;
+}
+
+.gc-report-params {
+  color: #5e5e5e;
+  font-size: 0.95em;
+}
+
+tr.gc-event {
+  cursor: pointer;
+}
