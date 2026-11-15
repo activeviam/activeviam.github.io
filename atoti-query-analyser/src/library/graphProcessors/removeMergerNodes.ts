@@ -8,10 +8,7 @@ import {
 } from "../dataStructures/json/retrieval";
 import { UUID } from "../utilities/uuid";
 
-const MERGER_TYPES = new Set([
-  "PrimitiveResultsMerger",
-  "PostProcessedResultsMerger",
-]);
+const MERGER_TYPES = new Set(["PrimitiveResultsMerger", "PostProcessedResultsMerger"]);
 
 /**
  * Check if a retrieval is a merger node.
@@ -72,9 +69,7 @@ export interface RemoveMergerNodesResult {
  * @param graph - The input retrieval graph
  * @returns An object containing the new graph without merger nodes
  */
-export function removeMergerNodes(
-  graph: RetrievalGraph,
-): RemoveMergerNodesResult {
+export function removeMergerNodes(graph: RetrievalGraph): RemoveMergerNodesResult {
   // Identify merger and non-merger vertices
   const mergerVertices = new Set<UUID>();
   const nonMergerVertices: RetrievalVertex[] = [];
@@ -118,22 +113,14 @@ export function removeMergerNodes(
         if (!addedEdges.has(edgeKey)) {
           addedEdges.add(edgeKey);
           newGraph.addEdge(
-            new Edge(
-              { criticalScore: edge.getMetadata().criticalScore },
-              vertex,
-              successor,
-            ),
+            new Edge({ criticalScore: edge.getMetadata().criticalScore }, vertex, successor),
           );
         }
       } else {
         // Edge goes to a merger: find the non-merger successors through the chain
         const visited = new Set<UUID>();
         visited.add(successor.getUUID());
-        const finalSuccessors = findNonMergerSuccessors(
-          graph,
-          successor,
-          visited,
-        );
+        const finalSuccessors = findNonMergerSuccessors(graph, successor, visited);
 
         for (const { vertex: finalSuccessor, merger } of finalSuccessors) {
           // Skip if destination is VirtualRetrieval or same as source

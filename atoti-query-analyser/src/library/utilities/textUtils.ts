@@ -13,8 +13,7 @@
  * ```
  */
 export function extractWords(text: string): Array<string> {
-  const re =
-    /(\d+)|([A-Z]+(?=([A-Z][a-z]+)|$|[^a-zA-Z]))|((?<=[^a-zA-Z]|^)[a-z]+)|([A-Z][a-z]+)/gm;
+  const re = /(\d+)|([A-Z]+(?=([A-Z][a-z]+)|$|[^a-zA-Z]))|((?<=[^a-zA-Z]|^)[a-z]+)|([A-Z][a-z]+)/gm;
   const words = [];
 
   let match;
@@ -55,7 +54,5 @@ export function prettySize(size: number): string {
     mutableSize /= 1024;
     ++suffixIdx;
   }
-  return `${mutableSize.toFixed(suffixIdx === 0 ? 0 : 1)} ${
-    suffixes[suffixIdx]
-  }`;
+  return `${mutableSize.toFixed(suffixIdx === 0 ? 0 : 1)} ${suffixes[suffixIdx]}`;
 }

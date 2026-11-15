@@ -31,9 +31,7 @@ function mappingEntryComparator(lhs: MappingEntry, rhs: MappingEntry): number {
 export class StackTraceParser {
   private static readonly instance = new StackTraceParser();
 
-  private constructor(
-    private fetchedMappings = new Map<string, Promise<Mapping>>(),
-  ) {}
+  private constructor(private fetchedMappings = new Map<string, Promise<Mapping>>()) {}
 
   public static getInstance() {
     return StackTraceParser.instance;
@@ -48,9 +46,7 @@ export class StackTraceParser {
 
   public async parse(location: string): Promise<string> {
     try {
-      const [, urlStr, lineStr, columnStr] = requireNonNull(
-        /^(.*):(\d+):(\d+)$/gm.exec(location),
-      );
+      const [, urlStr, lineStr, columnStr] = requireNonNull(/^(.*):(\d+):(\d+)$/gm.exec(location));
       const mapping = await this.getMapping(urlStr);
       const column = +columnStr;
       const entry = this.findMappingEntry(mapping.entries[+lineStr], column);
@@ -75,9 +71,7 @@ export class StackTraceParser {
     const rawMapping = await response.json();
 
     if (rawMapping.version !== 3) {
-      throw new Error(
-        `Unknown source map version: ${rawMapping.version} (url=${url})`,
-      );
+      throw new Error(`Unknown source map version: ${rawMapping.version} (url=${url})`);
     }
 
     return this.parseRawMapping(rawMapping);
@@ -101,10 +95,7 @@ export class StackTraceParser {
         throw new Error("Bad decoded length");
       }
       for (let i = 0; i < decoded.length; ++i) {
-        vlqState[i] =
-          typeof decoded[i] === "number"
-            ? vlqState[i] + decoded[i]
-            : vlqState[i];
+        vlqState[i] = typeof decoded[i] === "number" ? vlqState[i] + decoded[i] : vlqState[i];
       }
 
       const entry = this.parseSegment(...vlqState, sources, names);
@@ -192,10 +183,7 @@ export class StackTraceParser {
     return entries;
   }
 
-  private findMappingEntry(
-    mappingEntries: MappingEntry[],
-    column: number,
-  ): MappingEntry {
+  private findMappingEntry(mappingEntries: MappingEntry[], column: number): MappingEntry {
     if (column <= mappingEntries[0].column) {
       return mappingEntries[0];
     }

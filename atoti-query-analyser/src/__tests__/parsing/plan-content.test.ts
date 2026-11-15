@@ -1,9 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { ALL_FIXTURES, loadQueryPlans } from "./fixtures";
-import {
-  preprocessQueryPlan,
-  QueryPlan,
-} from "library/dataStructures/processing/queryPlan";
+import { preprocessQueryPlan, QueryPlan } from "library/dataStructures/processing/queryPlan";
 
 /**
  * Summarize a query plan into a small, stable structure, so that snapshots
@@ -42,12 +39,12 @@ describe("Query plan content", () => {
 
   it("labels the virtual source and target of every graph", async () => {
     const [plan] = await loadQueryPlans("small-plan-v1.txt");
-    expect(
-      plan.graph.getVertexByLabel("virtualSource").getMetadata().$kind,
-    ).toBe("VirtualRetrieval");
-    expect(
-      plan.graph.getVertexByLabel("virtualTarget").getMetadata().$kind,
-    ).toBe("VirtualRetrieval");
+    expect(plan.graph.getVertexByLabel("virtualSource").getMetadata().$kind).toBe(
+      "VirtualRetrieval",
+    );
+    expect(plan.graph.getVertexByLabel("virtualTarget").getMetadata().$kind).toBe(
+      "VirtualRetrieval",
+    );
   });
 
   it("rejects an input which is not an array", () => {
@@ -56,9 +53,7 @@ describe("Query plan content", () => {
 
   it("rejects a plan without its mandatory fields", () => {
     // The validation logs why each format failed before throwing.
-    const consoleError = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     expect(() => preprocessQueryPlan([{}])).toThrow();
     consoleError.mockRestore();
   });

@@ -32,26 +32,16 @@ export interface JsonQueryPlanModernFormat {
 
 // Reason: `validate...()` function
 /* eslint-disable @typescript-eslint/no-explicit-any */
-function validateJsonQueryPlanOldFormat(
-  rawQueryPlan: any,
-): JsonQueryPlanOldFormat {
+function validateJsonQueryPlanOldFormat(rawQueryPlan: any): JsonQueryPlanOldFormat {
   if (typeof rawQueryPlan !== "object" || rawQueryPlan === null) {
     throw new Error("queryPlan is not an object");
   }
   const planInfo = validatePlanInfo(rawQueryPlan.planInfo);
-  const retrievals = validateList(
-    rawQueryPlan.retrievals,
-    validateAggregateRetrieval,
-  );
+  const retrievals = validateList(rawQueryPlan.retrievals, validateAggregateRetrieval);
   const dependencies = validateDependencyMap(rawQueryPlan.dependencies);
   const queryFilters = validateList(rawQueryPlan.queryFilters, validateFilter);
-  const querySummary = validateQuerySummary(
-    rawQueryPlan.querySummary ?? rawQueryPlan.planInfo,
-  );
-  const needFillTimingInfo = optional(
-    rawQueryPlan.needFillTimingInfo,
-    validateBoolean,
-  );
+  const querySummary = validateQuerySummary(rawQueryPlan.querySummary ?? rawQueryPlan.planInfo);
+  const needFillTimingInfo = optional(rawQueryPlan.needFillTimingInfo, validateBoolean);
   return {
     planInfo,
     retrievals,
@@ -62,9 +52,7 @@ function validateJsonQueryPlanOldFormat(
   };
 }
 
-function validateJsonQueryPlanModernFormat(
-  rawQueryPlan: any,
-): JsonQueryPlanModernFormat {
+function validateJsonQueryPlanModernFormat(rawQueryPlan: any): JsonQueryPlanModernFormat {
   if (typeof rawQueryPlan !== "object" || rawQueryPlan === null) {
     throw new Error("queryPlan is not an object");
   }
@@ -75,24 +63,15 @@ function validateJsonQueryPlanModernFormat(
   );
   const dependencies = validateDependencyMap(rawQueryPlan.dependencies);
   const externalRetrievals =
-    optional(
-      rawQueryPlan.externalRetrievals || rawQueryPlan.databaseRetrievals,
-      (retrievals) => validateList(retrievals, validateExternalRetrieval),
+    optional(rawQueryPlan.externalRetrievals || rawQueryPlan.databaseRetrievals, (retrievals) =>
+      validateList(retrievals, validateExternalRetrieval),
     ) ?? [];
   const externalDependencies =
-    optional(rawQueryPlan.externalDependencies, validateDependencyMap) ??
-    new Map();
+    optional(rawQueryPlan.externalDependencies, validateDependencyMap) ?? new Map();
   const queryFilters =
-    optional(rawQueryPlan.queryFilters, (filters) =>
-      validateList(filters, validateFilter),
-    ) ?? [];
-  const querySummary = validateQuerySummary(
-    rawQueryPlan.querySummary ?? rawQueryPlan.planInfo,
-  );
-  const needFillTimingInfo = optional(
-    rawQueryPlan.needFillTimingInfo,
-    validateBoolean,
-  );
+    optional(rawQueryPlan.queryFilters, (filters) => validateList(filters, validateFilter)) ?? [];
+  const querySummary = validateQuerySummary(rawQueryPlan.querySummary ?? rawQueryPlan.planInfo);
+  const needFillTimingInfo = optional(rawQueryPlan.needFillTimingInfo, validateBoolean);
   return {
     planInfo,
     aggregateRetrievals,
@@ -108,14 +87,8 @@ function validateJsonQueryPlanModernFormat(
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 function convertToV2(plan: JsonQueryPlanOldFormat): JsonQueryPlanModernFormat {
-  const {
-    planInfo,
-    retrievals,
-    dependencies,
-    queryFilters,
-    querySummary,
-    needFillTimingInfo,
-  } = plan;
+  const { planInfo, retrievals, dependencies, queryFilters, querySummary, needFillTimingInfo } =
+    plan;
   return {
     planInfo,
     aggregateRetrievals: retrievals,
@@ -143,12 +116,7 @@ export function validateJsonQueryPlan(rawQueryPlan: any): JsonQueryPlan {
     try {
       return convertToV2(validateJsonQueryPlanOldFormat(rawQueryPlan));
     } catch (errV1) {
-      console.error(
-        "Cannot validate query plan. v2 error",
-        errV2,
-        "v1 error",
-        errV1,
-      );
+      console.error("Cannot validate query plan. v2 error", errV2, "v1 error", errV1);
       throw new Error("Failed to validate query plan", {
         cause: [errV2, errV1],
       });

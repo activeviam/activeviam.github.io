@@ -16,9 +16,7 @@ export function addClustersToNodes(
   const { invGraph, virtualSource } = filterAndInverse(graph, selection);
   const unionFind = new UnionFind();
 
-  const vertices = Array.from(invGraph.getVertices()).filter(
-    (vertex) => vertex !== virtualSource,
-  );
+  const vertices = Array.from(invGraph.getVertices()).filter((vertex) => vertex !== virtualSource);
   vertices.forEach((vertex) =>
     invGraph.getOutgoingEdges(vertex).forEach((edge) => {
       unionFind.union(edge.getBegin(), edge.getEnd());

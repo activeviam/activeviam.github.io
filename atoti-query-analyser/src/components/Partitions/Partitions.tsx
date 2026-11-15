@@ -1,11 +1,8 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { untangle } from "../../library/dataStructures/d3/d3Graph";
 import { D3Node } from "../../library/dataStructures/d3/d3Node";
 import { D3Link } from "../../library/dataStructures/d3/d3Link";
-import {
-  CondensedRetrieval,
-  RetrievalGraph,
-} from "../../library/dataStructures/json/retrieval";
+import { RetrievalGraph } from "../../library/dataStructures/json/retrieval";
 import { condenseByPartitions } from "../../library/graphProcessors/condenseByPartitions";
 import { removeMergerNodes } from "../../library/graphProcessors/removeMergerNodes";
 import { InteractiveLink } from "../Graph/InteractiveLink";
@@ -46,7 +43,7 @@ interface DataModel {
 export function Partitions({
   query,
   selection: _selection,
-  changeGraph: changeGraph0,
+  changeGraph: _changeGraph,
 }: {
   query: QueryPlan;
   selection: VertexSelection;
@@ -87,16 +84,6 @@ export function Partitions({
     });
   };
 
-  const changeGraph = (id: number) => {
-    clickNode(null);
-    changeGraph0(id);
-  };
-
-  // No-op for condensed retrieval drillthrough in partition view
-  const onCondensedRetrievalDrillthrough = (_retrieval: CondensedRetrieval) => {
-    // Not supported in partition view
-  };
-
   useEffect(() => {
     if (svgRef.current === null) {
       return;
@@ -112,10 +99,7 @@ export function Partitions({
         return;
       }
 
-      const dragStarted = (
-        event: D3DragEvent<SVGGElement, D3Node, unknown>,
-        d: D3Node,
-      ) => {
+      const dragStarted = (event: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
         if (!event.active) {
           force.alphaTarget(0.3).restart();
         }
@@ -125,18 +109,12 @@ export function Partitions({
         d.fy = d.y;
       };
 
-      const dragging = (
-        event: D3DragEvent<SVGGElement, D3Node, unknown>,
-        d: D3Node,
-      ) => {
+      const dragging = (event: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
         d.fx = event.x;
         d.fy = event.y;
       };
 
-      const dragEnded = (
-        event: D3DragEvent<SVGGElement, D3Node, unknown>,
-        d: D3Node,
-      ) => {
+      const dragEnded = (event: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
         if (!event.active) {
           force.alphaTarget(0);
         }
@@ -222,11 +200,7 @@ export function Partitions({
         })),
     );
 
-    const d3data = buildD3(
-      condensedData.graph,
-      condensedData.selection,
-      edgeSelection,
-    );
+    const d3data = buildD3(condensedData.graph, condensedData.selection, edgeSelection, false);
 
     setNodes(d3data.nodes);
     setLinks(d3data.links);
@@ -276,13 +250,9 @@ export function Partitions({
           {nodes.map((node) => (
             <Node
               node={node}
-              changeGraph={changeGraph}
               clickNode={clickNode}
               key={node.id}
               selected={selectedNodeId === node.id}
-              onCondensedRetrievalDrillthrough={
-                onCondensedRetrievalDrillthrough
-              }
               disableClick={true}
               backgroundColorFn={condensedData.partitioningColorFn}
             />

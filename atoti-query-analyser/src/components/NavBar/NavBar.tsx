@@ -25,9 +25,7 @@ export function NavBar({
 }) {
   return (
     <Navbar bg="dark" variant="dark">
-      <Navbar.Brand className="ms-3">
-        QueryViz
-      </Navbar.Brand>
+      <Navbar.Brand className="ms-3">QueryViz</Navbar.Brand>
       <Nav
         className="me-auto"
         onSelect={(selectedKey: string | null) => {

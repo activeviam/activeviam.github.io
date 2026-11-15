@@ -49,13 +49,7 @@ function getDiffClass(status: DiffStatus, side?: "left" | "right"): string {
   }
 }
 
-function ScalarRow({
-  label,
-  result,
-}: {
-  label: string;
-  result: ScalarDiffResult;
-}) {
+function ScalarRow({ label, result }: { label: string; result: ScalarDiffResult }) {
   const leftStatus =
     result.leftValue === null
       ? "na"
@@ -133,13 +127,7 @@ function buildAlignedArrayRows(items: ArrayDiffItem[]): AlignedRow[] {
   return rows;
 }
 
-function ArrayRows({
-  label,
-  items,
-}: {
-  label: string;
-  items: ArrayDiffItem[];
-}) {
+function ArrayRows({ label, items }: { label: string; items: ArrayDiffItem[] }) {
   const rows = buildAlignedArrayRows(items);
 
   if (rows.length === 0) {
@@ -197,9 +185,7 @@ interface LocationAlignedRow {
   rightLevelStatus?: DiffStatus;
 }
 
-function buildAlignedLocationRows(
-  items: LocationDiffItem[],
-): LocationAlignedRow[] {
+function buildAlignedLocationRows(items: LocationDiffItem[]): LocationAlignedRow[] {
   const rows: LocationAlignedRow[] = [];
 
   for (const item of items) {
@@ -263,13 +249,7 @@ function buildAlignedLocationRows(
   return rows;
 }
 
-function LocationRows({
-  label,
-  items,
-}: {
-  label: string;
-  items: LocationDiffItem[];
-}) {
+function LocationRows({ label, items }: { label: string; items: LocationDiffItem[] }) {
   const rows = buildAlignedLocationRows(items);
 
   if (rows.length === 0) {
@@ -316,9 +296,7 @@ function LocationRows({
                 {row.leftLevelName !== null && (
                   <>
                     <span className="level-index">[{row.levelIndex}]</span>
-                    <span className="level-name">
-                      {row.leftLevelName}:
-                    </span>{" "}
+                    <span className="level-name">{row.leftLevelName}:</span>{" "}
                     <span className="level-path">{row.leftLevelPath}</span>
                   </>
                 )}
@@ -329,9 +307,7 @@ function LocationRows({
                 {row.rightLevelName !== null && (
                   <>
                     <span className="level-index">[{row.levelIndex}]</span>
-                    <span className="level-name">
-                      {row.rightLevelName}:
-                    </span>{" "}
+                    <span className="level-name">{row.rightLevelName}:</span>{" "}
                     <span className="level-path">{row.rightLevelPath}</span>
                   </>
                 )}
@@ -415,8 +391,8 @@ export function NodeComparisonPanel({
         <div className="comparison-empty">
           {pinnedNodes.length < 2 ? (
             <p>
-              Pin at least 2 nodes in the Details panel to compare them. You can
-              also use the Left/Right buttons to select nodes for comparison.
+              Pin at least 2 nodes in the Details panel to compare them. You can also use the
+              Left/Right buttons to select nodes for comparison.
             </p>
           ) : (
             <p>Select two nodes above to compare their attributes.</p>
@@ -438,10 +414,7 @@ export function NodeComparisonPanel({
               <ArrayRows label="Measures" items={comparison!.measures} />
               <ScalarRow label="Filter ID" result={comparison!.filterId} />
               <ScalarRow label="Provider" result={comparison!.provider} />
-              <ScalarRow
-                label="Partitioning"
-                result={comparison!.partitioning}
-              />
+              <ScalarRow label="Partitioning" result={comparison!.partitioning} />
             </tbody>
           </table>
         </div>

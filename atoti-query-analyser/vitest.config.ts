@@ -7,10 +7,7 @@ export default defineConfig({
     environment: "node",
     include: ["src/**/*.test.ts"],
     testTimeout: 30000,
-    reporters: [
-      "default",
-      ["junit", { outputFile: "test-results/results.xml" }],
-    ],
+    reporters: ["default", ["junit", { outputFile: "test-results/results.xml" }]],
     coverage: {
       provider: "v8",
       // Every source file counts, including the ones no test loads.

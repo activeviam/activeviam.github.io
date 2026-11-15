@@ -10,8 +10,7 @@ import {
 } from "../dataStructures/json/retrieval";
 
 function getNodeMeasures(retrieval: ARetrieval): string[] {
-  if (retrieval.$kind === AggregateRetrievalKind)
-    return (retrieval as AggregateRetrieval).measures;
+  if (retrieval.$kind === AggregateRetrievalKind) return (retrieval as AggregateRetrieval).measures;
   if (retrieval.$kind === ExternalRetrievalKind)
     return (retrieval as ExternalRetrieval).joinedMeasure;
   return [];
@@ -19,7 +18,9 @@ function getNodeMeasures(retrieval: ARetrieval): string[] {
 
 function isGeneratedNode(retrieval: ARetrieval): boolean {
   const measures = getNodeMeasures(retrieval);
-  return measures.length > 0 && measures.every((m) => m.includes("_#_") || m.startsWith("__hidden_"));
+  return (
+    measures.length > 0 && measures.every((m) => m.includes("_#_") || m.startsWith("__hidden_"))
+  );
 }
 
 function visitAndTagParentMeasures(
@@ -44,9 +45,7 @@ function visitAndTagParentMeasures(
     measuresForChildren = merged;
   } else {
     // Non-generated node — its own measures become the parentMeasures for children
-    measuresForChildren = getNodeMeasures(retrieval).filter(
-      (m) => !m.includes("_#_"),
-    );
+    measuresForChildren = getNodeMeasures(retrieval).filter((m) => !m.includes("_#_"));
   }
 
   for (const edge of graph.getOutgoingEdges(vertex)) {

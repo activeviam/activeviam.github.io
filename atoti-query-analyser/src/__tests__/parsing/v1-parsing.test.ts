@@ -1,10 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { V1_FIXTURES, loadFixture } from "./fixtures";
 import { parseMultiV1, convertToV2 } from "library/inputProcessors/v1tov2";
-import {
-  preprocessQueryPlan,
-  QueryPlan,
-} from "library/dataStructures/processing/queryPlan";
+import { preprocessQueryPlan, QueryPlan } from "library/dataStructures/processing/queryPlan";
 
 describe("V1 text file parsing", () => {
   const noopCallback = () => {};
@@ -21,9 +18,7 @@ describe("V1 text file parsing", () => {
         expect(v1Structures.length).toBeGreaterThan(0);
 
         // Step 2: Convert each V1 structure to V2 JSON format
-        const v2Results = v1Structures.map((v1Structure) =>
-          convertToV2(v1Structure),
-        );
+        const v2Results = v1Structures.map((v1Structure) => convertToV2(v1Structure));
 
         // Check that conversions succeeded
         v2Results.forEach((result, index) => {
@@ -49,26 +44,14 @@ describe("V1 text file parsing", () => {
 
         // Validate each QueryPlan has required fields
         queryPlans.forEach((plan, index) => {
-          expect(
-            plan.planInfo,
-            `planInfo missing in plan ${index}`,
-          ).toBeDefined();
+          expect(plan.planInfo, `planInfo missing in plan ${index}`).toBeDefined();
           expect(plan.graph, `graph missing in plan ${index}`).toBeDefined();
-          expect(
-            plan.queryFilters,
-            `queryFilters missing in plan ${index}`,
-          ).toBeDefined();
-          expect(
-            plan.querySummary,
-            `querySummary missing in plan ${index}`,
-          ).toBeDefined();
+          expect(plan.queryFilters, `queryFilters missing in plan ${index}`).toBeDefined();
+          expect(plan.querySummary, `querySummary missing in plan ${index}`).toBeDefined();
 
           // Validate graph has at least one vertex
           const vertices = Array.from(plan.graph.getVertices());
-          expect(
-            vertices.length,
-            `graph has no vertices in plan ${index}`,
-          ).toBeGreaterThan(0);
+          expect(vertices.length, `graph has no vertices in plan ${index}`).toBeGreaterThan(0);
         });
       });
     });

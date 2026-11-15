@@ -7,11 +7,7 @@ export interface IVertex<VertexMetadata> {
   getUUID(): UUID;
 }
 
-export interface IEdge<
-  VertexMetadata,
-  EdgeMetadata,
-  Vertex extends IVertex<VertexMetadata>,
-> {
+export interface IEdge<VertexMetadata, EdgeMetadata, Vertex extends IVertex<VertexMetadata>> {
   getBegin(): Vertex;
 
   getEnd(): Vertex;
@@ -155,8 +151,7 @@ class AdjacencyListGraphBase<
   /** Export graph in DOT format. */
   dumps(): string {
     const result = [];
-    const mangle = (text: string) =>
-      "_" + text.replaceAll(/[^a-zA-Z0-9]/g, "_");
+    const mangle = (text: string) => "_" + text.replaceAll(/[^a-zA-Z0-9]/g, "_");
     result.push("digraph G {");
 
     const vertexLabels = new Map<IVertex<VertexMetadata>, string>();
@@ -191,10 +186,7 @@ class AdjacencyListGraphBase<
  * This implementation of {@link IGraph} stores its edges indexed by their
  * origin vertex (see {@link https://en.wikipedia.org/wiki/Adjacency_list}).
  * */
-export class AdjacencyListGraph<
-  VertexMetadata,
-  EdgeMetadata,
-> extends AdjacencyListGraphBase<
+export class AdjacencyListGraph<VertexMetadata, EdgeMetadata> extends AdjacencyListGraphBase<
   VertexMetadata,
   EdgeMetadata,
   Vertex<VertexMetadata>,
@@ -295,7 +287,6 @@ export interface IGraphObserver<
 }
 
 // Reason: abstract class with default no-op methods
-/* eslint-disable @typescript-eslint/no-unused-vars */
 export class AGraphObserver<
   VertexMetadata,
   EdgeMetadata,
@@ -303,20 +294,18 @@ export class AGraphObserver<
   Edge extends IEdge<VertexMetadata, EdgeMetadata, Vertex>,
   Graph extends IGraph<VertexMetadata, EdgeMetadata, Vertex, Edge>,
 > implements IGraphObserver<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph> {
-  onBeginSearch(graph: Graph): void {}
+  onBeginSearch(_graph: Graph): void {}
 
-  onEdgeDiscover(edge: Edge): void {}
+  onEdgeDiscover(_edge: Edge): void {}
 
   onEndSearch(): void {}
 
-  onVertexDiscover(vertex: Vertex): void {}
+  onVertexDiscover(_vertex: Vertex): void {}
 
-  onVertexEnter(vertex: Vertex): void {}
+  onVertexEnter(_vertex: Vertex): void {}
 
-  onVertexExit(vertex: Vertex): void {}
+  onVertexExit(_vertex: Vertex): void {}
 }
-
-/* eslint-enable @typescript-eslint/no-unused-vars */
 
 /**
  * This class encapsulates depth-first search (DFS) algorithm. This algorithm is used to traverse graphs.
@@ -337,13 +326,7 @@ class Dfs<
   constructor(
     public graph: Graph,
     public rootNodes: Vertex[],
-    public observer: IGraphObserver<
-      VertexMetadata,
-      EdgeMetadata,
-      Vertex,
-      Edge,
-      Graph
-    >,
+    public observer: IGraphObserver<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph>,
   ) {}
 
   private isVisited(node: Vertex): boolean {
@@ -499,11 +482,7 @@ export function dfs<
   rootNode: Vertex,
   observer: IGraphObserver<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph>,
 ): void {
-  multiDfs<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph>(
-    graph,
-    [rootNode],
-    observer,
-  );
+  multiDfs<VertexMetadata, EdgeMetadata, Vertex, Edge, Graph>(graph, [rootNode], observer);
 }
 
 /**
@@ -515,21 +494,12 @@ export function dfs<
  */
 export function applyOnDAG<
   Vertex extends IVertex<unknown>,
-  Graph extends IGraph<
-    unknown,
-    unknown,
-    Vertex,
-    IEdge<unknown, unknown, Vertex>
-  >,
+  Graph extends IGraph<unknown, unknown, Vertex, IEdge<unknown, unknown, Vertex>>,
   T,
 >(
   graph: Graph,
   rootNode: Vertex,
-  reducer: (
-    vertex: Vertex,
-    children: Set<Vertex>,
-    childrenValues: (child: Vertex) => T,
-  ) => T,
+  reducer: (vertex: Vertex, children: Set<Vertex>, childrenValues: (child: Vertex) => T) => T,
 ): Map<Vertex, T> {
   const observer = new AcyclicGraphFunctionCalculator(reducer);
   dfs(graph, rootNode, observer);

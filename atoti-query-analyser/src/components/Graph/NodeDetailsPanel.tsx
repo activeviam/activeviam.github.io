@@ -90,9 +90,7 @@ function NodeAccordionItem({
           onToggleExpand();
         }}
       >
-        <span className="node-details-expand-icon">
-          {isExpanded ? "▼" : "►"}
-        </span>
+        <span className="node-details-expand-icon">{isExpanded ? "▼" : "►"}</span>
         <span className="node-details-label">{getNodeLabel(node)}</span>
         <Button
           variant="link"
@@ -136,17 +134,11 @@ function NodeAccordionItem({
       </div>
       {isExpanded && (
         <div className="node-details-body">
-          <Details
-            startTime={startTimes}
-            elapsedTime={elapsedTimes}
-            metadata={metadata}
-          />
+          <Details startTime={startTimes} elapsedTime={elapsedTimes} metadata={metadata} />
           {metadata.$kind === CondensedRetrievalKind && (
             <Button
               size="sm"
-              onClick={() =>
-                onCondensedRetrievalDrillthrough(metadata as CondensedRetrieval)
-              }
+              onClick={() => onCondensedRetrievalDrillthrough(metadata as CondensedRetrieval)}
             >
               Zoom in
             </Button>
@@ -181,9 +173,7 @@ export function NodeDetailsPanel({
   const currentNodeRef = useRef<HTMLDivElement>(null);
 
   const currentNode =
-    state.currentNodeId !== null
-      ? nodes.find((n) => n.id === state.currentNodeId)
-      : null;
+    state.currentNodeId !== null ? nodes.find((n) => n.id === state.currentNodeId) : null;
 
   const pinnedNodes = state.pinnedNodeIds
     .map((id) => nodes.find((n) => n.id === id))
@@ -203,8 +193,7 @@ export function NodeDetailsPanel({
       }
       return {
         ...prevState,
-        currentNodeId:
-          prevState.currentNodeId === nodeId ? null : prevState.currentNodeId,
+        currentNodeId: prevState.currentNodeId === nodeId ? null : prevState.currentNodeId,
         pinnedNodeIds: [nodeId, ...prevState.pinnedNodeIds],
         expandedNodeIds: new Set([...prevState.expandedNodeIds, nodeId]),
       };
@@ -278,9 +267,7 @@ export function NodeDetailsPanel({
 
   if (!currentNode && pinnedNodes.length === 0) {
     return (
-      <div className="node-details-empty">
-        Click a node in the graph to see its details here.
-      </div>
+      <div className="node-details-empty">Click a node in the graph to see its details here.</div>
     );
   }
 
@@ -308,14 +295,9 @@ export function NodeDetailsPanel({
       )}
       {pinnedNodes.length > 0 && (
         <div className="node-details-pinned">
-          {currentNode && (
-            <div className="node-details-pinned-divider">Pinned</div>
-          )}
+          {currentNode && <div className="node-details-pinned-divider">Pinned</div>}
           {pinnedNodes.map((node, index) => (
-            <div
-              key={node.id}
-              ref={index === 0 ? scrollToPinnedRef : undefined}
-            >
+            <div key={node.id} ref={index === 0 ? scrollToPinnedRef : undefined}>
               <NodeAccordionItem
                 node={node}
                 isPinned={true}
@@ -326,9 +308,7 @@ export function NodeDetailsPanel({
                 onToggleExpand={() => handleToggleExpand(node.id)}
                 onHeaderClick={() => handleHeaderClick(node.id)}
                 changeGraph={changeGraph}
-                onCondensedRetrievalDrillthrough={
-                  onCondensedRetrievalDrillthrough
-                }
+                onCondensedRetrievalDrillthrough={onCondensedRetrievalDrillthrough}
                 isLeftNode={comparisonState.leftNodeId === node.id}
                 isRightNode={comparisonState.rightNodeId === node.id}
                 onToggleLeftNode={() => toggleLeftNode(node.id)}

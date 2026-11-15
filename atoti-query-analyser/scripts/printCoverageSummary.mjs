@@ -2,16 +2,12 @@
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 
-const summaryPath = fileURLToPath(
-  new URL("../coverage/coverage-summary.json", import.meta.url),
-);
+const summaryPath = fileURLToPath(new URL("../coverage/coverage-summary.json", import.meta.url));
 const summary = JSON.parse(readFileSync(summaryPath, "utf-8"));
 const metrics = ["statements", "branches", "functions", "lines"];
 
 function aggregate(predicate) {
-  const totals = Object.fromEntries(
-    metrics.map((metric) => [metric, { covered: 0, total: 0 }]),
-  );
+  const totals = Object.fromEntries(metrics.map((metric) => [metric, { covered: 0, total: 0 }]));
   for (const [file, fileSummary] of Object.entries(summary)) {
     if (file === "total" || !predicate(file.replaceAll("\\", "/"))) {
       continue;
@@ -30,9 +26,7 @@ const scopes = {
 };
 
 const pad = (text, width) => String(text).padEnd(width);
-console.log(
-  `\n${pad("Coverage", 14)}${metrics.map((metric) => pad(metric, 12)).join("")}`,
-);
+console.log(`\n${pad("Coverage", 14)}${metrics.map((metric) => pad(metric, 12)).join("")}`);
 for (const [scope, totals] of Object.entries(scopes)) {
   const cells = metrics.map((metric) => {
     const { covered, total } = totals[metric];

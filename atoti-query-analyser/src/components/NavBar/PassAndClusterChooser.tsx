@@ -1,5 +1,4 @@
 import { NavDropdown } from "react-bootstrap";
-import React from "react";
 import { QueryPlanMetadata } from "../../library/graphProcessors/extractMetadata";
 
 /**
@@ -49,14 +48,10 @@ export function PassAndClusterChooser({
     .sort((a, b) => b.pass - a.pass);
 
   // Get unique pass IDs for the pass dropdown
-  const uniquePasses = Array.from(
-    new Map(allPasses.map((p) => [p.pass, p])).values(),
-  );
+  const uniquePasses = Array.from(new Map(allPasses.map((p) => [p.pass, p])).values());
 
   // Get all queries (clusters) in the current pass
-  const queriesInCurrentPass = queryMetadata.filter(
-    (q) => q.pass === currentPassId,
-  );
+  const queriesInCurrentPass = queryMetadata.filter((q) => q.pass === currentPassId);
 
   // Sort clusters alphabetically by name for display
   const sortedClusters = [...queriesInCurrentPass].sort((a, b) =>
@@ -72,19 +67,12 @@ export function PassAndClusterChooser({
 
   // Find active cluster for label
   const activeCluster = queryMetadata.find((q) => q.id === currentQueryId);
-  const clusterDropdownTitle = activeCluster
-    ? clusterLabel(activeCluster)
-    : "Cluster";
+  const clusterDropdownTitle = activeCluster ? clusterLabel(activeCluster) : "Cluster";
 
   return (
     <>
       {showPassDropdown && (
-        <NavDropdown
-          title={passDropdownTitle}
-          id="pass-dropdown"
-          align="end"
-          className="me-2"
-        >
+        <NavDropdown title={passDropdownTitle} id="pass-dropdown" align="end" className="me-2">
           {uniquePasses.map((pass) => (
             <NavDropdown.Item
               key={pass.pass}
@@ -98,11 +86,7 @@ export function PassAndClusterChooser({
         </NavDropdown>
       )}
       {showClusterDropdown && (
-        <NavDropdown
-          title={clusterDropdownTitle}
-          id="cluster-dropdown"
-          align="end"
-        >
+        <NavDropdown title={clusterDropdownTitle} id="cluster-dropdown" align="end">
           {sortedClusters.map((query) => (
             <NavDropdown.Item
               key={query.id}

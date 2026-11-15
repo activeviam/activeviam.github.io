@@ -1,9 +1,4 @@
-import {
-  AdjacencyListGraph,
-  AGraphObserver,
-  Edge,
-  Vertex,
-} from "../common/graph";
+import { AdjacencyListGraph, AGraphObserver, Edge, Vertex } from "../common/graph";
 import {
   multiFieldValidate,
   validateInt,
@@ -19,15 +14,13 @@ export const VirtualRetrievalKind = "VirtualRetrieval" as const;
 export const AggregateRetrievalKind = "AggregateRetrieval" as const;
 export const ExternalRetrievalKind = "ExternalRetrieval" as const;
 export const CondensedRetrievalKind = "CondensedRetrieval" as const;
-export const PartitionCondensedRetrievalKind =
-  "PartitionCondensedRetrieval" as const;
+export const PartitionCondensedRetrievalKind = "PartitionCondensedRetrieval" as const;
 
 type TVirtualRetrievalKind = typeof VirtualRetrievalKind;
 type TAggregateRetrievalKind = typeof AggregateRetrievalKind;
 type TExternalRetrievalKind = typeof ExternalRetrievalKind;
 type TCondensedRetrievalKind = typeof CondensedRetrievalKind;
 type TPartitionCondensedRetrieval = typeof PartitionCondensedRetrievalKind;
-
 
 type RetrievalKind =
   | TVirtualRetrievalKind
@@ -80,7 +73,6 @@ export type PartitionCondensedRetrieval = ARetrieval & {
   partitioning: string;
 };
 
-
 export class RetrievalVertex extends Vertex<ARetrieval> {}
 
 export type RetrievalEdgeMetadata = {
@@ -88,16 +80,9 @@ export type RetrievalEdgeMetadata = {
   hiddenMerger?: ARetrieval;
 };
 
-export class RetrievalEdge extends Edge<
-  ARetrieval,
-  RetrievalEdgeMetadata,
-  RetrievalVertex
-> {}
+export class RetrievalEdge extends Edge<ARetrieval, RetrievalEdgeMetadata, RetrievalVertex> {}
 
-export class RetrievalGraph extends AdjacencyListGraph<
-  ARetrieval,
-  RetrievalEdgeMetadata
-> {}
+export class RetrievalGraph extends AdjacencyListGraph<ARetrieval, RetrievalEdgeMetadata> {}
 
 export class ARetrievalGraphObserver extends AGraphObserver<
   ARetrieval,
@@ -113,9 +98,7 @@ export class ARetrievalGraphObserver extends AGraphObserver<
 /**
  * Deep validation of JSON parse result, expected to be {@link AggregateRetrieval}.
  */
-export function validateAggregateRetrieval(
-  rawRetrieval: any,
-): AggregateRetrieval {
+export function validateAggregateRetrieval(rawRetrieval: any): AggregateRetrieval {
   validateObject(rawRetrieval);
 
   return {
@@ -124,31 +107,20 @@ export function validateAggregateRetrieval(
     location: validateList(rawRetrieval.location, validateLocation),
     measureProvider: validateString(rawRetrieval.measureProvider || "N/A"),
     measures: validateList(rawRetrieval.measures, validateMeasure),
-    partialProviderName: validateString(
-      rawRetrieval.partialProviderName || "N/A",
-    ),
+    partialProviderName: validateString(rawRetrieval.partialProviderName || "N/A"),
     partitioning: validateString(rawRetrieval.partitioning),
     resultSizes: validateList(rawRetrieval.resultSizes || [], validateInt),
-    retrievalId: multiFieldValidate(
-      validateInt,
-      rawRetrieval.retrievalId,
-      rawRetrieval.retrId,
-    ),
+    retrievalId: multiFieldValidate(validateInt, rawRetrieval.retrievalId, rawRetrieval.retrId),
     timingInfo: validateTimingInfo(rawRetrieval.timingInfo),
     type: validateString(rawRetrieval.type),
-    underlyingDataNodes: validateList(
-      rawRetrieval.underlyingDataNodes,
-      validateString,
-    ),
+    underlyingDataNodes: validateList(rawRetrieval.underlyingDataNodes, validateString),
   };
 }
 
 /**
  * Deep validation of JSON parse result, expected to be {@link ExternalRetrieval}.
  */
-export function validateExternalRetrieval(
-  rawRetrieval: any,
-): ExternalRetrieval {
+export function validateExternalRetrieval(rawRetrieval: any): ExternalRetrieval {
   validateObject(rawRetrieval);
 
   return {
@@ -157,11 +129,7 @@ export function validateExternalRetrieval(
     fields: validateList(rawRetrieval.fields, validateString),
     joinedMeasure: validateList(rawRetrieval.joinedMeasure, validateMeasure),
     resultSizes: validateList(rawRetrieval.resultSizes, validateInt),
-    retrievalId: multiFieldValidate(
-      validateInt,
-      rawRetrieval.retrievalId,
-      rawRetrieval.retrId,
-    ),
+    retrievalId: multiFieldValidate(validateInt, rawRetrieval.retrievalId, rawRetrieval.retrId),
     store: validateString(rawRetrieval.store),
     timingInfo: validateTimingInfo(rawRetrieval.timingInfo),
     type: validateString(rawRetrieval.type || "ExternalDatabaseRetrieval"),

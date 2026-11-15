@@ -1,8 +1,5 @@
 import { QueryPlan } from "../dataStructures/processing/queryPlan";
-import {
-  AggregateRetrieval,
-  AggregateRetrievalKind,
-} from "../dataStructures/json/retrieval";
+import { AggregateRetrieval, AggregateRetrievalKind } from "../dataStructures/json/retrieval";
 import { computeIfAbsent, requireNonNull } from "../utilities/util";
 import PropTypes from "prop-types";
 
@@ -35,13 +32,8 @@ export const QueryPlanMetadataPropType = PropTypes.shape({
  * For each query, finds list of subqueries and save it to `res[i].childrenIds`.
  * Then, for each query sets its parent id.
  * */
-function findChildrenAndParents(
-  res: QueryPlanMetadata[],
-  queries: QueryPlan[],
-) {
-  const resIndexByName = new Map(
-    res.map((queryInfo) => [queryInfo.name, queryInfo]),
-  );
+function findChildrenAndParents(res: QueryPlanMetadata[], queries: QueryPlan[]) {
+  const resIndexByName = new Map(res.map((queryInfo) => [queryInfo.name, queryInfo]));
 
   queries.forEach((query, queryId) => {
     const { graph } = query;
@@ -152,11 +144,7 @@ export function dumpMetadata(metadata: QueryPlanMetadata[]) {
  * Helper to get timing value from globalTimings Map,
  * checking both V1 and V2 keys.
  */
-function getTiming(
-  timings: Map<string, number>,
-  v1Key: string,
-  v2Key: string,
-): number | undefined {
+function getTiming(timings: Map<string, number>, v1Key: string, v2Key: string): number | undefined {
   return timings.get(v1Key) ?? timings.get(v2Key);
 }
 
@@ -179,22 +167,10 @@ export function extractMetadata(data: QueryPlan[]): QueryPlanMetadata[] {
       passType: passInfo[0],
       pass: passNumber,
       name: clusterMemberId,
-      contextTime: getTiming(
-        globalTimings,
-        "CONTEXT",
-        "executionContextCreationTime",
-      ),
-      preparationTime: getTiming(
-        globalTimings,
-        "FINALIZATION",
-        "finalizationTime",
-      ),
+      contextTime: getTiming(globalTimings, "CONTEXT", "executionContextCreationTime"),
+      preparationTime: getTiming(globalTimings, "FINALIZATION", "finalizationTime"),
       planningTime: getTiming(globalTimings, "PLANNING", "planningTime"),
-      executionTime: getTiming(
-        globalTimings,
-        "EXECUTION",
-        "queryExecutionTime",
-      ),
+      executionTime: getTiming(globalTimings, "EXECUTION", "queryExecutionTime"),
     };
   });
 

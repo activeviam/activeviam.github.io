@@ -1,9 +1,4 @@
-import {
-  AGraphObserver,
-  applyOnDAG,
-  dfs,
-  IGraph,
-} from "../dataStructures/common/graph";
+import { AGraphObserver, applyOnDAG, dfs, IGraph } from "../dataStructures/common/graph";
 import {
   ARetrieval,
   RetrievalEdge,
@@ -42,15 +37,11 @@ interface CriticalScore {
  * The resulting sequence of retrievals shows which retrievals have the most
  * significant effect on computation time.
  */
-export function criticalPath(
-  graph: RetrievalGraph,
-  selection: VertexSelection,
-) {
+export function criticalPath(graph: RetrievalGraph, selection: VertexSelection) {
   const virtualSource = graph.getVertexByLabel("virtualSource");
   const filteredGraph = graph.filterVertices(
     (vertex) =>
-      vertex.getMetadata().$kind === VirtualRetrievalKind ||
-      selection.has(vertex.getUUID()),
+      vertex.getMetadata().$kind === VirtualRetrievalKind || selection.has(vertex.getUUID()),
   );
 
   // We define criticalScore(node) as elapsedTime(node) + max([criticalScore(dependency) for dependency in graph.getOutgoingEdges(node)])
@@ -79,21 +70,13 @@ export function criticalPath(
     };
   };
 
-  const criticalScore = applyOnDAG(
-    filteredGraph,
-    virtualSource,
-    criticalScoreCalculator,
-  );
+  const criticalScore = applyOnDAG(filteredGraph, virtualSource, criticalScoreCalculator);
 
   // Recreate path going up from the node with worst critical and collect link ids
   let maxNode = requireNonNull(criticalScore.get(virtualSource)).parent;
   const criticalLinks = new Set<string>();
-  while (
-    maxNode &&
-    requireNonNull(criticalScore.get(maxNode)).parent !== null
-  ) {
-    const source = requireNonNull(criticalScore.get(maxNode))
-      .parent as RetrievalVertex;
+  while (maxNode && requireNonNull(criticalScore.get(maxNode)).parent !== null) {
+    const source = requireNonNull(criticalScore.get(maxNode)).parent as RetrievalVertex;
     const target = maxNode;
     criticalLinks.add(`${target.getUUID()}#${source.getUUID()}`);
     maxNode = source;
@@ -133,10 +116,7 @@ export function computeEdgeCriticalScore(graph: RetrievalGraph) {
     if (edges.length <= 1) {
       edges.forEach((edge) => (edge.getMetadata().criticalScore = 1));
     } else {
-      edges.forEach(
-        (edge, idx) =>
-          (edge.getMetadata().criticalScore = (idx + 1) / edges.length),
-      );
+      edges.forEach((edge, idx) => (edge.getMetadata().criticalScore = (idx + 1) / edges.length));
     }
   });
 }
@@ -189,11 +169,7 @@ export function selectCriticalSubgraph(
     }
   }
 
-  dfs(
-    new FilteredGraph(graph),
-    graph.getVertexByLabel("virtualSource"),
-    new VertexCollector(),
-  );
+  dfs(new FilteredGraph(graph), graph.getVertexByLabel("virtualSource"), new VertexCollector());
 
   return result;
 }

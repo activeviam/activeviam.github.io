@@ -9,13 +9,14 @@ Atoti Query Analyzer is a React-based web application for analyzing ActivePivot 
 ## Commands
 
 ```bash
-npm start          # Development server at localhost:3000
-npm run build      # Production build to ./build
-yarn lint          # Lint with oxlint (yarn lint:fix to auto-fix)
-yarn format        # Format with oxfmt (yarn format:check to only check)
-yarn test          # Unit tests in watch mode
-yarn test:run      # Unit tests, once
-yarn test:coverage # Unit tests with the v8 coverage report and thresholds check
+pnpm start         # Development server at localhost:5173
+pnpm build         # Production build to ./build
+pnpm lint          # Lint with oxlint (pnpm lint:fix to auto-fix)
+pnpm format        # Format with oxfmt (pnpm format:check to only check)
+pnpm typecheck     # Type-check with tsc
+pnpm test          # Unit tests in watch mode
+pnpm test:run      # Unit tests, once
+pnpm test:coverage # Unit tests with the v8 coverage report and thresholds check
 ```
 
 ## Key features
@@ -46,6 +47,7 @@ The "Detect GC pauses" button (not offered on the "Global summary" tab, which mi
 Showing the graph of nodes executing a given node.
 
 The graph view uses a VS Code-style left sidebar layout:
+
 - **Activity Bar**: A permanent vertical icon column (48px wide) on the left side
 - **Sidebar Drawer**: Clicking an icon opens a floating panel that slides over the graph (does not resize the graph)
 - **Filters Panel**: Contains measure filtering, zoom controls, untangle button, fast retrieval condensation settings, and critical score filter
@@ -57,6 +59,7 @@ The sidebar architecture is designed to support multiple panels in the future. T
 Displays a condensed graph where nodes are retained only if their `partitioning` value differs from connected neighbors. Chains of nodes with the same partitioning are condensed into single hexagon-shaped nodes (gray color). This view helps identify partition boundaries in the query execution plan.
 
 Key features:
+
 - **Partition boundary detection**: Retains nodes at partition transitions
 - **Chain condensation**: Groups consecutive nodes with identical partitioning
 - **Hexagon nodes**: Condensed chains rendered as gray hexagons (non-clickable)
@@ -108,6 +111,7 @@ This view does not report the actual thread execution in the backend, as this in
 ### Library Structure
 
 `src/library/` contains React-free logic:
+
 - `dataStructures/common/`: Generic containers (Graph, Dictionary, UnionFind)
 - `dataStructures/json/`: JSON parsing/validation interfaces
 - `dataStructures/processing/`: Internal processed data types
@@ -125,13 +129,13 @@ This view does not report the actual thread execution in the backend, as this in
     `parsing/fixtures.ts` lists the fixtures and loads them into `QueryPlan` objects, as the application does.
   - `graphProcessors/`: the processing pipelines of the Graph and Partitions views, run on every fixture.
   - `library/`: unit tests of the utilities, data structures, node comparison and server input.
-- When adding a fixture, add it to `parsing/fixtures.ts`, and run `yarn vitest run -u` to write its snapshot.
-- When a change in the parsing modifies a snapshot on purpose, check the diff, then update it with `yarn vitest run -u`.
+- When adding a fixture, add it to `parsing/fixtures.ts`, and run `pnpm vitest run -u` to write its snapshot.
+- When a change in the parsing modifies a snapshot on purpose, check the diff, then update it with `pnpm vitest run -u`.
 - The JUnit report is written to `test-results/results.xml`.
 
 ### Coverage
 
-- `yarn test:coverage` collects the coverage with v8, over every file of `src/`, including the React components.
+- `pnpm test:coverage` collects the coverage with v8, over every file of `src/`, including the React components.
 - The reports (HTML, LCOV, JSON summary) are written to `coverage/`.
 - `scripts/printCoverageSummary.mjs` then prints two figures: the coverage of all `src/`, and of `src/library/`, the React-free logic which the unit tests target.
 - `vitest.config.ts` sets the coverage thresholds to the current coverage, rounded down: the run fails below them.
@@ -140,12 +144,13 @@ This view does not report the actual thread execution in the backend, as this in
 
 ### End-to-end tests
 
-- E2E tests (Playwright): `e2e/*.spec.ts` - run with `yarn e2e` (starts the Vite dev server on port 5173)
+- E2E tests (Playwright): `e2e/*.spec.ts` - run with `pnpm e2e` (starts the Vite dev server on port 5173)
   - Fixtures in `e2e/fixtures/` are discovered automatically: every file is loaded (`.json` as JSON, `.txt` as V1) and every panel of the top menu is opened
   - A test fails on any page error, `console.error`, error notification, error boundary or "Load a query plan first!" stub. Use `console.debug` for non-fatal diagnostics
   - Known broken fixtures are listed in `e2e/knownFailures.ts` and marked with `test.fail`
 
 ### CI
 
-- The CircleCI job `atoti_query_tests` runs `yarn test:coverage`, stores the JUnit report as test results and the coverage report as an artifact.
+- The CircleCI job `atoti_query_tests` runs `pnpm test:coverage`, stores the JUnit report as test results and the coverage report as an artifact.
 - The CircleCI job `atoti_query_e2e` runs the Playwright end-to-end tests.
+- The CircleCI job `atoti_query_lint` runs `pnpm format:check`, `pnpm lint` and `pnpm typecheck`: format with `pnpm format` and fix the oxlint and tsc errors before pushing. The deployment to `master` requires it.

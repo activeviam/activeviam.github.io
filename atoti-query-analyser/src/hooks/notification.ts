@@ -21,8 +21,7 @@ export function useErrorMessage() {
     });
   };
 
-  const showErrorWithoutProcessing = (e: Error) =>
-    showErrorMessage(e.stack || e.message);
+  const showErrorWithoutProcessing = (e: Error) => showErrorMessage(e.stack || e.message);
 
   const processStackLine = async (stackLine: string): Promise<string> => {
     const match = /^(\s*at.* )(\((\S+)\)|([^(]\S*))$/gm.exec(stackLine);
@@ -33,10 +32,7 @@ export function useErrorMessage() {
     const locationInParentheses = !match[4];
     const location = match[3] || match[4];
     const mappedLocation = await StackTraceParser.getInstance().parse(location);
-    return (
-      match[1] +
-      (locationInParentheses ? `(${mappedLocation})` : mappedLocation)
-    );
+    return match[1] + (locationInParentheses ? `(${mappedLocation})` : mappedLocation);
   };
 
   const showError = (e: Error, tryUnbundle = true) => {
@@ -50,9 +46,7 @@ export function useErrorMessage() {
     (async () => {
       try {
         const stackLines = stack.split("\n");
-        const processedStackLines = await Promise.all(
-          stackLines.map(processStackLine),
-        );
+        const processedStackLines = await Promise.all(stackLines.map(processStackLine));
         showErrorMessage(processedStackLines.join("\n"));
       } catch (processingError) {
         showErrorWithoutProcessing(asError(processingError));

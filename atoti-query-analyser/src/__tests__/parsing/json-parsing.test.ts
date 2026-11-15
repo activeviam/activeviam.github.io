@@ -1,9 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { JSON_FIXTURES, loadFixture } from "./fixtures";
-import {
-  preprocessQueryPlan,
-  QueryPlan,
-} from "library/dataStructures/processing/queryPlan";
+import { preprocessQueryPlan, QueryPlan } from "library/dataStructures/processing/queryPlan";
 
 describe("JSON file parsing", () => {
   JSON_FIXTURES.forEach((filename) => {
@@ -42,26 +39,14 @@ describe("JSON file parsing", () => {
 
         // Validate each QueryPlan has required fields
         queryPlans.forEach((plan, index) => {
-          expect(
-            plan.planInfo,
-            `planInfo missing in plan ${index}`,
-          ).toBeDefined();
+          expect(plan.planInfo, `planInfo missing in plan ${index}`).toBeDefined();
           expect(plan.graph, `graph missing in plan ${index}`).toBeDefined();
-          expect(
-            plan.queryFilters,
-            `queryFilters missing in plan ${index}`,
-          ).toBeDefined();
-          expect(
-            plan.querySummary,
-            `querySummary missing in plan ${index}`,
-          ).toBeDefined();
+          expect(plan.queryFilters, `queryFilters missing in plan ${index}`).toBeDefined();
+          expect(plan.querySummary, `querySummary missing in plan ${index}`).toBeDefined();
 
           // Validate graph has at least one vertex
           const vertices = Array.from(plan.graph.getVertices());
-          expect(
-            vertices.length,
-            `graph has no vertices in plan ${index}`,
-          ).toBeGreaterThan(0);
+          expect(vertices.length, `graph has no vertices in plan ${index}`).toBeGreaterThan(0);
         });
       });
     });

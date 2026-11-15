@@ -23,9 +23,7 @@ export function validateBoolean(rawBoolean: any): boolean {
       } else if (rawBoolean === "false") {
         return false;
       } else {
-        throw new Error(
-          `Cannot cast string ${JSON.stringify(rawBoolean)} to boolean`,
-        );
+        throw new Error(`Cannot cast string ${JSON.stringify(rawBoolean)} to boolean`);
       }
     }
     throw new Error(`Expected boolean, got ${typeof rawBoolean}`);
@@ -73,20 +71,14 @@ export function validateObjectAsMap<K, V>(
 ): Map<K, V> {
   validateObject(rawObject);
   return new Map(
-    Object.entries(rawObject).map(([key, value]) => [
-      keyValidator(key),
-      valueValidator(value),
-    ]),
+    Object.entries(rawObject).map(([key, value]) => [keyValidator(key), valueValidator(value)]),
   );
 }
 
 /**
  * Check if input is an array.
  */
-export function validateList<T>(
-  rawList: any,
-  validateItem: (item: any) => T,
-): T[] {
+export function validateList<T>(rawList: any, validateItem: (item: any) => T): T[] {
   if (!Array.isArray(rawList)) {
     throw new Error("rawList must be a list");
   }
@@ -97,10 +89,7 @@ export function validateList<T>(
 /**
  * Check if input is a list. If yes, convert it into a Set.
  */
-export function validateListAsSet<T>(
-  rawList: any,
-  validateItem: (item: any) => T,
-): Set<T> {
+export function validateListAsSet<T>(rawList: any, validateItem: (item: any) => T): Set<T> {
   return new Set(validateList(rawList, validateItem));
 }
 
@@ -108,10 +97,7 @@ export function validateListAsSet<T>(
  * Check if input is either a valid instance of type `T` or `undefined`. Useful
  * for optional fields.
  */
-export function optional<T>(
-  rawValue: any,
-  validator: (value: any) => T,
-): T | undefined {
+export function optional<T>(rawValue: any, validator: (value: any) => T): T | undefined {
   if (rawValue === undefined || rawValue === null) {
     return undefined;
   } else {
@@ -127,10 +113,7 @@ export function optional<T>(
  * Check if any of provided inputs is a valid instance of type `T`. If yes,
  * return first of them.
  */
-export function multiFieldValidate<T>(
-  validator: (value: any) => T,
-  ...rawValues: any[]
-): T {
+export function multiFieldValidate<T>(validator: (value: any) => T, ...rawValues: any[]): T {
   const errors = [];
   for (const rawValue of rawValues) {
     if (rawValue !== undefined && rawValue !== null) {

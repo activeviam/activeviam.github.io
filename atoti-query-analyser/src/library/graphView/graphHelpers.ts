@@ -58,9 +58,7 @@ function backgroundColor(d: D3Node) {
 
 function linkColor(d: D3Link, minCriticalScore: number) {
   const normalizedCriticalScore =
-    minCriticalScore === 1
-      ? 1
-      : (d.criticalScore - minCriticalScore) / (1 - minCriticalScore);
+    minCriticalScore === 1 ? 1 : (d.criticalScore - minCriticalScore) / (1 - minCriticalScore);
   return `hsl(${120 * (1 - normalizedCriticalScore)}, 100%, 40%)`;
 }
 
@@ -80,9 +78,7 @@ function enterLink(
 /**
  * Update properties of the SVG element corresponding to the graph edge.
  * */
-function updateLink(
-  selection: Selection<SVGLineElement, D3Link, null | BaseType, unknown>,
-) {
+function updateLink(selection: Selection<SVGLineElement, D3Link, null | BaseType, unknown>) {
   selection
     .attr("x1", (d) => `${d.source.x || 0}`)
     .attr("y1", (d) => `${d.source.y || 0}`)
@@ -97,9 +93,7 @@ function computeRadius(d: D3Node) {
 /**
  * Setup properties of the SVG element corresponding to the graph vertex.
  * */
-function enterNode(
-  selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>,
-) {
+function enterNode(selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>) {
   selection
     .select<SVGCircleElement>("circle")
     .attr("r", computeRadius)
@@ -113,10 +107,7 @@ function enterNode(
     .style("fill", (d) => backgroundColor(d))
     .style("--node-stroke", (d) => outlineColor(d));
 
-  selection
-    .select<SVGTextElement>("text")
-    .attr("dy", ".35em")
-    .attr("dx", "-0.65em");
+  selection.select<SVGTextElement>("text").attr("dy", ".35em").attr("dx", "-0.65em");
 }
 
 /**
@@ -125,9 +116,7 @@ function enterNode(
  * @returns An enter function for D3 selections
  */
 function enterNodeWithColor(colorFn: (d: D3Node) => string) {
-  return (
-    selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>,
-  ) => {
+  return (selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>) => {
     selection
       .select<SVGCircleElement>("circle")
       .attr("r", computeRadius)
@@ -141,10 +130,7 @@ function enterNodeWithColor(colorFn: (d: D3Node) => string) {
       .style("fill", colorFn)
       .style("--node-stroke", (d) => outlineColor(d));
 
-    selection
-      .select<SVGTextElement>("text")
-      .attr("dy", ".35em")
-      .attr("dx", "-0.65em");
+    selection.select<SVGTextElement>("text").attr("dy", ".35em").attr("dx", "-0.65em");
   };
 }
 
@@ -156,9 +142,7 @@ function rectTranslate(d: D3Node) {
 /**
  * Update properties of the SVG element corresponding to the graph vertex.
  * */
-function updateNode(
-  selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>,
-) {
+function updateNode(selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>) {
   selection
     .select<SVGCircleElement>("circle")
     .attr("transform", (d) => `translate(${d.x || 0} ${d.y || 0})`)
@@ -182,9 +166,7 @@ function updateNode(
 /**
  * Update properties of SVG elements representing the graph.
  * */
-function updateGraph(
-  selection: Selection<SVGSVGElement, unknown, null, undefined>,
-) {
+function updateGraph(selection: Selection<SVGSVGElement, unknown, null, undefined>) {
   selection.selectAll<SVGGElement, D3Node>(".node").call(updateNode);
   selection.selectAll<SVGLineElement, D3Link>(".link").call(updateLink);
 }
@@ -208,19 +190,14 @@ function computeHexagonPoints(radius: number): string {
 /**
  * Setup properties of the SVG element corresponding to a hexagon graph vertex.
  */
-function enterHexagonNode(
-  selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>,
-) {
+function enterHexagonNode(selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>) {
   selection
     .select<SVGPolygonElement>("polygon")
     .attr("points", (d) => computeHexagonPoints(computeRadius(d)))
     .style("fill", (d) => backgroundColor(d))
     .style("--node-stroke", (d) => outlineColor(d));
 
-  selection
-    .select<SVGTextElement>("text")
-    .attr("dy", ".35em")
-    .attr("dx", "-0.65em");
+  selection.select<SVGTextElement>("text").attr("dy", ".35em").attr("dx", "-0.65em");
 }
 
 /**
@@ -229,28 +206,21 @@ function enterHexagonNode(
  * @returns An enter function for D3 selections
  */
 function enterHexagonNodeWithColor(colorFn: (d: D3Node) => string) {
-  return (
-    selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>,
-  ) => {
+  return (selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>) => {
     selection
       .select<SVGPolygonElement>("polygon")
       .attr("points", (d) => computeHexagonPoints(computeRadius(d)))
       .style("fill", colorFn)
       .style("--node-stroke", (d) => outlineColor(d));
 
-    selection
-      .select<SVGTextElement>("text")
-      .attr("dy", ".35em")
-      .attr("dx", "-0.65em");
+    selection.select<SVGTextElement>("text").attr("dy", ".35em").attr("dx", "-0.65em");
   };
 }
 
 /**
  * Update properties of the SVG element corresponding to a hexagon graph vertex.
  */
-function updateHexagonNode(
-  selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>,
-) {
+function updateHexagonNode(selection: Selection<SVGGElement, D3Node, null | BaseType, unknown>) {
   selection
     .select<SVGPolygonElement>("polygon")
     .attr("transform", (d) => `translate(${d.x || 0} ${d.y || 0})`)

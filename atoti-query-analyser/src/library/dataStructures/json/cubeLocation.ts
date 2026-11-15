@@ -1,9 +1,4 @@
-import {
-  validateList,
-  validateObject,
-  validatePath,
-  validateString,
-} from "./validatingUtils";
+import { validateList, validateObject, validatePath, validateString } from "./validatingUtils";
 
 export interface CubeLocation {
   dimension: string;

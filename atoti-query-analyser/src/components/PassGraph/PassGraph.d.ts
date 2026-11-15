@@ -5,8 +5,4 @@ import { QueryPlanMetadata } from "@library/graphProcessors/extractMetadata";
  * @param {{metadata: QueryPlanMetadata[] }} attributes - React JSX attributes
  * @param {QueryPlanMetadata[]} attributes.metadata - query plan metadata
  * */
-export function PassGraph({
-  metadata,
-}: {
-  metadata: QueryPlanMetadata[];
-}): JSX.Element;
+export function PassGraph({ metadata }: { metadata: QueryPlanMetadata[] }): JSX.Element;

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "react-bootstrap";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
@@ -68,13 +68,7 @@ function Timings({ info }: { info?: PlanInfo }) {
  * This component is responsible for displaying list of measures and filtering
  * them by a search query.
  * */
-function MeasureList({
-  measures,
-  columns,
-}: {
-  measures: Measure[];
-  columns: number;
-}) {
+function MeasureList({ measures, columns }: { measures: Measure[]; columns: number }) {
   const [query, setQuery] = useState("");
 
   const filteredMeasures = useMemo(() => {
@@ -210,9 +204,7 @@ type ComponentTimings = Readonly<{
 }>;
 
 const computeComponentTimings = (graph: RetrievalGraph): ComponentTimings => {
-  const operations = Array.from(graph.getVertices()).map((operation) =>
-    operation.getMetadata(),
-  );
+  const operations = Array.from(graph.getVertices()).map((operation) => operation.getMetadata());
   const databaseTime = operations
     .filter((operation) => operation.type.includes("JIT"))
     .flatMap((operation) => operation.timingInfo.elapsedTime ?? [])
@@ -236,9 +228,7 @@ const computeComponentTimings = (graph: RetrievalGraph): ComponentTimings => {
   };
 };
 
-const createTimeFormatter = (
-  values: readonly number[],
-): ((time: number) => string) => {
+const createTimeFormatter = (values: readonly number[]): ((time: number) => string) => {
   const maxValue = Math.max(...values);
   if (maxValue < 1000) {
     return (t) => `${t} ms`;
@@ -249,9 +239,7 @@ const createTimeFormatter = (
   }
 };
 
-const ComponentTimingView = ({
-  timings,
-}: Readonly<{ timings: ComponentTimings }>) => {
+const ComponentTimingView = ({ timings }: Readonly<{ timings: ComponentTimings }>) => {
   const [showRealTime, setShowRealTime] = useState(false);
 
   const sortedTimings = Object.entries(timings);
@@ -300,9 +288,7 @@ const ComponentTimingView = ({
             return (
               <li key={label} className={`component-timing timing-${label}`}>
                 <b>{label}</b>: {formatter(time)}
-                {time >= 1000 ? (
-                  <span className="component-exact-timing">({time} ms)</span>
-                ) : null}
+                {time >= 1000 ? <span className="component-exact-timing">({time} ms)</span> : null}
               </li>
             );
           } else {
@@ -359,10 +345,7 @@ function QuerySummaryView({
     <div>
       <Button onClick={exportAsJson}>Export graph as JSON</Button>
       <p>Total number of retrievals: {summary.totalRetrievals}</p>
-      <p>
-        Total size of database retrieval results:{" "}
-        {summary.totalExternalResultSize}
-      </p>
+      <p>Total size of database retrieval results: {summary.totalExternalResultSize}</p>
       {graph.getVertexCount() > 0 ? (
         <>
           <h4>Query timings by components</h4>
@@ -376,24 +359,14 @@ function QuerySummaryView({
       ) : null}
       <h4>Measures</h4>
       <MeasureList measures={Array.from(summary.measures)} columns={3} />
-      <MapView
-        title="Retrievals per type"
-        map={summary.retrievalsCountByType}
-      />
-      <MapView
-        title="Retrievals per partitioning"
-        map={summary.partitioningCountByType}
-      />
+      <MapView title="Retrievals per type" map={summary.retrievalsCountByType} />
+      <MapView title="Retrievals per partitioning" map={summary.partitioningCountByType} />
       <MapView
         hideIfEmpty
         title={"Result size per partitioning scheme"}
         map={summary.resultSizeByPartitioning}
       />
-      <SetView
-        hideIfEmpty
-        title={"Partial providers"}
-        set={summary.partialProviders}
-      />
+      <SetView hideIfEmpty title={"Partial providers"} set={summary.partialProviders} />
     </div>
   );
 }
@@ -434,11 +407,7 @@ function MultiPivotSummary({
  * */
 function mergeSets<T>(sets: Set<T>[]): Set<T> {
   return sets.reduce(
-    (acc, set) =>
-      Array.from(set).reduce(
-        (store: Set<T>, element) => store.add(element),
-        acc,
-      ),
+    (acc, set) => Array.from(set).reduce((store: Set<T>, element) => store.add(element), acc),
     new Set<T>(),
   );
 }
@@ -456,10 +425,7 @@ function mergeSets<T>(sets: Set<T>[]): Set<T> {
  *   </li>
  * </ol>
  * */
-function mergeMaps<K, V>(
-  maps: Map<K, V>[],
-  reducer: (oldValue: V, newValue: V) => V,
-): Map<K, V> {
+function mergeMaps<K, V>(maps: Map<K, V>[], reducer: (oldValue: V, newValue: V) => V): Map<K, V> {
   return maps.reduce(
     (acc, map) =>
       Array.from(map).reduce((store, [key, value]) => {
@@ -482,14 +448,9 @@ function computeGlobalSummary(
   rootInfo: QueryPlanMetadata,
   underlyingInfos: QueryPlanMetadata[],
 ): QuerySummary {
-  const summaries = [rootInfo, ...underlyingInfos].map(
-    (info) => queries[info.id].querySummary,
-  );
+  const summaries = [rootInfo, ...underlyingInfos].map((info) => queries[info.id].querySummary);
   const measures = mergeSets(summaries.map((summary) => summary.measures));
-  const totalRetrievals = summaries.reduce(
-    (acc, summary) => acc + summary.totalRetrievals,
-    0,
-  );
+  const totalRetrievals = summaries.reduce((acc, summary) => acc + summary.totalRetrievals, 0);
 
   const retrievalsCountByType = mergeMaps(
     summaries.map((summary) => summary.retrievalsCountByType),
@@ -499,9 +460,7 @@ function computeGlobalSummary(
     summaries.map((summary) => summary.partitioningCountByType),
     (a, b) => a + b,
   );
-  const partialProviders = mergeSets(
-    summaries.map((summary) => summary.partialProviders),
-  );
+  const partialProviders = mergeSets(summaries.map((summary) => summary.partialProviders));
 
   const resultSizeByPartitioning = mergeMaps(
     summaries.map((summary) => summary.resultSizeByPartitioning),
@@ -571,11 +530,7 @@ export function Summary({
       id: queries.length,
       name: "Global summary",
     };
-    const globalSummary = computeGlobalSummary(
-      queries,
-      rootInfo,
-      underlyingQueries,
-    );
+    const globalSummary = computeGlobalSummary(queries, rootInfo, underlyingQueries);
     const globalPlanInfo: PlanInfo = {
       aggregatesCache: "",
       branch: "",

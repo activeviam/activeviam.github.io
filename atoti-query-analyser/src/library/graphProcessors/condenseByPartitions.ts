@@ -8,7 +8,7 @@ import {
   RetrievalVertex,
   VirtualRetrievalKind,
   PartitionCondensedRetrieval,
-  PartitionCondensedRetrievalKind
+  PartitionCondensedRetrievalKind,
 } from "../dataStructures/json/retrieval";
 import { TimingInfo } from "../dataStructures/json/timingInfo";
 import { UUID } from "../utilities/uuid";
@@ -16,10 +16,7 @@ import { UUID } from "../utilities/uuid";
 /**
  * Merger node types that we use to identify partition boundaries.
  */
-const MERGER_TYPES = new Set([
-  "PrimitiveResultsMerger",
-  "PostProcessedResultsMerger",
-]);
+const MERGER_TYPES = new Set(["PrimitiveResultsMerger", "PostProcessedResultsMerger"]);
 
 /**
  * Check if a retrieval is a merger node.
@@ -164,9 +161,7 @@ function computeGroupTimingInfo(group: ARetrieval[]): TimingInfo {
     return { startTime: undefined, elapsedTime: undefined };
   }
 
-  const endTimes = startTimes.map(
-    (startTime, idx) => startTime + elapsedTimes[idx],
-  );
+  const endTimes = startTimes.map((startTime, idx) => startTime + elapsedTimes[idx]);
 
   const beginTime = Math.min(...startTimes);
   const endTime = Math.max(...endTimes);
@@ -193,20 +188,10 @@ function computeGroupTimingInfo(group: ARetrieval[]): TimingInfo {
  *   - graph: The condensed graph (excluding merger nodes)
  *   - retainedUUIDs: Set of UUIDs of retained (non-condensed) nodes
  */
-export function condenseByPartitions(
-  graph: RetrievalGraph,
-): CondenseByPartitionsResult {
+export function condenseByPartitions(graph: RetrievalGraph): CondenseByPartitionsResult {
   const neighborIndex = buildNeighborIndex(graph);
-  const { mergerUUIDs, retainedUUIDs } = identifyMergerConnectedNodes(
-    graph,
-    neighborIndex,
-  );
-  const groups = groupRemainingNodes(
-    graph,
-    neighborIndex,
-    mergerUUIDs,
-    retainedUUIDs,
-  );
+  const { mergerUUIDs, retainedUUIDs } = identifyMergerConnectedNodes(graph, neighborIndex);
+  const groups = groupRemainingNodes(graph, neighborIndex, mergerUUIDs, retainedUUIDs);
 
   // Build mapping from original UUIDs to new vertices
   const vertexMapping = new Map<UUID, RetrievalVertex>();
@@ -214,9 +199,7 @@ export function condenseByPartitions(
   // Create condensed vertices for each group
   let condensedId = -1;
   for (const [, members] of groups) {
-    const underlyingRetrievals = members.map((uuid) =>
-      graph.getVertexByUUID(uuid).getMetadata(),
-    );
+    const underlyingRetrievals = members.map((uuid) => graph.getVertexByUUID(uuid).getMetadata());
 
     // Collect unique partitioning values from all members
     const partitionings = new Set<string>();
@@ -316,10 +299,7 @@ export function condenseByPartitions(
   try {
     const virtualSource = graph.getVertexByLabel("virtualSource");
     if (vertexMapping.has(virtualSource.getUUID())) {
-      newGraph.labelVertex(
-        vertexMapping.get(virtualSource.getUUID())!.getUUID(),
-        "virtualSource",
-      );
+      newGraph.labelVertex(vertexMapping.get(virtualSource.getUUID())!.getUUID(), "virtualSource");
     }
   } catch {
     // Label doesn't exist, skip
@@ -328,10 +308,7 @@ export function condenseByPartitions(
   try {
     const virtualTarget = graph.getVertexByLabel("virtualTarget");
     if (vertexMapping.has(virtualTarget.getUUID())) {
-      newGraph.labelVertex(
-        vertexMapping.get(virtualTarget.getUUID())!.getUUID(),
-        "virtualTarget",
-      );
+      newGraph.labelVertex(vertexMapping.get(virtualTarget.getUUID())!.getUUID(), "virtualTarget");
     }
   } catch {
     // Label doesn't exist, skip

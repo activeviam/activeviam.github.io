@@ -1,17 +1,11 @@
-import {
-  RetrievalGraph,
-  RetrievalVertex,
-} from "../dataStructures/json/retrieval";
+import { RetrievalGraph, RetrievalVertex } from "../dataStructures/json/retrieval";
 import { VertexSelection } from "../dataStructures/processing/selection";
 
 /**
  * Given a graph, build a subgraph induced by a subset of vertices, as well as
  * its inversion. Add virtual source and virtual target to both of them.
  */
-export function filterAndInverse(
-  graph: RetrievalGraph,
-  selection: VertexSelection,
-) {
+export function filterAndInverse(graph: RetrievalGraph, selection: VertexSelection) {
   const virtualSource = graph.getVertexByLabel("virtualSource");
   const virtualTarget = graph.getVertexByLabel("virtualTarget");
 

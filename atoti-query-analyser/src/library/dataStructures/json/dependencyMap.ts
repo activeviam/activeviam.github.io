@@ -1,8 +1,4 @@
-import {
-  validateInt,
-  validateListAsSet,
-  validateObjectAsMap,
-} from "./validatingUtils";
+import { validateInt, validateListAsSet, validateObjectAsMap } from "./validatingUtils";
 
 export type DependencyMap = Map<number, Set<number>>;
 

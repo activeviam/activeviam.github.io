@@ -26,11 +26,7 @@ export function nodeDepths(graph: RetrievalGraph, selection: VertexSelection) {
   return applyOnDAG(
     filteredGraph,
     virtualSource,
-    (
-      vertex,
-      dependencies,
-      childrenValues: (child: RetrievalVertex) => number,
-    ) => {
+    (vertex, dependencies, childrenValues: (child: RetrievalVertex) => number) => {
       if (vertex === virtualTarget) {
         return -1;
       }
@@ -52,11 +48,7 @@ export function setSimulatedTimingInfo(graph: RetrievalGraph) {
   const startTimeMap = applyOnDAG(
     graph,
     virtualSource,
-    (
-      vertex,
-      dependencies,
-      childrenValues: (child: RetrievalVertex) => number,
-    ): number => {
+    (vertex, dependencies, childrenValues: (child: RetrievalVertex) => number): number => {
       if (vertex === virtualTarget) {
         return -elapsedTime;
       }
